@@ -61,3 +61,9 @@ def test_export_keys_check_passes_on_committed_files() -> None:
     result = run("export-keys", "--check")
     assert result.returncode == 0, result.stdout
     assert "STALE" not in result.stdout
+
+
+def test_eval_engine_items_runs_and_passes() -> None:
+    result = run("eval", "engine_items", "--n", "20", "--no-write")
+    assert result.returncode == 0, result.stdout
+    assert "PASS" in result.stdout

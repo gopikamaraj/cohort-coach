@@ -1,0 +1,49 @@
+{
+  "bar": {
+    "collisions": 0,
+    "share_correct": 1.0
+  },
+  "date": "2026-10-16",
+  "eval": "engine_items",
+  "passed": true,
+  "per_error": {
+    "ADD-NOCARRY": {
+      "collisions": 0,
+      "correct_wrong_answers": 500,
+      "item_type": "add_carry",
+      "n": 500,
+      "share_correct": 1.0
+    },
+    "PV-HEARD": {
+      "collisions": 0,
+      "correct_wrong_answers": 500,
+      "item_type": "dictation",
+      "n": 500,
+      "share_correct": 1.0
+    },
+    "PV-REVERSE": {
+      "collisions": 0,
+      "correct_wrong_answers": 500,
+      "item_type": "dictation",
+      "n": 500,
+      "share_correct": 1.0
+    },
+    "SUB-NODEC": {
+      "collisions": 0,
+      "correct_wrong_answers": 500,
+      "item_type": "sub_borrow",
+      "n": 500,
+      "share_correct": 1.0
+    },
+    "SUB-SFL": {
+      "collisions": 0,
+      "correct_wrong_answers": 500,
+      "item_type": "sub_borrow",
+      "n": 500,
+      "share_correct": 1.0
+    }
+  },
+  "problems_per_error": 500,
+  "seed": 2026,
+  "source": "evals/runners/engine_items.py"
+}

@@ -89,8 +89,34 @@ def cmd_check(args: list[str]) -> int:
             return 1
     if cmd_test([]) != 0:
         return 1
-    print("eval smoke: available after P13")
-    return 0
+    if cmd_export_keys(["--check"]) != 0:
+        return 1
+    # Eval smoke: engine_items at a small N, no file write (the full run writes results).
+    return run([py, "-m", "evals.runners.engine_items", "--n", "100", "--no-write"])
+
+
+AVAILABLE_EVALS = {"engine_items": "evals.runners.engine_items"}
+
+
+def cmd_eval(args: list[str]) -> int:
+    """eval <name|all> [--live]; only evals whose phase has landed run."""
+    if not args:
+        print("available after P13 (available now: " + ", ".join(AVAILABLE_EVALS) + ")")
+        return 0
+    name, rest = args[0], args[1:]
+    if "--live" in rest:
+        print("no live evals exist yet (available after P13)")
+        return 0
+    if name == "all":
+        return max(run([venv_python(), "-m", mod, *rest]) for mod in AVAILABLE_EVALS.values())
+    if name not in AVAILABLE_EVALS:
+        print(
+            f"unknown or not yet built eval '{name}': available after P13 (now: "
+            + ", ".join(AVAILABLE_EVALS)
+            + ")"
+        )
+        return 0
+    return run([venv_python(), "-m", AVAILABLE_EVALS[name], *rest])
 
 
 def cmd_export_keys(args: list[str]) -> int:
@@ -110,7 +136,7 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "dev": (cmd_dev, "API (uvicorn --reload) + PWA (vite) together"),
     "test": (cmd_test, "pytest + vitest (no paid API calls)"),
     "check": (cmd_check, "lint + typecheck + test + eval smoke (run before every commit)"),
-    "eval": (deferred("P13"), "evals: <name|all> [--live]"),
+    "eval": (cmd_eval, "evals: <name|all> [--live]"),
     "seed": (deferred("P02"), "build the simulated block (seed 2026)"),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (deferred("P03"), "spend by call, model and day"),
