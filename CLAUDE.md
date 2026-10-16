@@ -106,7 +106,7 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 - **API**: FastAPI (Python 3.12), Pydantic v2, SQLAlchemy 2 + Alembic. SQLite for tests and local dev, managed Postgres in production. S3-compatible storage for published audio only.
 - **Engine**: pure Python, no I/O, fully unit-tested.
 - **Language**: Claude API via the official Python SDK; one versioned prompt file per call.
-- **Speech**: Sarvam AI APIs from our server (speech-to-text: Saarika/Saaras; voice: Bulbul). Reuse the finguru FastAPI voice server where its path is available.
+- **Speech**: Sarvam AI APIs called directly from our own server (speech-to-text: Saarika/Saaras; voice: Bulbul). No finguru voice server; `services/speech/` is built fresh.
 - **Messaging**: a channel adapter; Telegram Bot API driver now, WhatsApp Cloud API driver later.
 - **Ops**: GitHub Actions (lint, types, tests, eval smoke on every push); one audit row per AI call.
 

@@ -7,7 +7,7 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 | ID | Question | Default | Needed by | Owner |
 | --- | --- | --- | --- | --- |
 | OD-1 | Licence for the public repo: MIT or Apache-2.0? | MIT (applied in P00) | P00 | Gopi |
-| OD-2 | Reuse finguru code? Local paths to the voice server (WebSocket + VAD) and the Telegram bot | Build fresh if no paths are given (applied in P00: none given) | P00 (used in P07, P10) | Gopi |
+| OD-2 | Reuse finguru code? Voice: **decided, no** (see 2026-10-16 entry). Telegram bot: paths not given | Build fresh | P00 (used in P07, P10) | Gopi |
 | OD-3 | Hosting: API, database, storage, PWA | An always-on small API instance on a managed host (e.g. Render, Railway or Fly.io); managed Postgres (e.g. Neon or Supabase); S3-compatible storage (e.g. Cloudflare R2); static PWA hosting (e.g. Cloudflare Pages, Vercel or Netlify). No plan that sleeps during 1–10 Nov | P06 staging | Gopi |
 | OD-4 | Accounts: who creates the Telegram bot and the Sarvam account (with voice cloning) | Gopi, both | P07, P10 | Gopi |
 | OD-5 | Curriculum alignment for items and techniques | NCERT Grade 3 (the Delhi pilot); Tamil Nadu's Ennum Ezhuthum mapping goes in the roadmap | P04, P09 | Seema |
@@ -18,6 +18,12 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 | OD-10 | Backup if Week 2 slips | Apply the cut list in order; Gopi decides anything beyond it | Any | Gopi |
 
 ## Settled decisions
+
+### 2026-10-16 · Voice uses Sarvam directly, no finguru voice server
+- **Decision:** `services/speech/` calls the Sarvam APIs (STT and Bulbul TTS) itself. The finguru voice server is not reused. The Telegram bot is still built fresh unless Gopi supplies paths.
+- **Why:** Gopi's call: one fewer dependency and a simpler demo to explain to judges.
+- **Alternatives:** reuse finguru's WebSocket + VAD server.
+- **Confirmed by:** Gopi.
 
 ### 2026-10-16 · P00 defaults applied: MIT licence, finguru built fresh
 - **Decision:** `LICENSE` is MIT (OD-1). No finguru paths were given, so voice (P07) and Telegram (P10) are built fresh (OD-2). Tooling: no `uv` or `ffmpeg` on Gopi's machine; `tasks.py` falls back to venv + pip, and ffmpeg is needed from P07 (`winget install Gyan.FFmpeg`). Python deps are listed unpinned in `pyproject.toml` and pinned in `requirements.lock`; `package-lock.json` pins the PWA.
