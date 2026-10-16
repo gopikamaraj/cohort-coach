@@ -119,6 +119,10 @@ def cmd_eval(args: list[str]) -> int:
     return run([venv_python(), "-m", AVAILABLE_EVALS[name], *rest])
 
 
+def cmd_seed(args: list[str]) -> int:
+    return run([venv_python(), "scripts/seed.py", *args])
+
+
 def cmd_export_keys(args: list[str]) -> int:
     return run([venv_python(), "scripts/export_keys.py", *args])
 
@@ -137,7 +141,7 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "test": (cmd_test, "pytest + vitest (no paid API calls)"),
     "check": (cmd_check, "lint + typecheck + test + eval smoke (run before every commit)"),
     "eval": (cmd_eval, "evals: <name|all> [--live]"),
-    "seed": (deferred("P02"), "build the simulated block (seed 2026)"),
+    "seed": (cmd_seed, "build the simulated block (seed 2026) and seed the DB [--check] [--no-db]"),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (deferred("P03"), "spend by call, model and day"),
     "evidence": (deferred("P02"), "regenerate docs/evidence/ and the numbers table"),

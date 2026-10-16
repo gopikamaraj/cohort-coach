@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parent.parent
 # Commands whose phase has not arrived. Remove from this list as phases land.
 DEFERRED = {
     "eval": "P13",
-    "seed": "P02",
     "budget": "P03",
     "evidence": "P02",
     "readme": "P03",

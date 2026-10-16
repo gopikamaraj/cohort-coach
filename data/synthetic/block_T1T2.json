@@ -1,0 +1,5842 @@
+{
+  "assignments": [
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 17,
+      "class_id": "C003",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 34,
+      "children_showing": 13,
+      "class_id": "C004",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 19,
+      "children_showing": 11,
+      "class_id": "C005",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 35,
+      "children_showing": 18,
+      "class_id": "C006",
+      "reason": "pv_heard_first",
+      "stratum": 1,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 23,
+      "children_showing": 7,
+      "class_id": "C007",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 19,
+      "class_id": "C008",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 24,
+      "children_showing": 11,
+      "class_id": "C009",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 28,
+      "children_showing": 17,
+      "class_id": "C010",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 34,
+      "children_showing": 12,
+      "class_id": "C011",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 27,
+      "children_showing": 12,
+      "class_id": "C012",
+      "reason": "pv_heard_first",
+      "stratum": 1,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 22,
+      "children_showing": 13,
+      "class_id": "C013",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 26,
+      "children_showing": 16,
+      "class_id": "C014",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 32,
+      "children_showing": 16,
+      "class_id": "C015",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 30,
+      "children_showing": 15,
+      "class_id": "C016",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 38,
+      "children_showing": 17,
+      "class_id": "C018",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 22,
+      "children_showing": 15,
+      "class_id": "C020",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 30,
+      "children_showing": 11,
+      "class_id": "C022",
+      "reason": "pv_heard_first",
+      "stratum": 0,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 25,
+      "children_showing": 17,
+      "class_id": "C023",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 24,
+      "children_showing": 7,
+      "class_id": "C025",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 32,
+      "children_showing": 20,
+      "class_id": "C026",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 19,
+      "children_showing": 12,
+      "class_id": "C027",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 25,
+      "children_showing": 16,
+      "class_id": "C028",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 31,
+      "children_showing": 14,
+      "class_id": "C029",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 34,
+      "children_showing": 16,
+      "class_id": "C030",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 35,
+      "children_showing": 25,
+      "class_id": "C031",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 22,
+      "children_showing": 14,
+      "class_id": "C033",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 23,
+      "children_showing": 14,
+      "class_id": "C034",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 22,
+      "children_showing": 16,
+      "class_id": "C035",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 23,
+      "children_showing": 11,
+      "class_id": "C036",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 23,
+      "children_showing": 12,
+      "class_id": "C037",
+      "reason": "pv_heard_first",
+      "stratum": 1,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 39,
+      "children_showing": 21,
+      "class_id": "C038",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 24,
+      "children_showing": 13,
+      "class_id": "C039",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 35,
+      "children_showing": 21,
+      "class_id": "C040",
+      "reason": "pv_heard_first",
+      "stratum": 2,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 32,
+      "children_showing": 11,
+      "class_id": "C041",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 40,
+      "children_showing": 20,
+      "class_id": "C042",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 20,
+      "class_id": "C043",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 20,
+      "children_showing": 9,
+      "class_id": "C044",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 32,
+      "children_showing": 15,
+      "class_id": "C045",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 34,
+      "children_showing": 13,
+      "class_id": "C046",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 38,
+      "children_showing": 22,
+      "class_id": "C049",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 26,
+      "children_showing": 18,
+      "class_id": "C050",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 29,
+      "children_showing": 10,
+      "class_id": "C051",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 21,
+      "children_showing": 8,
+      "class_id": "C052",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 29,
+      "children_showing": 20,
+      "class_id": "C053",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 30,
+      "children_showing": 18,
+      "class_id": "C054",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 28,
+      "children_showing": 10,
+      "class_id": "C056",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 35,
+      "children_showing": 22,
+      "class_id": "C057",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 31,
+      "children_showing": 11,
+      "class_id": "C058",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 38,
+      "children_showing": 18,
+      "class_id": "C059",
+      "reason": "pv_heard_first",
+      "stratum": 0,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 26,
+      "children_showing": 13,
+      "class_id": "C060",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 23,
+      "children_showing": 12,
+      "class_id": "C061",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 25,
+      "children_showing": 10,
+      "class_id": "C062",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 38,
+      "children_showing": 19,
+      "class_id": "C063",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 36,
+      "children_showing": 20,
+      "class_id": "C064",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 26,
+      "children_showing": 12,
+      "class_id": "C065",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 26,
+      "children_showing": 13,
+      "class_id": "C066",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 29,
+      "children_showing": 11,
+      "class_id": "C067",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 20,
+      "class_id": "C068",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 22,
+      "children_showing": 16,
+      "class_id": "C069",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 25,
+      "children_showing": 10,
+      "class_id": "C070",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 23,
+      "children_showing": 15,
+      "class_id": "C071",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 34,
+      "children_showing": 22,
+      "class_id": "C072",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 28,
+      "children_showing": 15,
+      "class_id": "C076",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 27,
+      "children_showing": 10,
+      "class_id": "C077",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 32,
+      "children_showing": 16,
+      "class_id": "C078",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 30,
+      "children_showing": 8,
+      "class_id": "C079",
+      "reason": "pv_heard_first",
+      "stratum": 0,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 36,
+      "children_showing": 19,
+      "class_id": "C080",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 24,
+      "children_showing": 12,
+      "class_id": "C081",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 29,
+      "children_showing": 15,
+      "class_id": "C084",
+      "reason": "pv_heard_first",
+      "stratum": 2,
+      "track": "PV-HEARD",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 31,
+      "children_showing": 14,
+      "class_id": "C085",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 33,
+      "children_showing": 14,
+      "class_id": "C086",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 20,
+      "class_id": "C087",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 24,
+      "children_showing": 15,
+      "class_id": "C088",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 28,
+      "children_showing": 17,
+      "class_id": "C089",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 31,
+      "children_showing": 17,
+      "class_id": "C090",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 25,
+      "children_showing": 15,
+      "class_id": "C091",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 35,
+      "children_showing": 17,
+      "class_id": "C092",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 31,
+      "children_showing": 17,
+      "class_id": "C093",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 29,
+      "children_showing": 17,
+      "class_id": "C094",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 34,
+      "children_showing": 15,
+      "class_id": "C095",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 21,
+      "children_showing": 8,
+      "class_id": "C096",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 25,
+      "children_showing": 13,
+      "class_id": "C098",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 37,
+      "children_showing": 15,
+      "class_id": "C100",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 25,
+      "children_showing": 9,
+      "class_id": "C101",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 35,
+      "children_showing": 12,
+      "class_id": "C102",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 30,
+      "children_showing": 14,
+      "class_id": "C103",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 36,
+      "children_showing": 18,
+      "class_id": "C104",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 34,
+      "children_showing": 23,
+      "class_id": "C105",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 34,
+      "children_showing": 23,
+      "class_id": "C106",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 15,
+      "class_id": "C107",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 34,
+      "children_showing": 14,
+      "class_id": "C108",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 27,
+      "children_showing": 9,
+      "class_id": "C109",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 36,
+      "children_showing": 23,
+      "class_id": "C110",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "ADD-NOCARRY",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 20,
+      "children_showing": 12,
+      "class_id": "C111",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 18,
+      "children_showing": 5,
+      "class_id": "C112",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 32,
+      "children_showing": 19,
+      "class_id": "C113",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 32,
+      "children_showing": 23,
+      "class_id": "C114",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 30,
+      "children_showing": 13,
+      "class_id": "C115",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 26,
+      "children_showing": 12,
+      "class_id": "C116",
+      "reason": "highest_p",
+      "stratum": 0,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 34,
+      "children_showing": 19,
+      "class_id": "C118",
+      "reason": "highest_p",
+      "stratum": 2,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    },
+    {
+      "arm": "next_term",
+      "children_checked": 37,
+      "children_showing": 19,
+      "class_id": "C119",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-SFL",
+      "version": "v1"
+    },
+    {
+      "arm": "this_term",
+      "children_checked": 30,
+      "children_showing": 15,
+      "class_id": "C120",
+      "reason": "highest_p",
+      "stratum": 1,
+      "track": "SUB-NODEC",
+      "version": "v1"
+    }
+  ],
+  "block_id": "B1",
+  "classes": [
+    {
+      "class_id": "C001",
+      "medium": "hindi",
+      "school_id": "S01",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T001",
+      "teacher_name": "Divya L."
+    },
+    {
+      "class_id": "C002",
+      "medium": "hindi",
+      "school_id": "S01",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T002",
+      "teacher_name": "Sunil B."
+    },
+    {
+      "class_id": "C003",
+      "medium": "hindi",
+      "school_id": "S01",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T003",
+      "teacher_name": "Divya H."
+    },
+    {
+      "class_id": "C004",
+      "medium": "hindi",
+      "school_id": "S02",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T004",
+      "teacher_name": "Sandeep S."
+    },
+    {
+      "class_id": "C005",
+      "medium": "hindi",
+      "school_id": "S02",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T005",
+      "teacher_name": "Mala J."
+    },
+    {
+      "class_id": "C006",
+      "medium": "hindi",
+      "school_id": "S02",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T006",
+      "teacher_name": "Manoj D."
+    },
+    {
+      "class_id": "C007",
+      "medium": "hindi",
+      "school_id": "S03",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T007",
+      "teacher_name": "Deepa G."
+    },
+    {
+      "class_id": "C008",
+      "medium": "hindi",
+      "school_id": "S03",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T008",
+      "teacher_name": "Kumar B."
+    },
+    {
+      "class_id": "C009",
+      "medium": "hindi",
+      "school_id": "S03",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T009",
+      "teacher_name": "Ritu K."
+    },
+    {
+      "class_id": "C010",
+      "medium": "tamil",
+      "school_id": "S04",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T010",
+      "teacher_name": "Mohan A."
+    },
+    {
+      "class_id": "C011",
+      "medium": "tamil",
+      "school_id": "S04",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T011",
+      "teacher_name": "Ritu J."
+    },
+    {
+      "class_id": "C012",
+      "medium": "tamil",
+      "school_id": "S04",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T012",
+      "teacher_name": "Murali J."
+    },
+    {
+      "class_id": "C013",
+      "medium": "english",
+      "school_id": "S05",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T013",
+      "teacher_name": "Deepa S."
+    },
+    {
+      "class_id": "C014",
+      "medium": "english",
+      "school_id": "S05",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T014",
+      "teacher_name": "Deepak A."
+    },
+    {
+      "class_id": "C015",
+      "medium": "english",
+      "school_id": "S05",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T015",
+      "teacher_name": "Indira A."
+    },
+    {
+      "class_id": "C016",
+      "medium": "tamil",
+      "school_id": "S06",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T016",
+      "teacher_name": "Kumar M."
+    },
+    {
+      "class_id": "C017",
+      "medium": "tamil",
+      "school_id": "S06",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T017",
+      "teacher_name": "Anjali G."
+    },
+    {
+      "class_id": "C018",
+      "medium": "tamil",
+      "school_id": "S06",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T018",
+      "teacher_name": "Ashok J."
+    },
+    {
+      "class_id": "C019",
+      "medium": "hindi",
+      "school_id": "S07",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T019",
+      "teacher_name": "Komal M."
+    },
+    {
+      "class_id": "C020",
+      "medium": "hindi",
+      "school_id": "S07",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T020",
+      "teacher_name": "Suresh L."
+    },
+    {
+      "class_id": "C021",
+      "medium": "hindi",
+      "school_id": "S07",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T021",
+      "teacher_name": "Bhavna R."
+    },
+    {
+      "class_id": "C022",
+      "medium": "hindi",
+      "school_id": "S08",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T022",
+      "teacher_name": "Harish T."
+    },
+    {
+      "class_id": "C023",
+      "medium": "hindi",
+      "school_id": "S08",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T023",
+      "teacher_name": "Shanthi P."
+    },
+    {
+      "class_id": "C024",
+      "medium": "hindi",
+      "school_id": "S08",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T024",
+      "teacher_name": "Mani R."
+    },
+    {
+      "class_id": "C025",
+      "medium": "tamil",
+      "school_id": "S09",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T025",
+      "teacher_name": "Shanthi C."
+    },
+    {
+      "class_id": "C026",
+      "medium": "tamil",
+      "school_id": "S09",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T026",
+      "teacher_name": "Naresh K."
+    },
+    {
+      "class_id": "C027",
+      "medium": "tamil",
+      "school_id": "S09",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T027",
+      "teacher_name": "Sheela K."
+    },
+    {
+      "class_id": "C028",
+      "medium": "tamil",
+      "school_id": "S10",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T028",
+      "teacher_name": "Naresh B."
+    },
+    {
+      "class_id": "C029",
+      "medium": "tamil",
+      "school_id": "S10",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T029",
+      "teacher_name": "Geeta E."
+    },
+    {
+      "class_id": "C030",
+      "medium": "tamil",
+      "school_id": "S10",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T030",
+      "teacher_name": "Sanjay G."
+    },
+    {
+      "class_id": "C031",
+      "medium": "english",
+      "school_id": "S11",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T031",
+      "teacher_name": "Vimala R."
+    },
+    {
+      "class_id": "C032",
+      "medium": "english",
+      "school_id": "S11",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T032",
+      "teacher_name": "Naveen D."
+    },
+    {
+      "class_id": "C033",
+      "medium": "english",
+      "school_id": "S11",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T033",
+      "teacher_name": "Anjali D."
+    },
+    {
+      "class_id": "C034",
+      "medium": "english",
+      "school_id": "S12",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T034",
+      "teacher_name": "Bala S."
+    },
+    {
+      "class_id": "C035",
+      "medium": "english",
+      "school_id": "S12",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T035",
+      "teacher_name": "Savita J."
+    },
+    {
+      "class_id": "C036",
+      "medium": "english",
+      "school_id": "S12",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T036",
+      "teacher_name": "Arun J."
+    },
+    {
+      "class_id": "C037",
+      "medium": "english",
+      "school_id": "S13",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T037",
+      "teacher_name": "Mala R."
+    },
+    {
+      "class_id": "C038",
+      "medium": "english",
+      "school_id": "S13",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T038",
+      "teacher_name": "Amit V."
+    },
+    {
+      "class_id": "C039",
+      "medium": "english",
+      "school_id": "S13",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T039",
+      "teacher_name": "Ritu V."
+    },
+    {
+      "class_id": "C040",
+      "medium": "tamil",
+      "school_id": "S14",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T040",
+      "teacher_name": "Pankaj G."
+    },
+    {
+      "class_id": "C041",
+      "medium": "tamil",
+      "school_id": "S14",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T041",
+      "teacher_name": "Manju S."
+    },
+    {
+      "class_id": "C042",
+      "medium": "tamil",
+      "school_id": "S14",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T042",
+      "teacher_name": "Babu E."
+    },
+    {
+      "class_id": "C043",
+      "medium": "tamil",
+      "school_id": "S15",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T043",
+      "teacher_name": "Asha E."
+    },
+    {
+      "class_id": "C044",
+      "medium": "tamil",
+      "school_id": "S15",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T044",
+      "teacher_name": "Kumar N."
+    },
+    {
+      "class_id": "C045",
+      "medium": "tamil",
+      "school_id": "S15",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T045",
+      "teacher_name": "Latha A."
+    },
+    {
+      "class_id": "C046",
+      "medium": "tamil",
+      "school_id": "S16",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T046",
+      "teacher_name": "Vijay C."
+    },
+    {
+      "class_id": "C047",
+      "medium": "tamil",
+      "school_id": "S16",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T047",
+      "teacher_name": "Divya G."
+    },
+    {
+      "class_id": "C048",
+      "medium": "tamil",
+      "school_id": "S16",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T048",
+      "teacher_name": "Vijay P."
+    },
+    {
+      "class_id": "C049",
+      "medium": "tamil",
+      "school_id": "S17",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T049",
+      "teacher_name": "Deepa J."
+    },
+    {
+      "class_id": "C050",
+      "medium": "tamil",
+      "school_id": "S17",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T050",
+      "teacher_name": "Babu S."
+    },
+    {
+      "class_id": "C051",
+      "medium": "tamil",
+      "school_id": "S17",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T051",
+      "teacher_name": "Sudha B."
+    },
+    {
+      "class_id": "C052",
+      "medium": "hindi",
+      "school_id": "S18",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T052",
+      "teacher_name": "Kumar A."
+    },
+    {
+      "class_id": "C053",
+      "medium": "hindi",
+      "school_id": "S18",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T053",
+      "teacher_name": "Pooja A."
+    },
+    {
+      "class_id": "C054",
+      "medium": "hindi",
+      "school_id": "S18",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T054",
+      "teacher_name": "Kumar L."
+    },
+    {
+      "class_id": "C055",
+      "medium": "tamil",
+      "school_id": "S19",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T055",
+      "teacher_name": "Divya C."
+    },
+    {
+      "class_id": "C056",
+      "medium": "tamil",
+      "school_id": "S19",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T056",
+      "teacher_name": "Murali E."
+    },
+    {
+      "class_id": "C057",
+      "medium": "tamil",
+      "school_id": "S19",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T057",
+      "teacher_name": "Revathi M."
+    },
+    {
+      "class_id": "C058",
+      "medium": "english",
+      "school_id": "S20",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T058",
+      "teacher_name": "Mani L."
+    },
+    {
+      "class_id": "C059",
+      "medium": "english",
+      "school_id": "S20",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T059",
+      "teacher_name": "Meena D."
+    },
+    {
+      "class_id": "C060",
+      "medium": "english",
+      "school_id": "S20",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T060",
+      "teacher_name": "Naresh A."
+    },
+    {
+      "class_id": "C061",
+      "medium": "hindi",
+      "school_id": "S21",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T061",
+      "teacher_name": "Anjali V."
+    },
+    {
+      "class_id": "C062",
+      "medium": "hindi",
+      "school_id": "S21",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T062",
+      "teacher_name": "Anil V."
+    },
+    {
+      "class_id": "C063",
+      "medium": "hindi",
+      "school_id": "S21",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T063",
+      "teacher_name": "Bhavna V."
+    },
+    {
+      "class_id": "C064",
+      "medium": "english",
+      "school_id": "S22",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T064",
+      "teacher_name": "Kumar H."
+    },
+    {
+      "class_id": "C065",
+      "medium": "english",
+      "school_id": "S22",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T065",
+      "teacher_name": "Latha N."
+    },
+    {
+      "class_id": "C066",
+      "medium": "english",
+      "school_id": "S22",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T066",
+      "teacher_name": "Raju M."
+    },
+    {
+      "class_id": "C067",
+      "medium": "tamil",
+      "school_id": "S23",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T067",
+      "teacher_name": "Manju J."
+    },
+    {
+      "class_id": "C068",
+      "medium": "tamil",
+      "school_id": "S23",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T068",
+      "teacher_name": "Murali K."
+    },
+    {
+      "class_id": "C069",
+      "medium": "tamil",
+      "school_id": "S23",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T069",
+      "teacher_name": "Nirmala V."
+    },
+    {
+      "class_id": "C070",
+      "medium": "tamil",
+      "school_id": "S24",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T070",
+      "teacher_name": "Selvam V."
+    },
+    {
+      "class_id": "C071",
+      "medium": "tamil",
+      "school_id": "S24",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T071",
+      "teacher_name": "Sudha L."
+    },
+    {
+      "class_id": "C072",
+      "medium": "tamil",
+      "school_id": "S24",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T072",
+      "teacher_name": "Rohit H."
+    },
+    {
+      "class_id": "C073",
+      "medium": "hindi",
+      "school_id": "S25",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T073",
+      "teacher_name": "Shanthi T."
+    },
+    {
+      "class_id": "C074",
+      "medium": "hindi",
+      "school_id": "S25",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T074",
+      "teacher_name": "Suresh B."
+    },
+    {
+      "class_id": "C075",
+      "medium": "hindi",
+      "school_id": "S25",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T075",
+      "teacher_name": "Mala S."
+    },
+    {
+      "class_id": "C076",
+      "medium": "hindi",
+      "school_id": "S26",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T076",
+      "teacher_name": "Harish G."
+    },
+    {
+      "class_id": "C077",
+      "medium": "hindi",
+      "school_id": "S26",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T077",
+      "teacher_name": "Anitha L."
+    },
+    {
+      "class_id": "C078",
+      "medium": "hindi",
+      "school_id": "S26",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T078",
+      "teacher_name": "Mani V."
+    },
+    {
+      "class_id": "C079",
+      "medium": "tamil",
+      "school_id": "S27",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T079",
+      "teacher_name": "Jaya K."
+    },
+    {
+      "class_id": "C080",
+      "medium": "tamil",
+      "school_id": "S27",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T080",
+      "teacher_name": "Sandeep H."
+    },
+    {
+      "class_id": "C081",
+      "medium": "tamil",
+      "school_id": "S27",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T081",
+      "teacher_name": "Vimala N."
+    },
+    {
+      "class_id": "C082",
+      "medium": "hindi",
+      "school_id": "S28",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T082",
+      "teacher_name": "Rohit G."
+    },
+    {
+      "class_id": "C083",
+      "medium": "hindi",
+      "school_id": "S28",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T083",
+      "teacher_name": "Sangeeta C."
+    },
+    {
+      "class_id": "C084",
+      "medium": "hindi",
+      "school_id": "S28",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T084",
+      "teacher_name": "Deepak M."
+    },
+    {
+      "class_id": "C085",
+      "medium": "tamil",
+      "school_id": "S29",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T085",
+      "teacher_name": "Geeta C."
+    },
+    {
+      "class_id": "C086",
+      "medium": "tamil",
+      "school_id": "S29",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T086",
+      "teacher_name": "Senthil V."
+    },
+    {
+      "class_id": "C087",
+      "medium": "tamil",
+      "school_id": "S29",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T087",
+      "teacher_name": "Jaya V."
+    },
+    {
+      "class_id": "C088",
+      "medium": "hindi",
+      "school_id": "S30",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T088",
+      "teacher_name": "Ajay C."
+    },
+    {
+      "class_id": "C089",
+      "medium": "hindi",
+      "school_id": "S30",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T089",
+      "teacher_name": "Sunita D."
+    },
+    {
+      "class_id": "C090",
+      "medium": "hindi",
+      "school_id": "S30",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T090",
+      "teacher_name": "Raju E."
+    },
+    {
+      "class_id": "C091",
+      "medium": "hindi",
+      "school_id": "S31",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T091",
+      "teacher_name": "Nirmala G."
+    },
+    {
+      "class_id": "C092",
+      "medium": "hindi",
+      "school_id": "S31",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T092",
+      "teacher_name": "Mani G."
+    },
+    {
+      "class_id": "C093",
+      "medium": "hindi",
+      "school_id": "S31",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T093",
+      "teacher_name": "Divya J."
+    },
+    {
+      "class_id": "C094",
+      "medium": "english",
+      "school_id": "S32",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T094",
+      "teacher_name": "Murali T."
+    },
+    {
+      "class_id": "C095",
+      "medium": "english",
+      "school_id": "S32",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T095",
+      "teacher_name": "Neha N."
+    },
+    {
+      "class_id": "C096",
+      "medium": "english",
+      "school_id": "S32",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T096",
+      "teacher_name": "Selvam C."
+    },
+    {
+      "class_id": "C097",
+      "medium": "hindi",
+      "school_id": "S33",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T097",
+      "teacher_name": "Nisha D."
+    },
+    {
+      "class_id": "C098",
+      "medium": "hindi",
+      "school_id": "S33",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T098",
+      "teacher_name": "Rakesh S."
+    },
+    {
+      "class_id": "C099",
+      "medium": "hindi",
+      "school_id": "S33",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T099",
+      "teacher_name": "Latha P."
+    },
+    {
+      "class_id": "C100",
+      "medium": "hindi",
+      "school_id": "S34",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T100",
+      "teacher_name": "Bala T."
+    },
+    {
+      "class_id": "C101",
+      "medium": "hindi",
+      "school_id": "S34",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T101",
+      "teacher_name": "Geeta V."
+    },
+    {
+      "class_id": "C102",
+      "medium": "hindi",
+      "school_id": "S34",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T102",
+      "teacher_name": "Vinod G."
+    },
+    {
+      "class_id": "C103",
+      "medium": "hindi",
+      "school_id": "S35",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T103",
+      "teacher_name": "Jaya G."
+    },
+    {
+      "class_id": "C104",
+      "medium": "hindi",
+      "school_id": "S35",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T104",
+      "teacher_name": "Suresh A."
+    },
+    {
+      "class_id": "C105",
+      "medium": "hindi",
+      "school_id": "S35",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T105",
+      "teacher_name": "Ritu M."
+    },
+    {
+      "class_id": "C106",
+      "medium": "english",
+      "school_id": "S36",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T106",
+      "teacher_name": "Naresh H."
+    },
+    {
+      "class_id": "C107",
+      "medium": "english",
+      "school_id": "S36",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T107",
+      "teacher_name": "Geeta J."
+    },
+    {
+      "class_id": "C108",
+      "medium": "english",
+      "school_id": "S36",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T108",
+      "teacher_name": "Kiran V."
+    },
+    {
+      "class_id": "C109",
+      "medium": "hindi",
+      "school_id": "S37",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T109",
+      "teacher_name": "Priya R."
+    },
+    {
+      "class_id": "C110",
+      "medium": "hindi",
+      "school_id": "S37",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T110",
+      "teacher_name": "Anil K."
+    },
+    {
+      "class_id": "C111",
+      "medium": "hindi",
+      "school_id": "S37",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T111",
+      "teacher_name": "Sheela E."
+    },
+    {
+      "class_id": "C112",
+      "medium": "english",
+      "school_id": "S38",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T112",
+      "teacher_name": "Amit C."
+    },
+    {
+      "class_id": "C113",
+      "medium": "english",
+      "school_id": "S38",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T113",
+      "teacher_name": "Kavitha J."
+    },
+    {
+      "class_id": "C114",
+      "medium": "english",
+      "school_id": "S38",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T114",
+      "teacher_name": "Dinesh T."
+    },
+    {
+      "class_id": "C115",
+      "medium": "english",
+      "school_id": "S39",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T115",
+      "teacher_name": "Kalpana J."
+    },
+    {
+      "class_id": "C116",
+      "medium": "english",
+      "school_id": "S39",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T116",
+      "teacher_name": "Murali S."
+    },
+    {
+      "class_id": "C117",
+      "medium": "english",
+      "school_id": "S39",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T117",
+      "teacher_name": "Poonam K."
+    },
+    {
+      "class_id": "C118",
+      "medium": "tamil",
+      "school_id": "S40",
+      "section": "A",
+      "simulated": true,
+      "teacher_id": "T118",
+      "teacher_name": "Rajesh J."
+    },
+    {
+      "class_id": "C119",
+      "medium": "tamil",
+      "school_id": "S40",
+      "section": "B",
+      "simulated": true,
+      "teacher_id": "T119",
+      "teacher_name": "Asha G."
+    },
+    {
+      "class_id": "C120",
+      "medium": "tamil",
+      "school_id": "S40",
+      "section": "C",
+      "simulated": true,
+      "teacher_id": "T120",
+      "teacher_name": "Raju H."
+    }
+  ],
+  "cohorts": [
+    {
+      "block_id": null,
+      "class_ids": [
+        "C036",
+        "C096"
+      ],
+      "cohort_id": "ADD-NOCARRY-g3-english-X-1",
+      "cross_block": true,
+      "error": "ADD-NOCARRY",
+      "medium": "english",
+      "mentor_slot": true,
+      "size": 2,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C008",
+        "C061",
+        "C110"
+      ],
+      "cohort_id": "ADD-NOCARRY-g3-hindi-X-1",
+      "cross_block": true,
+      "error": "ADD-NOCARRY",
+      "medium": "hindi",
+      "mentor_slot": true,
+      "size": 3,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C041",
+        "C067",
+        "C087"
+      ],
+      "cohort_id": "ADD-NOCARRY-g3-tamil-X-1",
+      "cross_block": true,
+      "error": "ADD-NOCARRY",
+      "medium": "tamil",
+      "mentor_slot": true,
+      "size": 3,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C006",
+        "C084"
+      ],
+      "cohort_id": "PV-HEARD-g3-hindi-X-1",
+      "cross_block": true,
+      "error": "PV-HEARD",
+      "medium": "hindi",
+      "mentor_slot": true,
+      "size": 2,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C079"
+      ],
+      "cohort_id": "PV-HEARD-g3-tamil-X-1",
+      "cross_block": true,
+      "error": "PV-HEARD",
+      "medium": "tamil",
+      "mentor_slot": true,
+      "size": 1,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C014",
+        "C094",
+        "C106",
+        "C108",
+        "C113"
+      ],
+      "cohort_id": "SUB-NODEC-g3-english-X-1",
+      "cross_block": true,
+      "error": "SUB-NODEC",
+      "medium": "english",
+      "mentor_slot": true,
+      "size": 5,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C003",
+        "C062",
+        "C098",
+        "C103",
+        "C105",
+        "C111"
+      ],
+      "cohort_id": "SUB-NODEC-g3-hindi-X-1",
+      "cross_block": true,
+      "error": "SUB-NODEC",
+      "medium": "hindi",
+      "mentor_slot": true,
+      "size": 6,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C011",
+        "C056",
+        "C057",
+        "C085",
+        "C118",
+        "C120"
+      ],
+      "cohort_id": "SUB-NODEC-g3-tamil-X-1",
+      "cross_block": true,
+      "error": "SUB-NODEC",
+      "medium": "tamil",
+      "mentor_slot": true,
+      "size": 6,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C035",
+        "C060",
+        "C066"
+      ],
+      "cohort_id": "SUB-SFL-g3-english-X-1",
+      "cross_block": true,
+      "error": "SUB-SFL",
+      "medium": "english",
+      "mentor_slot": true,
+      "size": 3,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C020",
+        "C054",
+        "C063",
+        "C078",
+        "C088",
+        "C089",
+        "C100",
+        "C102",
+        "C109"
+      ],
+      "cohort_id": "SUB-SFL-g3-hindi-X-1",
+      "cross_block": true,
+      "error": "SUB-SFL",
+      "medium": "hindi",
+      "mentor_slot": true,
+      "size": 9,
+      "undersized": true
+    },
+    {
+      "block_id": null,
+      "class_ids": [
+        "C010",
+        "C016",
+        "C026",
+        "C029",
+        "C043",
+        "C045",
+        "C068",
+        "C072",
+        "C086"
+      ],
+      "cohort_id": "SUB-SFL-g3-tamil-X-1",
+      "cross_block": true,
+      "error": "SUB-SFL",
+      "medium": "tamil",
+      "mentor_slot": true,
+      "size": 9,
+      "undersized": true
+    }
+  ],
+  "config_hash": "a9bd56405717f4e2f17174e2692f64b9c81cc13215d5c34bd6db5e5133a45655",
+  "data_hash": "c43c94d0e0567ed9f0e318ac9f8352007a88aa5bb7e280869ec111aafa57725f",
+  "grade": 3,
+  "label": "SIMULATED DATA: a fictional block built for demonstration. No real school, teacher or child.",
+  "schools": [
+    {
+      "medium": "hindi",
+      "name": "Simulated school 01",
+      "school_id": "S01",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 02",
+      "school_id": "S02",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 03",
+      "school_id": "S03",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 04",
+      "school_id": "S04",
+      "school_type": "private",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 05",
+      "school_id": "S05",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 06",
+      "school_id": "S06",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 07",
+      "school_id": "S07",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 08",
+      "school_id": "S08",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 09",
+      "school_id": "S09",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 10",
+      "school_id": "S10",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 11",
+      "school_id": "S11",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 12",
+      "school_id": "S12",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 13",
+      "school_id": "S13",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 14",
+      "school_id": "S14",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 15",
+      "school_id": "S15",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 16",
+      "school_id": "S16",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 17",
+      "school_id": "S17",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 18",
+      "school_id": "S18",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 19",
+      "school_id": "S19",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 20",
+      "school_id": "S20",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 21",
+      "school_id": "S21",
+      "school_type": "private",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 22",
+      "school_id": "S22",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 23",
+      "school_id": "S23",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 24",
+      "school_id": "S24",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 25",
+      "school_id": "S25",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 26",
+      "school_id": "S26",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 27",
+      "school_id": "S27",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 28",
+      "school_id": "S28",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 29",
+      "school_id": "S29",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 30",
+      "school_id": "S30",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 31",
+      "school_id": "S31",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 32",
+      "school_id": "S32",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 33",
+      "school_id": "S33",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 34",
+      "school_id": "S34",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 35",
+      "school_id": "S35",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 36",
+      "school_id": "S36",
+      "school_type": "aided",
+      "simulated": true
+    },
+    {
+      "medium": "hindi",
+      "name": "Simulated school 37",
+      "school_id": "S37",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 38",
+      "school_id": "S38",
+      "school_type": "private",
+      "simulated": true
+    },
+    {
+      "medium": "english",
+      "name": "Simulated school 39",
+      "school_id": "S39",
+      "school_type": "government",
+      "simulated": true
+    },
+    {
+      "medium": "tamil",
+      "name": "Simulated school 40",
+      "school_id": "S40",
+      "school_type": "government",
+      "simulated": true
+    }
+  ],
+  "seed": 2026,
+  "simulated": true,
+  "terms": {
+    "T1": {
+      "classes": {
+        "C001": {
+          "anchor_wrong_count": 2,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C002": {
+          "anchor_wrong_count": 5,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C003": {
+          "anchor_wrong_count": 5,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 5,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 17,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C004": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 7,
+            "SUB-SFL": 13
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C005": {
+          "anchor_wrong_count": 0,
+          "children_checked": 19,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 11
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C006": {
+          "anchor_wrong_count": 1,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 18,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C007": {
+          "anchor_wrong_count": 0,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 7
+          },
+          "untracked": {}
+        },
+        "C008": {
+          "anchor_wrong_count": 3,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 19,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C009": {
+          "anchor_wrong_count": 2,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 11
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C010": {
+          "anchor_wrong_count": 0,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 17
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C011": {
+          "anchor_wrong_count": 3,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C012": {
+          "anchor_wrong_count": 1,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 12,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C013": {
+          "anchor_wrong_count": 2,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 13,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 4
+          },
+          "untracked": {}
+        },
+        "C014": {
+          "anchor_wrong_count": 0,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 16,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C015": {
+          "anchor_wrong_count": 0,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 16,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C016": {
+          "anchor_wrong_count": 0,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 15
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C017": {
+          "anchor_wrong_count": 2,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 6,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C018": {
+          "anchor_wrong_count": 4,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 17,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C019": {
+          "anchor_wrong_count": 0,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 9,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C020": {
+          "anchor_wrong_count": 3,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 15
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C021": {
+          "anchor_wrong_count": 0,
+          "children_checked": 19,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 4
+          },
+          "untracked": {}
+        },
+        "C022": {
+          "anchor_wrong_count": 3,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 5,
+            "PV-HEARD": 11,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C023": {
+          "anchor_wrong_count": 1,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 17
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C024": {
+          "anchor_wrong_count": 2,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 6,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C025": {
+          "anchor_wrong_count": 3,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 7,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C026": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 20
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C027": {
+          "anchor_wrong_count": 4,
+          "children_checked": 19,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C028": {
+          "anchor_wrong_count": 1,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 16
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C029": {
+          "anchor_wrong_count": 7,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 14
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C030": {
+          "anchor_wrong_count": 7,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 16
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C031": {
+          "anchor_wrong_count": 2,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 25,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C032": {
+          "anchor_wrong_count": 3,
+          "children_checked": 40,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 5,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C033": {
+          "anchor_wrong_count": 0,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 14,
+            "SUB-SFL": 0
+          },
+          "untracked": {}
+        },
+        "C034": {
+          "anchor_wrong_count": 2,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 14
+          },
+          "untracked": {}
+        },
+        "C035": {
+          "anchor_wrong_count": 2,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 16
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C036": {
+          "anchor_wrong_count": 4,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 11,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C037": {
+          "anchor_wrong_count": 1,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 12,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C038": {
+          "anchor_wrong_count": 1,
+          "children_checked": 39,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 21
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C039": {
+          "anchor_wrong_count": 1,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 13,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C040": {
+          "anchor_wrong_count": 1,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 21,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C041": {
+          "anchor_wrong_count": 1,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 11,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C042": {
+          "anchor_wrong_count": 0,
+          "children_checked": 40,
+          "counts": {
+            "ADD-NOCARRY": 7,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 20
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C043": {
+          "anchor_wrong_count": 3,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 5,
+            "SUB-SFL": 20
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C044": {
+          "anchor_wrong_count": 2,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 9
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C045": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 5,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 15
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C046": {
+          "anchor_wrong_count": 4,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 13
+          },
+          "untracked": {}
+        },
+        "C047": {
+          "anchor_wrong_count": 0,
+          "children_checked": 19,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C048": {
+          "anchor_wrong_count": 6,
+          "children_checked": 39,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C049": {
+          "anchor_wrong_count": 1,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 22
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C050": {
+          "anchor_wrong_count": 1,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 18
+          },
+          "untracked": {}
+        },
+        "C051": {
+          "anchor_wrong_count": 1,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 5,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 10,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C052": {
+          "anchor_wrong_count": 2,
+          "children_checked": 21,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 8,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C053": {
+          "anchor_wrong_count": 3,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 20
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C054": {
+          "anchor_wrong_count": 2,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 18
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 11
+          }
+        },
+        "C055": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C056": {
+          "anchor_wrong_count": 3,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 10,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C057": {
+          "anchor_wrong_count": 4,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 22,
+            "SUB-SFL": 5
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C058": {
+          "anchor_wrong_count": 1,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 11
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C059": {
+          "anchor_wrong_count": 2,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 18,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C060": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 13
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C061": {
+          "anchor_wrong_count": 1,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 12,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C062": {
+          "anchor_wrong_count": 3,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 10,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C063": {
+          "anchor_wrong_count": 1,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 19
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C064": {
+          "anchor_wrong_count": 1,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 20,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C065": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C066": {
+          "anchor_wrong_count": 1,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 13
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C067": {
+          "anchor_wrong_count": 1,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 11,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C068": {
+          "anchor_wrong_count": 4,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 20
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C069": {
+          "anchor_wrong_count": 2,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 16
+          },
+          "untracked": {}
+        },
+        "C070": {
+          "anchor_wrong_count": 2,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 10
+          },
+          "untracked": {}
+        },
+        "C071": {
+          "anchor_wrong_count": 1,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C072": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 22
+          },
+          "untracked": {}
+        },
+        "C073": {
+          "anchor_wrong_count": 5,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 12,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C074": {
+          "anchor_wrong_count": 1,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {}
+        },
+        "C075": {
+          "anchor_wrong_count": 4,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 4
+          },
+          "untracked": {}
+        },
+        "C076": {
+          "anchor_wrong_count": 1,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 4,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 15
+          }
+        },
+        "C077": {
+          "anchor_wrong_count": 6,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 10,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C078": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 16
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 12
+          }
+        },
+        "C079": {
+          "anchor_wrong_count": 4,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 8,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C080": {
+          "anchor_wrong_count": 7,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 19,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C081": {
+          "anchor_wrong_count": 3,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C082": {
+          "anchor_wrong_count": 4,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 6,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C083": {
+          "anchor_wrong_count": 0,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 4
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C084": {
+          "anchor_wrong_count": 3,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 15,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C085": {
+          "anchor_wrong_count": 6,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 14,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C086": {
+          "anchor_wrong_count": 4,
+          "children_checked": 33,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 14
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C087": {
+          "anchor_wrong_count": 3,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 20,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C088": {
+          "anchor_wrong_count": 2,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 15
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C089": {
+          "anchor_wrong_count": 3,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 17
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C090": {
+          "anchor_wrong_count": 0,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 17
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C091": {
+          "anchor_wrong_count": 1,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 15,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C092": {
+          "anchor_wrong_count": 2,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 17
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 10
+          }
+        },
+        "C093": {
+          "anchor_wrong_count": 0,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 17,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C094": {
+          "anchor_wrong_count": 1,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 17,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C095": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 15,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 6,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C096": {
+          "anchor_wrong_count": 2,
+          "children_checked": 21,
+          "counts": {
+            "ADD-NOCARRY": 8,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C097": {
+          "anchor_wrong_count": 1,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 13
+          }
+        },
+        "C098": {
+          "anchor_wrong_count": 1,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 13,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C099": {
+          "anchor_wrong_count": 5,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C100": {
+          "anchor_wrong_count": 2,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 4,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 15
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C101": {
+          "anchor_wrong_count": 0,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 9,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C102": {
+          "anchor_wrong_count": 3,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 12
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C103": {
+          "anchor_wrong_count": 2,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 14,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C104": {
+          "anchor_wrong_count": 2,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 6,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 18,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C105": {
+          "anchor_wrong_count": 4,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 23,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C106": {
+          "anchor_wrong_count": 1,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 23,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C107": {
+          "anchor_wrong_count": 2,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C108": {
+          "anchor_wrong_count": 1,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 14,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C109": {
+          "anchor_wrong_count": 1,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 9
+          },
+          "untracked": {}
+        },
+        "C110": {
+          "anchor_wrong_count": 2,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 23,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 5
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C111": {
+          "anchor_wrong_count": 0,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C112": {
+          "anchor_wrong_count": 1,
+          "children_checked": 18,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 5
+          },
+          "untracked": {}
+        },
+        "C113": {
+          "anchor_wrong_count": 3,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 19,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 10
+          }
+        },
+        "C114": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 23
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C115": {
+          "anchor_wrong_count": 3,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 13,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C116": {
+          "anchor_wrong_count": 4,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C117": {
+          "anchor_wrong_count": 2,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C118": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 6,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 19,
+            "SUB-SFL": 5
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C119": {
+          "anchor_wrong_count": 0,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 19
+          },
+          "untracked": {}
+        },
+        "C120": {
+          "anchor_wrong_count": 5,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        }
+      },
+      "form_label": "Generated form (seed 2026)"
+    },
+    "T2": {
+      "classes": {
+        "C001": {
+          "anchor_wrong_count": 2,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C002": {
+          "anchor_wrong_count": 6,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C003": {
+          "anchor_wrong_count": 6,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 5,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C004": {
+          "anchor_wrong_count": 1,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 12
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C005": {
+          "anchor_wrong_count": 0,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 10
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C006": {
+          "anchor_wrong_count": 1,
+          "children_checked": 39,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 8,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C007": {
+          "anchor_wrong_count": 0,
+          "children_checked": 21,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 4,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 5
+          },
+          "untracked": {}
+        },
+        "C008": {
+          "anchor_wrong_count": 0,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 8,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 6,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C009": {
+          "anchor_wrong_count": 2,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 11
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C010": {
+          "anchor_wrong_count": 3,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 12
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C011": {
+          "anchor_wrong_count": 0,
+          "children_checked": 33,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 9,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C012": {
+          "anchor_wrong_count": 2,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 13,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C013": {
+          "anchor_wrong_count": 0,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 12,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C014": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C015": {
+          "anchor_wrong_count": 3,
+          "children_checked": 33,
+          "counts": {
+            "ADD-NOCARRY": 18,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C016": {
+          "anchor_wrong_count": 1,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 8
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C017": {
+          "anchor_wrong_count": 1,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 5,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C018": {
+          "anchor_wrong_count": 4,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 13,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C019": {
+          "anchor_wrong_count": 3,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 9,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C020": {
+          "anchor_wrong_count": 1,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 9
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C021": {
+          "anchor_wrong_count": 0,
+          "children_checked": 19,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C022": {
+          "anchor_wrong_count": 2,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 12,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C023": {
+          "anchor_wrong_count": 0,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 14
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C024": {
+          "anchor_wrong_count": 3,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 6,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C025": {
+          "anchor_wrong_count": 5,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 8,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C026": {
+          "anchor_wrong_count": 3,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 10
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C027": {
+          "anchor_wrong_count": 0,
+          "children_checked": 18,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 11,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C028": {
+          "anchor_wrong_count": 1,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 16
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C029": {
+          "anchor_wrong_count": 1,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C030": {
+          "anchor_wrong_count": 3,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 15
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C031": {
+          "anchor_wrong_count": 2,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 23,
+            "SUB-SFL": 0
+          },
+          "untracked": {}
+        },
+        "C032": {
+          "anchor_wrong_count": 1,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C033": {
+          "anchor_wrong_count": 1,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 11,
+            "SUB-SFL": 0
+          },
+          "untracked": {}
+        },
+        "C034": {
+          "anchor_wrong_count": 2,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 12
+          },
+          "untracked": {}
+        },
+        "C035": {
+          "anchor_wrong_count": 1,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C036": {
+          "anchor_wrong_count": 2,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 10,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C037": {
+          "anchor_wrong_count": 3,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 11,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C038": {
+          "anchor_wrong_count": 1,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 17
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C039": {
+          "anchor_wrong_count": 3,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 10,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C040": {
+          "anchor_wrong_count": 1,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 16,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C041": {
+          "anchor_wrong_count": 4,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 8,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C042": {
+          "anchor_wrong_count": 3,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 5,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 13
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C043": {
+          "anchor_wrong_count": 5,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 10
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C044": {
+          "anchor_wrong_count": 2,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C045": {
+          "anchor_wrong_count": 4,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 7
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C046": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 7
+          },
+          "untracked": {}
+        },
+        "C047": {
+          "anchor_wrong_count": 1,
+          "children_checked": 17,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C048": {
+          "anchor_wrong_count": 2,
+          "children_checked": 39,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C049": {
+          "anchor_wrong_count": 2,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 18
+          },
+          "untracked": {}
+        },
+        "C050": {
+          "anchor_wrong_count": 1,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 18
+          },
+          "untracked": {}
+        },
+        "C051": {
+          "anchor_wrong_count": 1,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 7,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C052": {
+          "anchor_wrong_count": 1,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 6,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C053": {
+          "anchor_wrong_count": 0,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 12
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C054": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 9
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C055": {
+          "anchor_wrong_count": 1,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 1
+          }
+        },
+        "C056": {
+          "anchor_wrong_count": 7,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 9,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C057": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 16,
+            "SUB-SFL": 5
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C058": {
+          "anchor_wrong_count": 2,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 10
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C059": {
+          "anchor_wrong_count": 5,
+          "children_checked": 39,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 14,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C060": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 10
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C061": {
+          "anchor_wrong_count": 0,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 7,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 4
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C062": {
+          "anchor_wrong_count": 4,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 9,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C063": {
+          "anchor_wrong_count": 4,
+          "children_checked": 40,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 11
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C064": {
+          "anchor_wrong_count": 1,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 19,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C065": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 4,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C066": {
+          "anchor_wrong_count": 3,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 6
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C067": {
+          "anchor_wrong_count": 2,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 8,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C068": {
+          "anchor_wrong_count": 3,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 3
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 10
+          }
+        },
+        "C069": {
+          "anchor_wrong_count": 2,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 16
+          },
+          "untracked": {}
+        },
+        "C070": {
+          "anchor_wrong_count": 1,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 8
+          },
+          "untracked": {}
+        },
+        "C071": {
+          "anchor_wrong_count": 3,
+          "children_checked": 24,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 16,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C072": {
+          "anchor_wrong_count": 2,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 12
+          },
+          "untracked": {}
+        },
+        "C073": {
+          "anchor_wrong_count": 4,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 9,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C074": {
+          "anchor_wrong_count": 3,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {}
+        },
+        "C075": {
+          "anchor_wrong_count": 5,
+          "children_checked": 25,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C076": {
+          "anchor_wrong_count": 3,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 4,
+            "SUB-NODEC": 14,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 10
+          }
+        },
+        "C077": {
+          "anchor_wrong_count": 4,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 10,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C078": {
+          "anchor_wrong_count": 3,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 8
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 7
+          }
+        },
+        "C079": {
+          "anchor_wrong_count": 5,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 9,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C080": {
+          "anchor_wrong_count": 3,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 19,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C081": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 11,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C082": {
+          "anchor_wrong_count": 2,
+          "children_checked": 39,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 8,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C083": {
+          "anchor_wrong_count": 0,
+          "children_checked": 18,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 4
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C084": {
+          "anchor_wrong_count": 2,
+          "children_checked": 23,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 6,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C085": {
+          "anchor_wrong_count": 0,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C086": {
+          "anchor_wrong_count": 3,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 8
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C087": {
+          "anchor_wrong_count": 3,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 7,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 4
+          }
+        },
+        "C088": {
+          "anchor_wrong_count": 0,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 12
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C089": {
+          "anchor_wrong_count": 3,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 4,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 8
+          },
+          "untracked": {}
+        },
+        "C090": {
+          "anchor_wrong_count": 2,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 14
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C091": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 13,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C092": {
+          "anchor_wrong_count": 3,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 18
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 11
+          }
+        },
+        "C093": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 16,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C094": {
+          "anchor_wrong_count": 4,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 16,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C095": {
+          "anchor_wrong_count": 3,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 10,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 5,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C096": {
+          "anchor_wrong_count": 2,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 3
+          },
+          "untracked": {}
+        },
+        "C097": {
+          "anchor_wrong_count": 2,
+          "children_checked": 26,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 8
+          }
+        },
+        "C098": {
+          "anchor_wrong_count": 0,
+          "children_checked": 22,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 11,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C099": {
+          "anchor_wrong_count": 3,
+          "children_checked": 36,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C100": {
+          "anchor_wrong_count": 2,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 5,
+            "SUB-SFL": 5
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C101": {
+          "anchor_wrong_count": 2,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 9,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 4,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 2
+          }
+        },
+        "C102": {
+          "anchor_wrong_count": 1,
+          "children_checked": 33,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C103": {
+          "anchor_wrong_count": 2,
+          "children_checked": 31,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 3,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C104": {
+          "anchor_wrong_count": 3,
+          "children_checked": 37,
+          "counts": {
+            "ADD-NOCARRY": 3,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 18,
+            "SUB-SFL": 2
+          },
+          "untracked": {}
+        },
+        "C105": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 19,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C106": {
+          "anchor_wrong_count": 2,
+          "children_checked": 34,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 22,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C107": {
+          "anchor_wrong_count": 0,
+          "children_checked": 38,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 13,
+            "SUB-SFL": 1
+          },
+          "untracked": {}
+        },
+        "C108": {
+          "anchor_wrong_count": 2,
+          "children_checked": 33,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 11,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C109": {
+          "anchor_wrong_count": 0,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 5
+          },
+          "untracked": {}
+        },
+        "C110": {
+          "anchor_wrong_count": 2,
+          "children_checked": 40,
+          "counts": {
+            "ADD-NOCARRY": 18,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 3,
+            "SUB-SFL": 4
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 15
+          }
+        },
+        "C111": {
+          "anchor_wrong_count": 2,
+          "children_checked": 20,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 2,
+            "SUB-NODEC": 12,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 6
+          }
+        },
+        "C112": {
+          "anchor_wrong_count": 3,
+          "children_checked": 18,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 1,
+            "SUB-SFL": 7
+          },
+          "untracked": {}
+        },
+        "C113": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C114": {
+          "anchor_wrong_count": 2,
+          "children_checked": 32,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 1,
+            "PV-REVERSE": 1,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 21
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 9
+          }
+        },
+        "C115": {
+          "anchor_wrong_count": 1,
+          "children_checked": 28,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 9,
+            "SUB-SFL": 2
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C116": {
+          "anchor_wrong_count": 3,
+          "children_checked": 27,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 11,
+            "SUB-SFL": 0
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        },
+        "C117": {
+          "anchor_wrong_count": 1,
+          "children_checked": 29,
+          "counts": {
+            "ADD-NOCARRY": 2,
+            "PV-HEARD": 2,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 2,
+            "SUB-SFL": 6
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C118": {
+          "anchor_wrong_count": 1,
+          "children_checked": 33,
+          "counts": {
+            "ADD-NOCARRY": 6,
+            "PV-HEARD": 0,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 15,
+            "SUB-SFL": 4
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 3
+          }
+        },
+        "C119": {
+          "anchor_wrong_count": 1,
+          "children_checked": 35,
+          "counts": {
+            "ADD-NOCARRY": 1,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 0,
+            "SUB-SFL": 14
+          },
+          "untracked": {}
+        },
+        "C120": {
+          "anchor_wrong_count": 2,
+          "children_checked": 30,
+          "counts": {
+            "ADD-NOCARRY": 0,
+            "PV-HEARD": 3,
+            "PV-REVERSE": 0,
+            "SUB-NODEC": 14,
+            "SUB-SFL": 1
+          },
+          "untracked": {
+            "ADD-WHOLE-ONES": 5
+          }
+        }
+      },
+      "form_label": "Parallel form (seed 2027)"
+    }
+  },
+  "unplaced": [
+    {
+      "class_id": "C107",
+      "why": "school_cap"
+    }
+  ]
+}
