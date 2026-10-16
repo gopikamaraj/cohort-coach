@@ -16,6 +16,7 @@ from math import comb
 
 import numpy as np
 
+from engine.grouping import ClassRecord
 from engine.model import ErrorCode
 
 # Block scale
@@ -136,6 +137,27 @@ def block_effect(
     return BlockEffect(
         version, verdict, reason, estimate, ci_low, ci_high, n_t, n_c, mean_t, mean_c, note
     )
+
+
+def class_changes(
+    error: ErrorCode,
+    before: Mapping[str, ClassRecord],
+    after: Mapping[str, ClassRecord],
+    groups: Mapping[str, Group],
+) -> list[ClassChange]:
+    """Per-class change in prevalence of `error` (points) for the classes listed in `groups`.
+
+    Classes missing a term, or with no children checked in either term, are skipped.
+    """
+    out: list[ClassChange] = []
+    for class_id, group in sorted(groups.items()):
+        b, a = before.get(class_id), after.get(class_id)
+        if b is None or a is None or not b.children_checked or not a.children_checked:
+            continue
+        p0 = Fraction(b.counts.get(error, 0), b.children_checked)
+        p1 = Fraction(a.counts.get(error, 0), a.children_checked)
+        out.append(ClassChange(class_id, group, float((p1 - p0) * 100)))
+    return out
 
 
 # --- pilot scale -------------------------------------------------------------------------

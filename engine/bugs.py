@@ -8,6 +8,8 @@ error would write. A function may return the correct answer when the error does 
 from __future__ import annotations
 
 from collections.abc import Mapping
+from functools import lru_cache
+from types import MappingProxyType
 
 from engine.model import (
     ADD_WHOLE_ONES,
@@ -151,15 +153,20 @@ def untracked_signatures(item: Item) -> dict[str, frozenset[int]]:
     return {ADD_WHOLE_ONES: sigs} if sigs else {}
 
 
-def answer_codes(item: Item) -> Mapping[int, frozenset[ErrorCode]]:
-    """Every wrong answer the item recognises -> the error codes it counts for."""
+@lru_cache(maxsize=8192)
+def _answer_codes(item: Item) -> Mapping[int, frozenset[ErrorCode]]:
     codes: dict[int, set[ErrorCode]] = {}
     for code, answers in error_answers(item).items():
         for ans in answers:
             codes.setdefault(ans, set()).add(code)
     for ans in both_heard_and_reversed(item):
         codes.setdefault(ans, set()).update({ErrorCode.PV_HEARD, ErrorCode.PV_REVERSE})
-    return {ans: frozenset(cs) for ans, cs in codes.items()}
+    return MappingProxyType({ans: frozenset(cs) for ans, cs in codes.items()})
+
+
+def answer_codes(item: Item) -> Mapping[int, frozenset[ErrorCode]]:
+    """Every wrong answer the item recognises -> the error codes it counts for (read-only)."""
+    return _answer_codes(item)
 
 
 def classify(item: Item, reading: Reading) -> AnswerMark:

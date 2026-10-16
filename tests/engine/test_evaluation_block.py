@@ -130,3 +130,28 @@ def test_figures_covering_fewer_than_5_classes_are_hidden() -> None:
 @pytest.mark.parametrize("n", [15, 16, 40])
 def test_no_note_when_both_arms_are_large_enough(n: int) -> None:
     assert block_effect("v", constant(-30.0, -10.0, n=n), seed=1).confidence_note is None
+
+
+def test_class_changes_turns_two_terms_of_counts_into_point_changes() -> None:
+    from engine.evaluation import class_changes
+    from engine.grouping import ClassRecord
+    from engine.model import ErrorCode
+
+    def rec(cid: str, showing: int, checked: int) -> ClassRecord:
+        return ClassRecord(
+            cid, "s", "b", "government", 3, "hindi", checked, {ErrorCode.SUB_SFL: showing}
+        )
+
+    before = {
+        "a": rec("a", 12, 30),
+        "b": rec("b", 10, 20),
+        "c": rec("c", 5, 20),
+        "z": rec("z", 5, 0),
+    }
+    after = {"a": rec("a", 6, 30), "b": rec("b", 12, 20), "z": rec("z", 1, 10)}
+    groups = {"a": Group.TRACK, "b": Group.COMPARISON, "c": Group.TRACK, "z": Group.TRACK}
+    changes = class_changes(ErrorCode.SUB_SFL, before, after, groups)
+    assert [(c.class_id, c.group, round(c.delta_points, 6)) for c in changes] == [
+        ("a", Group.TRACK, -20.0),
+        ("b", Group.COMPARISON, 10.0),
+    ]  # "c" has no second term and "z" had no children at the first

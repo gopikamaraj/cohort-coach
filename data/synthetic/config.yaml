@@ -1,0 +1,45 @@
+# Simulated block: every tunable value for data/synthetic/block.py. All of it is SIMULATED.
+# Changing a value changes the data hash; `python tasks.py seed` regenerates the committed file.
+seed: 2026
+block_id: B1
+grade: 3
+n_schools: 40
+classes_per_school: 3
+# Schools per medium; must add up to n_schools. The mix is configurable.
+schools_per_medium: { hindi: 16, tamil: 14, english: 10 }
+school_type_weights: { government: 0.60, aided: 0.25, private: 0.15 }
+class_size: { min: 20, max: 40 }
+attendance: 0.95 # chance a child is present at each check
+
+# Each class has one dominant error (the one a track would target) plus low background levels.
+# PV-REVERSE is dominant only where the spoken number order makes it likely (Hindi).
+dominant_weights:
+  hindi:   { PV-HEARD: 0.10, PV-REVERSE: 0.08, ADD-NOCARRY: 0.12, SUB-SFL: 0.31, SUB-NODEC: 0.31, none: 0.08 }
+  tamil:   { PV-HEARD: 0.12, PV-REVERSE: 0.00, ADD-NOCARRY: 0.14, SUB-SFL: 0.33, SUB-NODEC: 0.33, none: 0.08 }
+  english: { PV-HEARD: 0.12, PV-REVERSE: 0.00, ADD-NOCARRY: 0.14, SUB-SFL: 0.33, SUB-NODEC: 0.33, none: 0.08 }
+dominant_p: { mean: 0.50, sd: 0.08, min: 0.32, max: 0.70 } # share of children with the dominant error
+background_p: { mean: 0.06, sd: 0.04, max: 0.15 }
+whole_ones_p: 0.06 # untracked habit: writes the whole ones total (38 + 47 -> 715)
+
+# How a simulated child answers a printed item.
+child:
+  error_answer_rate: 0.85 # with an error that the item probes, writes its wrong answer this often
+  whole_ones_rate: 0.80
+  slip_rate: 0.07 # any other answer is a one-off slip this often (the 2-item rule filters these)
+  slip_recognised_share: 0.50 # a slip that happens to look like a known error answer
+
+# Between the two checks.
+term_change:
+  natural_fix: 0.12 # each child's error fades by itself: about 5 points on a class at p ~ 0.45
+  onset: 0.015 # children with no error in a family may start one
+  # Planted track effects. extra_fix is the extra chance a child's error is fixed when her class
+  # was on the track. SUB-SFL v1 works (about 20 points extra fall); SUB-NODEC v1 does not.
+  tracks:
+    PV-HEARD: { version: v1, extra_fix: 0.30 }
+    ADD-NOCARRY: { version: v1, extra_fix: 0.25 }
+    SUB-SFL: { version: v1, extra_fix: 0.36 }
+    SUB-NODEC: { version: v1, extra_fix: 0.00 }
+
+forms: { t1_seed: 2026, t2_seed: 2027 } # T2 is a parallel form of T1
+split_seed: 2026
+cohort_seed: 2026

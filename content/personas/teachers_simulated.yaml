@@ -1,0 +1,80 @@
+# TODO-HUMAN(Seema): review this list of FICTIONAL teacher names for the simulated block.
+# Rules: first name plus one surname initial only; balanced by gender; no caste, religion or
+# region markers; no real teachers; no names of team members. Edit freely: the generator
+# reads these lists, and changing them changes the simulated data hash.
+# All data built from this file is labelled "simulated".
+female:
+  - Anitha
+  - Kavitha
+  - Meena
+  - Priya
+  - Sunita
+  - Rekha
+  - Latha
+  - Divya
+  - Neha
+  - Geeta
+  - Savita
+  - Rani
+  - Nisha
+  - Asha
+  - Usha
+  - Mala
+  - Vimala
+  - Jaya
+  - Deepa
+  - Pooja
+  - Anjali
+  - Sangeeta
+  - Shanthi
+  - Revathi
+  - Malathi
+  - Kalpana
+  - Sudha
+  - Vandana
+  - Manju
+  - Indira
+  - Nirmala
+  - Sheela
+  - Bhavna
+  - Poonam
+  - Komal
+  - Ritu
+male:
+  - Arun
+  - Suresh
+  - Vijay
+  - Kumar
+  - Mohan
+  - Rajesh
+  - Anil
+  - Sanjay
+  - Manoj
+  - Ajay
+  - Deepak
+  - Vikram
+  - Naveen
+  - Prakash
+  - Dinesh
+  - Ashok
+  - Sunil
+  - Senthil
+  - Murali
+  - Bala
+  - Satish
+  - Rakesh
+  - Pankaj
+  - Amit
+  - Rohit
+  - Sandeep
+  - Anand
+  - Kiran
+  - Vinod
+  - Harish
+  - Naresh
+  - Selvam
+  - Mani
+  - Babu
+  - Raju
+  - Santosh
+initials: [A, B, C, D, E, G, H, J, K, L, M, N, P, R, S, T, V]
