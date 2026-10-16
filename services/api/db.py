@@ -6,9 +6,22 @@ and test databases are built with `Base.metadata.create_all`.
 
 from __future__ import annotations
 
+import os
+from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import JSON, ForeignKey, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    Engine,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+    create_engine,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -86,3 +99,95 @@ class Cohort(Base):
     undersized: Mapped[bool]
     mentor_slot: Mapped[bool]
     simulated: Mapped[bool] = mapped_column(default=False)
+
+
+def _now() -> datetime:
+    return datetime.now(UTC)
+
+
+class AiCall(Base):
+    """The audit trail: one row per AI call. Metadata only, never prompt or output text."""
+
+    __tablename__ = "ai_calls"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    call_id: Mapped[int] = mapped_column(Integer)
+    call_key: Mapped[str] = mapped_column(String(40), index=True)
+    prompt_version: Mapped[int] = mapped_column(Integer)
+    model: Mapped[str] = mapped_column(String(60))
+    mode: Mapped[str] = mapped_column(String(10))  # recorded | live | record
+    judge: Mapped[bool] = mapped_column(Boolean, default=False)
+    metadata_only: Mapped[bool] = mapped_column(Boolean, default=False)
+    tokens_in: Mapped[int] = mapped_column(Integer, default=0)
+    tokens_out: Mapped[int] = mapped_column(Integer, default=0)
+    tokens_cache_read: Mapped[int] = mapped_column(Integer, default=0)
+    tokens_cache_write: Mapped[int] = mapped_column(Integer, default=0)
+    cost_usd: Mapped[float] = mapped_column(Float, default=0.0)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    validator_results: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    checker_verdict: Mapped[str | None] = mapped_column(String(10))  # pass | fail | none
+    checker_reason: Mapped[str | None] = mapped_column(String(300))
+    retries: Mapped[int] = mapped_column(Integer, default=0)
+    fallback_used: Mapped[str | None] = mapped_column(String(40))
+    input_hash: Mapped[str] = mapped_column(String(64))
+    reviewer_decision: Mapped[str | None] = mapped_column(String(20))
+    reviewer_reason: Mapped[str | None] = mapped_column(String(40))
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ReviewItem(Base):
+    """AI content waiting for, or past, human review (track drafts, method cards)."""
+
+    __tablename__ = "review_items"
+
+    item_id: Mapped[str] = mapped_column(primary_key=True)
+    content_type: Mapped[str]  # track_draft | method_card | feedback_card
+    ai_call_id: Mapped[int | None] = mapped_column(ForeignKey("ai_calls.id"))
+    language: Mapped[str]
+    target_error: Mapped[str | None]
+    content: Mapped[dict[str, Any]] = mapped_column(JSON)
+    badge: Mapped[str] = mapped_column(default="none")  # none | checked | checked_reviewed
+    status: Mapped[str] = mapped_column(default="pending")  # pending | approved | rejected
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ReviewDecision(Base):
+    __tablename__ = "review_decisions"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    item_id: Mapped[str] = mapped_column(ForeignKey("review_items.item_id"), index=True)
+    decision: Mapped[str]  # approve | reject | edit
+    reason: Mapped[str | None]  # structured enum, set on reject (ai/guard/rejections.py)
+    edit_diff: Mapped[str | None]
+    reviewer_role: Mapped[str]  # reviewer | mentor
+    decided_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class TeacherFlag(Base):
+    """A teacher tapped 'this is wrong' on an AI card. No free text is stored."""
+
+    __tablename__ = "teacher_flags"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    ai_call_id: Mapped[int | None] = mapped_column(ForeignKey("ai_calls.id"))
+    item_id: Mapped[str | None] = mapped_column(ForeignKey("review_items.item_id"))
+    kind: Mapped[str]  # wrong_maths | not_my_class | unclear | other
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class Consent(Base):
+    """What a teacher or mentor agreed to share. Withdrawing adds a row; history is kept."""
+
+    __tablename__ = "consents"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    subject_id: Mapped[str] = mapped_column(index=True)
+    scope: Mapped[str]  # share_rehearsal | mentor_method | mentor_contact
+    granted: Mapped[bool]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+def make_engine(url: str | None = None) -> Engine:
+    """Engine from DATABASE_URL (SQLite for local dev and tests, Postgres in production)."""
+    return create_engine(url or os.environ.get("DATABASE_URL") or "sqlite:///./dev.sqlite")
