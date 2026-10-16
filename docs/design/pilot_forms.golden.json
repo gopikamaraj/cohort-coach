@@ -1,0 +1,562 @@
+{
+  "_about": "Golden fixtures for engine tests. Generated from and checked against the printed answer key in docs/design/pilot-test-pack.md. Do not edit by hand; if the key changes, regenerate and re-run the checks.",
+  "scoring_rules": {
+    "two_item_rule": {
+      "PV-HEARD": {
+        "items": [
+          1,
+          2
+        ],
+        "min_hits": 2
+      },
+      "PV-REVERSE": {
+        "items": [
+          1,
+          2
+        ],
+        "min_hits": 2
+      },
+      "ADD-NOCARRY": {
+        "items": [
+          3,
+          4,
+          5
+        ],
+        "min_hits": 2
+      },
+      "SUB-SFL": {
+        "items": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "min_hits": 2
+      },
+      "SUB-NODEC": {
+        "items": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "min_hits": 2
+      }
+    },
+    "both_heard_and_reversed_counts_for": [
+      "PV-HEARD",
+      "PV-REVERSE"
+    ],
+    "anchor_item": 6,
+    "anchor_wrong_note": "Child struggles with subtraction itself: record it, still score items 7-10.",
+    "devanagari_digits_equal_ascii": true,
+    "crossed_out_use_last_answer": true,
+    "answer_marks": [
+      "correct",
+      "<error code>",
+      "other",
+      "blank",
+      "?"
+    ],
+    "eligibility": {
+      "min_prevalence": 0.25,
+      "min_children_checked": 10
+    },
+    "track_priority": "PV-HEARD first; otherwise highest-p error; PV-REVERSE has no track yet"
+  },
+  "forms": {
+    "A": {
+      "label": "Pre-test · Form A",
+      "items": [
+        {
+          "n": 1,
+          "type": "dictation",
+          "prompt": {
+            "en": "three hundred and forty-six",
+            "hi": "तीन सौ छियालीस"
+          },
+          "value": 346,
+          "both_heard_and_reversed": [
+            3064,
+            30064,
+            300604
+          ],
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "correct": 346,
+          "error_answers": {
+            "PV-HEARD": [
+              3046,
+              30046,
+              300406
+            ],
+            "PV-REVERSE": [
+              364
+            ]
+          }
+        },
+        {
+          "n": 2,
+          "type": "dictation",
+          "prompt": {
+            "en": "seven hundred and twenty-eight",
+            "hi": "सात सौ अट्ठाईस"
+          },
+          "value": 728,
+          "both_heard_and_reversed": [
+            7082,
+            70082,
+            700802
+          ],
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "correct": 728,
+          "error_answers": {
+            "PV-HEARD": [
+              7028,
+              70028,
+              700208
+            ],
+            "PV-REVERSE": [
+              782
+            ]
+          }
+        },
+        {
+          "n": 3,
+          "type": "add_carry",
+          "a": 38,
+          "b": 47,
+          "untracked_signatures": {
+            "ADD-WHOLE-ONES": [
+              715
+            ]
+          },
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "correct": 85,
+          "error_answers": {
+            "ADD-NOCARRY": [
+              75
+            ]
+          }
+        },
+        {
+          "n": 4,
+          "type": "add_carry",
+          "a": 46,
+          "b": 28,
+          "untracked_signatures": {
+            "ADD-WHOLE-ONES": [
+              614
+            ]
+          },
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "correct": 74,
+          "error_answers": {
+            "ADD-NOCARRY": [
+              64
+            ]
+          }
+        },
+        {
+          "n": 5,
+          "type": "add_carry",
+          "a": 59,
+          "b": 23,
+          "untracked_signatures": {
+            "ADD-WHOLE-ONES": [
+              712
+            ]
+          },
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "correct": 82,
+          "error_answers": {
+            "ADD-NOCARRY": [
+              72
+            ]
+          }
+        },
+        {
+          "n": 6,
+          "type": "sub_anchor",
+          "a": 87,
+          "b": 52,
+          "probes": [],
+          "correct": 35,
+          "error_answers": {}
+        },
+        {
+          "n": 7,
+          "type": "sub_borrow",
+          "a": 74,
+          "b": 36,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 2,
+          "correct": 38,
+          "error_answers": {
+            "SUB-SFL": [
+              42
+            ],
+            "SUB-NODEC": [
+              48
+            ]
+          }
+        },
+        {
+          "n": 8,
+          "type": "sub_borrow",
+          "a": 45,
+          "b": 19,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 4,
+          "correct": 26,
+          "error_answers": {
+            "SUB-SFL": [
+              34
+            ],
+            "SUB-NODEC": [
+              36
+            ]
+          }
+        },
+        {
+          "n": 9,
+          "type": "sub_borrow",
+          "a": 82,
+          "b": 39,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 7,
+          "correct": 43,
+          "error_answers": {
+            "SUB-SFL": [
+              57
+            ],
+            "SUB-NODEC": [
+              53
+            ]
+          }
+        },
+        {
+          "n": 10,
+          "type": "sub_borrow",
+          "a": 81,
+          "b": 27,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 6,
+          "correct": 54,
+          "error_answers": {
+            "SUB-SFL": [
+              66
+            ],
+            "SUB-NODEC": [
+              64
+            ]
+          }
+        }
+      ]
+    },
+    "B": {
+      "label": "Post-test · Form B",
+      "items": [
+        {
+          "n": 1,
+          "type": "dictation",
+          "prompt": {
+            "en": "two hundred and sixty-four",
+            "hi": "दो सौ चौंसठ"
+          },
+          "value": 264,
+          "both_heard_and_reversed": [
+            2046,
+            20046,
+            200406
+          ],
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "correct": 264,
+          "error_answers": {
+            "PV-HEARD": [
+              2064,
+              20064,
+              200604
+            ],
+            "PV-REVERSE": [
+              246
+            ]
+          }
+        },
+        {
+          "n": 2,
+          "type": "dictation",
+          "prompt": {
+            "en": "eight hundred and fifty-three",
+            "hi": "आठ सौ तिरेपन"
+          },
+          "value": 853,
+          "both_heard_and_reversed": [
+            8035,
+            80035,
+            800305
+          ],
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "correct": 853,
+          "error_answers": {
+            "PV-HEARD": [
+              8053,
+              80053,
+              800503
+            ],
+            "PV-REVERSE": [
+              835
+            ]
+          }
+        },
+        {
+          "n": 3,
+          "type": "add_carry",
+          "a": 29,
+          "b": 46,
+          "untracked_signatures": {
+            "ADD-WHOLE-ONES": [
+              615
+            ]
+          },
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "correct": 75,
+          "error_answers": {
+            "ADD-NOCARRY": [
+              65
+            ]
+          }
+        },
+        {
+          "n": 4,
+          "type": "add_carry",
+          "a": 35,
+          "b": 49,
+          "untracked_signatures": {
+            "ADD-WHOLE-ONES": [
+              714
+            ]
+          },
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "correct": 84,
+          "error_answers": {
+            "ADD-NOCARRY": [
+              74
+            ]
+          }
+        },
+        {
+          "n": 5,
+          "type": "add_carry",
+          "a": 18,
+          "b": 54,
+          "untracked_signatures": {
+            "ADD-WHOLE-ONES": [
+              612
+            ]
+          },
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "correct": 72,
+          "error_answers": {
+            "ADD-NOCARRY": [
+              62
+            ]
+          }
+        },
+        {
+          "n": 6,
+          "type": "sub_anchor",
+          "a": 86,
+          "b": 41,
+          "probes": [],
+          "correct": 45,
+          "error_answers": {}
+        },
+        {
+          "n": 7,
+          "type": "sub_borrow",
+          "a": 83,
+          "b": 35,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 2,
+          "correct": 48,
+          "error_answers": {
+            "SUB-SFL": [
+              52
+            ],
+            "SUB-NODEC": [
+              58
+            ]
+          }
+        },
+        {
+          "n": 8,
+          "type": "sub_borrow",
+          "a": 64,
+          "b": 28,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 4,
+          "correct": 36,
+          "error_answers": {
+            "SUB-SFL": [
+              44
+            ],
+            "SUB-NODEC": [
+              46
+            ]
+          }
+        },
+        {
+          "n": 9,
+          "type": "sub_borrow",
+          "a": 71,
+          "b": 18,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 7,
+          "correct": 53,
+          "error_answers": {
+            "SUB-SFL": [
+              67
+            ],
+            "SUB-NODEC": [
+              63
+            ]
+          }
+        },
+        {
+          "n": 10,
+          "type": "sub_borrow",
+          "a": 93,
+          "b": 29,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "ones_gap": 6,
+          "correct": 64,
+          "error_answers": {
+            "SUB-SFL": [
+              76
+            ],
+            "SUB-NODEC": [
+              74
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "examples": {
+    "pv_heard_2digit": {
+      "said": "forty-three",
+      "value": 43,
+      "answers": [
+        403
+      ]
+    },
+    "add_nocarry": {
+      "a": 47,
+      "b": 25,
+      "answers": [
+        62
+      ]
+    },
+    "sub_sfl": {
+      "a": 52,
+      "b": 29,
+      "answers": [
+        37
+      ]
+    },
+    "sub_nodec": {
+      "a": 52,
+      "b": 29,
+      "answers": [
+        33
+      ]
+    },
+    "rejected_collision": {
+      "a": 52,
+      "b": 27,
+      "SUB-SFL": 35,
+      "SUB-NODEC": 35,
+      "reason": "ones gap of 5 makes the two subtraction errors give the same answer"
+    },
+    "untracked_add_whole_ones": {
+      "a": 38,
+      "b": 47,
+      "answer": 715,
+      "score_as": "other",
+      "tally_separately": true
+    },
+    "heard_and_reversed": {
+      "value": 346,
+      "answer": 30064,
+      "counts_for": [
+        "PV-HEARD",
+        "PV-REVERSE"
+      ]
+    }
+  },
+  "mcnemar_exact": {
+    "fixed": 12,
+    "new": 2,
+    "p_two_sided": 0.012939453125,
+    "p_rounded": 0.013
+  },
+  "pilot_verdict_rules": {
+    "working": "extra_fall_points >= 10 and mcnemar_p < 0.05",
+    "not_working": "extra_fall_points < 5 (a rise counts here)",
+    "inconclusive": "anything else"
+  },
+  "block_verdict_rules": {
+    "effect": "change in p (track classes) minus change in p (comparison classes); 95% bootstrap CI over classes",
+    "working": "whole CI below 0 and estimate is a fall of >= 10 points",
+    "not_working": "estimate is a fall of < 5 points, or a rise",
+    "inconclusive": "anything else, or fewer than 15 classes per arm"
+  }
+}

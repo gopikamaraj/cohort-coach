@@ -1,0 +1,15 @@
+.env
+.venv/
+data/pilot/raw/
+data/pilot/photos/
+data/private/
+*.sqlite
+evals/runs/
+node_modules/
+dist/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.hypothesis/
