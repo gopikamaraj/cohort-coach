@@ -16,7 +16,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | ID | Phase | Priority | Target | Status | Started (commit) | Finished | Report | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | P00 | Bootstrap, inventory, decisions | P0 | Fri 16 Oct | ✅ | 2026-10-16 14:46 (`ac4a940`) | 2026-10-16 | [report](reports/P00-bootstrap.md) | CI green on `83e571b` (run 38881893876) |
-| P01 | Engine core | P0 | Fri 16 – Sat 17 | ⬜ | | | | |
+| P01 | Engine core | P0 | Fri 16 – Sat 17 | 🔄 | 2026-10-16 15:30 (`f92f846`) | | | |
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ⬜ | | | | |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ⬜ | | | | |
 | P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | ⬜ | | | | Gate 1 |
