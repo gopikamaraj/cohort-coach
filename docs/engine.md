@@ -44,11 +44,15 @@ For a class: prevalence p = children showing the error ÷ children checked (a fr
 
 ## One engine, two languages
 
-The phone diagnoses offline with `apps/pwa/src/lib/diagnosis.ts`, which only looks up answers in `apps/pwa/src/generated/answer_keys.json` (written by `python tasks.py export-keys`, with a content hash so client and server can spot drift). Python also writes `tests/fixtures/diagnosis_cases.json` (named edge cases, seeded random children and whole classes of different sizes); pytest checks the files are not stale and Vitest checks TypeScript gives identical results.
+The phone diagnoses offline with `apps/pwa/src/lib/diagnosis.ts`, which only looks up answers in `apps/pwa/src/generated/answer_keys.json` (written by `python tasks.py export-keys`, with a content hash so client and server can spot drift). Python also writes `tests/fixtures/diagnosis_cases.json` (parity fixtures: their expected values are the engine's own output, so they prove Python and TypeScript agree, not that either is right; correctness rests on the printed key and the hand-written assertions in `tests/engine/`) (named edge cases, seeded random children and whole classes of different sizes); pytest checks the files are not stale and Vitest checks TypeScript gives identical results.
 
 ## Why code, not AI
 
 Diagnosis decides which teachers train together, so it must be exact, repeatable and explainable offline. A model can misread, drift between runs, and cannot show its working. Here every verdict traces to a table row and a rule above.
+
+## Running the checks
+
+Use `python tasks.py test` (or `check`), which use the project venv. Bare `pytest` on system Python lacks Hypothesis.
 
 ## Evidence
 

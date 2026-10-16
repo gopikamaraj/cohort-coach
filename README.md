@@ -17,6 +17,7 @@ _Generated in P03/P16._
 ```text
 python tasks.py setup    # install dependencies; installs a pre-commit hook running `check`
 python tasks.py dev      # API on :8000 + PWA on :5173
+python tasks.py test     # all tests (use this, not bare pytest)
 python tasks.py check    # lint + types + tests + eval smoke
 ```
 

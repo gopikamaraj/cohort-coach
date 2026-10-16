@@ -69,3 +69,31 @@ def test_committed_files_are_not_stale() -> None:
     """Fails if engine code changed without re-running `python tasks.py export-keys`."""
     assert KEYS_PATH.read_text(encoding="utf-8") == render(build_answer_keys(PILOT_FORMS))
     assert CASES_PATH.read_text(encoding="utf-8") == render(build_diagnosis_cases())
+
+
+def test_named_cases_have_hand_written_expectations() -> None:
+    """The fixture's expected values come from the engine, so pin the named ones by hand."""
+    by_name = {c["name"]: c["expected"] for c in build_diagnosis_cases()["children"]}
+    shows = {
+        "all_correct": [],
+        "devanagari_correct": [],
+        "tamil_digits_error": ["ADD-NOCARRY"],
+        "one_hit_not_shown": [],
+        "nocarry_two_hits": ["ADD-NOCARRY"],
+        "heard_both_items": ["PV-HEARD"],
+        "reverse_both_items": ["PV-REVERSE"],
+        "heard_and_reversed_both": ["PV-HEARD", "PV-REVERSE"],
+        "sfl_two_hits": ["SUB-SFL"],
+        "nodec_two_hits": ["SUB-NODEC"],
+        "anchor_wrong": ["SUB-SFL"],
+        "715_untracked": [],
+        "blanks_and_junk": [],
+        "blank_does_not_complete_a_pair": [],
+    }
+    for name, expected in shows.items():
+        assert by_name[name]["shows"] == expected, name
+    assert by_name["anchor_wrong"]["anchor_wrong"] is True
+    assert by_name["715_untracked"]["untracked"] == {"ADD-WHOLE-ONES": 2}
+    assert by_name["715_untracked"]["other_count"] == 2
+    assert by_name["blanks_and_junk"]["blank_count"] == 2
+    assert by_name["blanks_and_junk"]["unreadable_count"] == 2
