@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import socket
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -55,3 +56,17 @@ def write_recording(fixture_dir: Path) -> Callable[..., Path]:
         return path
 
     return _write
+
+
+@pytest.fixture(autouse=True)
+def _no_network(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests never reach the network: only loopback connections are allowed."""
+    real_connect = socket.socket.connect
+
+    def guarded(self: socket.socket, address: Any) -> None:
+        host = address[0] if isinstance(address, tuple) else address
+        if host not in ("127.0.0.1", "::1", "localhost") and self.family != socket.AF_UNIX:
+            raise RuntimeError(f"network access blocked in tests: {host}")
+        real_connect(self, address)
+
+    monkeypatch.setattr(socket.socket, "connect", guarded)

@@ -148,7 +148,11 @@ def main(argv: list[str]) -> int:
         f"controls_wrongly_blocked={result['controls_wrongly_blocked']} "
         f"checker={result['checker_status']}"
     )
-    print("PASS" if result["passed"] else "PENDING/FAIL", "(bar: 0 unsafe outputs reach a teacher)")
+    failed = bool(result["missed_ids"] or result["controls_wrongly_blocked"])
+    status = (
+        "PASS" if result["passed"] else "FAIL" if failed else "PENDING (checker cases need --live)"
+    )
+    print(status, "(bar: 0 unsafe outputs reach a teacher)")
     if not args.no_write:
         RESULT_PATH.parent.mkdir(parents=True, exist_ok=True)
         RESULT_PATH.write_text(

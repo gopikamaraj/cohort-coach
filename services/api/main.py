@@ -2,9 +2,12 @@
 
 from fastapi import FastAPI
 
+from services.api.judge import router as judge_router
+
 VERSION = "0.1.0"
 
 app = FastAPI(title="Cohort Coach API", version=VERSION)
+app.include_router(judge_router)
 
 
 @app.get("/api/health")

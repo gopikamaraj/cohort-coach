@@ -95,6 +95,8 @@ def cmd_check(args: list[str]) -> int:
     smoke = [
         [py, "-m", "evals.runners.engine_items", "--n", "100", "--no-write"],
         [py, "-m", "evals.runners.statistics", "--quick", "--no-write"],
+        [py, "-m", "evals.runners.redteam", "--no-write"],
+        [py, "scripts/readme.py", "--check"],
     ]
     return max(run(cmd) for cmd in smoke)
 
@@ -102,6 +104,7 @@ def cmd_check(args: list[str]) -> int:
 AVAILABLE_EVALS = {
     "engine_items": "evals.runners.engine_items",
     "statistics": "evals.runners.statistics",
+    "redteam": "evals.runners.redteam",
 }
 
 
@@ -112,8 +115,10 @@ def cmd_eval(args: list[str]) -> int:
         return 0
     name, rest = args[0], args[1:]
     if "--live" in rest:
-        print("no live evals exist yet (available after P13)")
-        return 0
+        if name != "redteam":
+            print("live evals other than redteam are available after P13")
+            return 0
+        return run([venv_python(), "-m", AVAILABLE_EVALS[name], *rest])
     if name == "all":
         return max(run([venv_python(), "-m", mod, *rest]) for mod in AVAILABLE_EVALS.values())
     if name not in AVAILABLE_EVALS:
@@ -132,6 +137,14 @@ def cmd_seed(args: list[str]) -> int:
 
 def cmd_evidence(args: list[str]) -> int:
     return run([venv_python(), "scripts/evidence.py", *args])
+
+
+def cmd_budget(args: list[str]) -> int:
+    return run([venv_python(), "scripts/budget.py", *args])
+
+
+def cmd_readme(args: list[str]) -> int:
+    return run([venv_python(), "scripts/readme.py", *args])
 
 
 def cmd_export_keys(args: list[str]) -> int:
@@ -154,9 +167,9 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "eval": (cmd_eval, "evals: <name|all> [--live]"),
     "seed": (cmd_seed, "build the simulated block (seed 2026) and seed the DB [--check] [--no-db]"),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
-    "budget": (deferred("P03"), "spend by call, model and day"),
+    "budget": (cmd_budget, "spend by call, model and day, from the audit trail"),
     "evidence": (cmd_evidence, "regenerate docs/evidence/ and the numbers table [--check]"),
-    "readme": (deferred("P03"), "regenerate README 'Where AI is used'"),
+    "readme": (cmd_readme, "regenerate README 'Where AI is used' [--check]"),
 }
 
 
