@@ -109,12 +109,15 @@ def render_user_content(inp: CallInput, retry_note: str = "") -> list[dict[str, 
     return parts
 
 
-def input_hash(spec: CallSpec, prompt: Prompt, model: str, inp: CallInput) -> str:
+def input_hash(
+    spec: CallSpec, prompt: Prompt, model: str, inp: CallInput, extra_system: str = ""
+) -> str:
     blob = json.dumps(
         {
             "call": spec.key,
             "prompt_version": prompt.version,
             "model": model,
+            "extra_system": extra_system,
             "trusted": inp.trusted,
             "untrusted": inp.untrusted,
             "images": [(mt, hashlib.sha256(d.encode()).hexdigest()) for mt, d in inp.images],
@@ -186,7 +189,7 @@ def run_call(
     model = ctx.model or spec.model
     mode = ctx.mode or config.ai_mode()
     sink = ctx.sink or default_sink()
-    digest = input_hash(spec, prompt, model, payload)
+    digest = input_hash(spec, prompt, model, payload, ctx.extra_system)
 
     client = None
     if mode in ("live", "record"):

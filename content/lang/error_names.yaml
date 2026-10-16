@@ -1,0 +1,22 @@
+# Plain names of the tracked errors, for explanation lines and badges.
+# TODO-HUMAN(Seema): confirm hi and ta wording. First draft by the build.
+PV-HEARD:
+  en: writing a number the way it is said
+  hi: संख्या को जैसे बोला जाता है वैसे लिखना
+  ta: எண்ணைச் சொல்வது போலவே எழுதுதல்
+PV-REVERSE:
+  en: swapping tens and ones
+  hi: दहाई और इकाई की अदला-बदली
+  ta: பத்து ஒன்று இடம் மாறுதல்
+ADD-NOCARRY:
+  en: forgetting the carried ten
+  hi: हासिल की दहाई भूल जाना
+  ta: கைமாற்றிய பத்தை விட்டுவிடுதல்
+SUB-SFL:
+  en: taking the smaller digit from the larger
+  hi: हर स्तंभ में छोटे अंक को बड़े में से घटाना
+  ta: ஒவ்வொரு நிரலிலும் சிறிய இலக்கத்தைப் பெரியதிலிருந்து கழித்தல்
+SUB-NODEC:
+  en: borrowing a ten but not reducing the tens digit
+  hi: दहाई उधार लेकर दहाई का अंक कम न करना
+  ta: பத்தைக் கடன் வாங்கி பத்தின் இலக்கத்தைக் குறைக்காமல் விடுதல்

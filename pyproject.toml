@@ -50,6 +50,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
 "ai/registry.py" = ["E501"]  # the five layer sentences per call read best on one line
+"ai/guard/explain.py" = ["E501"]  # wording templates read best on one line
 
 [tool.mypy]
 python_version = "3.12"
