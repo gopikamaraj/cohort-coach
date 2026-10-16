@@ -19,6 +19,12 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 
 ## Settled decisions
 
+### 2026-10-16 · P01 spec clarifications
+- **Decision:** (1) The eligibility boundary "p = 0.25 with 10 checked" cannot occur (2.5 children); the engine compares `count × 4 ≥ checked` with integers and tests 3 of 12 and 4 of 16 (eligible) and 3 of 13 (not). The 10-children minimum is tested separately. (2) `class_profile(children)` takes no `form` argument (it was unused). (3) Numbers with a zero digit have no heard or reversed answer. (4) Normaliser keeps a leading-zero string as its number ("034" → 34); more than 9 digits or any non-digit is unreadable. (5) Children checked counts every diagnosed child, including ones with blank or unreadable boxes. (6) Answer sheets crossed out and rewritten ("use the last answer") is a reading-step rule (P08), not an engine rule.
+- **Why:** each is the narrowest reading of the spec that is testable; none changes a threshold or bar.
+- **Alternatives:** treat leading zeros as unreadable (more teacher taps).
+- **Confirmed by:** pending Gopi; Seema to confirm the heard-and-reversed variants and NCERT mapping (placeholder in `docs/engine.md`).
+
 ### 2026-10-16 · Voice uses Sarvam directly, no finguru voice server
 - **Decision:** `services/speech/` calls the Sarvam APIs (STT and Bulbul TTS) itself. The finguru voice server is not reused. The Telegram bot is still built fresh unless Gopi supplies paths.
 - **Why:** Gopi's call: one fewer dependency and a simpler demo to explain to judges.
