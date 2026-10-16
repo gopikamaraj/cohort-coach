@@ -1,0 +1,23 @@
+# USD per million tokens. Copied from the official pricing page, not from memory.
+# Source: https://platform.claude.com/docs/en/about-claude/pricing  (fetched 2026-10-16)
+# Batch rates are 50% of standard on input and output (same page, "Batch processing").
+# Haiku 5.5 rates below are for prompts up to 100,000 tokens (our prompts are far shorter).
+source_url: https://platform.claude.com/docs/en/about-claude/pricing
+as_of: "2026-10-16"
+batch_discount: 0.5
+models:
+  claude-opus-5-5:
+    input: 4.00
+    cache_write_5m: 5.00
+    cache_read: 0.20
+    output: 20.00
+  claude-sonnet-5-5:
+    input: 2.00
+    cache_write_5m: 2.50
+    cache_read: 0.10
+    output: 10.00
+  claude-haiku-5-5:
+    input: 0.10
+    cache_write_5m: 0.125
+    cache_read: 0.01
+    output: 0.50
