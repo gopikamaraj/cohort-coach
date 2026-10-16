@@ -22,6 +22,7 @@ import yaml
 
 from engine.bugs import answer_codes, correct_answer, error_answers, probes, untracked_signatures
 from engine.diagnosis import class_profile, diagnose_child
+from engine.evaluation import BlockEffect, Group, block_effect, class_changes
 from engine.grouping import (
     Arm,
     ClassRecord,
@@ -351,3 +352,32 @@ def class_records(block: dict[str, Any], term: str) -> list[ClassRecord]:
         )
         for c in block["classes"]
     ]
+
+
+VERDICT_SEED = 2026
+
+
+def track_verdicts(
+    block: dict[str, Any], *, B: int = 2000, seed: int = VERDICT_SEED
+) -> dict[str, BlockEffect]:
+    """Evaluate every track version in a block with `engine.evaluation.block_effect`.
+
+    Track classes are the this-term arm; the comparison group is the waitlist (next-term arm) for
+    the same track. Nothing about the answer is stored in the data: the verdict is computed here.
+    """
+    before = {r.class_id: r for r in class_records(block, "T1")}
+    after = {r.class_id: r for r in class_records(block, "T2")}
+    out: dict[str, BlockEffect] = {}
+    for error in ErrorCode:
+        rows = [a for a in block["assignments"] if a["track"] == error.value]
+        if not rows:
+            continue
+        groups = {
+            a["class_id"]: Group.TRACK if a["arm"] == Arm.THIS_TERM.value else Group.COMPARISON
+            for a in rows
+        }
+        version = f"{error.value} {rows[0]['version']}"
+        out[version] = block_effect(
+            version, class_changes(error, before, after, groups), B=B, seed=seed
+        )
+    return out
