@@ -123,6 +123,11 @@ def gate1(inp: GateInput) -> list[ValidatorResult]:
     return results
 
 
+def _audit_reason(verdict: Verdict) -> str:
+    """Only the fixed rubric item codes go to the audit row: the free-text reason can quote text."""
+    return ",".join(verdict.failed_items) if verdict.failed_items else "pass"
+
+
 def _reason_key(results: list[ValidatorResult]) -> str:
     codes = {c for r in results for c in r.codes}
     for code, key in _CODE_TO_REASON:
@@ -167,7 +172,7 @@ def run_gates(inp: GateInput, *, context: CallContext | None = None) -> GateResu
             context.sink.update(
                 inp.source_audit_id,
                 checker_verdict="fail",
-                checker_reason=verdict.reason_short[:300],
+                checker_reason=_audit_reason(verdict),
             )
         return GateResult(
             passed_automatic=False,
@@ -184,7 +189,7 @@ def run_gates(inp: GateInput, *, context: CallContext | None = None) -> GateResu
 
     if inp.source_audit_id is not None and context is not None and context.sink is not None:
         context.sink.update(
-            inp.source_audit_id, checker_verdict="pass", checker_reason=verdict.reason_short[:300]
+            inp.source_audit_id, checker_verdict="pass", checker_reason=_audit_reason(verdict)
         )
     approved = inp.human_approved and needs_human
     badge = compute_badge(gates_1_2_passed=True, human_approved=approved)

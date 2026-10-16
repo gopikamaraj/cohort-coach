@@ -268,13 +268,13 @@ def test_gate_outcome_is_written_to_the_source_audit_row(sink: SqlAuditSink) -> 
         context=ctx(sink, FakeClient([PASS])),
     )
     row = next(r for r in sink.recent(10) if r.id == row_id)
-    assert row.checker_verdict == "pass" and row.checker_reason == "ok"
+    assert row.checker_verdict == "pass" and row.checker_reason == "pass"
     run_gates(
         gi("Hello.", allowed_numbers=set(), source_audit_id=row_id),
         context=ctx(sink, FakeClient([FAIL_TONE])),
     )
     row = next(r for r in sink.recent(10) if r.id == row_id)
-    assert row.checker_verdict == "fail" and row.checker_reason == "harsh"
+    assert row.checker_verdict == "fail" and row.checker_reason == "tone"
 
 
 # gate 4 + review tables ----------------------------------------------------------------------
@@ -310,3 +310,20 @@ def test_teacher_flags_and_review_decisions(sink: SqlAuditSink) -> None:
         s.commit()
         row = s.query(ReviewDecision).one()
         assert row.reason == "wrong_maths" and row.decided_at is not None
+
+
+def test_audit_checker_reason_never_holds_free_text(sink: SqlAuditSink) -> None:
+    quoting = Verdict(
+        passed=False, failed_items=["tone"], reason_short="she said 'you dumb kids'",
+        reason_for_user="x",
+    )  # fmt: skip
+    row_id = sink.write(
+        call_id=3, call_key="c03_feedback", prompt_version=1, model="m", mode="live",
+        input_hash="b" * 64,
+    )  # fmt: skip
+    run_gates(
+        gi("Hello.", allowed_numbers=set(), source_audit_id=row_id),
+        context=ctx(sink, FakeClient([quoting])),
+    )
+    row = next(r for r in sink.recent(10) if r.id == row_id)
+    assert row.checker_reason == "tone" and "dumb" not in str(row.checker_reason)
