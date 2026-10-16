@@ -25,7 +25,7 @@ jobs:
           AI_MODE: recorded
       - name: Bundle size (stub until P05)
         run: echo "bundle-size gate available after P05"
-      - name: Secret scan
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Secret scan (gitleaks, whole history)
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz | tar xz gitleaks
+          ./gitleaks detect --redact -v --exit-code=2
