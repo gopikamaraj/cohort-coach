@@ -42,6 +42,24 @@ Each error is a pure function `problem -> set of wrong answers` in [engine/bugs.
 
 For a class: prevalence p = children showing the error ÷ children checked (a fraction; the engine never rounds). **Eligible** = p ≥ 25% and at least 10 children checked, compared with integers (`count × 4 ≥ checked`), so 3 of 12 is eligible and 3 of 13 is not. **Track** = PV-HEARD if eligible, else the tracked error with the most children (ties go to the first in code order). PV-REVERSE is never chosen.
 
+## Grouping and mentors
+
+[engine/grouping.py](../engine/grouping.py) works on **class-level counts only** (what the server stores), through `profile_from_counts`.
+
+1. **Track assignment.** A class is eligible at p of at least 25% with at least 10 children checked. One track per class: PV-HEARD first, otherwise its highest-p error. Each assignment returns the facts for its one-line explanation ("Grouped for SUB-SFL because 11 of 28 children showed it").
+2. **Waitlist split.** Teachers with the same track, grade and medium are cut into terciles of baseline p and each tercile is split as evenly as possible (never more than one apart), with a seeded shuffle. The same seed always gives the same split.
+3. **Cohorts.** 15 to 20 teachers, at most 2 per school, one mentor slot each. A block with fewer than 15 eligible teachers is pooled with other short blocks (flagged `cross_block`); a pool still under 15 becomes one `undersized` cohort. Teachers who do not fit (school cap or a full cohort) are returned as `unplaced` for the next cohort. The demo block is one block split by medium and then by arm, so its cohorts are small and flagged undersized.
+
+[engine/mentors.py](../engine/mentors.py) returns, for each rule, whether it was met and the numbers behind it. Exact fractions decide every boundary.
+
+| Kind | Rule |
+| --- | --- |
+| Proven | On the track; last term p of at least 25%; this term fell at least 15 points and by at least half; at least 15 children checked both times; her fall beats the comparison group's average; she consents |
+| Comparison-group improver | The proven bar, without the track and without the comparison-average rule; she consents |
+| Same-term candidate | Same grade and medium; p of at most 5% while the block average is at least 25%; at least 10 children checked; she consents. The cause is unverified, so a method interview comes first and she stays "candidate" until a term confirms |
+
+`find_mentors` is the tier-1 exact lookup (error, grade, medium, status, verified) that P11 wires to the database. There is no vector database.
+
 ## One engine, two languages
 
 The phone diagnoses offline with `apps/pwa/src/lib/diagnosis.ts`, which only looks up answers in `apps/pwa/src/generated/answer_keys.json` (written by `python tasks.py export-keys`, with a content hash so client and server can spot drift). Python also writes `tests/fixtures/diagnosis_cases.json` (parity fixtures: their expected values are the engine's own output, so they prove Python and TypeScript agree, not that either is right; correctness rests on the printed key and the hand-written assertions in `tests/engine/`) (named edge cases, seeded random children and whole classes of different sizes); pytest checks the files are not stale and Vitest checks TypeScript gives identical results.
