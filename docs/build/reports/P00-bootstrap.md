@@ -1,6 +1,6 @@
 # P00 · Bootstrap — report
 
-**Status:** 🟡 done; CI not yet run (no git remote).
+**Status:** ✅ done. CI green on `83e571b` (GitHub Actions run 38881893876). The first run failed only in the gitleaks action (commit-range error, not a leak); replaced by the gitleaks CLI over full history.
 
 ## Built
 Repo skeleton per CLAUDE.md §6, `pyproject.toml` + `requirements.lock`, FastAPI `/api/health`, Vite/React/TS PWA shell (judge-mode placeholder in a phone frame, en/hi/ta strings), `tasks.py` (all §10 commands; later phases print `available after PXX`), `.env.example`, MIT licence, CI workflow, docs skeleton, `scripts/feedback_table.py`.
@@ -21,7 +21,7 @@ None.
 - Pre-commit hook runs the full `check`, which will slow commits; remove if it gets in the way.
 
 ## TODO-HUMAN
-Gopi: finguru paths / decision changes; ffmpeg; GitHub remote (CI proof).
+Gopi (open): Telegram reuse paths (optional); ffmpeg; Sarvam key. Done: voice uses Sarvam directly (DECISIONS); GitHub remote and CI proof.
 
 ## Judged area served
 Repo quality (README, CI, tooling). No evidence numbers yet.
