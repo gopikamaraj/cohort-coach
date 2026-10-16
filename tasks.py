@@ -92,10 +92,17 @@ def cmd_check(args: list[str]) -> int:
     if cmd_export_keys(["--check"]) != 0:
         return 1
     # Eval smoke: engine_items at a small N, no file write (the full run writes results).
-    return run([py, "-m", "evals.runners.engine_items", "--n", "100", "--no-write"])
+    smoke = [
+        [py, "-m", "evals.runners.engine_items", "--n", "100", "--no-write"],
+        [py, "-m", "evals.runners.statistics", "--quick", "--no-write"],
+    ]
+    return max(run(cmd) for cmd in smoke)
 
 
-AVAILABLE_EVALS = {"engine_items": "evals.runners.engine_items"}
+AVAILABLE_EVALS = {
+    "engine_items": "evals.runners.engine_items",
+    "statistics": "evals.runners.statistics",
+}
 
 
 def cmd_eval(args: list[str]) -> int:
