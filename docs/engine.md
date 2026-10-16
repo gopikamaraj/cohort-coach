@@ -1,5 +1,7 @@
 # The deterministic engine
 
+**Code, not AI, owns every number.** Eval 1 (`evals/results/engine_items.json`) checks the error answers and item collisions; the phone and the server give identical diagnoses (see "One engine, two languages").
+
 Everything a judge must be able to trust is plain, unit-tested Python in `engine/`: the error functions, the items, diagnosis and the track choice. No AI call computes or states a number about a class. Claude may later phrase a sentence around a number; the number comes from here.
 
 ## The five errors
@@ -50,8 +52,11 @@ Diagnosis decides which teachers train together, so it must be exact, repeatable
 
 ## Evidence
 
-- `evals/results/engine_items.json` (eval 1, `python tasks.py eval engine_items`): 500 generated problems per error, compared with an independent column-procedure oracle: 100% correct, 0 collisions.
-- Unit and property tests under `tests/engine/` (Hypothesis, 500 examples per property).
+No number is typed in this page. The results live in generated files:
+
+- `evals/results/engine_items.json` (eval 1, `python tasks.py eval engine_items`): per error, how many generated problems match an independent column-procedure oracle, and how many collide. The registry copy in `docs/evidence/` arrives with `python tasks.py evidence` (P02).
+- Unit and property tests under `tests/engine/` (Hypothesis, 500 examples per property): run `python tasks.py test`.
+- Type check: `.venv/Scripts/python.exe -m mypy --strict engine` (the venv has mypy; system Python may not).
 
 ## Open for the team
 
