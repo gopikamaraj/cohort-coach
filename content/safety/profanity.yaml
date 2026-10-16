@@ -1,0 +1,9 @@
+# Rule-based pre-filter word lists, matched as whole words (case-insensitive).
+# Hindi and Tamil entries include romanised spellings, because teachers type both ways.
+# TODO-HUMAN(Shivani, Gopi): review and extend. This is a first draft by the build.
+# "harsh" words are not swearing but are never right in feedback for a teacher or a child line.
+en: [damn, shit, fuck, fucking, bastard, bitch, asshole, crap, idiot, stupid, dumb, useless, moron]
+hi: [बेवकूफ, गधा, नालायक, हरामी, कमीना, साला, चूतिया, bewakoof, gadha, nalayak, harami, kamina,
+  kamine, saala, saale, chutiya, madarchod, bhenchod, behenchod, bakwas, gandu]
+ta: [முட்டாள், கழுதை, மண்டு, லூசு, பொறுக்கி, muttal, muttaal, kazhuthai, mandu, loosu, porukki,
+  otha, punda, thevidiya, sunni, naye, pannada]

@@ -1,0 +1,28 @@
+# Phrases that signal an off-topic or instruction-hijacking line. Matched as lowercase substrings.
+# TODO-HUMAN(Shivani): extend with real red-team findings.
+injection:
+  - ignore previous instructions
+  - ignore all previous
+  - ignore the above
+  - disregard your instructions
+  - system prompt
+  - developer mode
+  - jailbreak
+  - you are now
+  - act as
+  - pretend to be
+  - reveal your prompt
+  - api key
+  - पिछले निर्देश
+  - सिस्टम प्रॉम्प्ट
+  - முந்தைய அறிவுறுத்தல்
+offtopic:
+  - election
+  - cricket score
+  - lottery
+  - betting
+  - porn
+  - bitcoin
+  - चुनाव
+  - सट्टा
+  - தேர்தல்
