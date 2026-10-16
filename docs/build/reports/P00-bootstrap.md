@@ -16,7 +16,8 @@ None.
 
 ## Deviations
 - Playwright installed as a dev dependency only; browsers not downloaded until P06.
-- `cmd_setup` and `cmd_dev` were not run end to end; the equivalent commands were run by hand.
+- `setup` and `dev` were re-run through `tasks.py` after review; both worked (setup on the existing venv, not a fresh one).
+- `.gitignore` widened to all of `data/pilot/`; CI badge is a placeholder until a remote exists.
 - Pre-commit hook runs the full `check`, which will slow commits; remove if it gets in the way.
 
 ## TODO-HUMAN

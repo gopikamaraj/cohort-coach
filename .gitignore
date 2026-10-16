@@ -1,5 +1,6 @@
 .env
 .venv/
+data/pilot/
 data/pilot/raw/
 data/pilot/photos/
 data/private/

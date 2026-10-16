@@ -1,5 +1,8 @@
 # Cohort Coach
 
+<!-- TODO-HUMAN(Gopi): add CI badge once the GitHub remote exists -->
+![CI](https://img.shields.io/badge/CI-pending-lightgrey)
+
 Groups primary teachers for training by the specific error their pupils make, not by geography. A termly 10-item check shows what Grade 3 children get wrong; teachers whose classes share an error get a 3-week voice track on that one error, and rehearse it privately in a Practice Class with simulated children before trying it on real ones.
 
 Team A-Z 0-9 · Hack2skill × Anthropic "AI for Foundational Learning" · Challenge 3 (Teacher Support & Training).
@@ -12,7 +15,7 @@ _Generated in P03/P16._
 ## Setup
 
 ```text
-python tasks.py setup    # install Python and PWA dependencies
+python tasks.py setup    # install dependencies; installs a pre-commit hook running `check`
 python tasks.py dev      # API on :8000 + PWA on :5173
 python tasks.py check    # lint + types + tests + eval smoke
 ```
