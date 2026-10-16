@@ -6,7 +6,7 @@ No rounding happens here; callers format. Teacher-facing text uses counts, never
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 from engine.bugs import classify, probes
 from engine.model import (
@@ -70,32 +70,50 @@ def class_profile(children: Sequence[ChildDiagnosis]) -> ClassProfile:
 
     Children checked = every diagnosed child, including ones with blank or unreadable boxes.
     """
-    checked = len(children)
     counts = {code: sum(code in c.shows for c in children) for code in ErrorCode}
-    prevalence = {code: (n / checked if checked else 0.0) for code, n in counts.items()}
-    eligible = tuple(
-        code
-        for code in ErrorCode
-        if checked >= MIN_CHILDREN_CHECKED
-        and counts[code] * MIN_PREVALENCE_DENOMINATOR >= checked * MIN_PREVALENCE_NUMERATOR
-    )
-    track = _choose_track(eligible, counts)
     untracked: Counter[str] = Counter()
     for c in children:
         untracked.update(c.untracked)
-    return ClassProfile(
-        children_checked=checked,
-        counts=counts,
-        prevalence=prevalence,
-        eligible=eligible,
-        track=track,
+    return profile_from_counts(
+        len(children),
+        counts,
         anchor_wrong_count=sum(c.anchor_wrong for c in children),
         untracked=dict(untracked),
     )
 
 
+def profile_from_counts(
+    children_checked: int,
+    counts: Mapping[ErrorCode, int],
+    anchor_wrong_count: int = 0,
+    untracked: Mapping[str, int] | None = None,
+) -> ClassProfile:
+    """The same profile from class-level counts alone: all the server ever stores."""
+    full = {code: counts.get(code, 0) for code in ErrorCode}
+    if any(n < 0 or n > children_checked for n in full.values()):
+        raise ValueError("a count must be between 0 and the number of children checked")
+    prevalence = {
+        code: (n / children_checked if children_checked else 0.0) for code, n in full.items()
+    }
+    eligible = tuple(
+        code
+        for code in ErrorCode
+        if children_checked >= MIN_CHILDREN_CHECKED
+        and full[code] * MIN_PREVALENCE_DENOMINATOR >= children_checked * MIN_PREVALENCE_NUMERATOR
+    )
+    return ClassProfile(
+        children_checked=children_checked,
+        counts=full,
+        prevalence=prevalence,
+        eligible=eligible,
+        track=_choose_track(eligible, full),
+        anchor_wrong_count=anchor_wrong_count,
+        untracked=dict(untracked or {}),
+    )
+
+
 def _choose_track(
-    eligible: tuple[ErrorCode, ...], counts: dict[ErrorCode, int]
+    eligible: tuple[ErrorCode, ...], counts: Mapping[ErrorCode, int]
 ) -> ErrorCode | None:
     """PV-HEARD first, else the highest-p tracked error (ties: first in code order)."""
     candidates = [code for code in eligible if code in TRACKED]
