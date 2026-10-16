@@ -1,0 +1,438 @@
+{
+  "content_hash": "83c12a288197eec3f418bd9ef0cee1020985c3d08fd6d4fa62d096f76fffa1c2",
+  "error_order": [
+    "PV-HEARD",
+    "PV-REVERSE",
+    "ADD-NOCARRY",
+    "SUB-SFL",
+    "SUB-NODEC"
+  ],
+  "forms": {
+    "A": {
+      "items": [
+        {
+          "correct": 346,
+          "n": 1,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "300406": [
+              "PV-HEARD"
+            ],
+            "30046": [
+              "PV-HEARD"
+            ],
+            "300604": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "30064": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "3046": [
+              "PV-HEARD"
+            ],
+            "3064": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "364": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "correct": 728,
+          "n": 2,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "700208": [
+              "PV-HEARD"
+            ],
+            "70028": [
+              "PV-HEARD"
+            ],
+            "700802": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "70082": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "7028": [
+              "PV-HEARD"
+            ],
+            "7082": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "782": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "correct": 85,
+          "n": 3,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "type": "add_carry",
+          "untracked": {
+            "715": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "75": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "correct": 74,
+          "n": 4,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "type": "add_carry",
+          "untracked": {
+            "614": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "64": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "correct": 82,
+          "n": 5,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "type": "add_carry",
+          "untracked": {
+            "712": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "72": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "correct": 35,
+          "n": 6,
+          "probes": [],
+          "type": "sub_anchor",
+          "untracked": {},
+          "wrong": {}
+        },
+        {
+          "correct": 38,
+          "n": 7,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "42": [
+              "SUB-SFL"
+            ],
+            "48": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "correct": 26,
+          "n": 8,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "34": [
+              "SUB-SFL"
+            ],
+            "36": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "correct": 43,
+          "n": 9,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "53": [
+              "SUB-NODEC"
+            ],
+            "57": [
+              "SUB-SFL"
+            ]
+          }
+        },
+        {
+          "correct": 54,
+          "n": 10,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "64": [
+              "SUB-NODEC"
+            ],
+            "66": [
+              "SUB-SFL"
+            ]
+          }
+        }
+      ],
+      "label": "Pre-test · Form A"
+    },
+    "B": {
+      "items": [
+        {
+          "correct": 264,
+          "n": 1,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "200406": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "20046": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "200604": [
+              "PV-HEARD"
+            ],
+            "20064": [
+              "PV-HEARD"
+            ],
+            "2046": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "2064": [
+              "PV-HEARD"
+            ],
+            "246": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "correct": 853,
+          "n": 2,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "800305": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "80035": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "800503": [
+              "PV-HEARD"
+            ],
+            "80053": [
+              "PV-HEARD"
+            ],
+            "8035": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "8053": [
+              "PV-HEARD"
+            ],
+            "835": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "correct": 75,
+          "n": 3,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "type": "add_carry",
+          "untracked": {
+            "615": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "65": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "correct": 84,
+          "n": 4,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "type": "add_carry",
+          "untracked": {
+            "714": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "74": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "correct": 72,
+          "n": 5,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "type": "add_carry",
+          "untracked": {
+            "612": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "62": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "correct": 45,
+          "n": 6,
+          "probes": [],
+          "type": "sub_anchor",
+          "untracked": {},
+          "wrong": {}
+        },
+        {
+          "correct": 48,
+          "n": 7,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "52": [
+              "SUB-SFL"
+            ],
+            "58": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "correct": 36,
+          "n": 8,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "44": [
+              "SUB-SFL"
+            ],
+            "46": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "correct": 53,
+          "n": 9,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "63": [
+              "SUB-NODEC"
+            ],
+            "67": [
+              "SUB-SFL"
+            ]
+          }
+        },
+        {
+          "correct": 64,
+          "n": 10,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "74": [
+              "SUB-NODEC"
+            ],
+            "76": [
+              "SUB-SFL"
+            ]
+          }
+        }
+      ],
+      "label": "Post-test · Form B"
+    }
+  },
+  "rules": {
+    "min_children_checked": 10,
+    "min_hits": 2,
+    "min_prevalence": {
+      "denominator": 4,
+      "numerator": 1
+    },
+    "track_priority": "PV-HEARD first, else highest count; ties by error order",
+    "tracked": [
+      "PV-HEARD",
+      "ADD-NOCARRY",
+      "SUB-SFL",
+      "SUB-NODEC"
+    ]
+  },
+  "version": 1
+}

@@ -93,6 +93,10 @@ def cmd_check(args: list[str]) -> int:
     return 0
 
 
+def cmd_export_keys(args: list[str]) -> int:
+    return run([venv_python(), "scripts/export_keys.py", *args])
+
+
 def deferred(phase: str) -> Callable[[list[str]], int]:
     def _run(args: list[str]) -> int:
         print(f"available after {phase}")
@@ -108,7 +112,7 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "check": (cmd_check, "lint + typecheck + test + eval smoke (run before every commit)"),
     "eval": (deferred("P13"), "evals: <name|all> [--live]"),
     "seed": (deferred("P02"), "build the simulated block (seed 2026)"),
-    "export-keys": (deferred("P02"), "answer keys JSON for on-device diagnosis"),
+    "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (deferred("P03"), "spend by call, model and day"),
     "evidence": (deferred("P02"), "regenerate docs/evidence/ and the numbers table"),
     "readme": (deferred("P03"), "regenerate README 'Where AI is used'"),

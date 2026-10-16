@@ -12,7 +12,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFERRED = {
     "eval": "P13",
     "seed": "P02",
-    "export-keys": "P02",
     "budget": "P03",
     "evidence": "P02",
     "readme": "P03",
@@ -56,3 +55,9 @@ def test_every_documented_command_is_registered() -> None:
 
 def test_unknown_command_fails() -> None:
     assert run("nope").returncode != 0
+
+
+def test_export_keys_check_passes_on_committed_files() -> None:
+    result = run("export-keys", "--check")
+    assert result.returncode == 0, result.stdout
+    assert "STALE" not in result.stdout
