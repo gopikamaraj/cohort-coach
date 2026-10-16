@@ -39,6 +39,8 @@ A pilot has few classes and a few dozen children, and McNemar only counts childr
 | Statistics eval (eval 8) | `python tasks.py eval statistics` | `evals/results/statistics.json`, summarised in [docs/evidence/eval_summary.md](evidence/eval_summary.md) |
 | The simulated block (seed 2026) | `python tasks.py seed` | `data/synthetic/block_T1T2.json` |
 
+**Read the eval 8 headline with its scope.** It shows the test is conservative: it finds planted effects of 15 points or more with 20 classes per arm, and it finds a 10-point effect (right at the working bar) only about half the time. Do not quote the recovery rate as general power. The per-effect table in the evidence summary shows every row.
+
 Eval 8 plants effects of known size (and zero) in simulated terms and checks that planted working effects are called working at least 95% of the time and that no-effect terms are called working at most 5% of the time. Effect sizes, arm size, class-to-class spread and seeds are listed in its result file. The simulated block plants SUB-SFL v1 as a working track and SUB-NODEC v1 as a failing one; the verdicts are computed from the counts by `block_effect`, and a test swaps the planted effects to prove nothing is hardcoded.
 
 All simulated data is labelled "simulated" wherever it is shown.

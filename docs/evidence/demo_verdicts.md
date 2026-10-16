@@ -6,7 +6,7 @@ Source: `data/synthetic/block_T1T2.json` (data hash `c43c94d0e0567ed9f0e318ac9f8
 
 | Track version | Classes (track / comparison) | Effect (points) | 95% CI | Verdict | Note |
 | --- | --- | --- | --- | --- | --- |
-| PV-HEARD v1 | hidden (fewer than 5 classes) | hidden (fewer than 5 classes) | hidden (fewer than 5 classes) | inconclusive | from 3 classes, read as directional |
-| ADD-NOCARRY v1 | 8 / 7 | -15.7 | -23.0 to -8.8 | inconclusive | from 7 classes, read as directional |
-| SUB-SFL v1 | 21 / 23 | -19.5 | -24.1 to -15.1 | working |  |
-| SUB-NODEC v1 | 18 / 17 | -0.3 | -3.3 to 2.8 | not_working |  |
+| PV-HEARD v1 | hidden (fewer than 5 classes) | hidden (fewer than 5 classes) | hidden (fewer than 5 classes) | inconclusive | from 3 classes, read as directional; under 15 classes in an arm, so inconclusive whatever the estimate |
+| ADD-NOCARRY v1 | 8 / 7 | -15.7 | -23.0 to -8.8 | inconclusive | from 7 classes, read as directional; under 15 classes in an arm, so inconclusive whatever the estimate |
+| SUB-SFL v1 | 21 / 23 | -19.5 | -24.1 to -15.1 | working | interval below 0 and a fall of at least 10 points |
+| SUB-NODEC v1 | 18 / 17 | -0.3 | -3.3 to 2.8 | not_working | a fall of under 5 points, or a rise |

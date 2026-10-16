@@ -33,11 +33,26 @@ def _load(path: Path) -> dict[str, Any]:
     return loaded
 
 
+REASON_TEXT = {
+    "too_few_classes": "under 15 classes in an arm, so inconclusive whatever the estimate",
+    "ci_below_zero_and_fall_at_least_10": "interval below 0 and a fall of at least 10 points",
+    "fall_below_5_or_rise": "a fall of under 5 points, or a rise",
+    "between_the_bars": "between the working and not-working bars",
+}
+
+
+def _note(r: dict[str, Any]) -> str:
+    parts = [r["confidence_note"]] if r["confidence_note"] else []
+    parts.append(REASON_TEXT.get(r["reason"], r["reason"]))
+    return "; ".join(parts)
+
+
 def _verdict_record(e: BlockEffect) -> dict[str, Any]:
     if e.hidden:
         return {
             "verdict": e.verdict.value,
             "hidden": True,
+            "reason": e.reason,
             "estimate_points": None,
             "ci_low": None,
             "ci_high": None,
@@ -80,7 +95,7 @@ def _demo_verdicts(block: dict[str, Any]) -> tuple[str, str]:
     ]
     for version, r in records.items():
         if r["hidden"]:
-            row = [version, HIDDEN, HIDDEN, HIDDEN, r["verdict"], r["confidence_note"] or ""]
+            row = [version, HIDDEN, HIDDEN, HIDDEN, r["verdict"], _note(r)]
         else:
             row = [
                 version,
@@ -88,7 +103,7 @@ def _demo_verdicts(block: dict[str, Any]) -> tuple[str, str]:
                 f"{r['estimate_points']:.1f}",
                 f"{r['ci_low']:.1f} to {r['ci_high']:.1f}",
                 r["verdict"],
-                r["confidence_note"] or "",
+                _note(r),
             ]
         lines.append("| " + " | ".join(row) + " |")
     return "\n".join(lines) + "\n", json.dumps(records, indent=2, sort_keys=True) + "\n"
