@@ -1,0 +1,45 @@
+{
+  "ADD-NOCARRY v1": {
+    "ci_high": -8.770864793,
+    "ci_low": -22.985086825,
+    "confidence_note": "from 7 classes, read as directional",
+    "estimate_points": -15.714997546,
+    "hidden": false,
+    "n_comparison": 7,
+    "n_track": 8,
+    "reason": "too_few_classes",
+    "verdict": "inconclusive"
+  },
+  "PV-HEARD v1": {
+    "ci_high": null,
+    "ci_low": null,
+    "confidence_note": "from 3 classes, read as directional",
+    "estimate_points": null,
+    "hidden": true,
+    "n_comparison": null,
+    "n_track": null,
+    "verdict": "inconclusive"
+  },
+  "SUB-NODEC v1": {
+    "ci_high": 2.770411369,
+    "ci_low": -3.324645331,
+    "confidence_note": null,
+    "estimate_points": -0.301790944,
+    "hidden": false,
+    "n_comparison": 17,
+    "n_track": 18,
+    "reason": "fall_below_5_or_rise",
+    "verdict": "not_working"
+  },
+  "SUB-SFL v1": {
+    "ci_high": -15.145436721,
+    "ci_low": -24.085768878,
+    "confidence_note": null,
+    "estimate_points": -19.469512742,
+    "hidden": false,
+    "n_comparison": 23,
+    "n_track": 21,
+    "reason": "ci_below_zero_and_fall_at_least_10",
+    "verdict": "working"
+  }
+}

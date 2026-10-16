@@ -130,6 +130,10 @@ def cmd_seed(args: list[str]) -> int:
     return run([venv_python(), "scripts/seed.py", *args])
 
 
+def cmd_evidence(args: list[str]) -> int:
+    return run([venv_python(), "scripts/evidence.py", *args])
+
+
 def cmd_export_keys(args: list[str]) -> int:
     return run([venv_python(), "scripts/export_keys.py", *args])
 
@@ -151,7 +155,7 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "seed": (cmd_seed, "build the simulated block (seed 2026) and seed the DB [--check] [--no-db]"),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (deferred("P03"), "spend by call, model and day"),
-    "evidence": (deferred("P02"), "regenerate docs/evidence/ and the numbers table"),
+    "evidence": (cmd_evidence, "regenerate docs/evidence/ and the numbers table [--check]"),
     "readme": (deferred("P03"), "regenerate README 'Where AI is used'"),
 }
 
