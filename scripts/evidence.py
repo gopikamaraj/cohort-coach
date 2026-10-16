@@ -94,6 +94,19 @@ def _demo_verdicts(block: dict[str, Any]) -> tuple[str, str]:
     return "\n".join(lines) + "\n", json.dumps(records, indent=2, sort_keys=True) + "\n"
 
 
+def _power_note(stats: dict[str, Any]) -> str:
+    """Power just above and below the 10-point working bar, from the characterisation rows."""
+    parts = []
+    for effect in ("5", "10"):
+        t = stats["per_effect"].get(effect)
+        if t:
+            parts.append(
+                f"a planted {effect}-point effect was called working in "
+                f"{t['working']} of {t['trials']} trials"
+            )
+    return ("Near the working bar, " + "; ".join(parts) + " (not scored).") if parts else ""
+
+
 def _eval_summary() -> str:
     items = _load(RESULTS / "engine_items.json")
     stats = _load(RESULTS / "statistics.json")
@@ -132,6 +145,11 @@ def _eval_summary() -> str:
         f'- False "working" with no effect: {stats["false_working"]:.0%} of '
         f"{stats['trials_scored']['no_effect']} trials (bar at most 5%).",
         f"- Result: {'pass' if stats['passed'] else 'FAIL'}.",
+        f"- Scope of the recovery bar: it applies to planted effects of "
+        f"{min(stats['planted_effects_points'])} points or more. {_power_note(stats)}",
+        "- Eval 8 uses a simplified class-level simulator (binomial child counts, with natural "
+        "drift and onset set to the same values as the simulated block). It tests the verdict "
+        "code, not the answer-sheet model.",
         "",
         "| Planted effect (points) | Trials | Working | Not working | Inconclusive | Scored |",
         "| --- | --- | --- | --- | --- | --- |",
