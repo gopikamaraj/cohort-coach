@@ -1,0 +1,31 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/pwa/package-lock.json
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Install PWA deps
+        run: npm ci
+        working-directory: apps/pwa
+      - name: Check (lint, types, tests; no secrets, no network, no paid APIs)
+        run: python tasks.py check
+        env:
+          AI_MODE: recorded
+      - name: Bundle size (stub until P05)
+        run: echo "bundle-size gate available after P05"
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

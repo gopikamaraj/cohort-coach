@@ -1,0 +1,54 @@
+[project]
+name = "cohort-coach"
+version = "0.1.0"
+description = "Groups primary teachers for training by the specific error their pupils make."
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "pydantic>=2",
+  "sqlalchemy>=2",
+  "alembic",
+  "anthropic",
+  "httpx",
+  "python-telegram-bot>=21",
+  "numpy",
+  "scipy",
+  "pyyaml",
+  "python-multipart",
+  "pillow",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-asyncio",
+  "hypothesis",
+  "respx",
+  "ruff",
+  "mypy",
+  "types-PyYAML",
+]
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["apps", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["engine", "ai/validators"]
+strict = true

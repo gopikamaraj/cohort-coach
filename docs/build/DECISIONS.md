@@ -6,8 +6,8 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 
 | ID | Question | Default | Needed by | Owner |
 | --- | --- | --- | --- | --- |
-| OD-1 | Licence for the public repo: MIT or Apache-2.0? | MIT | P00 | Gopi |
-| OD-2 | Reuse finguru code? Local paths to the voice server (WebSocket + VAD) and the Telegram bot | Build fresh if no paths are given | P00 (used in P07, P10) | Gopi |
+| OD-1 | Licence for the public repo: MIT or Apache-2.0? | MIT (applied in P00) | P00 | Gopi |
+| OD-2 | Reuse finguru code? Local paths to the voice server (WebSocket + VAD) and the Telegram bot | Build fresh if no paths are given (applied in P00: none given) | P00 (used in P07, P10) | Gopi |
 | OD-3 | Hosting: API, database, storage, PWA | An always-on small API instance on a managed host (e.g. Render, Railway or Fly.io); managed Postgres (e.g. Neon or Supabase); S3-compatible storage (e.g. Cloudflare R2); static PWA hosting (e.g. Cloudflare Pages, Vercel or Netlify). No plan that sleeps during 1–10 Nov | P06 staging | Gopi |
 | OD-4 | Accounts: who creates the Telegram bot and the Sarvam account (with voice cloning) | Gopi, both | P07, P10 | Gopi |
 | OD-5 | Curriculum alignment for items and techniques | NCERT Grade 3 (the Delhi pilot); Tamil Nadu's Ennum Ezhuthum mapping goes in the roadmap | P04, P09 | Seema |
@@ -18,6 +18,12 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 | OD-10 | Backup if Week 2 slips | Apply the cut list in order; Gopi decides anything beyond it | Any | Gopi |
 
 ## Settled decisions
+
+### 2026-10-16 · P00 defaults applied: MIT licence, finguru built fresh
+- **Decision:** `LICENSE` is MIT (OD-1). No finguru paths were given, so voice (P07) and Telegram (P10) are built fresh (OD-2). Tooling: no `uv` or `ffmpeg` on Gopi's machine; `tasks.py` falls back to venv + pip, and ffmpeg is needed from P07 (`winget install Gyan.FFmpeg`). Python deps are listed unpinned in `pyproject.toml` and pinned in `requirements.lock`; `package-lock.json` pins the PWA.
+- **Why:** the starter prompt says to use defaults for anything unanswered.
+- **Alternatives:** Apache-2.0; reuse finguru if Gopi supplies paths (reversible before P07).
+- **Confirmed by:** pending Gopi (defaults in force).
 
 ### 2026-10-16 · Build calendar recompressed
 - **Decision:** the build starts 16 Oct; the calendar in `CLAUDE.md` §1 replaces the design doc's 12 Oct plan. Gates: Gate 1 on 19 Oct, staging on 21 Oct, Gate 2 on 26 Oct, freeze on 28 Oct, submit on 31 Oct.
