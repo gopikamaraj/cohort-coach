@@ -15,7 +15,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 
 | ID | Phase | Priority | Target | Status | Started (commit) | Finished | Report | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| P00 | Bootstrap, inventory, decisions | P0 | Fri 16 Oct | 🟡 | 2026-10-16 14:46 (`ac4a940`) | 2026-10-16 | [report](reports/P00-bootstrap.md) | CI untested: no remote yet |
+| P00 | Bootstrap, inventory, decisions | P0 | Fri 16 Oct | ✅ | 2026-10-16 14:46 (`ac4a940`) | 2026-10-16 | [report](reports/P00-bootstrap.md) | CI green on `83e571b` (run 38881893876) |
 | P01 | Engine core | P0 | Fri 16 – Sat 17 | ⬜ | | | | |
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ⬜ | | | | |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ⬜ | | | | |
@@ -47,8 +47,9 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 
 | Owner | Item | Needed by phase | Placeholder in place? | File |
 | --- | --- | --- | --- | --- |
-| Gopi | Answer: finguru paths? change any open decision? (defaults in force) | P07, P10 | yes: build fresh | DECISIONS.md |
-| Gopi | Install ffmpeg (`winget install Gyan.FFmpeg`); create GitHub remote so CI can run | P07 / now | n/a | — |
+| Gopi | Telegram bot reuse paths (optional; default build fresh) | P10 | yes | DECISIONS.md |
+| Gopi | Install ffmpeg (`winget install Gyan.FFmpeg`); Sarvam account + key in `.env` | P07 | n/a | — |
+| Gopi | Make repo public before submission (`gh repo edit --visibility public`) | P16 | n/a | — |
 
 ## Environments (no secrets here)
 
