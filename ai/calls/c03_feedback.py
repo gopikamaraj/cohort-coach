@@ -213,7 +213,13 @@ def give_feedback(
         trusted={
             "language": language,
             "rubric": [
-                {"id": p.id, "text": p.text[language], "moves": p.move_ids} for p in rubric.points
+                {
+                    "id": p.id,
+                    "text": p.text[language],
+                    "try_next": p.try_next[language],
+                    "moves": p.move_ids,
+                }
+                for p in rubric.points
             ],
             "labels": [{"turn": t.turn, "move_id": t.move_id} for t in turns],
             "scolded": scolded,

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from ai.config import load_env
 from services.api.judge import router as judge_router
+from services.api.practice import router as practice_router
 
 load_env()
 
@@ -11,6 +12,7 @@ VERSION = "0.1.0"
 
 app = FastAPI(title="Cohort Coach API", version=VERSION)
 app.include_router(judge_router)
+app.include_router(practice_router)
 
 
 @app.get("/api/health")

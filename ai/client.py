@@ -194,7 +194,11 @@ def run_call(
     digest = input_hash(spec, prompt, model, payload, ctx.extra_system)
 
     client = None
-    if mode in ("live", "record"):
+    if mode == "stub":  # a rule-based stand-in for the model: offline demos and tests, no spend
+        if ctx.client is None:
+            raise ValueError("stub mode needs a client")
+        client = ctx.client
+    elif mode in ("live", "record"):
         client = ctx.client or _live_client()
         check_budget(sink, judge=ctx.judge)
 
@@ -296,7 +300,11 @@ def run_call(
             encoding="utf-8",
         )
 
-    if mode != "recorded" and usage.cache_read_tokens == 0 and spec.key not in _warned_cache:
+    if (
+        mode in ("live", "record")
+        and usage.cache_read_tokens == 0
+        and spec.key not in _warned_cache
+    ):
         _warned_cache.add(spec.key)
         log.warning(
             "call %s: cache_read_input_tokens is 0 (cache write %d); expected after the first call",
@@ -304,7 +312,7 @@ def run_call(
             usage.cache_write_tokens,
         )
 
-    cost = cost_usd(model, usage) if mode != "recorded" else 0.0  # recordings spend nothing
+    cost = cost_usd(model, usage) if mode in ("live", "record") else 0.0  # replays spend nothing
     latency_ms = int((time.monotonic() - started) * 1000)
     audit_id = sink.write(
         call_id=spec.id,

@@ -33,6 +33,7 @@ class LabelResult:
     posed: Problem | None
     confidence: float
     forced: str | None  # injection | low_confidence | fallback | None
+    scope: str  # child | class | none (named nobody and unclear: the last child continues)
     run: CallResult | None
 
 
@@ -98,6 +99,7 @@ def label_move(
     return LabelResult(
         move_id=move_id,
         addressed=named if named in children else None,
+        scope="child" if named in children else ("class" if named == "class" else "none"),
         posed=posed,
         confidence=confidence,
         forced=forced,

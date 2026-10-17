@@ -48,8 +48,8 @@ POLICIES: dict[str, CallPolicy] = {
 
 def ai_mode() -> str:
     mode = os.environ.get("AI_MODE", "recorded")
-    if mode not in {"recorded", "live", "record"}:
-        raise ValueError(f"AI_MODE must be recorded, live or record, not {mode!r}")
+    if mode not in {"recorded", "live", "record", "stub"}:
+        raise ValueError(f"AI_MODE must be recorded, live, record or stub, not {mode!r}")
     return mode
 
 

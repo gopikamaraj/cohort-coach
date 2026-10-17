@@ -147,6 +147,10 @@ def cmd_readme(args: list[str]) -> int:
     return run([venv_python(), "scripts/readme.py", *args])
 
 
+def cmd_practice(args: list[str]) -> int:
+    return run([venv_python(), "scripts/practice_cli.py", *args])
+
+
 def cmd_export_keys(args: list[str]) -> int:
     return run([venv_python(), "scripts/export_keys.py", *args])
 
@@ -166,6 +170,10 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "check": (cmd_check, "lint + typecheck + test + eval smoke (run before every commit)"),
     "eval": (cmd_eval, "evals: <name|all> [--live]"),
     "seed": (cmd_seed, "build the simulated block (seed 2026) and seed the DB [--check] [--no-db]"),
+    "practice": (
+        cmd_practice,
+        "rehearse in the terminal: --scenario sub-sfl --lang en [--stub|--live]",
+    ),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (cmd_budget, "spend by call, model and day, from the audit trail"),
     "evidence": (cmd_evidence, "regenerate docs/evidence/ and the numbers table [--check]"),
