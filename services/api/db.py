@@ -191,3 +191,24 @@ class Consent(Base):
 def make_engine(url: str | None = None) -> Engine:
     """Engine from DATABASE_URL (SQLite for local dev and tests, Postgres in production)."""
     return create_engine(url or os.environ.get("DATABASE_URL") or "sqlite:///./dev.sqlite")
+
+
+class ProfileSync(Base):
+    """A class's check result as the phone sends it: counts only, never a per-child answer.
+
+    The class id is a random id made on the phone; no school, teacher or child is named here.
+    """
+
+    __tablename__ = "profile_sync"
+    __table_args__ = (UniqueConstraint("class_id", "term"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    class_id: Mapped[str] = mapped_column(String(40), index=True)
+    term: Mapped[str] = mapped_column(String(8))
+    form: Mapped[str] = mapped_column(String(4))
+    children_checked: Mapped[int] = mapped_column(Integer)
+    counts: Mapped[dict[str, Any]] = mapped_column(JSON)
+    anchor_wrong_count: Mapped[int] = mapped_column(Integer)
+    untracked: Mapped[dict[str, Any]] = mapped_column(JSON)
+    simulated: Mapped[bool] = mapped_column(Boolean, default=False)
+    received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)

@@ -1,0 +1,319 @@
+/* Tokens: docs/design-system.md. System fonts only; no images; no shadows. */
+:root {
+  --paper: #fbfcfd;
+  --ink: #14201f;
+  --muted: #4a5856;
+  --pen: #1b4f9c;
+  --margin: #b3261e;
+  --stick: #e8b93c;
+  --slate: #1f3a33;
+  --chalk: #f2f5f0;
+  --rule: #9db4d2;
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  font-family: system-ui, "Noto Sans Devanagari", "Noto Sans Tamil", sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+}
+h1 {
+  font-size: 24px;
+  margin: 0 0 var(--s3);
+  line-height: 1.25;
+}
+h2 {
+  font-size: 20px;
+  margin: var(--s4) 0 var(--s2);
+  line-height: 1.25;
+}
+p {
+  margin: 0 0 var(--s3);
+}
+ul.plain,
+ul.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.muted {
+  color: var(--muted);
+  font-size: 16px;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+:focus-visible {
+  outline: 3px solid var(--pen);
+  outline-offset: 2px;
+}
+
+/* The phone: full screen on a phone, a framed 360 px column on a desktop. */
+.stage {
+  min-height: 100vh;
+}
+.frame {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--paper);
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(157, 180, 210, 0.35) 31px, rgba(157, 180, 210, 0.35) 32px);
+}
+@media (min-width: 768px) {
+  .stage {
+    display: flex;
+    justify-content: center;
+    padding: var(--s5) 0;
+    background: #e9edf1;
+  }
+  .frame {
+    width: 392px;
+    height: min(780px, calc(100vh - 48px));
+    min-height: 0;
+    border: 16px solid var(--slate);
+    border-radius: 36px;
+    overflow: hidden;
+  }
+}
+
+.strip {
+  display: flex;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  background: var(--slate);
+}
+.strip select {
+  min-height: 48px;
+  font: inherit;
+  font-size: 16px;
+  padding: 0 var(--s2);
+  background: var(--chalk);
+  color: var(--ink);
+  border: 1px solid var(--chalk);
+  border-radius: 2px;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+.brand {
+  font-weight: 700;
+  font-size: 20px;
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  margin: 0;
+  font-size: 16px;
+  color: var(--muted);
+}
+.status-off {
+  color: var(--margin);
+}
+main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s4);
+  background: rgba(251, 252, 253, 0.9);
+}
+.tabs {
+  display: flex;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 var(--s1);
+  text-align: center;
+  font-size: 16px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.tab-on {
+  color: var(--pen);
+  font-weight: 700;
+  border-top: 4px solid var(--pen);
+}
+
+.banner {
+  margin: 0 0 var(--s3);
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--margin);
+  background: var(--paper);
+  font-size: 16px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: var(--s2) var(--s4);
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--pen);
+  color: #fff;
+  border: 1px solid var(--pen);
+}
+.btn-secondary {
+  background: var(--paper);
+  color: var(--pen);
+  border: 1px solid var(--pen);
+}
+.btn-flag {
+  background: var(--paper);
+  color: var(--margin);
+  border: 1px solid var(--margin);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.stack {
+  display: grid;
+  gap: var(--s3);
+  margin: var(--s4) 0;
+  border: 0;
+  padding: 0;
+}
+.row {
+  display: flex;
+  gap: var(--s2);
+  margin: var(--s3) 0;
+}
+.row .btn {
+  flex: 1;
+}
+
+ol.steps {
+  padding-left: var(--s5);
+  margin: 0 0 var(--s4);
+}
+ol.steps li {
+  display: grid;
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+}
+
+.boxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s2);
+}
+.box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  padding: var(--s1) var(--s3);
+  font: inherit;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.box-on {
+  border: 2px solid var(--pen);
+}
+.box-q {
+  font-size: 16px;
+  color: var(--muted);
+}
+.box-v {
+  font-weight: 700;
+}
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s2);
+  margin: var(--s3) 0;
+}
+.key {
+  min-height: 56px;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+}
+.key-small {
+  font-size: 16px;
+}
+.key-wide {
+  grid-column: span 2;
+}
+
+.card {
+  margin: 0 0 var(--s4);
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+.card-focus {
+  border-left: 4px solid var(--pen);
+}
+.card h2 {
+  margin-top: 0;
+}
+.count {
+  margin: 0 0 var(--s2);
+}
+.numeral {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+.sticks {
+  display: block;
+  max-width: 100%;
+  margin-bottom: var(--s2);
+}
+.example {
+  font-weight: 600;
+}
+.focus {
+  font-weight: 700;
+  color: var(--pen);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

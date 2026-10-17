@@ -23,8 +23,13 @@ jobs:
         run: python tasks.py check
         env:
           AI_MODE: recorded
-      - name: Bundle size (stub until P05)
-        run: echo "bundle-size gate available after P05"
+      - name: Bundle size (fail above 1 MB compressed, warn above 400 KB)
+        run: python tasks.py bundle
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/pwa
+      - name: End-to-end (offline, install, languages, counts-only sync)
+        run: python tasks.py e2e
       - name: Secret scan (gitleaks, whole history)
         run: |
           curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz | tar xz gitleaks

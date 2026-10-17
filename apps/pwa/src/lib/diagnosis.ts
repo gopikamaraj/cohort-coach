@@ -2,9 +2,11 @@
 // from generated/answer_keys.json, which the Python engine writes. No bug arithmetic lives here.
 import rawKeys from "../generated/answer_keys.json";
 
-interface ItemKey {
+export interface ItemKey {
   n: number;
   type: string;
+  a: number; // operands, for showing a class's own example (b is 0 for a dictation item)
+  b: number;
   correct: number;
   probes: string[];
   wrong: Record<string, string[]>;

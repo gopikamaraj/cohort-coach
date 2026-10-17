@@ -3,22 +3,42 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+// The app shell and every screen are precached, so the teacher screens (T1 to T3) work with no
+// signal after the first load. Only the Practice Class (P06) needs a live connection.
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      includeAssets: ["icon.svg"],
       manifest: {
+        id: "/",
         name: "Cohort Coach",
         short_name: "Cohort Coach",
+        description: "Know what your class gets wrong, then fix it.",
+        lang: "en",
         display: "standalone",
+        orientation: "portrait",
         start_url: "/",
-        background_color: "#ffffff",
-        theme_color: "#1f6f5c",
-        icons: [{ src: "icon.svg", sizes: "any", type: "image/svg+xml" }],
+        scope: "/",
+        background_color: "#fbfcfd",
+        theme_color: "#1f3a33",
+        icons: [
+          { src: "icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "icon-512.png", sizes: "512x512", type: "image/png" },
+          { src: "icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          { src: "icon.svg", sizes: "any", type: "image/svg+xml" },
+        ],
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,json,webmanifest}"],
+        navigateFallback: "index.html",
+        // The API is never cached: the Practice Class needs the live service, the rest is local.
+        navigateFallbackDenylist: [/^\/api\//],
       },
     }),
   ],
   server: { proxy: { "/api": "http://localhost:8000" } },
-  test: { environment: "node" },
+  preview: { proxy: { "/api": "http://localhost:8000" } },
+  test: { environment: "node", exclude: ["e2e/**", "node_modules/**"] },
 });

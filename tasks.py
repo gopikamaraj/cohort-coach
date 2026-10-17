@@ -153,6 +153,17 @@ def cmd_practice(args: list[str]) -> int:
     return run([venv_python(), "scripts/practice_cli.py", *args])
 
 
+def cmd_bundle(args: list[str]) -> int:
+    """Build the PWA, then fail above 1 MB compressed initial JS (warn above 400 KB)."""
+    must([npm(), "run", "build"], PWA)
+    return run([venv_python(), "scripts/bundle_size.py", "--write", *args])
+
+
+def cmd_e2e(args: list[str]) -> int:
+    """Playwright against the production build: offline, install, languages, counts-only sync."""
+    return run([npm(), "run", "e2e", "--", *args], PWA)
+
+
 def cmd_export_keys(args: list[str]) -> int:
     return run([venv_python(), "scripts/export_keys.py", *args])
 
@@ -176,6 +187,8 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
         cmd_practice,
         "rehearse in the terminal: --scenario sub-sfl --lang en [--stub|--live]",
     ),
+    "bundle": (cmd_bundle, "build the PWA and check the initial JS budget"),
+    "e2e": (cmd_e2e, "Playwright end-to-end tests on the production build"),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (cmd_budget, "spend by call, model and day, from the audit trail"),
     "evidence": (cmd_evidence, "regenerate docs/evidence/ and the numbers table [--check]"),

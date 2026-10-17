@@ -48,6 +48,10 @@ def _item_key(form: Form, index: int) -> dict[str, Any]:
     return {
         "n": item.n,
         "type": item.type.value,
+        # The operands, so the app can show a class's own example ("52 - 29 -> 37"). For a dictation
+        # item `a` is the number said and `b` is 0.
+        "a": item.a,
+        "b": item.b,
         "correct": correct_answer(item),
         "probes": [c.value for c in probes(item)],
         "wrong": wrong,

@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-17",
+  "form_factor": "mobile",
+  "lighthouse_version": "13.5.0",
+  "measure": "lighthouse_mobile",
+  "metrics": {
+    "cumulative-layout-shift": "0",
+    "first-contentful-paint": "1.5\u00a0s",
+    "interactive": "1.9\u00a0s",
+    "largest-contentful-paint": "1.8\u00a0s",
+    "speed-index": "1.5\u00a0s",
+    "total-blocking-time": "20\u00a0ms"
+  },
+  "note": "One run on one machine; read as directional. No PWA category in Lighthouse 12+.",
+  "scores_0_to_100": {
+    "accessibility": 100,
+    "best-practices": 100,
+    "performance": 99
+  },
+  "screen": {
+    "height": 823,
+    "width": 412
+  },
+  "source": "scripts/lighthouse_summary.py on a Lighthouse JSON report",
+  "throttling_method": "simulate",
+  "url": "http://localhost:4173/"
+}

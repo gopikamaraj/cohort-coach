@@ -245,6 +245,24 @@ def _practice_registry() -> list[str]:
                 f"| `docs/evidence/eval_summary.md` (`evals/results/{name}`) | `{script}` | "
                 f"{data['date']} | {n} {what} | {note} |"
             )
+    for fname, script, what, note in (
+        (
+            "bundle_size.json",
+            "scripts/bundle_size.py --write",
+            "initial JS of the built PWA",
+            "Exact measurement",
+        ),
+        (
+            "lighthouse_mobile.json",
+            "scripts/lighthouse_summary.py",
+            "one Lighthouse mobile run",
+            "One run: directional",
+        ),
+    ):
+        path = EVIDENCE / fname
+        if path.exists():
+            date = _load(path)["date"]
+            rows.append(f"| `docs/evidence/{fname}` | `{script}` | {date} | {what} | {note} |")
     session = EVIDENCE / "practice_session_live.json"
     if session.exists():
         s = _load(session)
