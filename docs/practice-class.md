@@ -23,6 +23,93 @@ sequenceDiagram
 
 Two Claude calls and one checker call per turn (calls 2, 1 and 7), plus call 3 at the end. A material tap (bundles, sticks, chart) is a move without a labeller call. Every turn returns a `layers` trace (input, processing, guardrails, evaluation, output) that judge mode renders in P06.
 
+## One live turn, in the five layers
+
+From a live rehearsal (2026-10-17, scripted synthetic lines, `evals/sets/practice_scripts/sub-sfl-en.txt`; the whole session, every turn's `layers`, the feedback card with its two verbatim quotes, and the cost are in `docs/evidence/practice_session_live.json`: 7 turns, median 5344 ms per turn, cost USD 0.0288 including the feedback). Turn 2, an excerpt of that file:
+
+```json
+{
+ "input": {
+  "teacher_text": "Tell me how you got that."
+ },
+ "processing": {
+  "label": {
+   "addressed": "Priya",
+   "confidence": 0.85,
+   "forced": null,
+   "move_id": "ask_explain"
+  },
+  "engine": {
+   "speaker": "Priya",
+   "intent": "explain",
+   "answer": 37,
+   "correct": false,
+   "error_code": "SUB-SFL",
+   "steps": [
+    {
+     "numbers": [
+      2,
+      9
+     ],
+     "op": "cant"
+    },
+    {
+     "numbers": [
+      9,
+      2,
+      7
+     ],
+     "op": "minus"
+    },
+    {
+     "numbers": [
+      5,
+      2,
+      3
+     ],
+     "op": "minus"
+    }
+   ],
+   "strength_before": {
+    "Priya": 0.9
+   },
+   "strength_after": {
+    "Priya": 0.7
+   }
+  }
+ },
+ "guardrails": {
+  "validators": [
+   "numbers: ok",
+   "number_words: ok",
+   "length: ok",
+   "readability: ok",
+   "prefilter: ok"
+  ],
+  "checker": {
+   "failed_items": [],
+   "passed": true
+  },
+  "retries": 0,
+  "fallback_used": null
+ },
+ "evaluation": {
+  "latency_ms": 5375,
+  "tokens": {
+   "cache_read": 5595,
+   "in": 976,
+   "out": 128
+  },
+  "cost_usd": 0.00150935
+ },
+ "output": {
+  "badge": "checked",
+  "child_line": "I can't do 2 minus 9, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37.",
+  "source": "ai"
+ }
+}
+```
+
 ## The rules the engine follows
 
 From `CLAUDE.md` section 5; the values are tuning parameters in `content/movelists/` and `content/scenarios/`, owned by Seema.

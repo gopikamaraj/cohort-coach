@@ -2,11 +2,11 @@
 
 <!-- HANDOFF: when the loop stops, it writes this block. Delete it once acted on. -->
 > **Handoff** — *none open*
-> - Where we are: P03 ✅. Next is P04 (Practice Class engine + calls 1–3, Gate 1).
-> - Needed from people: none blocking. Reviews of word lists and wording are in the table below.
+> - Where we are: P04 🟡 done (Gate 1 passed; text-turn latency over target, plan in the report). Next is P05 (PWA shell, judge mode, check entry, error cards).
+> - Needed from people: none blocking. Seema's reviews and the hi/ta wording are in the table below.
 > - Resume with: `/next-phase`
 
-**Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.0005 of 350 (judging reserve 150 untouched)
+**Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
 
 ## Phases
 
@@ -18,7 +18,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P01 | Engine core | P0 | Fri 16 – Sat 17 | ✅ | 2026-10-16 15:30 (`f92f846`) | 2026-10-16 | [report](reports/P01-engine-core.md) | CI for this phase after push; Seema to confirm key variants |
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ✅ | 2026-10-16 20:45 (`a0d858f`) | 2026-10-16 | [report](reports/P02-simulated-block-statistics.md) | CI for this phase after push; demo cohorts small by design |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ✅ | 2026-10-16 (`9bfc51c`) | 2026-10-17 | [report](reports/P03-ai-platform-guardrails.md) | Live red team on 12 seeds passed; cache hits confirmed |
-| P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | ⬜ | | | | Gate 1 |
+| P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report) |
 | P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | ⬜ | | | | |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | ⬜ | | | | Staging |
 | P07 | Voice | P0 | Thu 22 | ⬜ | | | | |
@@ -36,7 +36,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 
 | Gate | Due | Status | Evidence |
 | --- | --- | --- | --- |
-| Gate 1: SUB-SFL text rehearsal end to end | Mon 19 Oct | ⬜ | |
+| Gate 1: SUB-SFL text rehearsal end to end | Mon 19 Oct | ✅ | recorded and live rehearsal; `docs/evidence/practice_session_live.json`, `tests/practice/test_recorded_session.py` |
 | Staging live for test round 3 | Wed 21 Oct | ⬜ | |
 | Gate 2: all storyboard screens on a low-end phone | Mon 26 Oct | ⬜ | |
 | Freeze: production smoke-tested | Wed 28 Oct | ⬜ | |
@@ -49,6 +49,8 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Gopi | Telegram bot reuse paths (optional; default build fresh) | P10 | yes | DECISIONS.md |
 | Shivani, Gopi | Review hi/ta/Hinglish profanity lists; full 50 red-team prompts | P13 | yes (12 seeds) | content/safety/, evals/sets/redteam.yaml |
 | Seema, Gopi | Native review of hi/ta number words, jargon, error names, badge and explanation wording | P09 | yes (drafts) | content/lang/, ai/guard/ |
+| Seema | Review P04 move lists, rubrics, scenario values, personas and hi/ta templates | P06 | yes (drafts) | content/ |
+| Shivani | 150 labelled lines for the labeller eval; realism ratings; 50 red-team prompts | P13 | no | evals/sets/ |
 | Gopi | Install ffmpeg (`winget install Gyan.FFmpeg`); Sarvam account + key in `.env` | P07 | n/a | — |
 | Gopi | Make repo public before submission (`gh repo edit --visibility public`) | P16 | n/a | — |
 | Seema | Review fictional teacher names | P05 | yes (draft list) | content/personas/teachers_simulated.yaml |

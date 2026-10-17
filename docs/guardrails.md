@@ -43,7 +43,7 @@ Word lists live in `content/lang/` and `content/safety/` (data, not code). The H
 
 ## The output checker (call 7)
 
-Rubric items: tone, child safety, stereotypes, language, fit to the target error, reading level for the stated audience, maths, no class statistics unless provided, and injection. The verdict is structured: `passed`, `failed_items`, a short reason for the team, and a one-line reason in the user's language. When unsure it fails the item.
+Rubric items: tone, child safety, stereotypes, language, fit to the target error, reading level for the stated audience, maths, no class statistics unless provided, and injection. For a simulated child line in the Practice Class, call 7 does not judge maths or fit: the engine chose the answer (often deliberately wrong) and code has already checked every number against it, so call 7 judges tone, safety, stereotypes, language, reading level, injection and role. The verdict is structured: `passed`, `failed_items`, a short reason for the team, and a one-line reason in the user's language. When unsure it fails the item.
 
 ## Rejection loop
 

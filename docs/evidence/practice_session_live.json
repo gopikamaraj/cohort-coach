@@ -1,0 +1,1031 @@
+{
+  "children": [
+    {
+      "name": "Arun",
+      "shy": false
+    },
+    {
+      "name": "Priya",
+      "shy": false
+    },
+    {
+      "name": "Vijay",
+      "shy": false
+    },
+    {
+      "name": "Ravi",
+      "shy": false
+    },
+    {
+      "name": "Anu",
+      "shy": true
+    }
+  ],
+  "date": "2026-10-17",
+  "feedback": {
+    "badge": "checked",
+    "layers": {
+      "evaluation": {
+        "cost_usd": 0.014496720000000001,
+        "latency_ms": 9390,
+        "tokens": {
+          "cache_read": 1852,
+          "in": 1290,
+          "out": 780
+        }
+      },
+      "guardrails": {
+        "fallback_used": null,
+        "validators": [
+          {
+            "codes": [],
+            "name": "rubric",
+            "ok": true
+          },
+          {
+            "codes": [],
+            "name": "quotes",
+            "ok": true
+          },
+          {
+            "codes": [],
+            "name": "no_scores",
+            "ok": true
+          },
+          {
+            "codes": [],
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "codes": [],
+            "name": "arithmetic",
+            "ok": true
+          },
+          {
+            "codes": [],
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "codes": [],
+            "name": "prefilter",
+            "ok": true
+          }
+        ]
+      },
+      "input": {
+        "labels": {
+          "1": "pose_problem",
+          "2": "ask_explain",
+          "3": "show_bundles",
+          "4": "exchange_ten",
+          "5": "check_back",
+          "6": "pose_problem",
+          "7": "praise"
+        },
+        "turns": 7
+      },
+      "output": {
+        "badge": "checked"
+      },
+      "processing": {
+        "source": "ai"
+      }
+    },
+    "note": null,
+    "source": "ai",
+    "strengths": [
+      {
+        "comment": "This simple question let the child say her steps out loud, and it showed you exactly where her thinking went wrong.",
+        "point": "ask_explain",
+        "quote": "Tell me how you got that.",
+        "text": "You asked the child to explain her steps, which showed you her thinking.",
+        "turn_id": 2
+      },
+      {
+        "comment": "You gave a clear next step when there were not enough loose sticks, and the child could then carry on and find the new answer herself.",
+        "point": "exchange_ten",
+        "quote": "Open a bundle to exchange it for ten sticks.",
+        "text": "You opened a bundle to exchange it for ten sticks.",
+        "turn_id": 4
+      }
+    ],
+    "try_next": {
+      "point": "show_bundles",
+      "quote": "[tapped bundles]",
+      "suggestion": "You could also try building 52 with bundles of ten and loose sticks, and saying aloud what the child sees: 5 bundles and 2 sticks. Then she can see why 2 minus 9 does not work before you ask her to open a bundle.",
+      "text": "Show the number with bundles of ten and loose sticks.",
+      "turn_id": 3
+    }
+  },
+  "language": "en",
+  "measure": "practice_session",
+  "mode": "live",
+  "scenario": "SUB-SFL",
+  "seed": 5,
+  "source": "scripts/practice_cli.py --json",
+  "synthetic_script": "evals/sets/practice_scripts/sub-sfl-en.txt",
+  "totals": {
+    "cost_usd": 0.0288,
+    "max_turn_ms": 10156,
+    "median_turn_ms": 5344,
+    "turns": 7
+  },
+  "turns": [
+    {
+      "badge": "checked",
+      "child_text": "37, Miss.",
+      "cost_usd": 0.004945975,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "answer",
+      "label": {
+        "addressed": "Priya",
+        "confidence": 0.97,
+        "forced": null,
+        "move_id": "pose_problem"
+      },
+      "latency_ms": 10156,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 953",
+            "call 954",
+            "call 955"
+          ],
+          "cost_usd": 0.004945975,
+          "latency_ms": 10156,
+          "tokens": {
+            "cache_read": 0,
+            "in": 753,
+            "out": 108
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "answer_present",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": null,
+          "stt_confidence": null,
+          "teacher_text": "Priya, what is 52 minus 29?"
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "37, Miss.",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": 37,
+            "correct": false,
+            "error_code": "SUB-SFL",
+            "intent": "answer",
+            "mood": "calm",
+            "problem": {
+              "a": 52,
+              "b": 29,
+              "kind": "sub"
+            },
+            "speaker": "Priya",
+            "steps": [],
+            "strength_after": {},
+            "strength_before": {}
+          },
+          "label": {
+            "addressed": "Priya",
+            "confidence": 0.97,
+            "forced": null,
+            "move_id": "pose_problem"
+          },
+          "posed_problem": {
+            "a": 52,
+            "b": 29,
+            "kind": "sub"
+          }
+        }
+      },
+      "numbers": [
+        29,
+        37,
+        52
+      ],
+      "speaker": "Priya",
+      "turn": 1
+    },
+    {
+      "badge": "checked",
+      "child_text": "I can't do 2 minus 9, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37.",
+      "cost_usd": 0.00150935,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "explain",
+      "label": {
+        "addressed": "Priya",
+        "confidence": 0.85,
+        "forced": null,
+        "move_id": "ask_explain"
+      },
+      "latency_ms": 5375,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 956",
+            "call 957",
+            "call 958"
+          ],
+          "cost_usd": 0.00150935,
+          "latency_ms": 5375,
+          "tokens": {
+            "cache_read": 5595,
+            "in": 976,
+            "out": 128
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": null,
+          "stt_confidence": null,
+          "teacher_text": "Tell me how you got that."
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "I can't do 2 minus 9, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37.",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": 37,
+            "correct": false,
+            "error_code": "SUB-SFL",
+            "intent": "explain",
+            "mood": "calm",
+            "problem": {
+              "a": 52,
+              "b": 29,
+              "kind": "sub"
+            },
+            "speaker": "Priya",
+            "steps": [
+              {
+                "numbers": [
+                  2,
+                  9
+                ],
+                "op": "cant"
+              },
+              {
+                "numbers": [
+                  9,
+                  2,
+                  7
+                ],
+                "op": "minus"
+              },
+              {
+                "numbers": [
+                  5,
+                  2,
+                  3
+                ],
+                "op": "minus"
+              }
+            ],
+            "strength_after": {
+              "Priya": 0.7
+            },
+            "strength_before": {
+              "Priya": 0.9
+            }
+          },
+          "label": {
+            "addressed": "Priya",
+            "confidence": 0.85,
+            "forced": null,
+            "move_id": "ask_explain"
+          },
+          "posed_problem": null
+        }
+      },
+      "numbers": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        29,
+        37,
+        52
+      ],
+      "speaker": "Priya",
+      "turn": 2
+    },
+    {
+      "badge": "checked",
+      "child_text": "I can't do 2 minus 9, Miss, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. That makes 37.",
+      "cost_usd": 0.0015960199999999999,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "work_aloud",
+      "label": {
+        "move_id": "show_bundles",
+        "source": "material tap"
+      },
+      "latency_ms": 3155,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 959",
+            "call 960"
+          ],
+          "cost_usd": 0.0015960199999999999,
+          "latency_ms": 3155,
+          "tokens": {
+            "cache_read": 3412,
+            "in": 672,
+            "out": 98
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": "bundles",
+          "stt_confidence": null,
+          "teacher_text": null
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "I can't do 2 minus 9, Miss, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. That makes 37.",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": 37,
+            "correct": false,
+            "error_code": "SUB-SFL",
+            "intent": "work_aloud",
+            "mood": "calm",
+            "problem": {
+              "a": 52,
+              "b": 29,
+              "kind": "sub"
+            },
+            "speaker": "Priya",
+            "steps": [
+              {
+                "numbers": [
+                  2,
+                  9
+                ],
+                "op": "cant"
+              },
+              {
+                "numbers": [
+                  9,
+                  2,
+                  7
+                ],
+                "op": "minus"
+              },
+              {
+                "numbers": [
+                  5,
+                  2,
+                  3
+                ],
+                "op": "minus"
+              }
+            ],
+            "strength_after": {
+              "Priya": 0.4
+            },
+            "strength_before": {
+              "Priya": 0.7
+            }
+          },
+          "label": {
+            "move_id": "show_bundles",
+            "source": "material tap"
+          },
+          "posed_problem": null
+        }
+      },
+      "numbers": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        29,
+        37,
+        52
+      ],
+      "speaker": "Priya",
+      "turn": 3
+    },
+    {
+      "badge": "checked",
+      "child_text": "I opened a bundle, Miss! Now 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23!",
+      "cost_usd": 0.00197195,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "work_aloud",
+      "label": {
+        "addressed": "Priya",
+        "confidence": 0.9,
+        "forced": null,
+        "move_id": "exchange_ten"
+      },
+      "latency_ms": 6062,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 961",
+            "call 962",
+            "call 963"
+          ],
+          "cost_usd": 0.00197195,
+          "latency_ms": 6062,
+          "tokens": {
+            "cache_read": 5595,
+            "in": 1188,
+            "out": 152
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": null,
+          "stt_confidence": null,
+          "teacher_text": "Priya, you only have 2 loose ones. Open a bundle to exchange it for ten sticks."
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "I opened a bundle, Miss! Now 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23!",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": 23,
+            "correct": true,
+            "error_code": null,
+            "intent": "work_aloud",
+            "mood": "bright",
+            "problem": {
+              "a": 52,
+              "b": 29,
+              "kind": "sub"
+            },
+            "speaker": "Priya",
+            "steps": [
+              {
+                "numbers": [
+                  4,
+                  12
+                ],
+                "op": "open"
+              },
+              {
+                "numbers": [
+                  12,
+                  9,
+                  3
+                ],
+                "op": "minus"
+              },
+              {
+                "numbers": [
+                  4,
+                  2,
+                  2
+                ],
+                "op": "minus"
+              }
+            ],
+            "strength_after": {
+              "Priya": 0.1
+            },
+            "strength_before": {
+              "Priya": 0.4
+            }
+          },
+          "label": {
+            "addressed": "Priya",
+            "confidence": 0.9,
+            "forced": null,
+            "move_id": "exchange_ten"
+          },
+          "posed_problem": null
+        }
+      },
+      "numbers": [
+        2,
+        3,
+        4,
+        9,
+        12,
+        23,
+        29,
+        52
+      ],
+      "speaker": "Priya",
+      "turn": 4
+    },
+    {
+      "badge": "checked",
+      "child_text": "Miss, 23 plus 29 is 52. But we started with 52, so it should be right... why does it feel funny? I'm not sure, Miss.",
+      "cost_usd": 0.0017327500000000001,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "doubt",
+      "label": {
+        "addressed": null,
+        "confidence": 0.8,
+        "forced": null,
+        "move_id": "check_back"
+      },
+      "latency_ms": 5344,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 964",
+            "call 965",
+            "call 966"
+          ],
+          "cost_usd": 0.0017327500000000001,
+          "latency_ms": 5344,
+          "tokens": {
+            "cache_read": 5595,
+            "in": 1087,
+            "out": 146
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": null,
+          "stt_confidence": null,
+          "teacher_text": "Let us check by adding back. What is 23 plus 29?"
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "Miss, 23 plus 29 is 52. But we started with 52, so it should be right... why does it feel funny? I'm not sure, Miss.",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": 23,
+            "correct": true,
+            "error_code": null,
+            "intent": "doubt",
+            "mood": "calm",
+            "problem": {
+              "a": 52,
+              "b": 29,
+              "kind": "sub"
+            },
+            "speaker": "Arun",
+            "steps": [
+              {
+                "numbers": [
+                  23,
+                  29,
+                  52
+                ],
+                "op": "plus"
+              }
+            ],
+            "strength_after": {
+              "Anu": 0.7,
+              "Priya": 0.0,
+              "Ravi": 0.7,
+              "Vijay": 0.7
+            },
+            "strength_before": {
+              "Anu": 0.9,
+              "Priya": 0.1,
+              "Ravi": 0.9,
+              "Vijay": 0.9
+            }
+          },
+          "label": {
+            "addressed": null,
+            "confidence": 0.8,
+            "forced": null,
+            "move_id": "check_back"
+          },
+          "posed_problem": {
+            "a": 23,
+            "b": 29,
+            "kind": "add"
+          }
+        }
+      },
+      "numbers": [
+        23,
+        29,
+        52
+      ],
+      "speaker": "Arun",
+      "turn": 5
+    },
+    {
+      "badge": "checked",
+      "child_text": "28, Miss! I think it is 28.",
+      "cost_usd": 0.0013096499999999999,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "answer",
+      "label": {
+        "addressed": "Priya",
+        "confidence": 0.97,
+        "forced": null,
+        "move_id": "pose_problem"
+      },
+      "latency_ms": 5140,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 967",
+            "call 968",
+            "call 969"
+          ],
+          "cost_usd": 0.0013096499999999999,
+          "latency_ms": 5140,
+          "tokens": {
+            "cache_read": 5595,
+            "in": 1009,
+            "out": 121
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "answer_present",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": null,
+          "stt_confidence": null,
+          "teacher_text": "Priya, now try 74 minus 46."
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "28, Miss! I think it is 28.",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": 28,
+            "correct": true,
+            "error_code": null,
+            "intent": "answer",
+            "mood": "bright",
+            "problem": {
+              "a": 74,
+              "b": 46,
+              "kind": "sub"
+            },
+            "speaker": "Priya",
+            "steps": [],
+            "strength_after": {},
+            "strength_before": {}
+          },
+          "label": {
+            "addressed": "Priya",
+            "confidence": 0.97,
+            "forced": null,
+            "move_id": "pose_problem"
+          },
+          "posed_problem": {
+            "a": 74,
+            "b": 46,
+            "kind": "sub"
+          }
+        }
+      },
+      "numbers": [
+        28,
+        46,
+        74
+      ],
+      "speaker": "Priya",
+      "turn": 6
+    },
+    {
+      "badge": "checked",
+      "child_text": "Thank you, Miss! I liked trying it.",
+      "cost_usd": 0.00123795,
+      "explanation": "Passed the code checks and the checker.",
+      "finished": false,
+      "finished_reason": null,
+      "intent": "thanks",
+      "label": {
+        "addressed": "Priya",
+        "confidence": 0.8,
+        "forced": null,
+        "move_id": "praise"
+      },
+      "latency_ms": 4875,
+      "layers": {
+        "evaluation": {
+          "calls": [
+            "call 970",
+            "call 971",
+            "call 972"
+          ],
+          "cost_usd": 0.00123795,
+          "latency_ms": 4875,
+          "tokens": {
+            "cache_read": 5595,
+            "in": 957,
+            "out": 102
+          }
+        },
+        "guardrails": {
+          "checker": {
+            "failed_items": [],
+            "passed": true
+          },
+          "fallback_used": null,
+          "retries": 0,
+          "validators": [
+            {
+              "codes": [],
+              "name": "numbers",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "number_words",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "length",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "readability",
+              "ok": true
+            },
+            {
+              "codes": [],
+              "name": "prefilter",
+              "ok": true
+            }
+          ]
+        },
+        "input": {
+          "material": null,
+          "stt_confidence": null,
+          "teacher_text": "Well done, thank you for trying."
+        },
+        "output": {
+          "badge": "checked",
+          "child_line": "Thank you, Miss! I liked trying it.",
+          "source": "ai"
+        },
+        "processing": {
+          "engine": {
+            "answer": null,
+            "correct": null,
+            "error_code": null,
+            "intent": "thanks",
+            "mood": "bright",
+            "problem": {
+              "a": 74,
+              "b": 46,
+              "kind": "sub"
+            },
+            "speaker": "Priya",
+            "steps": [],
+            "strength_after": {},
+            "strength_before": {}
+          },
+          "label": {
+            "addressed": "Priya",
+            "confidence": 0.8,
+            "forced": null,
+            "move_id": "praise"
+          },
+          "posed_problem": null
+        }
+      },
+      "numbers": [],
+      "speaker": "Priya",
+      "turn": 7
+    }
+  ]
+}

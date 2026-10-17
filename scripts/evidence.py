@@ -245,6 +245,14 @@ def _practice_registry() -> list[str]:
                 f"| `docs/evidence/eval_summary.md` (`evals/results/{name}`) | `{script}` | "
                 f"{data['date']} | {n} {what} | {note} |"
             )
+    session = EVIDENCE / "practice_session_live.json"
+    if session.exists():
+        s = _load(session)
+        rows.append(
+            "| `docs/evidence/practice_session_live.json` | `scripts/practice_cli.py --json` | "
+            f"{s['date']} | {s['totals']['turns']} turns of one scripted live session | "
+            "One session: illustrative |"
+        )
     return rows
 
 

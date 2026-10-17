@@ -13,8 +13,11 @@ Nothing is saved: the transcript stays in this terminal.
 from __future__ import annotations
 
 import argparse
+import datetime
+import json
 import os
 import sys
+from dataclasses import asdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -32,7 +35,7 @@ from services.practice.session import (  # noqa: E402
 from services.practice.stub_client import StubClient  # noqa: E402
 
 
-def show_card(session: PracticeSession, ctx: CallContext) -> None:
+def show_card(session: PracticeSession, ctx: CallContext) -> tuple[object, dict[str, object]]:
     card, layers = end_session(session, context=ctx)
     print("\n--- Feedback (private) ---")
     for s in card.strengths:
@@ -44,6 +47,42 @@ def show_card(session: PracticeSession, ctx: CallContext) -> None:
     if card.note:
         print(f"* {card.note}")
     print(f"[{card.badge.value} · source {card.source} · {layers['evaluation']['latency_ms']} ms]")
+    return card, layers
+
+
+def write_json(path: str, args: argparse.Namespace, ctx: CallContext, session: PracticeSession,
+               results: list[object], card: object, layers: dict[str, object]) -> None:  # fmt: skip
+    """The transcript, every turn's layers, the card, and totals, for docs/evidence/."""
+    turns = [asdict(r) for r in results]  # type: ignore[call-overload]
+    lat = sorted(r["latency_ms"] for r in turns)
+    cost = sum(r["cost_usd"] for r in turns) + float(layers["evaluation"]["cost_usd"])  # type: ignore[index,arg-type]
+    out = {
+        "measure": "practice_session",
+        "source": "scripts/practice_cli.py --json",
+        "date": datetime.date.today().isoformat(),
+        "scenario": args.scenario.upper(),
+        "language": args.lang,
+        "seed": session.seed,
+        "mode": ctx.mode,
+        "synthetic_script": args.script,
+        "children": [{"name": c.name, "shy": c.shy} for c in session.state.children],
+        "turns": turns,
+        "feedback": {
+            **{k: v for k, v in asdict(card).items() if k != "gate"},  # type: ignore[call-overload]
+            "badge": card.badge.value,  # type: ignore[attr-defined]
+            "layers": layers,
+        },
+        "totals": {
+            "turns": len(turns),
+            "median_turn_ms": lat[len(lat) // 2] if lat else None,
+            "max_turn_ms": lat[-1] if lat else None,
+            "cost_usd": round(cost, 6),
+        },
+    }
+    Path(path).write_text(
+        json.dumps(out, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(f"wrote {path}")
 
 
 def main(argv: list[str]) -> int:
@@ -57,10 +96,20 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--record", action="store_true", help="live, and save answers as fixtures")
     ap.add_argument("--script", help="a text file with one teacher line per row")
     ap.add_argument("--verbose", action="store_true", help="show the AI layers of each turn")
+    ap.add_argument(
+        "--json", help="write the transcript, each turn's layers and the card to this file"
+    )
     args = ap.parse_args(argv)
     for stream in (sys.stdout, sys.stderr):  # Hindi, Tamil and the middle dot on Windows consoles
         stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
     load_env()
+    if args.record and not args.script:
+        sys.exit("--record needs --script: record only scripted, synthetic lines, never real text")
+    if args.record:
+        msg = (
+            "WARNING: --record saves model answers under ai/fixtures/recorded/ (committed to git)."
+        )
+        print(msg, file=sys.stderr)
     live = (
         args.live
         or args.record
@@ -80,6 +129,7 @@ def main(argv: list[str]) -> int:
     print(f"Children: {kids}\nType what you would say. /tap bundles · /end · /quit\n")
     lines = Path(args.script).read_text(encoding="utf-8").splitlines() if args.script else None
     total_cost = 0.0
+    results: list[object] = []
     try:
         while True:
             raw = lines.pop(0) if lines else (input("Teacher> ") if lines is None else "/end")
@@ -91,8 +141,10 @@ def main(argv: list[str]) -> int:
             if raw == "/quit":
                 return 0
             if raw == "/end":
-                show_card(session, ctx)
+                card, layers = show_card(session, ctx)
                 print(f"turns: {session.state.turn} · cost USD {total_cost:.4f}")
+                if args.json:
+                    write_json(args.json, args, ctx, session, results, card, layers)
                 return 0
             try:
                 if raw.startswith("/tap "):
@@ -103,6 +155,7 @@ def main(argv: list[str]) -> int:
                 print("The rehearsal has finished. Type /end for feedback.")
                 continue
             total_cost += result.cost_usd
+            results.append(result)
             who = result.speaker or "(nobody speaks)"
             print(f"{who}: {result.child_text}")
             print(f"   [{result.label.get('move_id') if result.label else ''} · {result.intent}"
@@ -111,7 +164,9 @@ def main(argv: list[str]) -> int:
                 print(f"   layers: {result.layers}")
             if result.finished:
                 print(f"\n({result.finished_reason}: the rehearsal is over.)")
-                show_card(session, ctx)
+                card, layers = show_card(session, ctx)
+                if args.json:
+                    write_json(args.json, args, ctx, session, results, card, layers)
                 return 0
     except (EOFError, KeyboardInterrupt):
         print()
