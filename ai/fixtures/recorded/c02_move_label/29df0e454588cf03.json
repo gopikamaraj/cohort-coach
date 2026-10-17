@@ -1,0 +1,23 @@
+{
+  "call": "c02_move_label",
+  "model": "claude-haiku-5-5",
+  "outputs": [
+    {
+      "addressed_child": "Priya",
+      "confidence": 0.97,
+      "move_id": "pose_problem",
+      "posed_problem": {
+        "a": 52,
+        "b": 29,
+        "op": "-"
+      }
+    }
+  ],
+  "prompt_version": 3,
+  "usage": {
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 2183,
+    "input_tokens": 385,
+    "output_tokens": 56
+  }
+}

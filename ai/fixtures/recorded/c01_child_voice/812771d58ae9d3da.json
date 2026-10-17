@@ -1,0 +1,16 @@
+{
+  "call": "c01_child_voice",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "text": "2 minus 9 I can't do, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37."
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 1560,
+    "cache_write_tokens": 0,
+    "input_tokens": 321,
+    "output_tokens": 57
+  }
+}

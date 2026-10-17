@@ -31,19 +31,37 @@ class CallPolicy:
     max_retries: int
     effort: str  # low | medium | high  (set explicitly: defaults differ per model)
     max_tokens: int
+    # "off" turns thinking off where a call is a short, rule-bound job and latency matters. See
+    # thinking_param: the API spells it differently per model. None leaves adaptive thinking on.
+    thinking: str | None = None
 
 
 # Lowest effort that passes the call's eval (tuned in P04 and P13); live turns are short.
 POLICIES: dict[str, CallPolicy] = {
-    "c01_child_voice": CallPolicy(timeout_s=8, max_retries=1, effort="low", max_tokens=300),
-    "c02_move_label": CallPolicy(timeout_s=6, max_retries=1, effort="low", max_tokens=200),
-    "c03_feedback": CallPolicy(timeout_s=30, max_retries=1, effort="medium", max_tokens=1500),
+    "c01_child_voice": CallPolicy(12, 1, "low", 400, thinking="off"),
+    "c02_move_label": CallPolicy(10, 1, "low", 400, thinking="off"),
+    "c03_feedback": CallPolicy(timeout_s=30, max_retries=1, effort="medium", max_tokens=2500),
     "c04_method_capture": CallPolicy(timeout_s=45, max_retries=2, effort="medium", max_tokens=3000),
     "c05_track_draft": CallPolicy(timeout_s=120, max_retries=2, effort="high", max_tokens=8000),
-    "c06_digest": CallPolicy(timeout_s=30, max_retries=2, effort="low", max_tokens=1200),
-    "c07_checker": CallPolicy(timeout_s=10, max_retries=1, effort="low", max_tokens=400),
+    "c06_digest": CallPolicy(30, 2, "low", 1200, thinking="off"),
+    "c07_checker": CallPolicy(12, 1, "low", 800, thinking="off"),
     "c08_answer_reading": CallPolicy(timeout_s=20, max_retries=1, effort="low", max_tokens=600),
 }
+
+
+def thinking_param(model: str, policy: CallPolicy) -> dict[str, str] | None:
+    """The `thinking` request value for this model, or None to send nothing.
+
+    Haiku 5.5 takes {type: disabled}; Sonnet 5.5 rejects that and takes {type: between_tools}
+    instead (both only at effort high or below); Opus 5.5 cannot switch thinking off.
+    """
+    if policy.thinking != "off":
+        return None
+    if "haiku" in model:
+        return {"type": "disabled"}
+    if "sonnet" in model:
+        return {"type": "between_tools"}
+    return None
 
 
 def ai_mode() -> str:

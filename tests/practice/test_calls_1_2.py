@@ -254,3 +254,12 @@ def test_long_teacher_text_is_cut(sink: SqlAuditSink) -> None:
     _, fake = lab(sink, ok, "word " * 500)
     sent = fake.messages.calls[0]["messages"][0]["content"][-1]["text"]
     assert sent.count("word") <= 121
+
+
+def test_the_checker_is_told_the_wrong_answer_is_deliberate(sink: SqlAuditSink) -> None:
+    fake = FakeClient([ChildLine(text="37, Miss!"), PASS])
+    child_line(plan_wrong_answer(), teacher_line="Meena, 52 minus 29?", target_error="SUB-SFL",
+               context=live(sink, fake), **KW)  # fmt: skip
+    seen = fake.messages.calls[1]["messages"][0]["content"][-1]["text"]
+    assert '"answer_is_deliberately_wrong": true' in seen and '"target_error": "SUB-SFL"' in seen
+    assert '"engine_answer": 37' in seen and "<candidate_text>" in seen

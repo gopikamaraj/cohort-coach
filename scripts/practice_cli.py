@@ -4,6 +4,8 @@ Usage: python scripts/practice_cli.py --scenario sub-sfl --lang en [--stub | --l
                                       [--script lines.txt] [--verbose]
   --stub   rule-based stand-in for the model: no API key, no cost (default without a key)
   --live   Claude API (needs ANTHROPIC_API_KEY in .env); prints the cost of each turn
+  --record live, and save each answer under ai/fixtures/recorded/ (use only synthetic lines)
+  --recorded replay saved answers, no network
   commands: /tap bundles|sticks|chart   /end (feedback)   /quit
 Nothing is saved: the transcript stays in this terminal.
 """
@@ -51,15 +53,30 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--live", action="store_true")
     ap.add_argument("--stub", action="store_true")
+    ap.add_argument("--recorded", action="store_true", help="replay ai/fixtures/recorded/")
+    ap.add_argument("--record", action="store_true", help="live, and save answers as fixtures")
     ap.add_argument("--script", help="a text file with one teacher line per row")
     ap.add_argument("--verbose", action="store_true", help="show the AI layers of each turn")
     args = ap.parse_args(argv)
+    for stream in (sys.stdout, sys.stderr):  # Hindi, Tamil and the middle dot on Windows consoles
+        stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
     load_env()
-    live = args.live or (not args.stub and bool(os.environ.get("ANTHROPIC_API_KEY")))
-    ctx = CallContext(mode="live") if live else CallContext(mode="stub", client=StubClient())
+    live = (
+        args.live
+        or args.record
+        or (not (args.stub or args.recorded) and bool(os.environ.get("ANTHROPIC_API_KEY")))
+    )
+    if args.record:
+        ctx = CallContext(mode="record")
+    elif args.recorded:
+        ctx = CallContext(mode="recorded")
+    elif live:
+        ctx = CallContext(mode="live")
+    else:
+        ctx = CallContext(mode="stub", client=StubClient())
     session = start_session(args.scenario.upper(), args.lang, seed=args.seed)
     kids = ", ".join(f"{c.name}{' (shy)' if c.shy else ''}" for c in session.state.children)
-    print(f"Practice Class: {args.scenario.upper()} · {args.lang} · {'live' if live else 'stub'}")
+    print(f"Practice Class: {args.scenario.upper()} · {args.lang} · {ctx.mode}")
     print(f"Children: {kids}\nType what you would say. /tap bundles · /end · /quit\n")
     lines = Path(args.script).read_text(encoding="utf-8").splitlines() if args.script else None
     total_cost = 0.0

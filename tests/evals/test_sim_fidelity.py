@@ -64,3 +64,9 @@ def test_a_broken_simulator_fails_the_eval(monkeypatch: pytest.MonkeyPatch) -> N
 
 def test_the_estimate_comes_from_prices() -> None:
     assert 0 < ev.estimate_cost(60) < 1.0
+
+
+def test_a_limit_is_shared_evenly_by_the_four_errors() -> None:
+    result = ev.run(limit=40)
+    assert {s["turns"] for s in result["per_error"].values()} == {10}
+    assert result["turns"] == 40

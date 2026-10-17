@@ -1,0 +1,19 @@
+{
+  "call": "c02_move_label",
+  "model": "claude-haiku-5-5",
+  "outputs": [
+    {
+      "addressed_child": "none",
+      "confidence": 0.8,
+      "move_id": "ask_explain",
+      "posed_problem": null
+    }
+  ],
+  "prompt_version": 3,
+  "usage": {
+    "cache_read_tokens": 2183,
+    "cache_write_tokens": 0,
+    "input_tokens": 380,
+    "output_tokens": 40
+  }
+}

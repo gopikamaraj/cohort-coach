@@ -1,0 +1,35 @@
+{
+  "call": "c03_feedback",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "strengths": [
+        {
+          "comment": "You asked Priya to explain her steps before correcting her. That showed you exactly where she turned the 2 minus 9 around.",
+          "quote": "Tell me how you got that.",
+          "rubric_point": "ask_explain",
+          "turn_id": 2
+        },
+        {
+          "comment": "When there were only 2 loose ones, you guided her to open a bundle. She then got to 23 by herself.",
+          "quote": "Open a bundle to exchange it for ten sticks.",
+          "rubric_point": "exchange_ten",
+          "turn_id": 4
+        }
+      ],
+      "try_next": {
+        "quote": "Let us check by adding back. What is 23 plus 29?",
+        "rubric_point": "check_back",
+        "suggestion": "You could also try letting Priya notice the mismatch herself when she checks. She said 23 plus 29 is 52, which does match, so you could ask her to say what she sees in her own words.",
+        "turn_id": 5
+      }
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 2017,
+    "input_tokens": 983,
+    "output_tokens": 293
+  }
+}

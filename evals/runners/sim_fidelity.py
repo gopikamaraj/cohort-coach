@@ -116,6 +116,8 @@ def run(
     latencies: list[int] = []
     cost = 0.0
     sources = {"ai": 0, "template": 0}
+    # A limit is shared evenly by the four errors, so a short live run still covers all of them.
+    per_error_cap = -(-limit // len(ERRORS)) if limit is not None else None
     total = matched = 0
     for script in load_scripts():
         error = script["error"]
@@ -128,7 +130,7 @@ def run(
             state = new_session(loaded.config, seats, seed)
             history: list[str] = []
             for step in script["script"]:
-                if state.finished or (limit is not None and total >= limit):
+                if state.finished or (per_error_cap is not None and n >= per_error_cap):
                     break
                 seat = step["seat"]
                 addressed = state.children[seat].name if seat is not None else None

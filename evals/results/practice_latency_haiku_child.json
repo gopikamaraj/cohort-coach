@@ -1,0 +1,25 @@
+{
+  "cost_per_turn_usd": 0.000242,
+  "cost_usd": 0.00509,
+  "date": "2026-10-17",
+  "line_sources": {
+    "ai": 19,
+    "silent": 0,
+    "template": 2
+  },
+  "max_ms": 26500,
+  "measure": "practice_turn_latency",
+  "median_ms": 8578,
+  "meets_target": false,
+  "mode": "live",
+  "models": {
+    "MODEL_CHECK": "claude-haiku-5-5",
+    "MODEL_CHILD": "claude-haiku-5-5",
+    "MODEL_LABEL": "claude-haiku-5-5"
+  },
+  "p90_ms": 15671,
+  "sessions": 3,
+  "source": "scripts/practice_latency.py",
+  "target_median_ms": 3000,
+  "turns": 21
+}

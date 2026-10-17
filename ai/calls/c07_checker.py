@@ -68,6 +68,7 @@ def check_output(
     target_error: str | None,
     code_checks: list[ValidatorResult],
     context: CallContext | None = None,
+    facts: dict[str, object] | None = None,
 ) -> CheckOutcome:
     """Run call 7 on one candidate text. `audience` is 'child' or 'teacher'."""
     base = context or CallContext()
@@ -89,6 +90,7 @@ def check_output(
             "language": language,
             "target_error": target_error,
             "code_checks": [{"name": r.name, "ok": r.ok} for r in code_checks],
+            **({"simulated_child": facts} if facts else {}),
         },
         untrusted={"candidate_text": text},
     )

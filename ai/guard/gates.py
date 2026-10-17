@@ -69,6 +69,7 @@ class GateInput:
     roster_names: tuple[str, ...] = ()
     human_approved: bool = False
     source_audit_id: int | None = None  # the audit row of the call that made the text
+    checker_facts: dict[str, object] | None = None  # what call 7 needs to judge a child line
 
 
 @dataclass
@@ -166,6 +167,7 @@ def run_gates(inp: GateInput, *, context: CallContext | None = None) -> GateResu
         target_error=inp.target_error,
         code_checks=results,
         context=context,
+        facts=inp.checker_facts,
     )
     verdict = outcome.verdict
     if not outcome.passed:

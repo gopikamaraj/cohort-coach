@@ -207,6 +207,7 @@ def take_turn(
         language=session.language,
         teacher_line=teacher_text,
         history=_history(session),
+        target_error=session.error,
         context=ctx,
     )
     session.state = new_state
@@ -313,6 +314,7 @@ def end_session(
         language=session.language,
         allowed_numbers=frozenset(session.plan_numbers),
         scolded=scolded,
+        target_error=session.error,
         context=ctx,
     )
     session.ended = True

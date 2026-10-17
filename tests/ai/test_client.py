@@ -136,6 +136,7 @@ def test_live_call_shape_cost_and_untrusted_wrapping(sink: SqlAuditSink) -> None
     assert sent["model"] == "claude-sonnet-5-5"
     assert sent["output_format"] is ChildLine
     assert sent["output_config"] == {"effort": "low"}
+    assert sent["thinking"] == {"type": "between_tools"}  # Sonnet 5.5 cannot send disabled
     assert sent["system"][0]["cache_control"] == {"type": "ephemeral"}  # stable block first
     text = sent["messages"][0]["content"][-1]["text"]
     assert "<teacher_text>" in text and "<facts>" in text and "temperature" not in sent

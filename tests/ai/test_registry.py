@@ -63,3 +63,13 @@ def test_cost_from_usage_uses_the_yaml_prices() -> None:
     assert cost_usd("claude-sonnet-5-5", usage, batch=True) == pytest.approx(6.05)
     with pytest.raises(KeyError):
         cost_usd("claude-unknown", usage)
+
+
+def test_thinking_is_spelled_per_model_and_only_switched_off_where_allowed() -> None:
+    from ai.config import POLICIES, thinking_param
+
+    off = POLICIES["c07_checker"]
+    assert thinking_param("claude-haiku-5-5", off) == {"type": "disabled"}
+    assert thinking_param("claude-sonnet-5-5", off) == {"type": "between_tools"}
+    assert thinking_param("claude-opus-5-5", off) is None  # Opus 5.5 cannot switch it off
+    assert thinking_param("claude-sonnet-5-5", POLICIES["c03_feedback"]) is None  # adaptive

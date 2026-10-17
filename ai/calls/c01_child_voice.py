@@ -71,6 +71,7 @@ def child_line(
     language: str,
     teacher_line: str,
     history: Sequence[str],
+    target_error: str | None = None,
     context: CallContext | None = None,
 ) -> ChildLineResult:
     if plan.speaker is None:
@@ -98,7 +99,14 @@ def child_line(
             content_type=ContentType.CHILD_LINE,
             language=language,
             allowed_numbers=plan.allowed_numbers,
+            target_error=target_error,
             source_audit_id=run.audit_id,
+            checker_facts={
+                "intent": plan.intent,
+                "engine_answer": plan.answer,
+                "answer_is_deliberately_wrong": plan.correct is False,
+                "allowed_numbers": sorted(plan.allowed_numbers),
+            },
         ),
         context=base,
     )

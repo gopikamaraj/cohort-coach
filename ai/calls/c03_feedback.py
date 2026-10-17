@@ -198,6 +198,7 @@ def give_feedback(
     language: str,
     allowed_numbers: frozenset[int],
     scolded: bool,
+    target_error: str | None = None,
     context: CallContext | None = None,
 ) -> tuple[FeedbackCard, CallResult | None]:
     base = context or CallContext()
@@ -238,6 +239,7 @@ def give_feedback(
             content_type=ContentType.FEEDBACK_CARD,
             language=language,
             allowed_numbers=nums,
+            target_error=target_error,
             quotes=[q for q, _ in _quotes(fb)],
             transcript=teacher_words,
             source_audit_id=run.audit_id,

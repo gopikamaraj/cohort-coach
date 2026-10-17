@@ -240,6 +240,11 @@ def run_call(
                     ],
                     output_format=out_model,
                     output_config={"effort": policy.effort},
+                    **(
+                        {"thinking": think}
+                        if (think := config.thinking_param(model, policy))
+                        else {}
+                    ),
                     timeout=policy.timeout_s,
                 )
                 usage = _sum_usage(usage, _usage_from_response(resp))
