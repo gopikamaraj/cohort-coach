@@ -1,11 +1,10 @@
 # Build progress
 
 <!-- HANDOFF: when the loop stops, it writes this block. Delete it once acted on. -->
-> **Handoff** — P06 needs hosting accounts
-> - Where we are: P05 ✅ (PWA shell, judge mode, check entry, error cards, offline). Next is P06 (Practice Class UI, AI-layers overlay, audit viewer, staging).
-> - Next step: `/next-phase` builds the P06 screens. The staging deploy at the end of P06 needs hosting accounts and keys.
-> - Needed from people: 1. Create the hosting accounts for the API, database, storage and PWA (see OD-3 in DECISIONS.md) and tell Claude where the secrets go (Gopi). 2. Review Hindi and Tamil strings (Shivani, Gopi).
-> - Resume with: `/next-phase`
+> **Handoff** — P06 built; staging and P07 need you
+> - Where we are: P06 🟡 (Practice Class screen, AI-layers overlay, AI map, audit viewer, degraded states, round 3 kit, staging recipe). Staging is not deployed. Next is P07 (voice).
+> - Needed from people: 1. Create hosting accounts and run `docs/deploy.md` for staging; put the URLs under Environments below (Gopi). 2. For P07: install ffmpeg (`winget install Gyan.FFmpeg`) and put `SARVAM_API_KEY` in `.env` (Gopi); P07 cannot start without the key. 3. Seema runs round 3 with `docs/user-testing/round3-script.md`; Shivani reviews the Hindi.
+> - Resume with: `/next-phase` (after the Sarvam key and ffmpeg are in place)
 
 **Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
 
@@ -38,7 +37,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Gate | Due | Status | Evidence |
 | --- | --- | --- | --- |
 | Gate 1: SUB-SFL text rehearsal end to end | Mon 19 Oct | ✅ | recorded and live rehearsal; `docs/evidence/practice_session_live.json`, `tests/practice/test_recorded_session.py` |
-| Staging live for test round 3 | Wed 21 Oct | ⬜ | |
+| Staging live for test round 3 | Wed 21 Oct | ⛔ BLOCKED: hosting accounts and secrets (Gopi); round 3 can use a laptop plus hotspot or `python tasks.py dev` | recipe in `docs/deploy.md` |
 | Gate 2: all storyboard screens on a low-end phone | Mon 26 Oct | ⬜ | |
 | Freeze: production smoke-tested | Wed 28 Oct | ⬜ | |
 | Submitted | Sat 31 Oct | ⬜ | |

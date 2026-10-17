@@ -13,3 +13,6 @@ New ideas that are not in `BUILD_PROMPTS.md`. Nothing here is built until every 
 | 2026-10-17 | Route `/api` to the API in staging so the judge-mode AI map and audit links work from a static PWA host (P15); add deep links for judge steps 1 and 5 once the Practice Class screen exists (P06) | P05 judge review | Gopi |
 | 2026-10-17 | Measure Slow 3G and a real low-end phone; add a Playwright test that the send queue survives a restart (P14) | P05 judge review | Gopi |
 | 2026-10-17 | When a flag sender is built keep the payload `{card, term}` with no free text; empty the photo outbox after each photo is read (P08) | P05 privacy review | Gopi |
+| 2026-10-17 | Tamil version of the round 3 script and consent lines (Gopi); a Tamil SUS | P06 judge review | Gopi |
+| 2026-10-17 | Note the returned `seed` in `docs/privacy.md` when it is written; add a production flag or rate limit for `/api/judge/audit` before the judging window | P06 privacy review | Gopi |
+| 2026-10-17 | Live-mode screenshots of the overlay and audit viewer once staging exists; measured MB per rehearsal | P06 judge review | Gopi |

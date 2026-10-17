@@ -348,8 +348,6 @@ ol.steps li {
 }
 .log {
   min-height: 120px;
-  max-height: 45vh;
-  overflow-y: auto;
   margin: var(--s3) 0;
   border: 1px solid var(--rule);
   background: var(--paper);
@@ -460,6 +458,24 @@ ol.steps li {
 .layer dd {
   margin: 0;
   overflow-wrap: anywhere;
+}
+.audit-head {
+  margin: 0 0 var(--s2);
+  overflow-wrap: anywhere;
+}
+.audit-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2);
+  margin: 0;
+}
+.audit-facts dt {
+  font-size: 16px;
+  color: var(--muted);
+}
+.audit-facts dd {
+  margin: 0;
+  font-weight: 600;
 }
 .scroll {
   overflow-x: auto;

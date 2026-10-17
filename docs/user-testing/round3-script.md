@@ -4,6 +4,8 @@ For Seema. Five primary teachers, ten minutes each, think-aloud. Nobody on the t
 
 ## Before you start
 
+- The app and this script are in English and Hindi. A Tamil-speaking tester uses the English text with a facilitator who speaks Tamil; a Tamil script is parked in `docs/build/PARKING.md`.
+
 - Open the staging URL on the teacher's own phone if you can (`docs/deploy.md` has the steps; the URL goes in `docs/build/PROGRESS.md`). If staging is not up yet, use `python tasks.py dev` on a laptop with a hotspot, or the offline stub: `python tasks.py practice --stub` (the stub is a rule-based stand-in, **not** the real AI: do not use it for the "sounds like my class" rating).
 - Give each teacher a participant code (T3-01, T3-02, …). Names stay on the consent form only.
 - The app opens in judge mode. Choose the Teacher role, and the teacher's language.
@@ -11,7 +13,7 @@ For Seema. Five primary teachers, ten minutes each, think-aloud. Nobody on the t
 
 ## Consent reminder (read aloud)
 
-| English | हिंदी |
+| English | हिंदी (draft) |
 | --- | --- |
 | "What you say to the pretend children is not kept on our servers. It stays on this phone. We will write down what you say about the app, with a code instead of your name. You can stop at any time." | "आप नकली बच्चों से जो कहेंगी वह हमारे सर्वर पर नहीं रखा जाता। वह इसी फ़ोन पर रहता है। ऐप के बारे में आप जो कहेंगी उसे हम आपके नाम की जगह एक कोड के साथ लिखेंगे। आप कभी भी रुक सकती हैं।" |
 

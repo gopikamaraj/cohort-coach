@@ -22,6 +22,7 @@ interface TurnJson {
   layers: {
     processing: { label: { move_id: string }; engine: { answer: number | null; intent: string } };
     evaluation: { latency_ms: number };
+    output: { source: string; badge: string };
   };
 }
 
@@ -100,7 +101,7 @@ test("the AI-layers overlay matches the API trace, for judges only", async ({ pa
   await expect(panel2.getByTestId("layer-label")).toContainText(t2.layers.processing.label.move_id);
   await expect(panel2.getByTestId("layer-engine")).toContainText(String(t2.layers.processing.engine.answer));
   await expect(panel2.getByTestId("layer-eval")).toContainText(`${t2.layers.evaluation.latency_ms} ms`);
-  await expect(panel2.getByTestId("layer-output")).toContainText("checked");
+  await expect(panel2.getByTestId("layer-output")).toHaveText(`${t2.layers.output.source} · ${t2.layers.output.badge}`);
   for (const label of ["Input", "Processing", "Guardrails", "Evaluation", "Output"]) await expect(panel2).toContainText(label);
 
   await page.getByTestId("role").selectOption("teacher");
@@ -109,7 +110,7 @@ test("the AI-layers overlay matches the API trace, for judges only", async ({ pa
   await expect(page.getByTestId("layers-toggle")).toHaveCount(0); // not for teachers
 });
 
-test("the server logs hold no transcript text", async ({ page }) => {
+test("the server request log holds no transcript text (application logs: tests/practice/test_api.py)", async ({ page }) => {
   await rehearse(page, []);
   const log = readFileSync(API_LOG, "utf-8");
   expect(log).toContain("/api/practice/sessions"); // the requests were logged ...
@@ -185,8 +186,43 @@ test("the AI map shows 8 calls by 5 layers and the audit trail shows metadata on
   await expect(page.getByTestId("ai-map").locator("thead th")).toHaveCount(6);
   await page.goto("/#/audit");
   await expect(page.getByTestId("audit-table")).toBeVisible();
+  await expect(page.getByTestId("audit-table").locator("li").first()).toContainText("Checks passed");
   const text = await page.locator("main").innerText();
   expect(text).toContain("c01_child_voice");
   expect(text).toContain("c07_checker");
   for (const line of LINES.filter((l) => !l.startsWith("/tap"))) expect(text).not.toContain(line);
+});
+
+test("feedback thumbs and the flag are kept on the phone; sharing is off by default and remembered", async ({ page }) => {
+  await page.goto("/#/practice?seed=5");
+  const share = page.getByRole("checkbox");
+  await expect(share).not.toBeChecked(); // off by default
+  await share.check();
+  await page.reload();
+  await page.goto("/#/practice?seed=5");
+  await expect(page.getByRole("checkbox")).toBeChecked(); // the choice is saved
+  await page.getByRole("checkbox").uncheck();
+  await rehearse(page, []);
+  await page.getByTestId("end").click();
+  await expect(page.getByTestId("strength-0")).toBeVisible();
+  await page.getByTestId("strength-0").getByRole("button", { name: /Helpful/ }).first().click();
+  await expect(page.getByText("Thanks for telling us.")).toBeVisible();
+  await page.getByRole("button", { name: "This is wrong" }).click();
+  await expect(page.getByText("This card is marked on your phone")).toBeVisible();
+  const kept = await page.evaluate(
+    () =>
+      new Promise<{ ratings?: Record<string, string>; flags: number }>((resolve, reject) => {
+        const open = indexedDB.open("cohort-coach");
+        open.onerror = () => reject(open.error);
+        open.onsuccess = () => {
+          const db = open.result;
+          const tr = db.transaction(["transcripts", "syncQueue"]);
+          const rows = tr.objectStore("transcripts").getAll();
+          const queue = tr.objectStore("syncQueue").getAll();
+          tr.oncomplete = () => resolve({ ratings: (rows.result[0] as { ratings?: Record<string, string> }).ratings, flags: (queue.result as { kind: string }[]).filter((q) => q.kind === "flag").length });
+        };
+      }),
+  );
+  expect(Object.values(kept.ratings ?? {})).toContain("up");
+  expect(kept.flags).toBe(1);
 });

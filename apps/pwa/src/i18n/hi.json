@@ -160,5 +160,6 @@
   "judge.step8": "एआई परतें दिखाएँ चालू करें और एक चरण पढ़ें।",
   "judge.step9": "एआई मैप खोलें, फिर ऑडिट ट्रेल।",
   "judge.open_aimap": "एआई मैप",
-  "judge.open_audit": "ऑडिट ट्रेल"
+  "judge.open_audit": "ऑडिट ट्रेल",
+  "audit.checks": "जाँच पास"
 }

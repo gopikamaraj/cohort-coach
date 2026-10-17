@@ -40,46 +40,50 @@ export default function Audit() {
       {online && !rows && !failed ? <p>{tr("aimap.loading")}</p> : null}
       {rows && rows.length === 0 ? <p data-testid="audit-empty">{tr("audit.empty")}</p> : null}
       {rows && rows.length > 0 ? (
-        <div className="scroll">
-          <table className="grid" data-testid="audit-table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">call</th>
-                <th scope="col">model</th>
-                <th scope="col">ms</th>
-                <th scope="col">tokens</th>
-                <th scope="col">USD</th>
-                <th scope="col">checks</th>
-                <th scope="col">{tr("audit.checker")}</th>
-                <th scope="col">{tr("audit.fallback")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.id}</td>
-                  <td>
-                    {r.call} v{r.prompt_version}
-                    <br />
-                    <span className="muted">{r.mode}</span>
-                  </td>
-                  <td>{r.model}</td>
-                  <td>{r.latency_ms}</td>
-                  <td>
-                    {r.tokens.in}/{r.tokens.out} (c {r.tokens.cache_read})
-                  </td>
-                  <td>{r.cost_usd.toFixed(4)}</td>
-                  <td>
+        <ul className="plain audit" data-testid="audit-table">
+          {rows.map((r) => (
+            <li key={r.id} className="card" data-testid={`audit-${r.id}`}>
+              <p className="audit-head">
+                <strong>
+                  #{r.id} {r.call} v{r.prompt_version}
+                </strong>{" "}
+                <span className="muted">
+                  {r.model} · {r.mode}
+                </span>
+              </p>
+              <dl className="audit-facts">
+                <div>
+                  <dt>{tr("audit.checker")}</dt>
+                  <dd>{r.checker.verdict ?? "–"}</dd>
+                </div>
+                <div>
+                  <dt>{tr("audit.checks")}</dt>
+                  <dd>
                     {r.validators.filter((v) => v.ok).length}/{r.validators.length}
-                  </td>
-                  <td>{r.checker.verdict ?? "–"}</td>
-                  <td>{r.fallback_used ?? "–"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </dd>
+                </div>
+                <div>
+                  <dt>{tr("audit.fallback")}</dt>
+                  <dd>{r.fallback_used ?? "–"}</dd>
+                </div>
+                <div>
+                  <dt>ms</dt>
+                  <dd>{r.latency_ms}</dd>
+                </div>
+                <div>
+                  <dt>tokens</dt>
+                  <dd>
+                    {r.tokens.in}/{r.tokens.out} (c {r.tokens.cache_read})
+                  </dd>
+                </div>
+                <div>
+                  <dt>USD</dt>
+                  <dd>{r.cost_usd.toFixed(4)}</dd>
+                </div>
+              </dl>
+            </li>
+          ))}
+        </ul>
       ) : null}
     </section>
   );

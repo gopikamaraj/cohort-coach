@@ -160,5 +160,6 @@
   "judge.step8": "Turn on Show AI layers and read one turn.",
   "judge.step9": "Open the AI map, then the audit trail.",
   "judge.open_aimap": "AI map",
-  "judge.open_audit": "Audit trail"
+  "judge.open_audit": "Audit trail",
+  "audit.checks": "Checks passed"
 }

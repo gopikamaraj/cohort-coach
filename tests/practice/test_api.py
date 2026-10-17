@@ -136,3 +136,22 @@ def test_nothing_is_written_to_disk_but_audit_metadata(
     assert (
         audit.status_code == 200 and "9876543210" not in audit.text and "private" not in audit.text
     )
+
+
+def test_no_log_record_at_any_level_holds_what_she_typed(
+    client: TestClient, caplog: pytest.LogCaptureFixture
+) -> None:
+    import logging
+
+    caplog.set_level(logging.DEBUG)
+    sid = create(client)["session_id"]
+    secret = "zebra-canary-phrase 9876543210 my private words"
+    client.post(f"/api/practice/sessions/{sid}/turns", json={"text": secret})
+    client.post(
+        f"/api/practice/sessions/{sid}/turns", json={"text": "Priya, tell me how you got 37"}
+    )
+    client.post(f"/api/practice/sessions/{sid}/end")
+    assert caplog.records, "the canary is only meaningful if something was logged at all"
+    everything = caplog.text + " ".join(str(r.args) for r in caplog.records)
+    assert "zebra-canary-phrase" not in everything and "9876543210" not in everything
+    assert "tell me how you got 37" not in everything

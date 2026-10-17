@@ -5,6 +5,12 @@ apps
 docs
 tests
 evals
-*.sqlite
+scripts
+data/pilot
+data/private
 .env
+.env.*
+!.env.example
+*.sqlite
+*.log
 __pycache__

@@ -11,7 +11,9 @@ COPY engine ./engine
 COPY ai ./ai
 COPY services ./services
 COPY content ./content
-COPY data ./data
+COPY data/__init__.py ./data/__init__.py
+# The simulated block only: never raw pilot files.
+COPY data/synthetic ./data/synthetic
 RUN pip install --no-cache-dir ".[prod]"
 
 EXPOSE 8000

@@ -57,7 +57,8 @@ test("Practice Class screenshots: intro, a turn with the AI layers, feedback, AI
   }
   await expect(page.getByTestId("reply-2")).toBeVisible();
   await page.getByTestId("layers-toggle").click();
-  await page.getByTestId("turn-2").scrollIntoViewIfNeeded();
+  await page.getByTestId("turn-2").getByTestId("layers-panel").scrollIntoViewIfNeeded();
+  await page.getByTestId("turn-2").getByTestId("layer-output").scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${OUT}en-6-practice-layers.png` });
   await page.getByTestId("layers-toggle").click();
   await page.getByTestId("tap-bundles").click();
