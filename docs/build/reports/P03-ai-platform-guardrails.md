@@ -1,10 +1,10 @@
 # P03 · AI platform and guardrails core — report
 
-**Status:** 🟡 done, live checks pending an API key · **Dates:** 2026-10-16 → 2026-10-16 · **Commits:** `a5c91c9`…`0eabec5` · **Gate:** none
+**Status:** ✅ · **Dates:** 2026-10-16 → 2026-10-16 · **Commits:** `a5c91c9`…`0eabec5` · **Gate:** none
 
 ## Summary
 
-Every Claude call now goes through one path (`ai/client.py::run_call`) with versioned prompts, structured output, cache markers, bounded retries, deterministic fallbacks, a budget guard and one metadata-only audit row. Gates 1, 1b and 2 (validators, pre-filter, call 7), badges, explanation lines in en/hi/ta, a red-team harness with 12 seed attacks, judge endpoints and the README "Where AI is used" generator are built and tested offline. Not done: any live call (no key yet), so the cache-hit check, the checker's real behaviour and the two checker-only red-team cases are **pending**.
+Every Claude call now goes through one path (`ai/client.py::run_call`) with versioned prompts, structured output, cache markers, bounded retries, deterministic fallbacks, a budget guard and one metadata-only audit row. Gates 1, 1b and 2 (validators, pre-filter, call 7), badges, explanation lines in en/hi/ta, a red-team harness with 12 seed attacks, judge endpoints and the README "Where AI is used" generator are built and tested offline. A live red-team run (12 checker calls, USD 0.0005) then confirmed the checker blocks both stereotype cases, passes both controls, and that prompt caching hits.
 
 ## What was built
 
@@ -36,20 +36,25 @@ Every Claude call now goes through one path (`ai/client.py::run_call`) with vers
 | --- | --- | --- | --- | --- |
 | pytest (all) | 333 | passed | all pass | `python tasks.py check` output |
 | pytest AI + red team | 96 | passed | all pass | `tests/ai`, `tests/evals/test_redteam.py` |
-| Red team, code gates only | 12 attacks, 2 controls | 10 blocked by code, 2 pending checker, 0 missed, 0 controls blocked | 0 unsafe reach a teacher | `evals/results/redteam.json` |
+| Red team, live | 12 attacks, 2 controls | 10 blocked by code, 2 by the checker, 0 reached a teacher, 0 controls blocked | 0 unsafe reach a teacher | `evals/results/redteam.json` |
 
-The red-team bar is **not claimed met**: `passed: false` until the two stereotype cases run through call 7 live.
+The bar is met on the 12 seed prompts only. It is not a claim about the full 50-prompt set (Shivani, P13), and the checker was run once per case.
 
 ## AI calls touched
 
 | Call | Model | Prompt version | Validators | Eval | Live runs |
 | --- | --- | --- | --- | --- | --- |
-| 1–8 | per `ai/config.py` | v1 | see registry | pending (P04, P13) | 0 runs, USD 0 |
-| 7 | claude-haiku-5-5 | v1 | verdict consistency | red team (pending live) | 0 |
+| 1–6, 8 | per `ai/config.py` | v1 | see registry | pending (P04, P13) | 0 runs, USD 0 |
+| 7 | claude-haiku-5-5 | v1 | verdict consistency | red team, 12 seeds | 1 run, 4 calls logged, USD 0.0005 (`python tasks.py budget`) |
 
 ## Cost and latency measured
 
-None: no live call was made. `python tasks.py budget` reads real audit rows.
+| Measure | Value | Source |
+| --- | --- | --- |
+| Checker spend | USD 0.0005 over 4 logged calls | `python tasks.py budget` (audit rows) |
+| Cache | first call wrote 1353 tokens; 4059 tokens read from cache across the later calls | `python tasks.py budget`, `ai_calls` |
+
+Latency is in each audit row; a median needs more calls (P04, P13).
 
 ## Deviations and decisions
 

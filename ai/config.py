@@ -63,3 +63,24 @@ def budget_daily_usd() -> float:
 
 def budget_hard_usd() -> float:
     return float(os.environ.get("AI_BUDGET_USD_HARD") or 500)
+
+
+def load_env(path: str | None = None) -> None:
+    """Read KEY=VALUE lines from .env into os.environ without overriding what is already set.
+
+    Called by entry points (the API, scripts, eval runners), never at import, so tests stay
+    independent of a developer's .env. Values are never printed.
+    """
+    from pathlib import Path
+
+    env = Path(path) if path else Path(__file__).resolve().parents[1] / ".env"
+    if not env.exists():
+        return
+    for line in env.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        value = value.split(" #")[0].strip().strip("\"'")
+        if value:
+            os.environ.setdefault(key.strip(), value)

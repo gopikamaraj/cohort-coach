@@ -24,6 +24,7 @@ from typing import Any
 import yaml
 
 from ai.client import CallContext
+from ai.config import load_env
 from ai.guard.gates import ContentType, GateInput, gate1, run_gates
 from ai.pricing import Usage, cost_usd
 from ai.prompt_loader import load_prompt
@@ -132,6 +133,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--no-write", action="store_true")
     parser.add_argument("--yes", action="store_true", help="skip the cost confirmation")
     args = parser.parse_args(argv)
+    load_env()
     ctx: CallContext | None = None
     if args.live:
         n = sum(1 for c in load_cases() if c["expected"] == "blocked")

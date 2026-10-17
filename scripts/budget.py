@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from ai import config  # noqa: E402
+
+config.load_env()
 from ai.audit import default_sink  # noqa: E402
 from ai.pricing import load_pricing  # noqa: E402
 

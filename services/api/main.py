@@ -2,7 +2,10 @@
 
 from fastapi import FastAPI
 
+from ai.config import load_env
 from services.api.judge import router as judge_router
+
+load_env()
 
 VERSION = "0.1.0"
 
