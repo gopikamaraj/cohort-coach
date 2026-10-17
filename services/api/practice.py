@@ -104,6 +104,7 @@ def create_session(body: CreateSession) -> dict[str, Any]:
     loaded = session.loaded
     return {
         "session_id": session.id,
+        "seed": session.seed,  # lets her retry with the same children
         "language": session.language,
         "judge": session.judge,
         "children": [{"name": c.name, "shy": c.shy} for c in session.state.children],

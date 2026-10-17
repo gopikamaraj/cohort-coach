@@ -1,7 +1,10 @@
 import { LANG_NAMES, LANGS, isLang } from "./i18n";
 import Cards from "./screens/Cards";
 import Check from "./screens/Check";
+import AiMap from "./screens/AiMap";
+import Audit from "./screens/Audit";
 import Home from "./screens/Home";
+import Practice from "./screens/Practice";
 import Judge from "./screens/Judge";
 import { StatusLine } from "./components/parts";
 import { go, href, useRoute, type Route } from "./lib/router";
@@ -35,6 +38,7 @@ function Shell() {
     { to: "/home", label: tr("nav.home") },
     { to: "/check", label: tr("nav.check") },
     { to: "/cards", label: tr("nav.cards") },
+    { to: "/practice", label: tr("nav.practice") },
   ];
   return (
     <div className="stage">
@@ -84,6 +88,9 @@ function Shell() {
           {route === "/home" ? <Home /> : null}
           {route === "/check" ? <Check /> : null}
           {route === "/cards" ? <Cards /> : null}
+          {route === "/practice" ? <Practice /> : null}
+          {route === "/aimap" ? <AiMap /> : null}
+          {route === "/audit" ? <Audit /> : null}
           {route === "/later" ? <Later /> : null}
         </main>
         <nav className="tabs" aria-label={tr("common.menu")}>

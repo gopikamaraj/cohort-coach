@@ -2,8 +2,8 @@
 // server rewrite, so a static host and the offline cache both serve every screen.
 import { useSyncExternalStore } from "react";
 
-export type Route = "/judge" | "/home" | "/check" | "/cards" | "/later";
-export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/later"];
+export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/aimap" | "/audit" | "/later";
+export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/aimap", "/audit", "/later"];
 
 function current(): Route {
   const raw = window.location.hash.replace(/^#/, "").split("?")[0] ?? "";
@@ -18,6 +18,12 @@ function subscribe(listener: () => void): () => void {
 
 export function useRoute(): Route {
   return useSyncExternalStore(subscribe, current, () => "/judge" as Route);
+}
+
+/** The ?name=value part of the hash, for deep links such as #/practice?seed=5. */
+export function useQuery(): URLSearchParams {
+  const hash = useSyncExternalStore(subscribe, () => window.location.hash, () => "");
+  return new URLSearchParams(hash.includes("?") ? hash.slice(hash.indexOf("?") + 1) : "");
 }
 
 export function go(route: Route): void {

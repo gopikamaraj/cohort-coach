@@ -1,18 +1,22 @@
 // J1: judge mode. No login. A five-minute test script with deep links, the demo controls, and
 // links to the raw AI map and audit trail (pretty versions arrive with the Practice Class).
 import { href, type Route } from "../lib/router";
+import type { Key } from "../i18n";
 import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
 
 export default function Judge() {
   const { tr, klass, term, forcedOffline, setOffline, loadDemo, advanceTerm, reset } = useApp();
-  const steps: { key: "judge.step1" | "judge.step2" | "judge.step3" | "judge.step4" | "judge.step5" | "judge.step6"; to: Route | null }[] = [
+  const steps: { key: Key; to: Route | null }[] = [
     { key: "judge.step1", to: null },
     { key: "judge.step2", to: "/home" },
     { key: "judge.step3", to: "/check" },
     { key: "judge.step4", to: "/cards" },
     { key: "judge.step5", to: null },
     { key: "judge.step6", to: "/cards" },
+    { key: "judge.step7", to: "/practice" },
+    { key: "judge.step8", to: "/practice" },
+    { key: "judge.step9", to: "/aimap" },
   ];
   return (
     <section aria-labelledby="judge-title">
@@ -58,17 +62,12 @@ export default function Judge() {
       <h2>{tr("judge.links")}</h2>
       <ul className="plain">
         <li>
-          <a href="/api/judge/ai-map" target="_blank" rel="noopener noreferrer">
-            {tr("judge.ai_map")}
-          </a>
+          <a href={href("/aimap")}>{tr("judge.ai_map")}</a>
         </li>
         <li>
-          <a href="/api/judge/audit" target="_blank" rel="noopener noreferrer">
-            {tr("judge.audit")}
-          </a>
+          <a href={href("/audit")}>{tr("judge.audit")}</a>
         </li>
       </ul>
-      <p className="muted">{tr("judge.later")}</p>
     </section>
   );
 }

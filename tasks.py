@@ -161,6 +161,7 @@ def cmd_bundle(args: list[str]) -> int:
 
 def cmd_e2e(args: list[str]) -> int:
     """Playwright against the production build: offline, install, languages, counts-only sync."""
+    os.environ["PYTHON"] = venv_python()  # the API the tests start runs in this environment
     return run([npm(), "run", "e2e", "--", *args], PWA)
 
 

@@ -51,6 +51,11 @@ export interface TranscriptRow {
   classId: string;
   createdAt: number;
   turns: unknown[]; // Practice Class transcripts: device only (P06)
+  sessionId?: string;
+  scenario?: string;
+  ended?: boolean;
+  card?: unknown;
+  ratings?: Record<string, string>;
 }
 
 export interface OutboxRow {

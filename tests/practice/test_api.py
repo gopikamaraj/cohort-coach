@@ -37,6 +37,7 @@ def test_create_session_returns_children_materials_and_the_cap(client: TestClien
     body = create(client)
     assert len(body["children"]) == 5 and sum(c["shy"] for c in body["children"]) == 1
     assert "error" not in str(body["children"])  # the teacher is not told who has which error
+    assert body["seed"] == 5
     assert body["materials"] == ["bundles", "sticks", "chart"] and body["turn_cap"] == 40
     assert {"id": "ask_explain", "label": "Asks the child to explain her steps"} in body["moves"]
 

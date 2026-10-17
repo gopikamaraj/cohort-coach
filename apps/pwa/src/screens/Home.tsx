@@ -19,6 +19,9 @@ export default function Home() {
           <a className="btn btn-primary" href={href("/cards")} data-testid="home-action">
             {tr("home.action.cards")}
           </a>
+          <a className="btn btn-secondary" href={href("/practice")} data-testid="home-practice">
+            {tr("home.action.practice")}
+          </a>
         </>
       ) : (
         <>

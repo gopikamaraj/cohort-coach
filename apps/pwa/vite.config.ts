@@ -5,6 +5,8 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // The app shell and every screen are precached, so the teacher screens (T1 to T3) work with no
 // signal after the first load. Only the Practice Class (P06) needs a live connection.
+const api = `http://localhost:${process.env["API_PORT"] ?? "8000"}`;
+
 export default defineConfig({
   plugins: [
     react(),
@@ -38,7 +40,7 @@ export default defineConfig({
       },
     }),
   ],
-  server: { proxy: { "/api": "http://localhost:8000" } },
-  preview: { proxy: { "/api": "http://localhost:8000" } },
+  server: { proxy: { "/api": api } },
+  preview: { proxy: { "/api": api } },
   test: { environment: "node", exclude: ["e2e/**", "node_modules/**"] },
 });

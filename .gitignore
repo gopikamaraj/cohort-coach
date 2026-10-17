@@ -19,3 +19,4 @@ __pycache__/
 apps/pwa/test-results/
 apps/pwa/playwright-report/
 apps/pwa/lh.json
+e2e-api.log
