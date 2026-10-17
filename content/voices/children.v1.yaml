@@ -1,0 +1,20 @@
+# P07: each fictional child has one stock Bulbul v3 speaker and a pitch ratio, so she sounds the
+# same in every session and five children in a seat row sound different.
+# Speaker names come from Sarvam's docs (2026-10-17) and are NOT verified live: run
+# `python scripts/check_voices.py` once the key works.
+# TODO-HUMAN(Shivani, Seema): listen and confirm the five seats are audibly distinct.
+# Never a real child's voice. Clones (SARVAM_CLONES=1) need licence-cleared adult or AI-designed clips.
+version: 1
+voices:
+  meena:   {speaker: priya,  pitch: 1.30, pace: 1.05}
+  anu:     {speaker: kavya,  pitch: 1.22, pace: 0.90}
+  divya:   {speaker: ishita, pitch: 1.35, pace: 1.10}
+  nila:    {speaker: shreya, pitch: 1.18, pace: 0.88}
+  asha:    {speaker: neha,   pitch: 1.28, pace: 1.00}
+  priya:   {speaker: pooja,  pitch: 1.24, pace: 0.95}
+  ravi:    {speaker: rahul,  pitch: 1.40, pace: 1.10}
+  karthik: {speaker: rohan,  pitch: 1.32, pace: 0.92}
+  arun:    {speaker: aditya, pitch: 1.38, pace: 1.12}
+  vijay:   {speaker: dev,    pitch: 1.26, pace: 1.00}
+  mani:    {speaker: amit,   pitch: 1.20, pace: 0.86}
+  sunil:   {speaker: varun,  pitch: 1.34, pace: 1.06}
