@@ -200,6 +200,22 @@ def _practice_sections() -> list[str]:
                 f"{ab['median_ms']} ms, {ab['line_sources']['template']} of {ab['turns']} lines "
                 "replaced by the template; not adopted."
             )
+    vlat = _optional("voice_latency.json")
+    if vlat:
+        lines += [
+            "",
+            "## Practice Class voice-turn latency (`evals/results/voice_latency.json`, "
+            f"{vlat['date']})",
+            "",
+            f"{vlat['turns']} live voice turns ({vlat['failed']} failed): median "
+            f"{vlat['median_ms']} ms, 90th percentile {vlat['p90_ms']} ms, maximum "
+            f"{vlat['max_ms']} ms, against a target median under {vlat['target_median_ms']} ms: "
+            f"{'meets' if vlat['meets_target'] else 'does not meet'} the target. Median by "
+            f"language: {vlat['median_by_language_ms']}. Median speech-to-text "
+            f"{vlat['median_stt_ms']} ms; median wait for the child's audio "
+            f"{vlat['median_tts_wait_ms']} ms; mean reply audio {vlat['mean_reply_audio_bytes']} "
+            "bytes. From one network and one machine, so read as directional.",
+        ]
     return lines
 
 
@@ -234,6 +250,12 @@ def _practice_registry() -> list[str]:
             "practice_latency.json",
             "scripts/practice_latency.py --live",
             "live Practice Class turns",
+            "One network and machine: directional",
+        ),
+        (
+            "voice_latency.json",
+            "scripts/voice_latency.py --live",
+            "live Practice Class voice turns",
             "One network and machine: directional",
         ),
     )

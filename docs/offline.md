@@ -21,6 +21,7 @@ Rehearsing with simulated children is the most useful feature and the only one t
 | Voice lessons, model-lesson script | later (P09, P10) | First download | Text script | later |
 | Answer-sheet photos | later (P08): taken offline, queued | Reading | Manual keypad entry (built) | later |
 | Practice Class | Not available offline: the screen says so and sends nothing; a slow or failed model call falls back to a template line with a notice; when the day's budget is spent a recorded sample rehearsal can be watched | Every turn | Template line, sample rehearsal; practice cards (P14) | `apps/pwa/e2e/practice.spec.ts` "offline, practice says so", "a class's own counts … a slow reply is explained", "paused … sample" |
+| Voice in the Practice Class (P07) | Not available offline (it is part of the Practice Class) | Every turn: recording up, reply audio down | Typing, switched on by itself after 2 voice failures or on a 2g link; the server skips speech for 30 s after 3 failures | `apps/pwa/e2e/voice.spec.ts`; `tests/speech/test_voice_turn.py`; live latency pending a working key, see `docs/speech.md` |
 | Reflection replies, mentor method capture | later (P10, P11) | Sending | Typed reply | later |
 
 ## Flags
