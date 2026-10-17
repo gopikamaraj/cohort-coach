@@ -1,10 +1,10 @@
 # Build progress
 
 <!-- HANDOFF: when the loop stops, it writes this block. Delete it once acted on. -->
-> **Handoff** — P06 built; staging and P07 need you
-> - Where we are: P06 🟡 (Practice Class screen, AI-layers overlay, AI map, audit viewer, degraded states, round 3 kit, staging recipe). Staging is not deployed. Next is P07 (voice).
-> - Needed from people: 1. Create hosting accounts and run `docs/deploy.md` for staging; put the URLs under Environments below (Gopi). 2. For P07: install ffmpeg (`winget install Gyan.FFmpeg`) and put `SARVAM_API_KEY` in `.env` (Gopi); P07 cannot start without the key. 3. Seema runs round 3 with `docs/user-testing/round3-script.md`; Shivani reviews the Hindi.
-> - Resume with: `/next-phase` (after the Sarvam key and ffmpeg are in place)
+> **Handoff** — P06 built; staging needs you; P07 can start
+> - Where we are: P06 🟡 (Practice Class screen, AI-layers overlay, AI map, audit viewer, degraded states, round 3 kit, staging recipe). Staging is not deployed. ffmpeg (9.0.2) and `SARVAM_API_KEY` are in place, so P07 (voice) can start.
+> - Needed from people: 1. Create hosting accounts and run `docs/deploy.md` for staging; put the URLs under Environments below (Gopi). 2. Seema runs round 3 with `docs/user-testing/round3-script.md`; Shivani reviews the Hindi. 3. Listen to the five child voices when P07 is done and confirm (Gopi).
+> - Resume with: `/next-phase`
 
 **Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
 
@@ -53,7 +53,6 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Gopi | Review Tamil UI strings; confirm P05 DECISIONS | P06 | yes (draft) | apps/pwa/src/i18n/ta.json |
 | Seema | Review P04 move lists, rubrics, scenario values, personas and hi/ta templates | P06 | yes (drafts) | content/ |
 | Shivani | 150 labelled lines for the labeller eval; realism ratings; 50 red-team prompts | P13 | no | evals/sets/ |
-| Gopi | Install ffmpeg (`winget install Gyan.FFmpeg`); Sarvam account + key in `.env` | P07 | n/a | — |
 | Gopi | Make repo public before submission (`gh repo edit --visibility public`) | P16 | n/a | — |
 | Seema | Review fictional teacher names | P05 | yes (draft list) | content/personas/teachers_simulated.yaml |
 | Seema | Confirm extra heard-and-reversed variants (3064, 300604) and NCERT match of the 20 items | P04 | yes | docs/engine.md |
