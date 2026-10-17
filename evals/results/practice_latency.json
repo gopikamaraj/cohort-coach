@@ -1,15 +1,15 @@
 {
-  "cost_per_turn_usd": 0.001648,
-  "cost_usd": 0.034605,
+  "cost_per_turn_usd": 0.001587,
+  "cost_usd": 0.03332,
   "date": "2026-10-17",
   "line_sources": {
-    "ai": 16,
+    "ai": 21,
     "silent": 0,
-    "template": 5
+    "template": 0
   },
-  "max_ms": 8280,
+  "max_ms": 10703,
   "measure": "practice_turn_latency",
-  "median_ms": 4812,
+  "median_ms": 4968,
   "meets_target": false,
   "mode": "live",
   "models": {
@@ -17,7 +17,7 @@
     "MODEL_CHILD": "claude-sonnet-5-5",
     "MODEL_LABEL": "claude-haiku-5-5"
   },
-  "p90_ms": 5469,
+  "p90_ms": 5921,
   "sessions": 3,
   "source": "scripts/practice_latency.py",
   "target_median_ms": 3000,

@@ -32,3 +32,27 @@ Simulated terms (SIMULATED data): 20 classes per arm, 2000 bootstrap resamples, 
 | 20 | 33 | 33 | 0 | 0 | yes |
 | 25 | 33 | 33 | 0 | 0 | yes |
 | 5 | 50 | 2 | 20 | 28 | no (information) |
+
+## Eval 2: simulator fidelity (`evals/results/sim_fidelity.json`, 2026-10-17)
+
+Scripted teacher turns drive the real simulator; every child number must be the engine's (the answer is the correct answer or one an independent oracle gives for the child's error, and every number in the line is in the plan's allowed set). Bar: 100%. Engine and template lines: 200 of 200 turns match (100%). Result: pass.
+
+| Error | Turns | Matched |
+| --- | --- | --- |
+| ADD-NOCARRY | 50 | 50 |
+| PV-HEARD | 50 | 50 |
+| SUB-NODEC | 50 | 50 |
+| SUB-SFL | 50 | 50 |
+
+Live run with the real model (`evals/results/sim_fidelity_live.json`, 2026-10-17): 60 of 60 turns match (100%); the model's line was kept in 59 turns and replaced by the template in 1; cost USD 0.066561. This is a short live run (the full 200 turns are scheduled for P13).
+
+## Red team (`evals/results/redteam.json`, `redteam_live.json`, 2026-10-17)
+
+Seed set `evals/sets/redteam.yaml`: 22 attacks and 2 benign controls (seeds written by the build; the full 50 are still to be written). Code gates alone: 16 of 22 attacks blocked, 6 need a model.
+
+Live run (call 7 and the call 2 labeller on the rest, 2026-10-17): 0 of 22 attacks reached a teacher (bar 0); 0 of 2 benign controls blocked. Result: pass. Small seed set: read as directional.
+
+## Practice Class text-turn latency (`evals/results/practice_latency.json`, 2026-10-17)
+
+21 scripted live turns over 3 sessions (label, engine, child line, gates): median 4968 ms, 90th percentile 5921 ms, maximum 10703 ms, against a target median under 3000 ms: does not meet the target. Cost USD 0.001587 per turn. From one network and one machine, so read as directional.
+A/B with Haiku 5.5 for call 1 (`practice_latency_haiku_child.json`): median 8578 ms, 2 of 21 lines replaced by the template; not adopted.

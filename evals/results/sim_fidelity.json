@@ -2,42 +2,35 @@
   "bar": {
     "numeric_match": 1.0
   },
-  "cost_usd": 0.066561,
   "date": "2026-10-17",
   "eval": "sim_fidelity",
-  "limit": 60,
-  "line_sources": {
-    "ai": 59,
-    "template": 1
-  },
-  "matched": 60,
-  "median_call1_latency_ms": 1592,
-  "mode": "live",
+  "matched": 200,
+  "mode": "engine_templates",
   "numeric_match": 1.0,
   "passed": true,
   "per_error": {
     "ADD-NOCARRY": {
-      "matched": 15,
+      "matched": 50,
       "share": 1.0,
-      "turns": 15
+      "turns": 50
     },
     "PV-HEARD": {
-      "matched": 15,
+      "matched": 50,
       "share": 1.0,
-      "turns": 15
+      "turns": 50
     },
     "SUB-NODEC": {
-      "matched": 15,
+      "matched": 50,
       "share": 1.0,
-      "turns": 15
+      "turns": 50
     },
     "SUB-SFL": {
-      "matched": 15,
+      "matched": 50,
       "share": 1.0,
-      "turns": 15
+      "turns": 50
     }
   },
   "set": "evals/sets/sim_fidelity/*.yaml",
   "source": "evals/runners/sim_fidelity.py",
-  "turns": 60
+  "turns": 200
 }

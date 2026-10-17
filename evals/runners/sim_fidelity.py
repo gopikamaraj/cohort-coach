@@ -11,7 +11,8 @@ drive the real simulator. For each turn where a child speaks:
 A turn matches when both hold. Bar: 100%. Modes: default `engine_templates` uses the template
 line (free, deterministic, runs in CI); `--live` uses call 1 with the real model and the gates
 (prints a cost estimate first and asks), so it also shows how often the model's line was kept
-or replaced by the template. Writes evals/results/sim_fidelity.json (a `--live` run replaces it).
+or replaced by the template. Writes evals/results/sim_fidelity.json, or sim_fidelity_live.json for
+`--live`.
 
 Usage: python -m evals.runners.sim_fidelity [--live] [--limit N] [--yes] [--no-write]
 """
@@ -40,7 +41,7 @@ from services.practice.content import load_personas, load_scenario
 from services.practice.templates import render_line
 
 SET_DIR = Path(__file__).resolve().parents[1] / "sets" / "sim_fidelity"
-RESULT_PATH = Path(__file__).resolve().parents[1] / "results" / "sim_fidelity.json"
+RESULTS = Path(__file__).resolve().parents[1] / "results"
 BAR = {"numeric_match": 1.0}
 ERRORS = ("PV-HEARD", "ADD-NOCARRY", "SUB-SFL", "SUB-NODEC")
 
@@ -209,11 +210,12 @@ def main(argv: list[str]) -> int:
               f"median call-1 latency {result['median_call1_latency_ms']} ms")  # fmt: skip
     print("PASS" if result["passed"] else "FAIL")
     if not args.no_write:
-        RESULT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        RESULT_PATH.write_text(
+        path = RESULTS / ("sim_fidelity_live.json" if args.live else "sim_fidelity.json")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
             json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
         )
-        print(f"wrote {RESULT_PATH.name} in evals/results/")
+        print(f"wrote {path.name} in evals/results/")
     return 0 if result["passed"] else 1
 
 

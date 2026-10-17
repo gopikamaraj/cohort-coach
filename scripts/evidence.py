@@ -122,6 +122,132 @@ def _power_note(stats: dict[str, Any]) -> str:
     return ("Near the working bar, " + "; ".join(parts) + " (not scored).") if parts else ""
 
 
+def _optional(name: str) -> dict[str, Any] | None:
+    path = RESULTS / name
+    return _load(path) if path.exists() else None
+
+
+def _practice_sections() -> list[str]:
+    """Evals and measurements from P04: simulator fidelity, red team, Practice Class latency."""
+    lines: list[str] = []
+    fid, fid_live = _optional("sim_fidelity.json"), _optional("sim_fidelity_live.json")
+    if fid:
+        lines += [
+            "",
+            f"## Eval 2: simulator fidelity (`evals/results/sim_fidelity.json`, {fid['date']})",
+            "",
+            "Scripted teacher turns drive the real simulator; every child number must be the "
+            "engine's (the answer is the correct answer or one an independent oracle gives for "
+            "the child's error, and every number in the line is in the plan's allowed set). "
+            f"Bar: 100%. Engine and template lines: {fid['matched']} of {fid['turns']} turns "
+            f"match ({fid['numeric_match']:.0%}). Result: {'pass' if fid['passed'] else 'FAIL'}.",
+            "",
+            "| Error | Turns | Matched |",
+            "| --- | --- | --- |",
+        ]
+        lines += [f"| {e} | {s['turns']} | {s['matched']} |" for e, s in fid["per_error"].items()]
+    if fid_live:
+        lines += [
+            "",
+            "Live run with the real model (`evals/results/sim_fidelity_live.json`, "
+            f"{fid_live['date']}): {fid_live['matched']} of {fid_live['turns']} turns match "
+            f"({fid_live['numeric_match']:.0%}); the model's line was kept in "
+            f"{fid_live['line_sources']['ai']} turns and replaced by the template in "
+            f"{fid_live['line_sources']['template']}; cost USD {fid_live['cost_usd']}. This is a "
+            "short live run (the full 200 turns are scheduled for P13).",
+        ]
+    rt, rt_live = _optional("redteam.json"), _optional("redteam_live.json")
+    if rt:
+        blocked = sum(c["blocked"] for c in rt["per_category"].values())
+        needs_model = len(rt["pending_checker_ids"]) + len(rt["pending_labeller_ids"])
+        lines += [
+            "",
+            f"## Red team (`evals/results/redteam.json`, `redteam_live.json`, {rt['date']})",
+            "",
+            f"Seed set `evals/sets/redteam.yaml`: {rt['cases']} attacks and {rt['controls']} "
+            "benign controls (seeds written by the build; the full 50 are still to be written). "
+            f"Code gates alone: {blocked} of {rt['cases']} attacks blocked, {needs_model} need a "
+            "model.",
+        ]
+    if rt_live:
+        lines += [
+            "",
+            f"Live run (call 7 and the call 2 labeller on the rest, {rt_live['date']}): "
+            f"{rt_live['unsafe_reaching_teacher']} of {rt_live['cases']} attacks reached a "
+            f"teacher (bar 0); {rt_live['controls_wrongly_blocked']} of {rt_live['controls']} "
+            f"benign controls blocked. Result: {'pass' if rt_live['passed'] else 'FAIL'}. Small "
+            "seed set: read as directional.",
+        ]
+    lat = _optional("practice_latency.json")
+    if lat:
+        ab = _optional("practice_latency_haiku_child.json")
+        lines += [
+            "",
+            "## Practice Class text-turn latency (`evals/results/practice_latency.json`, "
+            f"{lat['date']})",
+            "",
+            f"{lat['turns']} scripted live turns over {lat['sessions']} sessions (label, engine, "
+            f"child line, gates): median {lat['median_ms']} ms, 90th percentile "
+            f"{lat['p90_ms']} ms, maximum {lat['max_ms']} ms, against a target median under "
+            f"{lat['target_median_ms']} ms: "
+            f"{'meets' if lat['meets_target'] else 'does not meet'} the target. Cost USD "
+            f"{lat['cost_per_turn_usd']} per turn. From one network and one machine, so read as "
+            "directional.",
+        ]
+        if ab:
+            lines.append(
+                "A/B with Haiku 5.5 for call 1 (`practice_latency_haiku_child.json`): median "
+                f"{ab['median_ms']} ms, {ab['line_sources']['template']} of {ab['turns']} lines "
+                "replaced by the template; not adopted."
+            )
+    return lines
+
+
+def _practice_registry() -> list[str]:
+    rows: list[str] = []
+    entries = (
+        (
+            "sim_fidelity.json",
+            "evals/runners/sim_fidelity.py",
+            "scripted simulator turns",
+            "Exact check",
+        ),
+        (
+            "sim_fidelity_live.json",
+            "evals/runners/sim_fidelity.py --live",
+            "live child-voice turns",
+            "Short live run: directional",
+        ),
+        (
+            "redteam.json",
+            "evals/runners/redteam.py",
+            "red-team seeds, code gates",
+            "Seed set: directional",
+        ),
+        (
+            "redteam_live.json",
+            "evals/runners/redteam.py --live",
+            "red-team seeds, with models",
+            "Seed set: directional",
+        ),
+        (
+            "practice_latency.json",
+            "scripts/practice_latency.py --live",
+            "live Practice Class turns",
+            "One network and machine: directional",
+        ),
+    )
+    for name, script, what, note in entries:
+        data = _optional(name)
+        if data:
+            n = data.get("turns") or data.get("cases")
+            rows.append(
+                f"| `docs/evidence/eval_summary.md` (`evals/results/{name}`) | `{script}` | "
+                f"{data['date']} | {n} {what} | {note} |"
+            )
+    return rows
+
+
 def _eval_summary() -> str:
     items = _load(RESULTS / "engine_items.json")
     stats = _load(RESULTS / "statistics.json")
@@ -175,6 +301,7 @@ def _eval_summary() -> str:
             f"| {effect} | {t['trials']} | {t['working']} | {t['not_working']} | "
             f"{t['inconclusive']} | {'yes' if int(effect) in scored else 'no (information)'} |"
         )
+    lines += _practice_sections()
     return "\n".join(lines) + "\n"
 
 
@@ -202,6 +329,7 @@ def _registry(block: dict[str, Any]) -> str:
         f"{stats['date']} | {scored['planted_working']} planted and {scored['no_effect']} "
         "no-effect simulated terms | Simulated terms; effect sizes and arm size are stated |",
     ]
+    lines += _practice_registry()
     return "\n".join(lines) + "\n"
 
 

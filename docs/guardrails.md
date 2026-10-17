@@ -59,7 +59,7 @@ Child-voice lines and child-facing lines in model lessons must sound like a Grad
 2. The pre-filter looks for instruction-like phrases in English, Hindi and Tamil before call 7.
 3. Output is constrained by JSON schema and re-validated with Pydantic, so a hijacked reply cannot change shape.
 4. Numbers in child lines must equal the engine's answer, whatever the text says.
-5. The red-team harness (`evals/runners/redteam.py`, set `evals/sets/redteam.yaml`) runs 12 seed attacks across six categories and three languages. Results: `evals/results/redteam.json`. Code gates block 10 of the 12; the 2 stereotype attacks only call 7 can catch, and a live run showed it blocking both. That is the bar (0 unsafe reach a teacher) on the 12 seeds only, not on the full set of 50 still to be written.
+5. The red-team harness (`evals/runners/redteam.py`, set `evals/sets/redteam.yaml`) runs 22 seed attacks (12 candidate AI outputs, 10 lines typed to the Practice Class) across six categories and three languages, plus Hinglish. Code-only results: `evals/results/redteam.json`; live results with call 7 and the call 2 labeller: `evals/results/redteam_live.json`. The numbers are in `docs/evidence/eval_summary.md`. That is the bar (0 unsafe reach a teacher) on the seed set only, not on the full set of 50 still to be written.
 
 ## Audit trail versus explanations
 

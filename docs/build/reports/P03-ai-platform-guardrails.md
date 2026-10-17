@@ -36,7 +36,7 @@ Every Claude call now goes through one path (`ai/client.py::run_call`) with vers
 | --- | --- | --- | --- | --- |
 | pytest (all) | 333 | passed | all pass | `python tasks.py check` output |
 | pytest AI + red team | 96 | passed | all pass | `tests/ai`, `tests/evals/test_redteam.py` |
-| Red team, live | 12 attacks, 2 controls | 10 blocked by code, 2 by the checker, 0 reached a teacher, 0 controls blocked | 0 unsafe reach a teacher | `evals/results/redteam.json` |
+| Red team, live | 12 attacks, 2 controls | 10 blocked by code, 2 by the checker, 0 reached a teacher, 0 controls blocked | 0 unsafe reach a teacher | `evals/results/redteam_live.json` (this P03 run; superseded by the 22-case run in P04) |
 
 The bar is met on the 12 seed prompts only. It is not a claim about the full 50-prompt set (Shivani, P13), and the checker was run once per case.
 
