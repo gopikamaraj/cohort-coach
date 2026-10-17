@@ -1,0 +1,41 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review the moves, wording and effect values (tuning parameters).
+# Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+error: ADD-NOCARRY
+version: 1
+movelist: add-nocarry.v1
+rubric: add-nocarry.v1
+start_strength: 0.9
+start_engagement: 0.6
+max_turns: 40
+consecutive_correct_to_finish: 2
+quiet_turns: 2
+problems:
+- kind: add
+  a: 47
+  b: 25
+- kind: add
+  a: 38
+  b: 46
+- kind: add
+  a: 59
+  b: 24
+- kind: add
+  a: 27
+  b: 35
+- kind: add
+  a: 68
+  b: 17
+- kind: add
+  a: 46
+  b: 28
+materials:
+- bundles
+- sticks
+- chart
+material_moves:
+  bundles: show_bundles
+  sticks: regroup_ten
+  chart: other
+seat_mix:
+  ADD-NOCARRY: 4

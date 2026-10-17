@@ -1,0 +1,88 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review. Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+version: 1
+children:
+- id: meena
+  gender: f
+  temperament: cheerful and quick to answer
+  names:
+    en: Meena
+    hi: मीना
+    ta: மீனா
+- id: anu
+  gender: f
+  temperament: thoughtful and careful, speaks slowly
+  names:
+    en: Anu
+    hi: अनु
+    ta: அனு
+- id: divya
+  gender: f
+  temperament: chatty and eager to show her work
+  names:
+    en: Divya
+    hi: दिव्या
+    ta: திவ்யா
+- id: nila
+  gender: f
+  temperament: quiet and easily worried about being wrong
+  names:
+    en: Nila
+    hi: नीला
+    ta: நிலா
+- id: asha
+  gender: f
+  temperament: curious, asks why
+  names:
+    en: Asha
+    hi: आशा
+    ta: ஆஷா
+- id: priya
+  gender: f
+  temperament: calm and steady
+  names:
+    en: Priya
+    hi: प्रिया
+    ta: பிரியா
+- id: ravi
+  gender: m
+  temperament: bold and a little hasty
+  names:
+    en: Ravi
+    hi: रवि
+    ta: ரவி
+- id: karthik
+  gender: m
+  temperament: thoughtful, likes to count on his fingers
+  names:
+    en: Karthik
+    hi: कार्तिक
+    ta: கார்த்திக்
+- id: arun
+  gender: m
+  temperament: restless but friendly
+  names:
+    en: Arun
+    hi: अरुण
+    ta: அருண்
+- id: vijay
+  gender: m
+  temperament: confident, sometimes too sure
+  names:
+    en: Vijay
+    hi: विजय
+    ta: விஜய்
+- id: mani
+  gender: m
+  temperament: shy and soft-spoken
+  names:
+    en: Mani
+    hi: मणि
+    ta: மணி
+- id: sunil
+  gender: m
+  temperament: cheerful and talkative
+  names:
+    en: Sunil
+    hi: सुनील
+    ta: சுனில்

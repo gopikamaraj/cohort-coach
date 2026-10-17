@@ -1,0 +1,42 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review the moves, wording and effect values (tuning parameters).
+# Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+error: SUB-SFL
+version: 1
+movelist: sub-sfl.v1
+rubric: sub-sfl.v1
+start_strength: 0.9
+start_engagement: 0.6
+max_turns: 40
+consecutive_correct_to_finish: 2
+quiet_turns: 2
+problems:
+- kind: sub
+  a: 52
+  b: 29
+- kind: sub
+  a: 74
+  b: 46
+- kind: sub
+  a: 81
+  b: 57
+- kind: sub
+  a: 65
+  b: 28
+- kind: sub
+  a: 72
+  b: 39
+- kind: sub
+  a: 91
+  b: 64
+materials:
+- bundles
+- sticks
+- chart
+material_moves:
+  bundles: show_bundles
+  sticks: show_bundles
+  chart: other
+seat_mix:
+  SUB-SFL: 3
+  SUB-NODEC: 1

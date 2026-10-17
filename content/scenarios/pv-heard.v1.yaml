@@ -1,0 +1,42 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review the moves, wording and effect values (tuning parameters).
+# Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+error: PV-HEARD
+version: 1
+movelist: pv-heard.v1
+rubric: pv-heard.v1
+start_strength: 0.9
+start_engagement: 0.6
+max_turns: 40
+consecutive_correct_to_finish: 2
+quiet_turns: 2
+problems:
+- kind: dictation
+  a: 43
+  b: 0
+- kind: dictation
+  a: 57
+  b: 0
+- kind: dictation
+  a: 346
+  b: 0
+- kind: dictation
+  a: 82
+  b: 0
+- kind: dictation
+  a: 528
+  b: 0
+- kind: dictation
+  a: 619
+  b: 0
+materials:
+- bundles
+- sticks
+- chart
+material_moves:
+  bundles: show_bundles
+  sticks: other
+  chart: show_chart
+seat_mix:
+  PV-HEARD: 3
+  PV-REVERSE: 1

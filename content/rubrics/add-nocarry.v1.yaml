@@ -1,0 +1,61 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review the moves, wording and effect values (tuning parameters).
+# Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+error: ADD-NOCARRY
+version: 1
+points:
+- id: let_answer
+  move_ids:
+  - pose_problem
+  text:
+    en: You let the child say her answer first.
+    hi: आपने पहले बच्चे को अपना जवाब बोलने दिया।
+    ta: முதலில் குழந்தையைத் தன் பதிலைச் சொல்ல விட்டீர்கள்.
+  try_next:
+    en: Let the child say her answer before you react.
+    hi: प्रतिक्रिया देने से पहले बच्चे को जवाब बोलने दें।
+    ta: நீங்கள் பதில் சொல்லும் முன் குழந்தையைத் தன் பதிலைச் சொல்ல விடுங்கள்.
+- id: ask_explain
+  move_ids:
+  - ask_explain
+  text:
+    en: You asked the child to explain her steps, which showed you her thinking.
+    hi: आपने बच्चे से अपने कदम समझाने को कहा, जिससे उसकी सोच दिखी।
+    ta: குழந்தையிடம் படிகளை விளக்கச் சொன்னீர்கள், அது அவள் சிந்தனையைக் காட்டியது.
+  try_next:
+    en: Ask the child how she got her answer before you correct it.
+    hi: सुधारने से पहले बच्चे से पूछें कि उसने जवाब कैसे निकाला।
+    ta: திருத்தும் முன் குழந்தை பதிலை எப்படிப் பெற்றாள் என்று கேளுங்கள்.
+- id: show_bundles
+  move_ids:
+  - show_bundles
+  text:
+    en: You showed the number with bundles and sticks.
+    hi: आपने संख्या को गट्ठरों और तीलियों से दिखाया।
+    ta: எண்ணைக் கட்டுகளாலும் குச்சிகளாலும் காட்டினீர்கள்.
+  try_next:
+    en: Show the number with bundles of ten and loose sticks.
+    hi: संख्या को दस के गट्ठरों और खुली तीलियों से दिखाएँ।
+    ta: எண்ணைப் பத்து கட்டுகளாலும் தனிக் குச்சிகளாலும் காட்டுங்கள்.
+- id: regroup_ten
+  move_ids:
+  - regroup_ten
+  text:
+    en: You grouped ten sticks into a bundle.
+    hi: आपने दस तीलियों का गट्ठर बनवाया।
+    ta: பத்து குச்சிகளைக் கட்டாகக் கட்டச் செய்தீர்கள்.
+  try_next:
+    en: When ten sticks are made, tie them into a bundle.
+    hi: दस तीलियाँ बन जाएँ तो उनका गट्ठर बाँधें।
+    ta: பத்து குச்சிகள் சேர்ந்தால் அவற்றைக் கட்டாகக் கட்டுங்கள்.
+- id: check_back
+  move_ids:
+  - check_back
+  text:
+    en: You had the child check her answer.
+    hi: आपने बच्चे से उसका जवाब जँचवाया।
+    ta: குழந்தையைத் தன் பதிலைச் சரிபார்க்கச் செய்தீர்கள்.
+  try_next:
+    en: Have the child check her answer by working backwards.
+    hi: बच्चे से उल्टा करके अपना जवाब जँचवाएँ।
+    ta: பின்னோக்கிச் செய்து குழந்தையைத் தன் பதிலைச் சரிபார்க்கச் சொல்லுங்கள்.

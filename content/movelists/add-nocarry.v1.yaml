@@ -1,0 +1,172 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review the moves, wording and effect values (tuning parameters).
+# Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+error: ADD-NOCARRY
+version: 1
+moves:
+- id: pose_problem
+  behaviour: answer
+  strength: 0.0
+  engagement: 0.0
+  quiet: false
+  label:
+    en: Poses a problem or asks a child to answer
+    hi: सवाल देना या बच्चे से जवाब पूछना
+    ta: கணக்கைக் கொடுத்தல் அல்லது குழந்தையிடம் பதில் கேட்டல்
+  description:
+    en: The teacher gives a sum or asks a child for an answer.
+    hi: शिक्षक कोई सवाल देता है या बच्चे से जवाब पूछता है।
+    ta: ஆசிரியர் ஒரு கணக்கைக் கொடுக்கிறார் அல்லது குழந்தையிடம் பதில் கேட்கிறார்.
+  examples:
+    en:
+    - Meena, what is 52 minus 29?
+    - Who can tell me 74 minus 46?
+    hi:
+    - मीना, 52 में से 29 घटाओ तो कितना?
+    - 74 में से 46 कौन घटाएगा?
+    ta:
+    - மீனா, 52 - 29 எவ்வளவு?
+    - 74 - 46 யார் சொல்வார்கள்?
+- id: ask_explain
+  behaviour: explain
+  strength: -0.2
+  engagement: 0.05
+  quiet: false
+  label:
+    en: Asks the child to explain her steps
+    hi: बच्चे से अपने कदम समझाने को कहना
+    ta: குழந்தையிடம் தன் படிகளை விளக்கச் சொல்லுதல்
+  description:
+    en: The teacher asks how the child got the answer.
+    hi: शिक्षक पूछता है कि बच्चे ने जवाब कैसे निकाला।
+    ta: குழந்தை பதிலை எப்படிப் பெற்றது என்று ஆசிரியர் கேட்கிறார்.
+  examples:
+    en:
+    - Tell me how you got 37.
+    - What did you do first?
+    hi:
+    - बताओ, तुमने 37 कैसे निकाला?
+    - पहले तुमने क्या किया?
+    ta:
+    - 37 எப்படி வந்தது என்று சொல்.
+    - முதலில் என்ன செய்தாய்?
+- id: show_bundles
+  behaviour: work_aloud
+  strength: -0.3
+  engagement: 0.1
+  quiet: false
+  label:
+    en: Uses bundles of ten sticks
+    hi: दस-दस के गट्ठर और खुली तीलियाँ इस्तेमाल करना
+    ta: பத்து குச்சிக் கட்டுகளைப் பயன்படுத்துதல்
+  description:
+    en: The teacher shows the number as bundles of ten and loose sticks (or taps the materials).
+    hi: शिक्षक संख्या को दस के गट्ठर और खुली तीलियों से दिखाता है (या सामग्री दबाता है)।
+    ta: ஆசிரியர் எண்ணைப் பத்து கட்டுகளாகவும் தனிக் குச்சிகளாகவும் காட்டுகிறார் (அல்லது பொருட்களைத் தொடுகிறார்).
+  examples:
+    en:
+    - 'Here is 52: 5 bundles and 2 sticks. Take away 9 sticks.'
+    hi:
+    - 'यह 52 है: 5 गट्ठर और 2 तीलियाँ। अब 9 तीलियाँ हटाओ।'
+    ta:
+    - 'இது 52: 5 கட்டுகள், 2 குச்சிகள். இப்போது 9 குச்சிகளை எடு.'
+- id: regroup_ten
+  behaviour: work_aloud
+  strength: -0.3
+  engagement: 0.1
+  quiet: false
+  label:
+    en: Groups ten sticks into a bundle
+    hi: दस तीलियों का गट्ठर बनाना
+    ta: பத்து குச்சிகளைக் கட்டாகக் கட்டுதல்
+  description:
+    en: The teacher has the child tie ten loose sticks into one bundle when adding.
+    hi: जोड़ते समय शिक्षक दस खुली तीलियों का एक गट्ठर बनवाता है।
+    ta: கூட்டும்போது பத்து தனிக் குச்சிகளை ஒரு கட்டாகக் கட்டச் சொல்கிறார்.
+  examples:
+    en:
+    - You have 12 sticks. Tie 10 into a bundle. How many are left?
+    hi:
+    - तुम्हारे पास 12 तीलियाँ हैं। 10 का गट्ठर बाँधो। कितनी बचीं?
+    ta:
+    - உன்னிடம் 12 குச்சிகள். 10 ஐக் கட்டாகக் கட்டு. எத்தனை மீதம்?
+- id: check_back
+  behaviour: doubt
+  strength: -0.2
+  engagement: 0.05
+  quiet: false
+  label:
+    en: Checks by taking away
+    hi: घटाकर जाँचना
+    ta: கழித்துச் சரிபார்த்தல்
+  description:
+    en: The teacher has the child take one addend away from the total to see if the other comes back.
+    hi: शिक्षक बच्चे से योगफल में से एक संख्या घटवाकर देखता है कि दूसरी संख्या बचती है या नहीं।
+    ta: மொத்தத்திலிருந்து ஒரு எண்ணைக் கழித்து மற்ற எண் வருகிறதா என்று ஆசிரியர் பார்க்கச் சொல்கிறார்.
+  examples:
+    en:
+    - Take 25 away from 62. Do you get 47?
+    hi:
+    - 62 में से 25 घटाओ। क्या 47 बचा?
+    ta:
+    - 62 இலிருந்து 25 ஐக் கழி. 47 வருகிறதா?
+- id: tell_rule
+  behaviour: agree
+  strength: -0.05
+  engagement: 0.0
+  quiet: false
+  label:
+    en: Just tells the rule
+    hi: सिर्फ़ नियम बता देना
+    ta: விதியை மட்டும் சொல்லிவிடுதல்
+  description:
+    en: The teacher states the rule without letting the child work it out.
+    hi: शिक्षक बच्चे को खुद करने दिए बिना नियम बता देता है।
+    ta: குழந்தை தானே செய்ய விடாமல் ஆசிரியர் விதியைச் சொல்கிறார்.
+  examples:
+    en:
+    - Always take the ones from the ones and the tens from the tens, carefully.
+    hi:
+    - हमेशा इकाई में से इकाई और दहाई में से दहाई घटाओ।
+    ta:
+    - எப்போதும் ஒன்றிலிருந்து ஒன்றையும் பத்திலிருந்து பத்தையும் கழிக்க வேண்டும்.
+- id: praise
+  behaviour: thanks
+  strength: 0.0
+  engagement: 0.15
+  quiet: false
+  label:
+    en: Praises effort
+    hi: कोशिश की तारीफ़ करना
+    ta: முயற்சியைப் பாராட்டுதல்
+  description:
+    en: The teacher praises the child's effort.
+    hi: शिक्षक बच्चे की कोशिश की तारीफ़ करता है।
+    ta: ஆசிரியர் குழந்தையின் முயற்சியைப் பாராட்டுகிறார்.
+  examples:
+    en:
+    - Well tried, thank you for telling me.
+    hi:
+    - शाबाश, तुमने कोशिश की।
+    ta:
+    - நன்றாக முயன்றாய், பாராட்டுகள்.
+- id: scold
+  behaviour: quiet
+  strength: 0.0
+  engagement: -0.3
+  quiet: true
+  label:
+    en: Scolds the child
+    hi: बच्चे को डाँटना
+    ta: குழந்தையைக் கடிந்துகொள்ளுதல்
+  description:
+    en: The teacher scolds or threatens the child.
+    hi: शिक्षक बच्चे को डाँटता या धमकाता है।
+    ta: ஆசிரியர் குழந்தையைக் கடிந்துகொள்கிறார் அல்லது மிரட்டுகிறார்.
+  examples:
+    en:
+    - That is wrong again! Pay attention!
+    hi:
+    - फिर ग़लत! ध्यान लगाओ!
+    ta:
+    - மறுபடியும் தவறு! கவனி!

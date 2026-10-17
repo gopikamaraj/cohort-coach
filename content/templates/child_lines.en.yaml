@@ -1,0 +1,28 @@
+# P04 seed content, first draft by the build.
+# TODO-HUMAN(Seema): review. Hindi and Tamil wording: TODO-HUMAN(Seema, Gopi) native review.
+intents:
+  answer: '{answer}, Miss!'
+  explain: '{steps}.'
+  work_aloud: '{steps}.'
+  doubt: '{steps}. Hmm.'
+  agree: OK Miss, let me look again.
+  thanks: Thank you, Miss!
+  quiet: Yes, Miss.
+  confused: Miss, I did not understand.
+join: ', then '
+and: ' and '
+steps:
+  cant: '{0} minus {1} I can''t do'
+  minus: I did {0} minus {1}, that is {2}
+  plus: '{0} plus {1} is {2}'
+  borrow: I made {0} into {1}
+  open: 'I opened a bundle: {0} bundles and {1} sticks'
+  write: I wrote {0}
+  carry: I carried {0}
+  parts: I wrote {parts} next to each other, that is {r}
+  tens_ones: '{0} tens and {1} ones is {2}'
+  addback: '{0} plus {1} is {2}, not {3}'
+  takeaway: '{0} minus {1} is {2}, not {3}'
+  size: '{0} is much bigger than {1}'
+  hundreds_tens_ones: '{0} hundreds, {1} tens and {2} ones is {3}'
+  swap: I put the {1} before the {0}, that is {2}
