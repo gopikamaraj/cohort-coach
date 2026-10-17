@@ -1,0 +1,9 @@
+# Sarvam prices in INR, copied from the pricing page, not from memory.
+# Source: https://docs.sarvam.ai/api/getting-started/pricing  (read 2026-10-17)
+source_url: https://docs.sarvam.ai/api/getting-started/pricing
+as_of: "2026-10-17"
+currency: INR
+stt_per_hour_of_audio: 30        # billed per second
+tts_per_10k_characters: 30       # Bulbul v3; v2 and v4 are not listed, v3's rate is used as the estimate
+voice_cloning_per_10k_characters: 30
+free_credits_on_signup: 100

@@ -21,7 +21,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report) |
 | P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | ✅ | 2026-10-17 (`6306eb7`) | 2026-10-17 | [report](reports/P05-pwa-shell-check-cards.md) | Installable, offline T1–T3, 3 languages, bundle 112 kB |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | 🔄 | 2026-10-17 (`0e57872`) | | | Staging |
-| P07 | Voice | P0 | Thu 22 | ⬜ | | | | |
+| P07 | Voice | P0 | Thu 22 | 🔄 | 2026-10-17 (`874d069`) | | | |
 | P08 | Answer-sheet capture and import | P0/P1 | Fri 23 | ⬜ | | | | |
 | P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
 | P10 | Telegram channel | P0 | Sun 25 | ⬜ | | | | |
