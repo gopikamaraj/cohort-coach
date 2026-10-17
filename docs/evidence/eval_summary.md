@@ -56,3 +56,7 @@ Live run (call 7 and the call 2 labeller on the rest, 2026-10-17): 0 of 22 attac
 
 21 scripted live turns over 3 sessions (label, engine, child line, gates): median 4968 ms, 90th percentile 5921 ms, maximum 10703 ms, against a target median under 3000 ms: does not meet the target. Cost USD 0.001587 per turn. From one network and one machine, so read as directional.
 A/B with Haiku 5.5 for call 1 (`practice_latency_haiku_child.json`): median 8578 ms, 2 of 21 lines replaced by the template; not adopted.
+
+## Practice Class voice-turn latency (`evals/results/voice_latency.json`, 2026-10-17)
+
+24 live voice turns (0 failed, 0 answered in text only): median 7515 ms, 90th percentile 9938 ms, maximum 13953 ms, against a target median under 5000 ms: does not meet the target. Median by language: {'en': 9055, 'hi': 7358, 'ta': 6218}. Median speech-to-text 1109 ms; median wait for the child's audio 1523 ms; mean reply audio 19916 bytes. From one network and one machine, so read as directional.

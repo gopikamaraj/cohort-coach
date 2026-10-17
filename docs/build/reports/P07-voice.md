@@ -1,6 +1,6 @@
 # P07 · Voice (speech service and child voices): report
 
-**Status: 🟡 built and tested without the network; nothing has run against Sarvam.** The Sarvam key in `.env` is rejected (403 `invalid_api_key_error`, checked again with `scripts/check_voices.py`). Everything that needs a live call is ready and waiting for a working key.
+**Status: 🟡 built, tested, and run live once.** The first Sarvam key was rejected; after Gopi replaced it, `check_voices.py` passed (36 clips, all twelve speaker names accepted) and `voice_latency.py --live` timed 24 turns: median 7515 ms against the 5 s target, so the target is not met (gap and plan in `docs/speech.md`).
 
 ## What was built
 
@@ -20,7 +20,7 @@
 | Criterion | Evidence | Status |
 | --- | --- | --- |
 | Live voice rehearsal in hi, ta, en on a phone with five audibly distinct children | Not run: needs a working key and a person to listen | ⛔ human |
-| Median voice turn under 5 s, or the gap documented | Not measured. `python scripts/voice_latency.py --live` writes `evals/results/voice_latency.json`; the evidence page shows it only when it exists. A stub run prints "STUB RUN" and is not a measurement | ⛔ key |
+| Median voice turn under 5 s, or the gap documented | 24 live turns: median 7515 ms, p90 9938 ms (`evals/results/voice_latency.json`, shown in `docs/evidence/eval_summary.md`). Speech adds about 2.6 s at the median (speech-to-text 1109 ms, audio wait 1523 ms); the rest is the text pipeline. Not met, gap documented | 🟡 |
 | Automatic text fallback demonstrated | Playwright with a fake microphone and stub speech (`apps/pwa/e2e/voice.spec.ts`: two failures to typing, 2g, remembered choice); API tests for 503 `text_mode`, the breaker, over-long audio, odd errors. Staging demonstration still to do | 🟡 |
 
 ## Evidence of the checks
@@ -38,7 +38,7 @@
 
 ## Open and for people
 
-1. Gopi: fix or replace the Sarvam key on Sarvam's dashboard (still 403). Then run `python scripts/check_voices.py`, listen to the clips, run `python scripts/voice_latency.py --live`, and run `python tasks.py evidence`. The twelve speaker names are from the docs and unverified.
+1. Gopi: run `python scripts/check_voices.py --out <folder>` and listen to the clips (they were generated; none are in git). Speaker names are accepted by Sarvam.
 2. Gopi and Shivani: listen for five audibly distinct children in hi, ta and en; fill `content/pronunciation/*.yaml` only where a word sounds wrong.
 3. Seema and Gopi: the consent line for sending a teacher's voice to Sarvam, and Hindi and Tamil review of the new strings (`docs/build/i18n-todo.md`).
 4. Per-IP rate limit and the staging demonstration of the fallback (P15).
@@ -46,4 +46,4 @@
 
 ## Numbers and honesty
 
-No voice latency, audio size or cost figure is claimed anywhere: each waits for a live run. The text-turn latency (3 s target) is still over, as reported in P04.
+Voice latency and reply size come only from `evals/results/voice_latency.json`; cost per rehearsal is still to be computed from `speech_calls`. The text-turn latency (3 s target) is still over, as reported in P04.

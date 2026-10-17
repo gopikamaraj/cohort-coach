@@ -1,9 +1,9 @@
 # Build progress
 
 <!-- HANDOFF: when the loop stops, it writes this block. Delete it once acted on. -->
-> **Handoff** — P07 built and tested without Sarvam; the key is rejected
-> - Where we are: P07 🟡 (voice turn, hold-to-speak, text fallback, stub speech, limits, scripts). Nothing has run live: the Sarvam key in `.env` still returns 403 `invalid_api_key_error`. P06 staging is still not deployed.
-> - Needed from people: 1. Fix or replace the Sarvam key on Sarvam's dashboard, then run `python scripts/check_voices.py` (listen to the clips) and `python scripts/voice_latency.py --live`, then `python tasks.py evidence` (Gopi). 2. Listen for five distinct children in hi, ta, en; Hindi and Tamil review of the new strings (Shivani, Seema, Gopi). 3. Hosting accounts for staging, `docs/deploy.md` (Gopi). 4. Round 3 with Seema.
+> **Handoff** — P07 built and run live once; voice latency over target
+> - Where we are: P07 🟡 (voice turn, hold-to-speak, text fallback, stub speech, limits, scripts). The new Sarvam key works: 36 child-voice clips synthesised and 24 live voice turns timed, median 7515 ms against the 5 s target (not met; plan in `docs/speech.md`). P06 staging is still not deployed.
+> - Needed from people: 1. Run `python scripts/check_voices.py --out <folder>` and listen to the 36 clips: five distinct children? (Gopi, Shivani). 2. Listen for five distinct children in hi, ta, en; Hindi and Tamil review of the new strings (Shivani, Seema, Gopi). 3. Hosting accounts for staging, `docs/deploy.md` (Gopi). 4. Round 3 with Seema.
 > - Resume with: `/next-phase` (P08, answer-sheet capture, needs no new account)
 
 **Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
@@ -21,7 +21,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report) |
 | P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | ✅ | 2026-10-17 (`6306eb7`) | 2026-10-17 | [report](reports/P05-pwa-shell-check-cards.md) | Installable, offline T1–T3, 3 languages, bundle 112 kB |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | 🔄 | 2026-10-17 (`0e57872`) | | | Staging |
-| P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built and tested on mocks, real ffmpeg and stub speech; Sarvam key rejected, so nothing live yet |
+| P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built; run live once (24 turns, median 7515 ms, over the 5 s target; plan documented) |
 | P08 | Answer-sheet capture and import | P0/P1 | Fri 23 | ⬜ | | | | |
 | P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
 | P10 | Telegram channel | P0 | Sun 25 | ⬜ | | | | |

@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-17",
+  "failed": 0,
+  "max_ms": 13953,
+  "mean_reply_audio_bytes": 19916,
+  "measure": "practice_voice_turn_latency",
+  "median_by_language_ms": {
+    "en": 9055,
+    "hi": 7358,
+    "ta": 6218
+  },
+  "median_ms": 7515,
+  "median_stt_ms": 1109,
+  "median_tts_wait_ms": 1523,
+  "meets_target": false,
+  "mode": "live",
+  "models": {
+    "MODEL_CHECK": "claude-haiku-5-5",
+    "MODEL_CHILD": "claude-sonnet-5-5",
+    "MODEL_LABEL": "claude-haiku-5-5"
+  },
+  "p90_ms": 9938,
+  "source": "scripts/voice_latency.py",
+  "target_median_ms": 5000,
+  "turns": 24,
+  "without_audio": 0
+}

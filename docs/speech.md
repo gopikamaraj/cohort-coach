@@ -2,7 +2,7 @@
 
 A teacher can hold a button and speak to the five pretend children, and hear each child answer in a different voice. Speech is the second AI layer on top of the text pipeline, not a separate path: speech-to-text produces her words, the same pipeline (label, engine, child line, gates) produces the child's line, and text-to-speech reads it. If any speech step fails, she is moved to typing and nothing is lost.
 
-**Status, stated plainly.** Everything below is built and tested against mocked HTTP, real ffmpeg and a stub speech service. It has **not** been run against Sarvam: the key in `.env` is rejected (403 `invalid_api_key_error`), so the live latency figure, the twelve speaker names and the "five audibly distinct children" check are still open. `scripts/check_voices.py` and `scripts/voice_latency.py --live` are ready for the first working key.
+**Status, stated plainly.** Built and tested against mocked HTTP, real ffmpeg and a stub speech service, and since the key was replaced (2026-10-17) run live once: all 36 clips (twelve children in en, hi, ta) synthesised, so the twelve speaker names are accepted by Sarvam, and 24 live voice turns were timed (`evals/results/voice_latency.json`). The voice median is **over** the 5 s target (below). Whether the five children sound distinct is still for a person to confirm: `scripts/check_voices.py` saves the clips for listening.
 
 ## The path of one voice turn
 
@@ -65,7 +65,7 @@ A recording is refused above 2 MB (and by `Content-Length` before it is read) or
 
 | Item | Status |
 | --- | --- |
-| Voice turn median under 5 s | Not measured: needs a working Sarvam key. `python scripts/voice_latency.py --live` writes `evals/results/voice_latency.json` and the evidence page picks it up |
-| Reply audio size per turn and per rehearsal | Not measured live; the encoder is set to 24 kbps and a test asserts under 3.5 KB per second |
+| Voice turn median under 5 s | **Not met**: 24 live turns, median 7515 ms, p90 9938 ms (en 9055, hi 7358, ta 6218), from `evals/results/voice_latency.json` (one network and machine: directional). Speech-to-text median 1109 ms and the wait for the child's audio median 1523 ms, so most of the time is the text pipeline (Claude calls), the gap already reported in `docs/practice-class.md`. Mitigation plan: fix the text pipeline first (smaller prompts, parallel label and engine work), then stream the reply audio; the typing path is the fallback |
+| Reply audio size | Mean 19916 bytes per reply over those 24 turns (same file); per rehearsal and per track still to compute |
 | Five audibly distinct children, three languages, on a phone | Needs a person: `python scripts/check_voices.py`, then listen (Gopi, Shivani) |
 | Text-turn latency target (3 s) | Still over, see `docs/practice-class.md`; voice adds the speech stages on top |
