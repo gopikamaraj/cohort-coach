@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import re
 from collections.abc import Iterator
+from functools import cache
 from pathlib import Path
 from typing import Any, Literal
 
@@ -67,10 +68,15 @@ class ProfileIn(BaseModel):
         return self
 
 
-def get_session() -> Iterator[Session]:
+@cache
+def _factory() -> sessionmaker[Session]:
     engine = make_engine()
     Base.metadata.create_all(engine)
-    with sessionmaker(engine, expire_on_commit=False)() as s:
+    return sessionmaker(engine, expire_on_commit=False)
+
+
+def get_session() -> Iterator[Session]:
+    with _factory()() as s:
         yield s
 
 

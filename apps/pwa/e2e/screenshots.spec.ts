@@ -42,3 +42,52 @@ test("the desktop view puts the phone in a frame", async ({ page }) => {
   await expect(page.getByTestId("card-SUB-SFL")).toBeVisible();
   await page.screenshot({ path: `${OUT}desktop-frame.png` });
 });
+
+test("Practice Class screenshots: intro, a turn with the AI layers, feedback, AI map, audit", async ({ page }) => {
+  mkdirSync(OUT, { recursive: true });
+  await page.goto("/");
+  await page.evaluate(() => localStorage.clear());
+  await page.goto("/#/practice?seed=5");
+  await page.screenshot({ path: `${OUT}en-5-practice-intro.png` });
+  await page.getByTestId("start-practice").click();
+  await expect(page.getByTestId("kid-4")).toBeVisible();
+  for (const line of ["Priya, what is 52 minus 29?", "Tell me how you got that."]) {
+    await page.getByTestId("say").fill(line);
+    await page.getByTestId("send").click();
+  }
+  await expect(page.getByTestId("reply-2")).toBeVisible();
+  await page.getByTestId("layers-toggle").click();
+  await page.getByTestId("turn-2").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: `${OUT}en-6-practice-layers.png` });
+  await page.getByTestId("layers-toggle").click();
+  await page.getByTestId("tap-bundles").click();
+  await page.getByTestId("say").fill("Priya, you only have 2 loose ones. Open a bundle to exchange it for ten sticks.");
+  await page.getByTestId("send").click();
+  await page.getByTestId("say").fill("Let us check by adding back. What is 23 plus 29?");
+  await page.getByTestId("send").click();
+  await page.getByTestId("say").fill("Priya, now try 74 minus 46.");
+  await page.getByTestId("send").click();
+  await page.getByTestId("say").fill("Well done, thank you for trying.");
+  await page.getByTestId("send").click();
+  await expect(page.getByTestId("reply-7")).toBeVisible();
+  await page.getByTestId("end").click();
+  await expect(page.getByTestId("feedback")).toBeVisible();
+  await page.screenshot({ path: `${OUT}en-7-practice-feedback.png` });
+  await page.goto("/#/aimap");
+  await expect(page.getByTestId("ai-map")).toBeVisible();
+  await page.screenshot({ path: `${OUT}en-8-aimap.png` });
+  await page.goto("/#/audit");
+  await expect(page.getByTestId("audit-table")).toBeVisible();
+  await page.screenshot({ path: `${OUT}en-9-audit.png` });
+});
+
+for (const lang of ["hi", "ta"] as const) {
+  test(`Practice Class intro in ${lang}`, async ({ page }) => {
+    mkdirSync(OUT, { recursive: true });
+    await page.goto("/");
+    await page.evaluate(() => localStorage.clear());
+    await page.goto("/#/practice");
+    await page.getByTestId("lang").selectOption(lang);
+    await page.screenshot({ path: `${OUT}${lang}-5-practice-intro.png` });
+  });
+}

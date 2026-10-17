@@ -1,5 +1,6 @@
 // The Practice Class client. Each turn goes to the API (the one live feature); the transcript is
 // kept in IndexedDB on this phone and is sent nowhere else.
+import { API_BASE } from "./api";
 import { db, type CohortDb } from "./db";
 
 export interface PracticeChild {
@@ -99,7 +100,7 @@ async function call<T>(path: string, body: unknown, fetchFn: typeof fetch): Prom
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   let res: Response;
   try {
-    res = await fetchFn(path, {
+    res = await fetchFn(`${API_BASE}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),

@@ -1,6 +1,7 @@
 // The AI map: every Claude call, what it does, and its five layers (input, processing,
 // guardrails, evaluation, output), from the server's registry. Judge view.
 import { useEffect, useState } from "react";
+import { API_BASE } from "../lib/api";
 import { useApp } from "../state";
 
 interface Call {
@@ -23,7 +24,7 @@ export default function AiMap() {
 
   useEffect(() => {
     if (!online) return;
-    fetch("/api/judge/ai-map")
+    fetch(`${API_BASE}/api/judge/ai-map`)
       .then((r) => (r.ok ? (r.json() as Promise<MapData>) : Promise.reject(new Error("bad"))))
       .then(setData)
       .catch(() => setFailed(true));

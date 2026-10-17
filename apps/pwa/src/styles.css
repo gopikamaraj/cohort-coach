@@ -347,7 +347,8 @@ ol.steps li {
   transform: translateY(-2px);
 }
 .log {
-  max-height: 260px;
+  min-height: 120px;
+  max-height: 45vh;
   overflow-y: auto;
   margin: var(--s3) 0;
   border: 1px solid var(--rule);

@@ -2,6 +2,14 @@
 
 A teacher rehearses a technique with five simulated children who make her own class's mistakes. **Code decides every number; Claude only supplies the children's words.** Text mode is built; voice (P07) and the screens (P06) come next.
 
+## The screen (T5)
+
+Five original SVG children with their names and a highlight on whoever spoke (plain shapes, no gender, religion or caste markers; the one who speaks only when named is marked "shy"). A materials tray with bundles of ten, loose sticks and a place-value chart: a tap is a move. A text box, a turn counter ("Turn 2 of 40"), and "End and see feedback". The feedback card shows two strengths and one thing to try with her own words highlighted, a "Checked ✓" badge, a thumbs up or down per point, a "this is wrong" flag and "Try again with the same children" (same seed, same seats). The transcript is saved on the phone only. "Share this session to improve the simulator" is off by default and, for now, only records her choice.
+
+Judge mode adds **Show AI layers**: under each reply, the turn's five layers straight from the API's `layers` trace (the label and its confidence, the engine's decision and strength change, the validators, the checker's verdict, latency, tokens and cost, the output and its badge). Pages for the **AI map** (the registry as 8 calls by 5 layers) and the **Audit trail** (the last 50 AI calls as metadata) are linked from the judge script. Teachers never see the overlay.
+
+Seats follow the class: from Home the app sends the class's counts (never a child's answers) and, in judge mode with no class on the phone, the scenario's default mix. Degraded states are shown, not hidden: a template reply says "the connection is slow, so a simple reply was used"; when the day's budget is spent, "Practice is paused for today" with a recorded sample rehearsal to watch; offline, "Practice needs a connection" with everything else still working.
+
 ## How one turn works
 
 ```mermaid

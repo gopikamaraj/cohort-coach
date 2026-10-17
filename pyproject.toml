@@ -22,6 +22,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+prod = ["psycopg[binary]"]  # managed Postgres in production
 dev = [
   "pytest",
   "pytest-asyncio",

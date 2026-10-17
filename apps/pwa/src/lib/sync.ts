@@ -1,5 +1,6 @@
 // Counts-only sync. The payload is built from the class-level profile, field by field, so a
 // per-child value cannot get in by accident; the server's schema rejects anything else too.
+import { API_BASE } from "./api";
 import { db, type CohortDb, type ProfileRow } from "./db";
 
 export interface ProfilePayload {
@@ -68,7 +69,7 @@ export function flush(
   online: boolean,
   store: CohortDb = db,
   fetchFn: typeof fetch = (...args) => fetch(...args),
-  base = "",
+  base = API_BASE,
 ): Promise<FlushResult> {
   const active = running.get(store);
   if (active) return active;
@@ -81,7 +82,7 @@ async function sendAll(
   online: boolean,
   store: CohortDb = db,
   fetchFn: typeof fetch = (...args) => fetch(...args),
-  base = "",
+  base = API_BASE,
 ): Promise<FlushResult> {
   const result: FlushResult = { sent: 0, failed: 0 };
   if (!online) return result;

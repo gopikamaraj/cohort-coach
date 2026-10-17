@@ -1,6 +1,9 @@
 """FastAPI app entry point."""
 
+import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from ai.config import load_env
 from services.api.judge import router as judge_router
@@ -12,6 +15,16 @@ load_env()
 VERSION = "0.1.0"
 
 app = FastAPI(title="Cohort Coach API", version=VERSION)
+# Browsers may call the API only from the PWA's own origin (PWA_ORIGIN). No wildcard, and no
+# cookies or credentials: the app has no login.
+if origin := os.environ.get("PWA_ORIGIN"):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[origin.rstrip("/")],
+        allow_methods=["GET", "POST"],
+        allow_headers=["Content-Type"],
+        allow_credentials=False,
+    )
 app.include_router(judge_router)
 app.include_router(practice_router)
 app.include_router(profiles_router)

@@ -1,5 +1,6 @@
 // The audit trail: the last 50 AI calls as metadata (never prompt text, teacher text or output).
 import { useEffect, useState } from "react";
+import { API_BASE } from "../lib/api";
 import { useApp } from "../state";
 
 interface Row {
@@ -24,7 +25,7 @@ export default function Audit() {
 
   useEffect(() => {
     if (!online) return;
-    fetch("/api/judge/audit?limit=50")
+    fetch(`${API_BASE}/api/judge/audit?limit=50`)
       .then((r) => (r.ok ? (r.json() as Promise<{ calls: Row[] }>) : Promise.reject(new Error("bad"))))
       .then((d) => setRows(d.calls))
       .catch(() => setFailed(true));
