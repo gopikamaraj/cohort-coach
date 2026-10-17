@@ -1,0 +1,84 @@
+# Practice Class (v1, built in P04)
+
+A teacher rehearses a technique with five simulated children who make her own class's mistakes. **Code decides every number; Claude only supplies the children's words.** Text mode is built; voice (P07) and the screens (P06) come next.
+
+## How one turn works
+
+```mermaid
+sequenceDiagram
+    participant T as Teacher (typed, spoken or a tap)
+    participant L as Call 2 labeller
+    participant E as Engine (engine/simulator.py)
+    participant C as Call 1 child voice
+    participant G as Gates (validators, pre-filter, call 7)
+    T->>L: her line, wrapped as untrusted data
+    L-->>E: move, child addressed, posed problem, confidence
+    Note over L,E: low confidence becomes "other" (changes nothing);<br/>instruction-like text is forced to "off_task" by code
+    E->>E: update strength and engagement; choose speaker and answer<br/>(wrong with probability = strength, number from the bug function)
+    E-->>C: turn plan: speaker, intent, answer, steps as data, allowed numbers
+    C-->>G: one or two short sentences
+    G-->>T: released only on pass, with a Checked badge
+    G-->>E: on failure after one retry, a template line is used
+```
+
+Two Claude calls and one checker call per turn (calls 2, 1 and 7), plus call 3 at the end. A material tap (bundles, sticks, chart) is a move without a labeller call. Every turn returns a `layers` trace (input, processing, guardrails, evaluation, output) that judge mode renders in P06.
+
+## The rules the engine follows
+
+From `CLAUDE.md` section 5; the values are tuning parameters in `content/movelists/` and `content/scenarios/`, owned by Seema.
+
+- Five fictional children. Seat 0 is always correct; seats are filled to match her class's error mix (if 40% of the class shows SUB-SFL, 2 of the 5 children do); one child is shy and speaks only when named.
+- Each child with an error has a strength from 0 to 1, starting at 0.9, and an engagement level. A child answers wrong with probability equal to her strength, and the wrong number is always the bug function's answer.
+- Moves: show with bundles −0.3, ask to explain −0.2, check by adding back −0.2, just tell the rule −0.05, praise raises engagement, scolding lowers it and the child goes quiet for two turns.
+- When asked to explain, the engine produces the faulty working as data ("2 minus 9 can't be done, 9 minus 2 is 7, 5 minus 2 is 3"); the model only rephrases it. When she checks by adding back, the engine makes the check ("37 plus 29 is 66, not 52").
+- A session ends when every child with the error has been right twice in a row, or at 40 turns (also the judge-mode cap).
+- If she names no child, the child she was talking to continues; if she speaks to the class, the engine picks a speaker by engagement.
+
+## Why an engine, not just a prompt
+
+A language model asked to play a confused child can drift: it gets the sum right by accident or invents an error no child makes. Putting the error in code keeps the children faithful to her class, makes sessions reproducible (a seeded generator per turn: the same seed and script replay exactly) and makes the simulator testable. The simulator fidelity eval checks that every number a child says is the engine's, against an independent oracle: `docs/evidence/eval_summary.md` (Eval 2).
+
+## The three calls
+
+| Call | Does | Guards (code) |
+| --- | --- | --- |
+| 2 labeller | Labels her line with one move from the lesson's list, who she addressed, and a problem she posed | Move list enforced as a JSON-schema enum; low confidence → `other`; injection markers → `off_task` by code; a posed problem must use numbers she said and be a valid two-digit problem; line cut at 600 characters |
+| 1 child voice | Puts the plan into 1–2 short sentences in the child's voice | Numbers ⊆ the plan's allowed set; digits only (no number words); at most 30 words; script matches the language; pre-filter; an `answer` line must contain the planned answer; one retry, then a template line; then call 7 |
+| 3 feedback | Two strengths and one thing to try, each quoting her words | Each quote verbatim in the turn it cites and in her words, not a child's; points only from the rubric; a strength's turn must carry one of that point's moves; no scores; numbers only from the transcript and the engine; then call 7. If it fails, a card built by code from the rubric and her own lines |
+
+Scolding is named gently by a note the app writes itself (`content/templates/feedback_notes.yaml`), not by the model. The AI never scores a teacher.
+
+## Privacy
+
+- Nothing about a rehearsal is stored on the server. Session state is in memory with a two-hour limit, and the full transcript goes back to her phone.
+- The audit trail keeps metadata only (call, model, tokens, cost, latency, validator codes). Practice Class calls are marked `metadata_only`. Her words never reach the audit rows, the judge endpoints or the logs.
+- Children are fictional, named from a reviewed list (`content/personas/children.v1.yaml`): first names only, balanced by gender, temperament only, no caste, religion, region or disability markers.
+- A real child's voice is never used.
+
+## Modes
+
+| Mode | What it is | Use |
+| --- | --- | --- |
+| `recorded` | Replays `ai/fixtures/recorded/` (a real session recorded on 2026-10-17 from synthetic lines) | Tests, CI, demos; no network |
+| `live` | The Claude API | Real rehearsals; prints and logs cost |
+| `record` | Live, and saves each answer as a fixture | Re-recording after a prompt change |
+| `stub` | `services/practice/stub_client.py`: rule-based, not a model | Offline demos and API tests; makes no claim about model quality |
+
+Rehearse in the terminal: `python tasks.py practice --scenario sub-sfl --lang en --stub` (or `--live`, `--recorded --script evals/sets/practice_scripts/sub-sfl-en.txt --seed 5`).
+
+## API
+
+`POST /api/practice/sessions` (scenario, language, optional class counts) → session id, the five children (names and which one is shy; not who has which error), materials, move labels. `POST /api/practice/sessions/{id}/turns` (text or material tap) → child, line, numbers, label, badge, explanation, `layers`, latency. `POST /api/practice/sessions/{id}/end` → the feedback card and the transcript.
+
+## What the live runs found
+
+Recorded here because they changed the build; numbers are in `docs/evidence/eval_summary.md`.
+
+- The checker (call 7) first rejected valid child lines: it read the engine's deliberate wrong answers as maths errors and a bare "37, Miss!" as not fitting a lesson. Prompt v2 to v4 tell it the line is a simulated child, that code has already checked every number, and that it judges tone, safety, stereotypes, language, reading level, injection and role.
+- With thinking on, the checker sometimes ran out of tokens and returned nothing, so it failed closed. Short rule-bound calls now run with thinking off where the API allows it, with larger token limits.
+- The red team found a Hinglish role-reversal line labelled `other` instead of `off_task`. The child stayed in role and nothing changed, but the labeller prompt (v3) now lists off-task examples in four languages.
+- Latency: three serial calls (label, child line, check) put the median text turn above the 3 s target. The plan: in voice mode the checker runs while the speech is synthesised (P07), so its time is hidden; the API server will sit near the Claude endpoint (P15); an A/B with Haiku for call 1 was slower and is not adopted. Text mode stays over target until then, and the Practice Class degrades to templates when a call times out.
+
+## Files
+
+`engine/simulator.py` (pure), `services/practice/` (content, templates, session, stub), `ai/calls/c01…c03*.py`, `services/api/practice.py`, `scripts/practice_cli.py`, `content/{movelists,rubrics,scenarios,personas,templates,schemas}`, `evals/runners/sim_fidelity.py`, `evals/sets/sim_fidelity/`.

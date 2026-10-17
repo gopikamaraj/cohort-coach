@@ -19,6 +19,24 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 
 ## Settled decisions
 
+### 2026-10-17 · P04 Practice Class decisions
+- **Decision:** (1) The simulator is `engine/simulator.py`, pure and seeded per turn from (session seed, turn number), so a session replays exactly. (2) Move ids are shared across the four tracked errors (`pose_problem`, `ask_explain`, `show_bundles`, `exchange_ten`, `check_back`, `tell_rule`, `praise`, `scold`, plus `show_chart` and `regroup_ten` where they fit); effect values follow CLAUDE.md section 5, and the two not listed there (`exchange_ten` -0.3, `regroup_ten` -0.3, `show_chart` -0.3) are placeholders for Seema. (3) The PV-HEARD scenario uses the design's 2-digit dictations (forty-three, 403) although the check items are 3-digit; both are valid for the bug functions. (4) If she names no child, the child she was talking to continues; a line to the class lets the engine choose the speaker by engagement. (5) A tap on the materials tray is a move without a labeller call and counts as evidence for the rubric ("[tapped bundles]"). (6) A scolded child is quiet for 2 turns; scolding changes engagement, never strength. (7) The Tamil number-word list leaves out ஒன்று, பத்து and நூறு, because they are also the Tamil place-value words a child's working must say. (8) Child-line readability allows 20 words per sentence (was 12), because a child's step-by-step working is one sentence; the 30-word cap is unchanged. (9) `AI_MODE=stub` and `CallContext(mode="stub")` run a rule-based stand-in for the model with no spend; audit rows say `stub`. (10) Live result files are separate from code-only ones (`redteam_live.json`, `sim_fidelity_live.json`). (11) The red-team seed set grew from 12 to 22 (10 injection lines typed to the Practice Class); the bar (0 unsafe reach a teacher) is unchanged.
+- **Why:** each is the narrowest reading of the P04 brief that keeps the engine testable and the children faithful.
+- **Alternatives:** per-error move ids (more files, same behaviour); letting the model choose who speaks (drifts).
+- **Confirmed by:** pending Gopi; Seema reviews the move lists, rubrics, scenario values and personas (`TODO-HUMAN(Seema)`).
+
+### 2026-10-17 · P04 AI settings found by live runs
+- **Decision:** (1) Thinking is switched off for the short rule-bound calls where the API allows it: Haiku 5.5 takes `{type: disabled}`, Sonnet 5.5 takes `{type: between_tools}` (it rejects `disabled`), Opus 5.5 cannot switch it off; `ai/config.py::thinking_param` spells it per model. Call 3, 4, 5 and 8 keep adaptive thinking. (2) Token limits rose (call 7 to 800, call 3 to 2500) after thinking tokens made call 7 return nothing. (3) Call 7 prompt v4: for a simulated child line it never judges maths or fit (code checks every number against the engine) and keeps its reasons short; call 2 prompt v3 adds off-task examples in four languages; call 1 prompt v2 and call 3 prompt v2 carry the turn plan and feedback shape. (4) Timeouts: calls 1, 2 and 7 allow 12, 10 and 12 s, because live latency spikes of 8 to 20 s were seen; a timeout still falls back to a template. (5) Haiku 5.5 for call 1 was slower in an A/B and is not adopted.
+- **Why:** live runs showed the checker rejecting valid lines and returning nothing; these are the fixes, each re-tested live.
+- **Alternatives:** relax the checker's pass rule (rejected: it must still fail closed).
+- **Confirmed by:** pending Gopi.
+
+### 2026-10-17 · P04 latency target not met in text mode
+- **Decision:** the median text turn measured above the 3 s target (`evals/results/practice_latency.json`), because three network calls run in series. The bar stays at 3 s (text) and 5 s (voice); the plan is the check-then-release overlap with speech in P07, a server near the Claude endpoint in P15, and re-measuring then. Nothing was relaxed.
+- **Why:** the number is real; lowering effort and thinking were already tried.
+- **Alternatives:** release the line before call 7 passes (rejected: gates before teachers).
+- **Confirmed by:** pending Gopi.
+
 ### 2026-10-16 · P03 verified API facts (Claude API)
 - **Decision:** the AI platform is built on these facts, checked on 2026-10-16 against the bundled Claude API reference (cached 2026-10-06) and, for prices, the live pricing page.
   1. Model IDs: `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5` (no date suffixes). Source: https://platform.claude.com/docs/en/about-claude/models/overview
