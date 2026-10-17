@@ -46,7 +46,9 @@ class CallSpec:
 
     @property
     def prompt_path(self) -> str:
-        return f"ai/prompts/{self.key}.v1.md"
+        from ai.prompt_loader import load_prompt
+
+        return f"ai/prompts/{self.key}.v{load_prompt(self.key).version}.md"
 
     @property
     def layers(self) -> dict[str, str]:

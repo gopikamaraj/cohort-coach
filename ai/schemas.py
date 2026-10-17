@@ -15,23 +15,42 @@ class ChildLine(BaseModel):
     text: str = Field(max_length=400)
 
 
-class MoveLabel(BaseModel):
-    """Call 2: one label from the technique's fixed move list."""
+class PosedProblem(BaseModel):
+    """A sum or dictation the teacher poses. Numbers are digits taken from her line."""
 
-    label: str
+    a: int
+    op: Literal["-", "+", "dictate"]
+    b: int | None = None
+
+
+class MoveLabel(BaseModel):
+    """Call 2: one move from the technique's fixed list (the run narrows move_id to that list)."""
+
+    move_id: str
+    addressed_child: str
+    posed_problem: PosedProblem | None = None
     confidence: float = Field(ge=0, le=1)
 
 
-class Quoted(BaseModel):
-    point: str
+class FeedbackPoint(BaseModel):
+    rubric_point: str
+    turn_id: int
     quote: str
+    comment: str
+
+
+class TryNext(BaseModel):
+    rubric_point: str
+    suggestion: str
+    quote: str | None = None
+    turn_id: int | None = None
 
 
 class Feedback(BaseModel):
-    """Call 3: two strengths and one thing to try, each quoting her words. No score."""
+    """Call 3: strengths and one thing to try, each quoting her words. No score."""
 
-    strengths: list[Quoted] = Field(min_length=2, max_length=2)
-    try_next: Quoted
+    strengths: list[FeedbackPoint] = Field(min_length=1, max_length=2)
+    try_next: TryNext
 
 
 class MethodStep(BaseModel):

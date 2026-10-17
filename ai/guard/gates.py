@@ -19,7 +19,7 @@ from ai.schemas import Verdict
 from ai.validators import ValidatorResult
 from ai.validators.arithmetic import check_arithmetic
 from ai.validators.length import check_length
-from ai.validators.numbers import check_numbers
+from ai.validators.numbers import check_digits_only, check_numbers
 from ai.validators.prefilter import check_prefilter
 from ai.validators.quotes import check_quotes
 from ai.validators.readability import check_readability
@@ -94,6 +94,9 @@ def gate1(inp: GateInput) -> list[ValidatorResult]:
         allowed = set(inp.allowed_numbers or ())
         results.append(ValidatorResult("numbers", tuple(check_numbers(inp.text, allowed))))
         results.append(
+            ValidatorResult("number_words", tuple(check_digits_only(inp.text, inp.language)))
+        )
+        results.append(
             ValidatorResult("length", tuple(check_length(inp.text, max_words=CHILD_LINE_MAX_WORDS)))
         )
     elif inp.allowed_numbers is not None:
@@ -102,7 +105,8 @@ def gate1(inp: GateInput) -> list[ValidatorResult]:
         )
     if inp.quotes:
         results.append(ValidatorResult("quotes", tuple(check_quotes(inp.quotes, inp.transcript))))
-    results.append(ValidatorResult("arithmetic", tuple(check_arithmetic(inp.text))))
+    if not child:  # a child's wrong answer is on purpose; her numbers are checked against the plan
+        results.append(ValidatorResult("arithmetic", tuple(check_arithmetic(inp.text))))
     results.append(
         ValidatorResult("readability", tuple(check_readability(inp.text, inp.language, audience)))
     )

@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "and": {
+      "title": "And",
+      "type": "string"
+    },
+    "intents": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Intents",
+      "type": "object"
+    },
+    "join": {
+      "title": "Join",
+      "type": "string"
+    },
+    "steps": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Steps",
+      "type": "object"
+    }
+  },
+  "required": [
+    "intents",
+    "join",
+    "and",
+    "steps"
+  ],
+  "title": "Templates",
+  "type": "object"
+}

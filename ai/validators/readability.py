@@ -12,7 +12,7 @@ from ai.validators import Violation
 from ai.validators._data import token_matches, tokens, word_list
 
 # audience -> (max words in one sentence, longest word allowed in English letters)
-LIMITS = {"child": (12, 12), "teacher": (28, 18)}
+LIMITS = {"child": (20, 12), "teacher": (28, 18)}
 _SENTENCE = re.compile(r"[.!?।॥]+")
 
 

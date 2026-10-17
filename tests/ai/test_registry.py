@@ -27,7 +27,7 @@ def test_every_call_has_a_prompt_policy_and_price() -> None:
     assert set(POLICIES) == {c.key for c in CALLS}
     for call in CALLS:
         prompt = load_prompt(call.key)
-        assert prompt.id == call.key and prompt.version == 1 and prompt.changelog
+        assert prompt.id == call.key and prompt.version >= 1 and prompt.changelog
         assert prompt.model_env == call.model_env
         assert call.model in models, call.model
         assert BY_ID[call.id] is call

@@ -163,7 +163,10 @@ def test_arithmetic_child_wrong_tag_is_allowed() -> None:
 
 def test_readability_child_and_teacher() -> None:
     assert check_readability("I took the big one. It is 5.", "en", "child") == []
-    long = "I took the big one from the small one because it was easier for me to see today."
+    long = (
+        "I took the big one from the small one because it was easier for me to see today"
+        " and then I wrote it down."
+    )
     assert codes(check_readability(long, "en", "child")) == ["sentence_too_long"]
     assert check_readability(long, "en", "teacher") == []
     assert codes(check_readability("Use a diagnostic scaffolding step.", "en", "teacher")) == [

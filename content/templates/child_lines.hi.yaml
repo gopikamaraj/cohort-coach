@@ -9,7 +9,7 @@ intents:
   thanks: धन्यवाद मैम!
   quiet: जी मैम।
   confused: मैम, मुझे समझ नहीं आया।
-join: ', फिर '
+join: '। '
 and: ' और '
 steps:
   cant: '{0} में से {1} नहीं घटता'

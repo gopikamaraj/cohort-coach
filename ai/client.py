@@ -67,6 +67,7 @@ class CallContext:
     client: Any = None  # anything with .messages.parse(...); tests pass a fake
     model: str | None = None  # override (call 8 retry uses MODEL_READ_RETRY)
     extra_system: str = ""  # appended after the cached prompt, e.g. rejected-before examples
+    output_model: type[BaseModel] | None = None  # narrower schema, e.g. a move list as an enum
 
 
 @dataclass
@@ -186,6 +187,7 @@ def run_call(
     spec = get_call(call)
     policy = config.POLICIES[spec.key]
     prompt = load_prompt(spec.key)
+    out_model = ctx.output_model or spec.output_model
     model = ctx.model or spec.model
     mode = ctx.mode or config.ai_mode()
     sink = ctx.sink or default_sink()
@@ -217,7 +219,7 @@ def run_call(
                 assert fixture is not None
                 outs = fixture.get("outputs") or [fixture["output"]]
                 raw = outs[min(attempt, len(outs) - 1)]
-                parsed = spec.output_model.model_validate(raw)
+                parsed = out_model.model_validate(raw)
                 usage = _sum_usage(usage, Usage(**fixture.get("usage", {})))
             else:
                 system = [
@@ -232,7 +234,7 @@ def run_call(
                     messages=[
                         {"role": "user", "content": render_user_content(payload, retry_note)}
                     ],
-                    output_format=spec.output_model,
+                    output_format=out_model,
                     output_config={"effort": policy.effort},
                     timeout=policy.timeout_s,
                 )
@@ -241,7 +243,7 @@ def run_call(
                     reason = "no_output"
                     continue
                 # Re-validate with Pydantic regardless of what the SDK parsed.
-                parsed = spec.output_model.model_validate(resp.parsed_output.model_dump())
+                parsed = out_model.model_validate(resp.parsed_output.model_dump())
         except pydantic.ValidationError:
             reason = "schema"
             retry_note = "the answer did not match the required format"

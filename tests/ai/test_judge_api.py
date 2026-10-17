@@ -30,7 +30,7 @@ def test_ai_map_lists_all_calls_and_layers(api: TestClient) -> None:
     assert [c["id"] for c in body["calls"]] == [1, 2, 3, 4, 5, 6, 7, 8]
     for call in body["calls"]:
         assert set(call["layers"]) == set(LAYERS)
-        assert call["prompt_version"] == 1 and call["model"].startswith("claude-")
+        assert call["prompt_version"] >= 1 and call["model"].startswith("claude-")
         assert call["eval"]["bar"]
 
 

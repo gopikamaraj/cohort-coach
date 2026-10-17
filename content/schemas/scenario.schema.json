@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "ErrorCode": {
+      "enum": [
+        "PV-HEARD",
+        "PV-REVERSE",
+        "ADD-NOCARRY",
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "ProblemDef": {
+      "properties": {
+        "a": {
+          "title": "A",
+          "type": "integer"
+        },
+        "b": {
+          "default": 0,
+          "title": "B",
+          "type": "integer"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "a"
+      ],
+      "title": "ProblemDef",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "consecutive_correct_to_finish": {
+      "minimum": 1,
+      "title": "Consecutive Correct To Finish",
+      "type": "integer"
+    },
+    "error": {
+      "$ref": "#/$defs/ErrorCode"
+    },
+    "material_moves": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Material Moves",
+      "type": "object"
+    },
+    "materials": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Materials",
+      "type": "array"
+    },
+    "max_turns": {
+      "maximum": 200,
+      "minimum": 1,
+      "title": "Max Turns",
+      "type": "integer"
+    },
+    "movelist": {
+      "title": "Movelist",
+      "type": "string"
+    },
+    "problems": {
+      "items": {
+        "$ref": "#/$defs/ProblemDef"
+      },
+      "minItems": 3,
+      "title": "Problems",
+      "type": "array"
+    },
+    "quiet_turns": {
+      "minimum": 0,
+      "title": "Quiet Turns",
+      "type": "integer"
+    },
+    "rubric": {
+      "title": "Rubric",
+      "type": "string"
+    },
+    "seat_mix": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/ErrorCode"
+      },
+      "title": "Seat Mix",
+      "type": "object"
+    },
+    "start_engagement": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Start Engagement",
+      "type": "number"
+    },
+    "start_strength": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Start Strength",
+      "type": "number"
+    },
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "error",
+    "version",
+    "movelist",
+    "rubric",
+    "start_strength",
+    "start_engagement",
+    "max_turns",
+    "consecutive_correct_to_finish",
+    "quiet_turns",
+    "problems",
+    "materials",
+    "material_moves",
+    "seat_mix"
+  ],
+  "title": "Scenario",
+  "type": "object"
+}

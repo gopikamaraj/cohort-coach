@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "PersonaChild": {
+      "properties": {
+        "gender": {
+          "title": "Gender",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "names": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Names",
+          "type": "object"
+        },
+        "temperament": {
+          "title": "Temperament",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "gender",
+        "temperament",
+        "names"
+      ],
+      "title": "PersonaChild",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "children": {
+      "items": {
+        "$ref": "#/$defs/PersonaChild"
+      },
+      "minItems": 10,
+      "title": "Children",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "version",
+    "children"
+  ],
+  "title": "PersonaFile",
+  "type": "object"
+}

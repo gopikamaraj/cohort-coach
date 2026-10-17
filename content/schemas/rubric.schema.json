@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "ErrorCode": {
+      "enum": [
+        "PV-HEARD",
+        "PV-REVERSE",
+        "ADD-NOCARRY",
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "RubricPoint": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "move_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Move Ids",
+          "type": "array"
+        },
+        "text": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Text",
+          "type": "object"
+        },
+        "try_next": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Try Next",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "move_ids",
+        "text",
+        "try_next"
+      ],
+      "title": "RubricPoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "error": {
+      "$ref": "#/$defs/ErrorCode"
+    },
+    "points": {
+      "items": {
+        "$ref": "#/$defs/RubricPoint"
+      },
+      "minItems": 3,
+      "title": "Points",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "error",
+    "version",
+    "points"
+  ],
+  "title": "Rubric",
+  "type": "object"
+}

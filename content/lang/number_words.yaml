@@ -1,6 +1,8 @@
 # Number words that should be written as digits in AI text.
 # TODO-HUMAN(Seema, Gopi): native review of hi and ta lists. Draft by the build, not yet checked.
 # "एक" (a/an) is left out of hi on purpose: it is too common as an ordinary word.
+# ta leaves out ஒன்று, பத்து and நூறு (one, ten, hundred): they are also the Tamil place-value
+# words (ones, tens, hundreds) that a child's working must be able to say.
 # ta words match as a prefix with up to 3 extra letters, because Tamil adds endings (இரண்டை).
 en: [zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen,
   fourteen, fifteen, sixteen, seventeen, eighteen, nineteen, twenty, thirty, forty, fifty,
@@ -8,6 +10,6 @@ en: [zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, tw
 hi: [शून्य, दो, तीन, चार, पांच, पाँच, छह, छः, सात, आठ, नौ, दस, ग्यारह, बारह, तेरह, चौदह, पंद्रह,
   सोलह, सत्रह, अठारह, उन्नीस, बीस, तीस, चालीस, पचास, साठ, सत्तर, अस्सी, नब्बे, सौ, हज़ार, हजार,
   तैंतालीस, सैंतालीस, बावन, उनतीस, पच्चीस, सैंतीस, अड़तीस, छियालीस, पैंतालीस]
-ta: [பூஜ்ஜியம், ஒன்று, இரண்டு, மூன்று, நான்கு, ஐந்து, ஆறு, ஏழு, எட்டு, ஒன்பது, பத்து, இருபது,
-  முப்பது, நாற்பது, ஐம்பது, அறுபது, எழுபது, எண்பது, தொண்ணூறு, நூறு, ஆயிரம், நாற்பத்து,
+ta: [பூஜ்ஜியம், இரண்டு, மூன்று, நான்கு, ஐந்து, ஆறு, ஏழு, எட்டு, ஒன்பது, இருபது,
+  முப்பது, நாற்பது, ஐம்பது, அறுபது, எழுபது, எண்பது, தொண்ணூறு, ஆயிரம், நாற்பத்து,
   இருபத்து, முப்பத்து, ஐம்பத்து]

@@ -9,7 +9,7 @@ intents:
   thanks: Thank you, Miss!
   quiet: Yes, Miss.
   confused: Miss, I did not understand.
-join: ', then '
+join: '. '
 and: ' and '
 steps:
   cant: '{0} minus {1} I can''t do'

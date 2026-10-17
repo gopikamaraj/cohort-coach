@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "ErrorCode": {
+      "enum": [
+        "PV-HEARD",
+        "PV-REVERSE",
+        "ADD-NOCARRY",
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "MoveDef": {
+      "properties": {
+        "behaviour": {
+          "title": "Behaviour",
+          "type": "string"
+        },
+        "description": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Description",
+          "type": "object"
+        },
+        "engagement": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Engagement",
+          "type": "number"
+        },
+        "examples": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Examples",
+          "type": "object"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z_]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Label",
+          "type": "object"
+        },
+        "quiet": {
+          "default": false,
+          "title": "Quiet",
+          "type": "boolean"
+        },
+        "strength": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Strength",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "behaviour",
+        "strength",
+        "engagement",
+        "label",
+        "description",
+        "examples"
+      ],
+      "title": "MoveDef",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "error": {
+      "$ref": "#/$defs/ErrorCode"
+    },
+    "moves": {
+      "items": {
+        "$ref": "#/$defs/MoveDef"
+      },
+      "title": "Moves",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "error",
+    "version",
+    "moves"
+  ],
+  "title": "MoveList",
+  "type": "object"
+}
