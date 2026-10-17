@@ -1,0 +1,14 @@
+# P07: maths words Bulbul may mispronounce in Hindi. `say` is how it should sound, written the
+# way Sarvam's pronunciation-dictionary guide asks (confirm the entry shape at
+# docs.sarvam.ai before uploading). Entries with an empty `say` are skipped: nobody has listened
+# yet, and the build does not guess at pronunciations.
+# TODO-HUMAN(Shivani): listen to each word in a rehearsal clip, fill `say` only where it is wrong.
+language: hi-IN
+words:
+  - {word: इकाई, say: ""}
+  - {word: दहाई, say: ""}
+  - {word: सैकड़ा, say: ""}
+  - {word: हासिल, say: ""}
+  - {word: उधार, say: ""}
+  - {word: घटाना, say: ""}
+  - {word: जोड़ना, say: ""}

@@ -1,0 +1,10 @@
+# P07: maths words Bulbul may mispronounce in Tamil. Same rules as hi.yaml: empty `say` is skipped.
+# TODO-HUMAN(Gopi): listen to each word in a rehearsal clip, fill `say` only where it is wrong.
+language: ta-IN
+words:
+  - {word: ஒன்றுகள், say: ""}
+  - {word: பத்துகள், say: ""}
+  - {word: நூறுகள், say: ""}
+  - {word: கூட்டல், say: ""}
+  - {word: கழித்தல், say: ""}
+  - {word: கடன் வாங்கு, say: ""}
