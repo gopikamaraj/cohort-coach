@@ -47,7 +47,13 @@ def test_chunks_never_exceed_the_limit_and_cut_at_quiet_points() -> None:
 
 def test_short_audio_is_one_chunk() -> None:
     wav = audio.tone(2, 200, 16000)
-    assert audio.split_at_silences(wav) == [wav]
+    chunks = audio.split_at_silences(wav)
+    assert len(chunks) == 1 and audio.wav_seconds(chunks[0]) == pytest.approx(2, abs=0.01)
+
+
+def test_the_length_of_ffmpeg_piped_audio_is_read_from_the_samples() -> None:
+    wav = audio.to_wav16k(audio.tone(3, 200))  # a pipe: the header's length is unset
+    assert audio.wav_seconds(wav) == pytest.approx(3, abs=0.05)
 
 
 def test_pitch_goes_up_and_duration_is_kept() -> None:
@@ -78,9 +84,9 @@ def test_transcribe_sends_key_model_and_language_and_joins_chunks() -> None:
         ]
     )
     rate = 16000
-    x = np.zeros(40 * rate, dtype=np.int16)
+    x = np.zeros(29 * rate, dtype=np.int16)
     x[:] = (0.3 * 32767 * np.sin(2 * np.pi * 300 * np.arange(len(x)) / rate)).astype(np.int16)
-    x[int(20 * rate) : int(20.3 * rate)] = 0
+    x[int(15 * rate) : int(15.3 * rate)] = 0
     got = stt.transcribe(_client(), audio._wav_bytes(x, rate), "hi")
     assert got.text == "one two three"
     assert got.chunks == 2

@@ -16,11 +16,11 @@ server: ffmpeg -> 16 kHz mono WAV -> cut at silences into chunks <= 28 s -> Sarv
 phone: shows her words and the child's line, plays the audio, then is ready again
 ```
 
-The audio is never stored: the recording is decoded, transcribed and dropped; the reply audio is returned inline and cached in memory only by a hash of the line. A real child's voice is never recorded or used. What she said comes back to her phone as text, like a typed turn, and the transcript stays on the phone.
+The audio is never stored by us: it exists only in process memory (and the framework's transient upload buffer while the request is read); the recording is decoded, transcribed and dropped; the reply audio is returned inline and cached in memory only by a hash of the line. A real child's voice is never recorded or used. What she said comes back to her phone as text, like a typed turn, and the transcript stays on the phone.
 
 ## Which voice is which child
 
-`content/voices/children.v1.yaml` gives each of the twelve fictional children one stock Bulbul v3 speaker and a pitch ratio between 1.18 and 1.40. Raising the pitch is done by ffmpeg (`asetrate`, `aresample`, `atempo`), which raises the pitch and keeps the speed; a test measures the shift with an FFT and checks the duration is kept. A child therefore sounds the same in every session, and the five seats of a session are different voices (twelve distinct speakers).
+`content/voices/children.v1.yaml` gives each of the twelve fictional children one stock Bulbul v3 speaker and a pitch ratio (configured, between 1.18 and 1.40). Raising the pitch is done by ffmpeg (`asetrate`, `aresample`, `atempo`), which raises the pitch and keeps the speed; a test measures the shift with an FFT and checks the duration is kept. A child therefore sounds the same in every session, and the five seats of a session are configured with different speakers (a test checks the twelve speaker names differ; that they sound different is not yet verified).
 
 - Bulbul v3 has no pitch control (`pitch` and `loudness` are v2 only), so the shift is ours.
 - Cloned voices are built behind `SARVAM_CLONES=1`, off by default and not tested live: Sarvam's docs do not list the clone request fields and publish no licence terms. Policy if switched on: licence-cleared AI-designed voices or a consenting adult, never a real child.
@@ -43,11 +43,15 @@ Only the Practice Class needs a connection, and voice is its heaviest form. This
 
 ## Check-then-release
 
-Text-to-speech starts as soon as the candidate line passes the code validators, in parallel with call 7 (the checker), so the checker's time is hidden behind synthesis. The audio is released only if the line passes the checker. If the checker holds the line back, or the model call falls back, the line that is voiced is the safe template line, never the held candidate. `tests/speech/test_voice_turn.py::test_audio_is_released_only_when_the_line_passes_the_checker` checks this.
+Text-to-speech starts as soon as the candidate line passes the code validators, in parallel with call 7 (the checker), so the checker's time is hidden behind synthesis. The audio is released only if the line passes the checker. If the checker holds the line back, or the model call falls back, the line that is voiced is the safe template line, never the held candidate. The held candidate was already sent to Sarvam for synthesis (that is what running in parallel means); it is a fictional child's line, the result is discarded, and an unstarted job is cancelled. `tests/speech/test_voice_turn.py::test_audio_is_released_only_when_the_line_passes_the_checker` checks that the audio sent back is the template line's and not the AI candidate's.
 
 ## What is logged
 
-One row per speech request in `speech_calls`: stage (stt or tts), mode, language, latency, byte counts, characters, seconds, cost in INR (prices in `services/speech/pricing.yaml`, copied from Sarvam's pricing page on 2026-10-17), cache hit, and the error kind. Never the audio and never the text (a test checks the row against the turn's words). `python scripts/budget.py` shows it. The per-turn trace in judge mode gains `layers.evaluation.stages` (`stt_ms`, `tts_wait_ms`).
+One row per speech request in `speech_calls`: stage (stt or tts), mode, language, latency, byte counts, characters, seconds, cost in INR (prices in `services/speech/pricing.yaml`, copied from Sarvam's pricing page on 2026-10-17), cache hit, and the error kind. Never the audio and never the text (a test checks the row against the turn's words). `python scripts/budget.py` shows it. The per-turn trace in judge mode gains `layers.evaluation.stages` (`stt_ms`, `tts_wait_ms`), shown in the AI-layers overlay.
+
+## Limits on the public endpoint
+
+A recording is refused above 2 MB (and by `Content-Length` before it is read) or above 30 s of audio after decoding (the phone stops at 25 s); a finished rehearsal is refused (409) before any paid speech call, so the 40-turn judge cap also caps speech spend. Speech has its own daily budget, `SPEECH_BUDGET_INR_DAILY` (default 200, counted in memory per server process from the same cost estimate as `speech_calls`); when it is spent, voice reports `text_mode` and everyone types. Any unexpected error in the speech path becomes `text_mode`, never a 500. A per-IP rate limit is still parked (`docs/build/PARKING.md`) and is needed before the public staging URL. Sending a teacher's voice to Sarvam is the one place audio leaves our server: the hold-to-speak screen should carry a one-line notice and the consent text to be written with Seema (TODO-HUMAN).
 
 ## Pronunciation
 
@@ -55,7 +59,7 @@ One row per speech request in `speech_calls`: stage (stt or tts), mode, language
 
 ## Stub speech (tests and demos)
 
-`SPEECH_MODE=stub` returns scripted teacher lines (the same four lines in each language, in turn) as the "transcript" and a generated tone as the voice. It is not speech recognition, and `speech_mode` in the response says `stub`. The Playwright tests use it with Chromium's fake microphone; they prove the hold-to-speak flow and the fallback, not recognition.
+`SPEECH_MODE=stub` (the screen shows "Simulated voice" when it is on) returns scripted teacher lines (the same four lines in each language, in turn) as the "transcript" and a generated tone as the voice. It is not speech recognition, and `speech_mode` in the response says `stub`. The Playwright tests use it with Chromium's fake microphone; they prove the hold-to-speak flow and the fallback, not recognition.
 
 ## Measured and not yet measured
 

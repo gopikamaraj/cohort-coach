@@ -19,6 +19,12 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 
 ## Settled decisions
 
+### 2026-10-17 · P07 limits on the voice endpoint, found in review
+- **Decision:** `/voice-turn` refuses a finished rehearsal before any speech call, refuses audio over 2 MB or 30 s, turns any unexpected speech error into `text_mode`, and has a daily speech budget (`SPEECH_BUDGET_INR_DAILY`, default 200 INR, in memory per process). A per-IP rate limit stays parked until the staging URL is public. Audio length is read from the decoded samples, because ffmpeg's piped WAV header carries no length (found while adding the 30 s check).
+- **Why:** the privacy review found one request could trigger many paid speech calls and that finished sessions still paid for transcription; CLAUDE.md section 4.10.
+- **Alternatives:** a database-backed budget (later, with Postgres in P15).
+- **Confirmed by:** pending Gopi.
+
 ### 2026-10-17 · P07 verified Sarvam facts
 - **Decision:** the speech layer is built on these facts, read from Sarvam's docs on 2026-10-17 (nothing here was confirmed with a live call: the key in `.env` is rejected, see the next entry).
   1. **Auth:** header `api-subscription-key`. Errors have the shape `{"error": {"request_id", "message", "code"}}`; codes include `invalid_api_key_error`, `rate_limit_exceeded_error`, `insufficient_quota_error`. 429 and 503 are retried with backoff. Source: https://docs.sarvam.ai/api-reference/authentication and https://docs.sarvam.ai/api/getting-started/ratelimits

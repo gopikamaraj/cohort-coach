@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 from collections.abc import Iterator
 from types import SimpleNamespace
 from typing import Any
@@ -135,22 +136,84 @@ def test_audio_is_released_only_when_the_line_passes_the_checker(
     class Spy(SpeechService):
         def synthesize(self, text: str, lang: str, voice: Voice) -> bytes:
             spoken.append(text)
-            return b"OggS-fake"
+            return (
+                b"OggS-" + text.encode()
+            )  # distinct bytes per line, so the audio says what was voiced
 
     app.dependency_overrides[api.get_speech] = lambda: Spy("stub", log=lambda **kw: None)
     sid = session(client)
     ok = client.post(f"/api/practice/sessions/{sid}/voice-turn", files=AUDIO).json()
-    assert ok["badge"] == "checked" and spoken[-1] == ok["child_text"]
+    assert ok["badge"] == "checked"
+    assert base64.b64decode(ok["audio"]) == b"OggS-" + ok["child_text"].encode()
 
     held = SimpleNamespace(
         releasable=False, verdict=None, checker=None, explanation="Held back.", badge=None
     )
     monkeypatch.setattr("ai.calls.c01_child_voice.run_gates", lambda *a, **k: held)
+    monkeypatch.setattr("ai.calls.c01_child_voice.render_line", lambda *a, **k: "Template line.")
     spoken.clear()
     out = client.post(f"/api/practice/sessions/{sid}/voice-turn", files=AUDIO).json()
     assert out["badge"] == "none"
-    assert spoken and spoken[-1] == out["child_text"]  # the template line, not the held candidate
-    assert len(spoken) >= 1 and all(s == out["child_text"] for s in spoken[-1:])
+    sent = base64.b64decode(out["audio"])
+    assert out["child_text"] == "Template line."
+    assert sent == b"OggS-Template line."  # the template line is what she hears
+    assert sent != b"OggS-" + ok["child_text"].encode()  # never the AI candidate
+
+
+def test_a_finished_session_does_not_pay_for_speech_to_text(client: TestClient) -> None:
+    class Counting(SpeechService):
+        calls = 0
+
+        def transcribe(self, recording: bytes, lang: str) -> str:
+            Counting.calls += 1
+            return "Well done"
+
+    app.dependency_overrides[api.get_speech] = lambda: Counting("stub", log=lambda **kw: None)
+    sid = session(client)
+    api._SESSIONS[sid][0].ended = True
+    res = client.post(f"/api/practice/sessions/{sid}/voice-turn", files=AUDIO)
+    assert res.status_code == 409 and Counting.calls == 0
+
+
+def test_over_long_audio_is_refused_before_it_is_sent(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from services.speech import audio as audio_mod
+
+    long_wav = audio_mod.tone(31, 200, 16000)
+    monkeypatch.setattr(audio_mod, "to_wav16k", lambda b: long_wav)
+    sent: list[int] = []
+
+    class Counting(SarvamClient):
+        def transcribe(self, *a: Any, **k: Any) -> Any:
+            sent.append(1)
+
+    app.dependency_overrides[api.get_speech] = lambda: SpeechService(
+        "live", client=Counting("k"), log=lambda **kw: None
+    )
+    sid = session(client)
+    res = client.post(f"/api/practice/sessions/{sid}/voice-turn", files=AUDIO)
+    assert res.status_code == 422 and sent == []
+
+
+def test_an_unexpected_error_in_the_speech_path_means_text_mode_not_a_500(
+    client: TestClient,
+) -> None:
+    class Odd(SpeechService):
+        def transcribe(self, recording: bytes, lang: str) -> str:
+            raise EOFError("odd")
+
+    app.dependency_overrides[api.get_speech] = lambda: Odd("stub", log=lambda **kw: None)
+    sid = session(client)
+    res = client.post(f"/api/practice/sessions/{sid}/voice-turn", files=AUDIO)
+    assert res.status_code == 503 and res.json()["detail"]["text_mode"] is True
+
+
+def test_the_daily_speech_budget_turns_speech_off() -> None:
+    svc = SpeechService("stub", log=lambda **kw: None, budget_inr_daily=1.0)
+    assert svc.available
+    svc.spent_inr = 1.0
+    assert not svc.available
 
 
 def test_oversize_or_empty_recordings_are_refused(client: TestClient) -> None:

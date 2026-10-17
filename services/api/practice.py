@@ -13,7 +13,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import asdict, replace
 from typing import Any
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from pydantic import BaseModel, Field
 
 from ai import config
@@ -161,6 +161,7 @@ def _text_mode(why: str) -> HTTPException:
 @router.post("/sessions/{session_id}/voice-turn")
 def post_voice_turn(
     session_id: str,
+    request: Request,
     audio: UploadFile = File(...),  # noqa: B008
     ctx: CallContext = AI_CONTEXT,
     speech: SpeechService = SPEECH,
@@ -169,8 +170,12 @@ def post_voice_turn(
     in parallel with call 7 and released only if the line passes (check-then-release). On any
     speech failure the client gets 503 with `text_mode` and carries on by typing."""
     session = _get(session_id)
+    if session.state.finished or session.ended:  # before any paid speech call
+        raise HTTPException(409, "This rehearsal has finished. Ask for feedback.")
     if not speech.available:
         raise _text_mode("Voice is not available right now. Type instead.")
+    if int(request.headers.get("content-length") or 0) > MAX_AUDIO_BYTES + 100_000:
+        raise HTTPException(413, "That recording is too large. Hold the button for less time.")
     recording = audio.file.read(MAX_AUDIO_BYTES + 1)
     if not recording or len(recording) > MAX_AUDIO_BYTES:
         raise HTTPException(422, "That recording was empty or too long. Try again.")
@@ -178,6 +183,10 @@ def post_voice_turn(
     try:
         heard = speech.transcribe(recording, session.language)
     except SpeechError as exc:
+        if exc.kind == "bad_request":  # too long or unreadable: not a service failure
+            raise HTTPException(422, "That recording was too long or unclear. Try again.") from exc
+        raise _text_mode("Could not hear that. Type instead.") from exc
+    except Exception as exc:  # odd audio must never become a 500: she carries on by typing
         raise _text_mode("Could not hear that. Type instead.") from exc
     stt_ms = int((time.monotonic() - t0) * 1000)
     if not heard.strip():
@@ -208,7 +217,7 @@ def post_voice_turn(
             else:
                 data = _synth(speech, result.child_text, session, result.speaker or "")
             audio_b64 = base64.b64encode(data).decode()
-        except (SpeechError, TimeoutError):
+        except Exception:  # noqa: BLE001 - the text is already there; audio is a bonus
             audio_b64 = None
         tts_wait_ms = int((time.monotonic() - t1) * 1000)
     for f in pending.values():  # a candidate that was not released is dropped

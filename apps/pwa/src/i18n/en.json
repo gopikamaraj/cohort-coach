@@ -171,5 +171,6 @@
   "practice.mic_denied": "The microphone is blocked. Allow it in your browser settings, or type instead.",
   "practice.unheard": "I could not hear anything. Hold the button and speak again.",
   "practice.voice_label": "Speak to the children",
+  "practice.voice_stub": "Simulated voice: scripted lines and a tone, not real speech recognition.",
   "audit.checks": "Checks passed"
 }

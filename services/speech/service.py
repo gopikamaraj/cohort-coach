@@ -11,6 +11,7 @@ import itertools
 import os
 import time
 from collections.abc import Callable
+from datetime import date
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -51,18 +52,35 @@ class SpeechService:
         client: SarvamClient | None = None,
         breaker: CircuitBreaker | None = None,
         log: Callable[..., None] | None = None,
+        budget_inr_daily: float | None = None,
     ) -> None:
         self.mode = mode
+        self.budget_inr_daily = (
+            budget_inr_daily
+            if budget_inr_daily is not None
+            else float(os.environ.get("SPEECH_BUDGET_INR_DAILY", "200"))
+        )
+        self.spent_inr = 0.0
+        self._day = date.today()
         self.client = client or SarvamClient()
         self.breaker = breaker or CircuitBreaker()
         self._log = log or (lambda **kw: None)
 
     @property
     def available(self) -> bool:
-        """False when the breaker is open or live speech has no key: the client goes to text."""
+        """False when the breaker is open, live speech has no key, or today's speech budget is
+        spent: the client goes to text."""
+        if date.today() != self._day:
+            self._day, self.spent_inr = date.today(), 0.0
+        if self.spent_inr >= self.budget_inr_daily:
+            return False
         if self.mode == "stub":
             return True
         return self.client.configured and self.breaker.state != "open"
+
+    def _emit(self, **fields: Any) -> None:
+        self.spent_inr += float(fields.get("cost_inr", 0.0))
+        self._log(**fields)
 
     def _record(self, ok: bool, err: SpeechError | None) -> None:
         if ok:
@@ -89,7 +107,7 @@ class SpeechService:
                 self._record(False, exc)
             raise
         finally:
-            self._log(
+            self._emit(
                 stage="stt",
                 mode=self.mode,
                 language=lang,
@@ -123,7 +141,7 @@ class SpeechService:
                 self._record(False, exc)
             raise
         finally:
-            self._log(
+            self._emit(
                 stage="tts",
                 mode=self.mode,
                 language=lang,

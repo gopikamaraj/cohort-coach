@@ -46,8 +46,10 @@ def to_wav16k(audio: bytes) -> bytes:
 
 
 def wav_seconds(wav: bytes) -> float:
-    with wave.open(io.BytesIO(wav)) as w:
-        return float(w.getnframes() / w.getframerate())
+    """Length from the samples actually present: ffmpeg writing to a pipe leaves the header's
+    length unset, so the header cannot be trusted."""
+    samples, rate = _samples(wav)
+    return float(len(samples) / rate)
 
 
 def _samples(wav: bytes) -> tuple[np.ndarray, int]:
@@ -73,7 +75,7 @@ def split_at_silences(wav: bytes, max_seconds: float = MAX_CHUNK_SECONDS) -> lis
     samples, rate = _samples(wav)
     limit = int(max_seconds * rate)
     if len(samples) <= limit:
-        return [wav]
+        return [_wav_bytes(samples, rate)]  # rewritten so the header carries the true length
     frame = int(rate * FRAME_MS / 1000)
     chunks: list[bytes] = []
     start = 0

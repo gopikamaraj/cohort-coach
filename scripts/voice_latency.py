@@ -141,7 +141,10 @@ def main(argv: list[str]) -> int:
         f"{result['median_ms']} ms, p90 {result['p90_ms']} ms (target median < {TARGET_MS} ms); "
         f"by language {result['median_by_language_ms']}"
     )
-    print("MEETS TARGET" if result["meets_target"] else "OVER TARGET OR NO DATA")
+    if not args.live:
+        print("STUB RUN: checks the harness only; these timings are not a measurement.")
+    else:
+        print("MEETS TARGET" if result["meets_target"] else "OVER TARGET OR NO DATA")
     if args.live and not args.no_write and result["failed"] == 0:
         path = ROOT / "evals" / "results" / "voice_latency.json"
         path.write_text(

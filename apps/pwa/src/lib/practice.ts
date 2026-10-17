@@ -49,6 +49,7 @@ export interface Layers {
     tokens: { in: number; out: number; cache_read: number };
     cost_usd: number;
     calls: string[];
+    stages?: { stt_ms: number; tts_wait_ms: number };
   };
   output: { child_line: string; source: string; badge: string };
 }

@@ -80,6 +80,19 @@ export default function Practice() {
   useEffect(() => {
     void getSetting("shareSessions", false).then(setShare);
   }, []);
+  useEffect(
+    () => () => {
+      // leaving the screen while the button is held must not leave the microphone on
+      holding.current = false;
+      const r = rec.current;
+      if (r) {
+        clearTimeout(r.timer);
+        r.mr.stream.getTracks().forEach((x) => x.stop());
+        if (r.mr.state === "recording") r.mr.stop();
+      }
+    },
+    [],
+  );
   useEffect(() => {
     log.current?.scrollTo({ top: log.current.scrollHeight });
   }, [turns]);
@@ -185,7 +198,21 @@ export default function Practice() {
       return;
     }
     const mime = recorderMime();
-    const mr = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 24000 } : undefined);
+    let mr: MediaRecorder;
+    try {
+      mr = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 24000 } : undefined);
+    } catch {
+      stream.getTracks().forEach((x) => x.stop());
+      holding.current = false;
+      setNotice("practice.voice_fallback");
+      setVoiceOn(false);
+      return;
+    }
+    mr.onerror = () => {
+      stream.getTracks().forEach((x) => x.stop());
+      holding.current = false;
+      setVstate("idle");
+    };
     const chunks: Blob[] = [];
     mr.ondataavailable = (e) => {
       if (e.data.size > 0) chunks.push(e.data);
@@ -422,6 +449,11 @@ export default function Practice() {
           >
             {vstate === "listening" ? tr("practice.talk_release") : vstate === "thinking" ? tr("practice.sending") : vstate === "speaking" ? tr("practice.speaking") : tr("practice.talk")}
           </button>
+          {session?.voice.mode === "stub" ? (
+            <p className="muted" data-testid="voice-stub">
+              {tr("practice.voice_stub")}
+            </p>
+          ) : null}
           <p className="muted" role="status" data-testid="voice-state">
             {vstate === "listening" ? tr("practice.listening") : ""}
           </p>

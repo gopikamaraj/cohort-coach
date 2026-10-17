@@ -201,13 +201,14 @@ def _practice_sections() -> list[str]:
                 "replaced by the template; not adopted."
             )
     vlat = _optional("voice_latency.json")
-    if vlat:
+    if vlat and vlat.get("mode") == "live":
         lines += [
             "",
             "## Practice Class voice-turn latency (`evals/results/voice_latency.json`, "
             f"{vlat['date']})",
             "",
-            f"{vlat['turns']} live voice turns ({vlat['failed']} failed): median "
+            f"{vlat['turns']} live voice turns ({vlat['failed']} failed, "
+            f"{vlat['without_audio']} answered in text only): median "
             f"{vlat['median_ms']} ms, 90th percentile {vlat['p90_ms']} ms, maximum "
             f"{vlat['max_ms']} ms, against a target median under {vlat['target_median_ms']} ms: "
             f"{'meets' if vlat['meets_target'] else 'does not meet'} the target. Median by "
