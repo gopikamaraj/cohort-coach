@@ -136,6 +136,25 @@ class AiCall(Base):
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
+class SpeechCall(Base):
+    """One speech request (stt or tts). Metadata only: never the audio or the text."""
+
+    __tablename__ = "speech_calls"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    stage: Mapped[str] = mapped_column(String(8))  # stt | tts
+    mode: Mapped[str] = mapped_column(String(8))  # live | stub
+    language: Mapped[str] = mapped_column(String(4))
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    audio_bytes: Mapped[int] = mapped_column(Integer, default=0)
+    characters: Mapped[int] = mapped_column(Integer, default=0)
+    seconds: Mapped[float] = mapped_column(Float, default=0.0)
+    cost_inr: Mapped[float] = mapped_column(Float, default=0.0)
+    from_cache: Mapped[bool] = mapped_column(Boolean, default=False)
+    error_kind: Mapped[str | None] = mapped_column(String(16))
+
+
 class ReviewItem(Base):
     """AI content waiting for, or past, human review (track drafts, method cards)."""
 

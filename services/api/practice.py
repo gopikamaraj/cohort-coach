@@ -7,11 +7,13 @@ metadata-only audit rows written by the AI calls.
 
 from __future__ import annotations
 
+import base64
 import time
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import asdict, replace
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
 from ai import config
@@ -26,6 +28,9 @@ from services.practice.session import (
     take_turn,
 )
 from services.practice.stub_client import StubClient
+from services.speech.sarvam import SpeechError
+from services.speech.service import SpeechService, default_service
+from services.speech.voices import voice_for
 
 router = APIRouter(prefix="/api/practice", tags=["practice"])
 
@@ -43,6 +48,15 @@ def get_ai_context() -> CallContext:
 
 
 AI_CONTEXT = Depends(get_ai_context)
+
+
+def get_speech() -> SpeechService:
+    return default_service()
+
+
+SPEECH = Depends(get_speech)
+MAX_AUDIO_BYTES = 2_000_000
+_POOL = ThreadPoolExecutor(max_workers=4)
 
 
 class CreateSession(BaseModel):
@@ -132,6 +146,79 @@ def post_turn(session_id: str, body: TurnRequest, ctx: CallContext = AI_CONTEXT)
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     return {**_to_dict(result), "turns_left": session.loaded.config.max_turns - session.state.turn}
+
+
+def _synth(speech: SpeechService, text: str, session: PracticeSession, speaker: str) -> bytes:
+    persona = session.personas.get(speaker)
+    return speech.synthesize(text, session.language, voice_for(persona.id if persona else ""))
+
+
+def _text_mode(why: str) -> HTTPException:
+    return HTTPException(503, {"text_mode": True, "message": why})
+
+
+@router.post("/sessions/{session_id}/voice-turn")
+def post_voice_turn(
+    session_id: str,
+    audio: UploadFile = File(...),  # noqa: B008
+    ctx: CallContext = AI_CONTEXT,
+    speech: SpeechService = SPEECH,
+) -> dict[str, Any]:
+    """Speech in, speech out. Order: speech-to-text, the text pipeline, then synthesis started
+    in parallel with call 7 and released only if the line passes (check-then-release). On any
+    speech failure the client gets 503 with `text_mode` and carries on by typing."""
+    session = _get(session_id)
+    if not speech.available:
+        raise _text_mode("Voice is not available right now. Type instead.")
+    recording = audio.file.read(MAX_AUDIO_BYTES + 1)
+    if not recording or len(recording) > MAX_AUDIO_BYTES:
+        raise HTTPException(422, "That recording was empty or too long. Try again.")
+    t0 = time.monotonic()
+    try:
+        heard = speech.transcribe(recording, session.language)
+    except SpeechError as exc:
+        raise _text_mode("Could not hear that. Type instead.") from exc
+    stt_ms = int((time.monotonic() - t0) * 1000)
+    if not heard.strip():
+        raise HTTPException(422, "I could not hear anything. Hold the button and speak again.")
+    pending: dict[str, Future[bytes]] = {}
+
+    def start_audio(candidate: str, speaker: str) -> None:
+        pending["f"] = _POOL.submit(_synth, speech, candidate, session, speaker)
+
+    try:
+        result = take_turn(session, text=heard[:1000], context=ctx, on_candidate=start_audio)
+    except SessionFinished as exc:
+        raise HTTPException(409, "This rehearsal has finished. Ask for feedback.") from exc
+    except BudgetExceeded as exc:
+        raise HTTPException(503, "Practice is paused for today. Try again later.") from exc
+    out: dict[str, Any] = {
+        **_to_dict(result),
+        "turns_left": session.loaded.config.max_turns - session.state.turn,
+        "heard": heard,
+    }
+    audio_b64, tts_wait_ms = None, 0
+    if result.child_text:
+        t1 = time.monotonic()
+        released = result.badge != "none"  # an AI line that passed gates 1 and 2
+        try:
+            if released and "f" in pending:
+                data = pending["f"].result(timeout=20)
+            else:
+                data = _synth(speech, result.child_text, session, result.speaker or "")
+            audio_b64 = base64.b64encode(data).decode()
+        except (SpeechError, TimeoutError):
+            audio_b64 = None
+        tts_wait_ms = int((time.monotonic() - t1) * 1000)
+    for f in pending.values():  # a candidate that was not released is dropped
+        if not f.done():
+            f.cancel()
+    stages = {"stt_ms": stt_ms, "tts_wait_ms": tts_wait_ms}
+    out["layers"]["evaluation"]["stages"] = stages
+    out["audio"] = audio_b64
+    out["audio_mime"] = "audio/ogg" if audio_b64 else None
+    out["speech_mode"] = speech.mode
+    return out
 
 
 @router.post("/sessions/{session_id}/end")

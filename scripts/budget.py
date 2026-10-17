@@ -30,6 +30,31 @@ def summarise(rows: list) -> dict[str, dict[str, float]]:  # type: ignore[type-a
     return out
 
 
+def _speech() -> None:
+    """Speech spend (INR) from the speech_calls table: metadata only."""
+    from sqlalchemy import func, select
+    from sqlalchemy.orm import Session
+
+    from services.api.db import SpeechCall, make_engine
+
+    with Session(make_engine()) as s:
+        rows = s.execute(
+            select(
+                SpeechCall.stage,
+                func.count(),
+                func.coalesce(func.sum(SpeechCall.cost_inr), 0.0),
+                func.coalesce(func.avg(SpeechCall.latency_ms), 0.0),
+            )
+            .where(SpeechCall.mode == "live")
+            .group_by(SpeechCall.stage)
+        ).all()
+    print("\nspeech (live, INR; prices in services/speech/pricing.yaml)")
+    for stage, n, cost, avg in rows or []:
+        print(f"  {stage:<6} calls {n:<5} INR {cost:.2f}  mean latency {avg:.0f} ms")
+    if not rows:
+        print("  none yet")
+
+
 def main() -> int:
     sink = default_sink()
     rows = sink.recent(1_000_000)
@@ -47,6 +72,7 @@ def main() -> int:
     print(f"\ncache read tokens across live calls: {cached}")
     print(f"total USD {total:.4f} of {config.budget_total_usd():.2f} (non-judge cap)")
     print(f"judge-mode USD {judge:.4f}; hard ceiling USD {config.budget_hard_usd():.2f}")
+    _speech()
     print(f"today USD {sink.spend_day(__import__('datetime').date.today()):.4f}")
     return 0
 

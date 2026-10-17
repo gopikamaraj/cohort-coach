@@ -12,7 +12,7 @@ from __future__ import annotations
 import random
 import time
 import uuid
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, replace
 from typing import Any
 
@@ -166,6 +166,7 @@ def take_turn(
     material: str | None = None,
     stt_confidence: float | None = None,
     context: CallContext | None = None,
+    on_candidate: Callable[[str, str], None] | None = None,
 ) -> TurnResult:
     """One teacher turn: typed or spoken text, or a tap on the materials tray."""
     if session.state.finished or session.ended:
@@ -209,6 +210,7 @@ def take_turn(
         history=_history(session),
         target_error=session.error,
         context=ctx,
+        on_candidate=on_candidate,
     )
     session.state = new_state
     if addressed:

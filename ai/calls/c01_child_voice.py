@@ -8,7 +8,7 @@ the violation, then a template line is used. After the validators, call 7 checks
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, replace
 
 from pydantic import BaseModel
@@ -73,7 +73,10 @@ def child_line(
     history: Sequence[str],
     target_error: str | None = None,
     context: CallContext | None = None,
+    on_candidate: Callable[[str, str], None] | None = None,
 ) -> ChildLineResult:
+    """`on_candidate(text, speaker)` is told the validated line just before call 7 runs, so
+    speech synthesis can start in parallel; the caller releases the audio only if the line is."""
     if plan.speaker is None:
         return ChildLineResult("", "silent", None, None)
     base = context or CallContext()
@@ -93,6 +96,8 @@ def child_line(
     assert isinstance(line, ChildLine)
     if run.fallback_used:
         return ChildLineResult(template, "template", None, run)
+    if on_candidate is not None:
+        on_candidate(line.text, name)
     gate = run_gates(
         GateInput(
             text=line.text,
