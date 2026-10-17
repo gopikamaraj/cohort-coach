@@ -47,7 +47,10 @@ async function rehearse(page: Page, turns: TurnJson[]) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
+  });
 });
 
 test("a rehearsal of 7 turns with a material tap ends in two strengths with her own quotes", async ({ page }) => {
@@ -198,6 +201,7 @@ test("feedback thumbs and the flag are kept on the phone; sharing is off by defa
   const share = page.getByRole("checkbox");
   await expect(share).not.toBeChecked(); // off by default
   await share.check();
+  await page.waitForTimeout(500); // the choice is written to IndexedDB asynchronously; reloading at once races it
   await page.reload();
   await page.goto("/#/practice?seed=5");
   await expect(page.getByRole("checkbox")).toBeChecked(); // the choice is saved

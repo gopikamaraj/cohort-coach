@@ -13,7 +13,10 @@ for (const lang of ["en", "hi", "ta"] as const) {
   test(`screenshots in ${lang}`, async ({ page }) => {
     mkdirSync(OUT, { recursive: true });
     await page.goto("/");
-    await page.evaluate(() => localStorage.clear());
+    await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
+  });
     await page.goto("/#/judge");
     await page.getByTestId("lang").selectOption(lang);
     await page.getByTestId("reset").click();
@@ -35,7 +38,10 @@ test("the desktop view puts the phone in a frame", async ({ page }) => {
   mkdirSync(OUT, { recursive: true });
   await page.setViewportSize({ width: 1100, height: 860 });
   await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
+  });
   await page.goto("/#/judge");
   await page.getByTestId("load-demo").click();
   await page.goto("/#/cards");
@@ -46,7 +52,10 @@ test("the desktop view puts the phone in a frame", async ({ page }) => {
 test("Practice Class screenshots: intro, a turn with the AI layers, feedback, AI map, audit", async ({ page }) => {
   mkdirSync(OUT, { recursive: true });
   await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
+  });
   await page.goto("/#/practice?seed=5");
   await page.screenshot({ path: `${OUT}en-5-practice-intro.png` });
   await page.getByTestId("start-practice").click();
@@ -86,7 +95,10 @@ for (const lang of ["hi", "ta"] as const) {
   test(`Practice Class intro in ${lang}`, async ({ page }) => {
     mkdirSync(OUT, { recursive: true });
     await page.goto("/");
-    await page.evaluate(() => localStorage.clear());
+    await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
+  });
     await page.goto("/#/practice");
     await page.getByTestId("lang").selectOption(lang);
     await page.screenshot({ path: `${OUT}${lang}-5-practice-intro.png` });

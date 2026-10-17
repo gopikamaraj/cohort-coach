@@ -101,7 +101,7 @@ def _to_dict(obj: Any) -> dict[str, Any]:
 
 
 @router.post("/sessions")
-def create_session(body: CreateSession) -> dict[str, Any]:
+def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[str, Any]:
     if body.language not in LANGS:
         raise HTTPException(422, f"language must be one of {', '.join(LANGS)}")
     try:
@@ -124,6 +124,7 @@ def create_session(body: CreateSession) -> dict[str, Any]:
         "children": [{"name": c.name, "shy": c.shy} for c in session.state.children],
         "materials": loaded.scenario.materials,
         "turn_cap": loaded.config.max_turns,
+        "voice": {"available": speech.available, "mode": speech.mode},
         "moves": [{"id": m.id, "label": m.label[session.language]} for m in loaded.movelist.moves],
     }
 

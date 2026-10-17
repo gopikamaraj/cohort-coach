@@ -161,5 +161,15 @@
   "judge.step9": "Open the AI map, then the audit trail.",
   "judge.open_aimap": "AI map",
   "judge.open_audit": "Audit trail",
+  "practice.talk": "Hold to speak",
+  "practice.talk_release": "Release to send",
+  "practice.listening": "Listening…",
+  "practice.speaking": "Speaking…",
+  "practice.use_voice": "Use voice",
+  "practice.use_text": "Type instead",
+  "practice.voice_fallback": "Voice is not working right now, so you can type instead.",
+  "practice.mic_denied": "The microphone is blocked. Allow it in your browser settings, or type instead.",
+  "practice.unheard": "I could not hear anything. Hold the button and speak again.",
+  "practice.voice_label": "Speak to the children",
   "audit.checks": "Checks passed"
 }

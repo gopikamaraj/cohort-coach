@@ -17,8 +17,22 @@ import {
   type CreatedSession,
   type FeedbackCard,
   type Layers,
+  type TurnResponse,
 } from "../lib/practice";
 import { useQuery } from "../lib/router";
+import {
+  canRecord,
+  MAX_RECORD_MS,
+  MAX_VOICE_FAILURES,
+  playReply,
+  postVoiceTurn,
+  recorderMime,
+  slowLink,
+  voiceDefault,
+  VOICE_PREF_KEY,
+  type VoiceState,
+  type VoiceTurn,
+} from "../lib/voice";
 import { useApp } from "../state";
 
 type Phase = "intro" | "starting" | "playing" | "ending" | "feedback" | "paused" | "offline" | "error";
@@ -55,7 +69,12 @@ export default function Practice() {
   const [share, setShare] = useState(false);
   const [showLayers, setShowLayers] = useState(() => localStorage.getItem("cc.layers") === "1");
   const [sample, setSample] = useState<Sample | null>(null);
+  const [voiceOn, setVoiceOn] = useState(false);
+  const [voiceFails, setVoiceFails] = useState(0);
+  const [vstate, setVstate] = useState<VoiceState>("idle");
   const rowId = useRef<number | null>(null);
+  const holding = useRef(false);
+  const rec = useRef<{ mr: MediaRecorder; at: number; timer: number } | null>(null);
   const log = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -93,6 +112,8 @@ export default function Practice() {
         ...(seed !== undefined ? { seed } : urlSeed ? { seed: Number(urlSeed) } : {}),
       });
       setSession(created);
+      setVoiceFails(0);
+      setVoiceOn(voiceDefault(created.voice.available, canRecord(), slowLink(), localStorage.getItem(VOICE_PREF_KEY)));
       rowId.current = await startTranscript(created.session_id, klass?.id ?? "none", scenarioFor(profile?.track ?? null));
       setPhase("playing");
     } catch (e) {
@@ -100,17 +121,108 @@ export default function Practice() {
     }
   };
 
+  const applyTurn = async (r: TurnResponse, shown: string) => {
+    const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
+    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers }]);
+    setSpeaker(r.speaker);
+    if (rowId.current !== null) await appendTurn(rowId.current, { turn: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker });
+    if (r.finished) setOver(r.finished_reason === "all_correct" ? "practice.over_all" : "practice.over_cap");
+  };
+
+  const doVoice = async (clip: Blob) => {
+    if (!session) return;
+    setBusy(true);
+    setVstate("thinking");
+    setNotice("");
+    try {
+      const r: VoiceTurn = await postVoiceTurn(session.session_id, clip);
+      setVoiceFails(0);
+      await applyTurn(r, r.heard);
+      if (r.audio && r.audio_mime) {
+        setVstate("speaking");
+        await playReply(r.audio, r.audio_mime);
+      }
+    } catch (e) {
+      if (e instanceof PracticeError && e.kind === "voice") {
+        const n = voiceFails + 1;
+        setVoiceFails(n);
+        setNotice(n >= MAX_VOICE_FAILURES ? "practice.voice_fallback" : "practice.error");
+        if (n >= MAX_VOICE_FAILURES) setVoiceOn(false); // typing takes over by itself
+      } else if (e instanceof PracticeError && e.kind === "unheard") setNotice("practice.unheard");
+      else if (e instanceof PracticeError && (e.kind === "finished" || e.kind === "invalid")) setNotice("practice.error");
+      else fail(e);
+    } finally {
+      setBusy(false);
+      setVstate("idle");
+    }
+  };
+
+  function stopRec() {
+    holding.current = false;
+    const r = rec.current;
+    if (!r) return;
+    clearTimeout(r.timer);
+    if (r.mr.state === "recording") {
+      setVstate("thinking");
+      r.mr.stop();
+    }
+  }
+
+  const startRec = async () => {
+    if (!session || busy || over !== null || holding.current) return;
+    holding.current = true;
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      holding.current = false;
+      setNotice("practice.mic_denied");
+      setVoiceOn(false);
+      return;
+    }
+    if (!holding.current) {
+      stream.getTracks().forEach((x) => x.stop()); // she let go before the phone asked
+      return;
+    }
+    const mime = recorderMime();
+    const mr = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 24000 } : undefined);
+    const chunks: Blob[] = [];
+    mr.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+    mr.onstop = () => {
+      stream.getTracks().forEach((x) => x.stop());
+      const held = Date.now() - (rec.current?.at ?? 0);
+      rec.current = null;
+      if (held < 400 || chunks.length === 0) {
+        setVstate("idle");
+        setNotice("practice.unheard");
+        return;
+      }
+      void doVoice(new Blob(chunks, { type: mr.mimeType }));
+    };
+    rec.current = { mr, at: Date.now(), timer: window.setTimeout(stopRec, MAX_RECORD_MS) };
+    mr.start();
+    setVstate("listening");
+  };
+
+  const useText = () => {
+    localStorage.setItem(VOICE_PREF_KEY, "0");
+    setVoiceOn(false);
+  };
+  const useVoice = () => {
+    localStorage.setItem(VOICE_PREF_KEY, "1");
+    setVoiceFails(0);
+    setNotice("");
+    setVoiceOn(true);
+  };
+
   const doTurn = async (body: { text?: string; material?: string }, shown: string) => {
     if (!session || busy) return;
     setBusy(true);
     setNotice("");
     try {
-      const r = await postTurn(session.session_id, body);
-      const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
-      setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers }]);
-      setSpeaker(r.speaker);
-      if (rowId.current !== null) await appendTurn(rowId.current, { turn: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker });
-      if (r.finished) setOver(r.finished_reason === "all_correct" ? "practice.over_all" : "practice.over_cap");
+      await applyTurn(await postTurn(session.session_id, body), shown);
       setText("");
     } catch (e) {
       if (e instanceof PracticeError && (e.kind === "finished" || e.kind === "invalid")) setNotice("practice.error");
@@ -284,21 +396,63 @@ export default function Practice() {
       {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
       {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
       {session ? <Materials items={session.materials} disabled={busy || over !== null} onTap={tap} /> : null}
-      <form
-        className="compose"
-        onSubmit={(e) => {
-          e.preventDefault();
-          send();
-        }}
-      >
-        <label className="sr" htmlFor="say">
-          {tr("practice.placeholder")}
-        </label>
-        <textarea id="say" rows={2} value={text} placeholder={tr("practice.placeholder")} onChange={(e) => setText(e.target.value)} disabled={busy || over !== null} data-testid="say" />
-        <button type="submit" className="btn btn-primary" disabled={busy || over !== null || text.trim() === ""} data-testid="send">
-          {tr("practice.send")}
-        </button>
-      </form>
+      {voiceOn ? (
+        <div className="compose">
+          <button
+            type="button"
+            className="btn btn-primary btn-talk"
+            data-testid="talk"
+            data-state={vstate}
+            aria-label={tr("practice.voice_label")}
+            disabled={over !== null || vstate === "thinking" || vstate === "speaking"}
+            onPointerDown={() => void startRec()}
+            onPointerUp={stopRec}
+            onPointerCancel={stopRec}
+            onPointerLeave={stopRec}
+            onKeyDown={(e) => {
+              if ((e.key === " " || e.key === "Enter") && !e.repeat) {
+                e.preventDefault();
+                void startRec();
+              }
+            }}
+            onKeyUp={(e) => {
+              if (e.key === " " || e.key === "Enter") stopRec();
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+          >
+            {vstate === "listening" ? tr("practice.talk_release") : vstate === "thinking" ? tr("practice.sending") : vstate === "speaking" ? tr("practice.speaking") : tr("practice.talk")}
+          </button>
+          <p className="muted" role="status" data-testid="voice-state">
+            {vstate === "listening" ? tr("practice.listening") : ""}
+          </p>
+          <button type="button" className="btn btn-secondary" onClick={useText} data-testid="use-text">
+            {tr("practice.use_text")}
+          </button>
+        </div>
+      ) : (
+        <>
+          <form
+            className="compose"
+            onSubmit={(e) => {
+              e.preventDefault();
+              send();
+            }}
+          >
+            <label className="sr" htmlFor="say">
+              {tr("practice.placeholder")}
+            </label>
+            <textarea id="say" rows={2} value={text} placeholder={tr("practice.placeholder")} onChange={(e) => setText(e.target.value)} disabled={busy || over !== null} data-testid="say" />
+            <button type="submit" className="btn btn-primary" disabled={busy || over !== null || text.trim() === ""} data-testid="send">
+              {tr("practice.send")}
+            </button>
+          </form>
+          {canRecord() ? (
+            <button type="button" className="btn btn-secondary" onClick={useVoice} data-testid="use-voice">
+              {tr("practice.use_voice")}
+            </button>
+          ) : null}
+        </>
+      )}
       <button type="button" className="btn btn-secondary" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
         {tr("practice.end")}
       </button>

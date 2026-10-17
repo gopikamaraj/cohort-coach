@@ -18,6 +18,8 @@ export default defineConfig({
     baseURL: "http://localhost:4173",
     ...devices["Pixel 5"], // a phone-sized viewport and touch
     serviceWorkers: "allow",
+    permissions: ["microphone"],
+    launchOptions: { args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] },
     trace: "off",
   },
   webServer: [
@@ -34,7 +36,7 @@ export default defineConfig({
       url: `http://localhost:${apiPort}/api/health`,
       reuseExistingServer: true,
       timeout: 60_000,
-      env: { AI_MODE: "recorded", DATABASE_URL: "sqlite:///./e2e.sqlite" },
+      env: { AI_MODE: "recorded", SPEECH_MODE: "stub", DATABASE_URL: "sqlite:///./e2e.sqlite" },
     },
   ],
 });

@@ -16,6 +16,7 @@ export interface CreatedSession {
   children: PracticeChild[];
   materials: string[];
   turn_cap: number;
+  voice: { available: boolean; mode: string };
   moves: { id: string; label: string }[];
 }
 
@@ -82,7 +83,7 @@ export interface EndResponse {
   explanation: string;
 }
 
-export type FailKind = "paused" | "expired" | "finished" | "offline" | "invalid" | "other";
+export type FailKind = "paused" | "expired" | "finished" | "offline" | "invalid" | "voice" | "unheard" | "other";
 
 export class PracticeError extends Error {
   constructor(

@@ -161,5 +161,15 @@
   "judge.step9": "एआई मैप खोलें, फिर ऑडिट ट्रेल।",
   "judge.open_aimap": "एआई मैप",
   "judge.open_audit": "ऑडिट ट्रेल",
+  "practice.talk": "बोलने के लिए दबाए रखें",
+  "practice.talk_release": "भेजने के लिए छोड़ें",
+  "practice.listening": "सुन रहे हैं…",
+  "practice.speaking": "बोल रहे हैं…",
+  "practice.use_voice": "आवाज़ से बोलें",
+  "practice.use_text": "लिखकर बताएँ",
+  "practice.voice_fallback": "अभी आवाज़ काम नहीं कर रही, इसलिए आप लिख सकती हैं।",
+  "practice.mic_denied": "माइक्रोफ़ोन बंद है। ब्राउज़र की सेटिंग में अनुमति दें, या लिखकर बताएँ।",
+  "practice.unheard": "कुछ सुनाई नहीं दिया। बटन दबाए रखें और फिर बोलें।",
+  "practice.voice_label": "बच्चों से बोलें",
   "audit.checks": "जाँच पास"
 }
