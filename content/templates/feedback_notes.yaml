@@ -1,0 +1,6 @@
+# Gentle notes the app adds itself to rehearsal feedback (not written by the model).
+# TODO-HUMAN(Seema, Gopi): review wording; it must stay kind and brief.
+scold:
+  en: "A moment of scolding came up. Children usually try again more easily when the words are calm. You could say 'Let us look at it together' and then show it with the sticks."
+  hi: "एक जगह डाँट आ गई थी। शांत शब्दों से बच्चे आमतौर पर दोबारा कोशिश कर पाते हैं। आप कह सकती हैं, 'आओ साथ मिलकर देखते हैं', और फिर तीलियों से दिखा सकती हैं।"
+  ta: "ஒரு இடத்தில் கடிந்துகொள்ளுதல் வந்தது. அமைதியான சொற்களால் குழந்தைகள் மீண்டும் முயல எளிதாகும். 'வா, சேர்ந்து பார்ப்போம்' என்று சொல்லிக் குச்சிகளால் காட்டலாம்."
