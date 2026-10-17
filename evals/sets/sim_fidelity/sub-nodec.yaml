@@ -1,0 +1,41 @@
+# Eval 2 (simulator fidelity): 10 scripted teacher turns per error, run over 5 seeds = 50 turns
+# per error, 200 in all. `seat` is the child's seat number (1-4; seat 4 is the shy child, 0 is
+# the always-correct child); null means the whole class. `say` is what the teacher says.
+error: SUB-NODEC
+seeds:
+- 101
+- 102
+- 103
+- 104
+- 105
+script:
+- move: pose_problem
+  seat: 1
+  say: Child one, please answer this one.
+- move: ask_explain
+  seat: 1
+  say: Tell me how you got that.
+- move: show_bundles
+  seat: 1
+  say: 'Here is 52: 5 bundles and 2 sticks. Take away 9 sticks.'
+- move: pose_problem
+  seat: 2
+  say: Child two, now you try.
+- move: check_back
+  seat: 2
+  say: Let us check your answer together.
+- move: tell_rule
+  seat: 3
+  say: Remember the rule, take care with the columns.
+- move: praise
+  seat: 3
+  say: Well tried, thank you.
+- move: pose_problem
+  seat: 3
+  say: Child three, what do you get?
+- move: scold
+  seat: 4
+  say: That is wrong again, pay attention.
+- move: pose_problem
+  seat: null
+  say: Everyone, who can tell me this one?

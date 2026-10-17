@@ -1,0 +1,36 @@
+{
+  "bar": {
+    "numeric_match": 1.0
+  },
+  "date": "2026-10-17",
+  "eval": "sim_fidelity",
+  "matched": 200,
+  "mode": "engine_templates",
+  "numeric_match": 1.0,
+  "passed": true,
+  "per_error": {
+    "ADD-NOCARRY": {
+      "matched": 50,
+      "share": 1.0,
+      "turns": 50
+    },
+    "PV-HEARD": {
+      "matched": 50,
+      "share": 1.0,
+      "turns": 50
+    },
+    "SUB-NODEC": {
+      "matched": 50,
+      "share": 1.0,
+      "turns": 50
+    },
+    "SUB-SFL": {
+      "matched": 50,
+      "share": 1.0,
+      "turns": 50
+    }
+  },
+  "set": "evals/sets/sim_fidelity/*.yaml",
+  "source": "evals/runners/sim_fidelity.py",
+  "turns": 200
+}

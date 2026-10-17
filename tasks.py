@@ -96,6 +96,7 @@ def cmd_check(args: list[str]) -> int:
         [py, "-m", "evals.runners.engine_items", "--n", "100", "--no-write"],
         [py, "-m", "evals.runners.statistics", "--quick", "--no-write"],
         [py, "-m", "evals.runners.redteam", "--no-write"],
+        [py, "-m", "evals.runners.sim_fidelity", "--no-write"],
         [py, "scripts/readme.py", "--check"],
     ]
     return max(run(cmd) for cmd in smoke)
@@ -105,6 +106,7 @@ AVAILABLE_EVALS = {
     "engine_items": "evals.runners.engine_items",
     "statistics": "evals.runners.statistics",
     "redteam": "evals.runners.redteam",
+    "sim_fidelity": "evals.runners.sim_fidelity",
 }
 
 
@@ -115,8 +117,8 @@ def cmd_eval(args: list[str]) -> int:
         return 0
     name, rest = args[0], args[1:]
     if "--live" in rest:
-        if name != "redteam":
-            print("live evals other than redteam are available after P13")
+        if name not in ("redteam", "sim_fidelity"):
+            print("live evals other than redteam and sim_fidelity are available after P13")
             return 0
         return run([venv_python(), "-m", AVAILABLE_EVALS[name], *rest])
     if name == "all":
