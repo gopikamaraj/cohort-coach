@@ -85,7 +85,7 @@
   "cards.audio": "Listen",
   "cards.audio_soon": "Listening arrives in a later step.",
   "cards.flag": "This is wrong",
-  "cards.flagged": "Thank you. This card is marked for checking.",
+  "cards.flagged": "Thank you. This card is marked on your phone for checking. It is sent when the flag service is ready.",
   "err.PV-HEARD": "Writes a number the way it is said",
   "err.PV-REVERSE": "Swaps tens and ones",
   "err.ADD-NOCARRY": "Forgets the carried ten",

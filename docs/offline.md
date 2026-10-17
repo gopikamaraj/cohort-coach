@@ -23,6 +23,10 @@ Rehearsing with simulated children is the most useful feature and the only one t
 | Practice Class | Not available offline | Every turn | Text mode on weak signal; practice cards (P14) | `docs/practice-class.md`; offline cards later |
 | Reflection replies, mentor method capture | later (P10, P11) | Sending | Typed reply | later |
 
+## Flags
+
+A teacher's "this is wrong" tap on an error card is kept in the phone's queue for now (the card says so). The server has no endpoint that stores flags yet; it comes with the review queue (P09). The payload stays `{card, term}` with no free text.
+
 ## What stays on the phone
 
 Per-child answers (`checks`), the class result (`profiles`), the send queue, Practice Class transcripts (P06) and queued photos (P08) live in IndexedDB on the phone (`apps/pwa/src/lib/db.ts`). The server receives class-level counts only; its schema rejects any other field (`services/api/profiles.py`, `tests/api/test_profiles.py`), and a Vitest contract test and a Playwright network assertion check the same from the client side.
@@ -32,7 +36,7 @@ Per-child answers (`checks`), the class result (`profiles`), the send queue, Pra
 | What | Target | Measured |
 | --- | --- | --- |
 | Initial JavaScript, compressed | under 1 MB | `docs/evidence/bundle_size.json` |
-| Check-entry sync | about 2 KB per class | not yet measured over a real request; one profile payload is a few hundred bytes of JSON (counts only) |
+| Check-entry sync | about 2 KB per class | the payload is asserted under 2 KB by `apps/pwa/src/lib/flow.test.ts`; not yet measured over a real request |
 | Voice lesson, Practice Class, photos | see `CLAUDE.md` section 9 | later phases |
 
 Throttled mobile Lighthouse figures (emulated phone, simulated slow 4G, CPU slowed 4×) are in `docs/evidence/lighthouse_mobile.json`; they are one run on one machine, so read them as directional. Screenshots at 360 px in the three languages are in `docs/evidence/screenshots/`. A run on a real low-end phone is still to be done (P14).

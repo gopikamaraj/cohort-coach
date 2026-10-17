@@ -103,6 +103,11 @@ describe("the sync payload is counts only", () => {
     expect(payload.counts["SUB-SFL"]).toBe(11);
   });
 
+  it("is small: one class result is under 2 KB, the design target", () => {
+    const bytes = new TextEncoder().encode(JSON.stringify(profilePayload(profileRow("c-1", 1, "A", demoChildren(1), true)))).length;
+    expect(bytes).toBeLessThan(2048);
+  });
+
   it("does not carry a child's raw answers, however the class is entered", () => {
     const rows = [["346", "728", "47", "52", "999", "1", "2", "3", "4", "5"]];
     const text = JSON.stringify(profilePayload(profileRow("c-1", 1, "A", rows, false)));

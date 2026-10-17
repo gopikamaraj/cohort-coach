@@ -8,7 +8,7 @@ A government primary classroom: a ruled exercise notebook, blue ink, a red margi
 
 ## Colour tokens
 
-Five named colours plus two neutrals. Contrast ratios are computed against the paper colour (WCAG formula); body text aims for 7:1 and nothing is below 4.5:1.
+Five named colours plus two neutrals. Contrast ratios are computed against the paper colour (WCAG formula, recomputed from the CSS by `tests/test_design_tokens.py`); body text aims for 7:1 and nothing is below 4.5:1.
 
 | Token | Hex | Used for | Contrast |
 | --- | --- | --- | --- |

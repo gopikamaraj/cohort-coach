@@ -21,7 +21,7 @@ GOOD: dict[str, Any] = {
     "untracked": {"ADD-WHOLE-ONES": 2},
     "simulated": True,
 }
-URL = "/api/classes/c-4b7f21/profile"
+URL = "/api/classes/c-4b7f21a9c3/profile"
 
 
 @pytest.fixture
@@ -96,6 +96,9 @@ def test_the_class_id_cannot_carry_a_name_or_roll_number(
     c, _ = api
     assert c.post("/api/classes/Ravi Kumar roll 7/profile", json=GOOD).status_code in (404, 422)
     assert c.post("/api/classes/a/profile", json=GOOD).status_code == 422
+    for typed in ("Ravi-Kumar", "roll-7", "c-ravi", "c-4b7f21", "sim-ZZZZZZZZZZ", "c-4b7f21a9c3d4"):
+        assert c.post(f"/api/classes/{typed}/profile", json=GOOD).status_code == 422, typed
+    assert c.post("/api/classes/sim-0123456789/profile", json=GOOD).status_code == 200
 
 
 def test_the_demo_block_is_simulated_and_has_no_child_level_data(

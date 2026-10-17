@@ -1,9 +1,10 @@
 # Build progress
 
 <!-- HANDOFF: when the loop stops, it writes this block. Delete it once acted on. -->
-> **Handoff** — *none open*
-> - Where we are: P04 🟡 done (Gate 1 passed; text-turn latency over target, plan in the report). Next is P05 (PWA shell, judge mode, check entry, error cards).
-> - Needed from people: none blocking. Seema's reviews and the hi/ta wording are in the table below.
+> **Handoff** — P06 needs hosting accounts
+> - Where we are: P05 ✅ (PWA shell, judge mode, check entry, error cards, offline). Next is P06 (Practice Class UI, AI-layers overlay, audit viewer, staging).
+> - Next step: `/next-phase` builds the P06 screens. The staging deploy at the end of P06 needs hosting accounts and keys.
+> - Needed from people: 1. Create the hosting accounts for the API, database, storage and PWA (see OD-3 in DECISIONS.md) and tell Claude where the secrets go (Gopi). 2. Review Hindi and Tamil strings (Shivani, Gopi).
 > - Resume with: `/next-phase`
 
 **Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
@@ -19,7 +20,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ✅ | 2026-10-16 20:45 (`a0d858f`) | 2026-10-16 | [report](reports/P02-simulated-block-statistics.md) | CI for this phase after push; demo cohorts small by design |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ✅ | 2026-10-16 (`9bfc51c`) | 2026-10-17 | [report](reports/P03-ai-platform-guardrails.md) | Live red team on 12 seeds passed; cache hits confirmed |
 | P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report) |
-| P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | 🔄 | 2026-10-17 (`6306eb7`) | | | |
+| P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | ✅ | 2026-10-17 (`6306eb7`) | 2026-10-17 | [report](reports/P05-pwa-shell-check-cards.md) | Installable, offline T1–T3, 3 languages, bundle 112 kB |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | ⬜ | | | | Staging |
 | P07 | Voice | P0 | Thu 22 | ⬜ | | | | |
 | P08 | Answer-sheet capture and import | P0/P1 | Fri 23 | ⬜ | | | | |
@@ -49,6 +50,8 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Gopi | Telegram bot reuse paths (optional; default build fresh) | P10 | yes | DECISIONS.md |
 | Shivani, Gopi | Review hi/ta/Hinglish profanity lists; full 50 red-team prompts | P13 | yes (12 seeds) | content/safety/, evals/sets/redteam.yaml |
 | Seema, Gopi | Native review of hi/ta number words, jargon, error names, badge and explanation wording | P09 | yes (drafts) | content/lang/, ai/guard/ |
+| Shivani | Review Hindi UI strings (`python scripts/i18n.py export`) | P06 | yes (draft) | apps/pwa/src/i18n/hi.json |
+| Gopi | Review Tamil UI strings; confirm P05 DECISIONS | P06 | yes (draft) | apps/pwa/src/i18n/ta.json |
 | Seema | Review P04 move lists, rubrics, scenario values, personas and hi/ta templates | P06 | yes (drafts) | content/ |
 | Shivani | 150 labelled lines for the labeller eval; realism ratings; 50 red-team prompts | P13 | no | evals/sets/ |
 | Gopi | Install ffmpeg (`winget install Gyan.FFmpeg`); Sarvam account + key in `.env` | P07 | n/a | — |

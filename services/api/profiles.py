@@ -24,7 +24,8 @@ from services.api.db import Base, ProfileSync, make_engine
 router = APIRouter(prefix="/api", tags=["profiles"])
 
 BLOCK_PATH = Path(__file__).resolve().parents[2] / "data" / "synthetic" / "block_T1T2.json"
-CLASS_ID = re.compile(r"^[A-Za-z0-9_-]{3,40}$")
+# The id the phone makes: "c-" or "sim-" and 10 random hex digits. Nothing a person typed fits.
+CLASS_ID = re.compile(r"^(c|sim)-[0-9a-f]{10}$")
 ERROR_CODES = {c.value for c in ErrorCode}
 UNTRACKED_KEYS = {"ADD-WHOLE-ONES"}
 
@@ -79,7 +80,7 @@ SESSION = Depends(get_session)
 @router.post("/classes/{class_id}/profile")
 def post_profile(class_id: str, body: ProfileIn, db: Session = SESSION) -> dict[str, Any]:
     if not CLASS_ID.match(class_id):
-        raise HTTPException(422, "The class id must be 3 to 40 letters, digits, - or _.")
+        raise HTTPException(422, "The class id must be the random id the app made for this class.")
     row = db.execute(
         select(ProfileSync).where(ProfileSync.class_id == class_id, ProfileSync.term == body.term)
     ).scalar_one_or_none()
