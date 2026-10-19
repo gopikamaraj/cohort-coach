@@ -4,7 +4,7 @@ Project memory for Claude Code, loaded every session. Keep it true: when a decis
 
 ## 1. What we are building, and by when
 
-Cohort Coach groups primary teachers for training by the specific error their pupils make, not by geography. A termly 10-item check in each Grade 3 class shows what children get wrong; teachers whose classes share an error form a cohort across schools and get a 3-week track on that one error: six 5-minute voice lessons on Telegram plus one model-lesson script. Before using the technique on real children, a teacher rehearses privately in the **Practice Class**, with five simulated children who make her own class's mistakes (the hero feature). Mentors are teachers whose classes fixed the same error; their method becomes the next cohort's content. The next check asks whether children improved against a comparison group. A failed track counts against the track, never the teacher.
+Cohort Coach groups primary teachers for training by the specific error their pupils make, not by geography. A termly 10-item check in each Grade 3 class shows what children get wrong; teachers whose classes share an error form a cohort across schools and get a 3-week track on that one error: six 5-minute voice lessons on Telegram plus one model-lesson script. Before using the technique on real children, a teacher rehearses privately in the **Practice Class**, with five simulated children who make her own class's mistakes (the hero feature). Before rehearsing she can hear the move done well: a short audio **model run** of the same simulated class, taught from approved content. Mentors are teachers whose classes fixed the same error; their method becomes the next cohort's content. The next check asks whether children improved against a comparison group. Teachers use the Telegram bot, the web app (an installable PWA), or both: the same flows run on one back end, and the Practice Class always opens in the web app. A failed track counts against the track, never the teacher.
 
 - Team **A-Z 0-9** · Hack2skill × Anthropic "AI for Foundational Learning" · Challenge 3 (Teacher Support & Training) · Top 30 (#17) → Build Stage.
 - **Gopi**: sole developer, owns the build, works in Tamil. **Seema** (Delhi): pedagogy, content review, school liaison via HMs, Hindi. **Shivani** (Delhi): testing ops, hand-keying, red-team prompts, Hindi, deck, video.
@@ -39,6 +39,9 @@ Read in this order when unsure:
 3. `docs/design/cohort-coach-design.md` — the full design: screens, calls, evals, thresholds.
 4. `docs/design/pilot-test-pack.md` and `docs/design/pilot_forms.golden.json` — the real pilot papers, answer key, scoring rules and impact method.
 5. `docs/build/DECISIONS.md` — decisions taken during the build.
+6. `docs/design/evidence-digest.md` — the Challenge 3 evidence (six documents, DOC + PDF page). The only source for claims about teachers, training or the school system.
+
+The design snapshot predates the 19 Oct decisions (two channels on one back end, model run, funnel, roles, call 9). Where it differs, `DECISIONS.md` wins.
 
 On conflict: a newer entry in `DECISIONS.md` wins, then this file, then the build prompt, then the design doc. Record every conflict you resolve in `DECISIONS.md`.
 
@@ -46,7 +49,7 @@ On conflict: a newer entry in `DECISIONS.md` wins, then this file, then the buil
 
 Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 
-- **Demo link**: a testable version plus any software needed to test it. Ours: the PWA URL opens straight into judge mode (no login); judges may also join the Telegram bot.
+- **Demo link**: a testable version plus any software needed to test it. Ours: the web app URL opens straight into judge mode (no login), where judges walk the full teacher flow in the PWA on simulated data; they can run the same flow in Telegram with `/start judge`.
 - **Source code**: the GitHub repo, so judges can verify how AI is used. The README opens with "Where AI is used".
 - **3-minute public YouTube video**: the challenge and how we address it, a UI walkthrough, key features, and features that make it easy for the intended users. Judges need not watch past 3:00, so ours ends at 2:55.
 - **Short PowerPoint deck** covering:
@@ -64,11 +67,23 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 | User inputs and testing | Feedback collected and changed the product | `docs/feedback-log.md` ("You said → We changed", commit links); pilot error map from real classes with confidence notes; SUS, "sounds like my class", Telegram taps, teacher flags | anytime, P13, P16 |
 | Roadmap | Credible path and integrations | `docs/roadmap.md` | P16 |
 
+**Problem evidence** (`docs/design/evidence-digest.md`). Cite DOC + PDF page and keep (?) flags. Statistics found in 2+ documents may drive design; single-source observations shape details; IDR and APU rows are opinion and never evidence that something works. No source tests simulated practice: call it a hypothesis the pilot tests, never "proven". FLN is a five-State study and BaSE covers EdTech-using teachers only; say so when quoting them.
+
+| Component | Gap | Lead evidence |
+| --- | --- | --- |
+| Error-based cohorts | G3 one-size-fits-all | FLN 54 (3 of 4 States skip needs analysis); FLN 36, 55, 57 |
+| Cross-school cohorts, peer mentors, reviewer as a role | G1 no continuous guidance | NITI 130 (1,04,125 single-teacher schools); FLN 58 (BRC/CRC admin time 54%/50%); FLN 59, 110; NITI 145, 147 (vacancies) |
+| Practice Class and model run | G2 theory, no practice | FLN 56 (75% say training rarely demonstrates or practises, one State); NITI 147; FLN 64 (structured pedagogy with practical training, 0.14 SD maths); AIC 74, 75 |
+| Reflection pointer and digest | G1, G2 | AIC 74; NITI 147, 148 (classroom feedback rare) |
+| Funnel and verdict | G4 visibility | FLN 54, 72, 73 (80% of indicators track inputs); FLN 75, 80 (paper data inflated ~20%); NITI 167, 200, 202, 203, 209; AIC 74 (no adoption data) |
+| Time caps | Teacher time | FLN 25, 27; NITI 146, 185; AIC 46, 50 |
+| Telegram and PWA on her own phone | Access | BaSE 53, 56 (access outranks knowledge among non-users, 47% vs 32%; 68% school-device problems) |
+
 ## 4. Non-negotiables
 
 1. **Code computes every number** about a class, cohort, track, mentor or teacher. Claude never computes or states one. Numbers inside AI text are slots filled by code, then re-checked by a validator. The two designed exceptions are narrow: call 8 transcribes the digits a child wrote (never told the expected answers), and call 1 repeats the exact number the engine chose for a simulated child.
-2. **Child privacy.** No child names, faces or voices are collected. Product answer sheets carry no name or roll number; the teacher shoots sheets in roll order, so only her phone links a sheet to a child. Per-child answers live only in the phone's IndexedDB. The server stores class-level counts only. Sheet photos are deleted right after reading. Pilot sheets have roll numbers for pairing: pairing runs on the device or in a local script, raw pilot files never enter git, and only 2×2 counts leave the machine. A real child's voice is never used for anything.
-3. **Teacher dignity.** The AI never scores a teacher. Rehearsal feedback is private and transcripts stay on her phone unless she opts in to share. Officers see aggregates only; any figure covering fewer than 5 classes is hidden. Results are reported per track version.
+2. **Child privacy.** No child names, faces or voices are collected. Product answer sheets carry no name or roll number; the teacher sends sheet photos in roll order through the bot or the PWA, so only she can link a sheet to a child. The server reads each photo and holds per-sheet reads in memory only, keyed by sequence number with a 30-minute TTL, until she confirms the unsure boxes; then it stores class-level counts and discards the reads. Sheet photos are deleted from our server right after reading, In Telegram the bot deletes the photo messages once read (if the Bot API can't, she is asked to delete them and `docs/privacy.md` says so); the PWA deletes its outbox copies once she confirms. Pilot sheets have roll numbers for pairing: pairing runs on the device or in a local script, raw pilot files never enter git, and only 2×2 counts leave the machine. A real child's voice is never used for anything, and real classrooms are never recorded.
+3. **Teacher dignity.** The AI never scores a teacher. Rehearsal feedback is private and transcripts stay on her phone unless she opts in to share. Officers see aggregates only; any figure covering fewer than 5 classes is hidden. Results are reported per track version. A CRC visit brief shows only the track and what to look for, never a number about her class, and only if she opts in.
 4. **Gates before teachers.** Nothing AI-generated reaches a teacher until it passes code checks, the rule-based pre-filter and the output checker (call 7); track content and method cards also need human approval (reviewer, then mentor). Every AI card carries a "this is wrong" flag.
 5. **Teacher-facing numbers are counts** ("11 of 28 children"), never percentages. Officer views may use percentages.
 6. **Simulated data is labelled "simulated"** wherever it is shown: banner, chart caption, deck.
@@ -76,6 +91,10 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 8. **Tests first** for engine, statistics and validator code. Never delete, skip or loosen a test or eval bar to get green. If the spec is wrong, say so, log it in `DECISIONS.md`, and keep the bar until a human agrees.
 9. **Secrets** never go into git, logs, reports, screenshots or prompts. `.env` is gitignored; `.env.example` lists every key.
 10. **Budget.** USD 500 of Claude credits for everything, including the judging window. Unit tests never call paid APIs (recorded fixtures only). Live evals print a cost estimate first.
+11. **Adoption honesty.** Every in-term metric shows its source: *system* (lessons delivered, Practice Class sessions) or *self-report* (taps, reflections). Never present deliveries or completions as adoption. Telegram can't confirm a voice note was played, so never say "listened" or "watched". Change in children is shown only by the next check.
+12. **Time caps.** Teacher ≤ 20 minutes a week, mentor ≤ 30, reviewer ≤ 15: targets that are measured and shown. A feature that raises a cap needs a human-confirmed `DECISIONS.md` entry.
+13. **Simulated practice is a hypothesis.** No source tests it. README, docs, deck and video say the pilot tests it, and report the verdict whatever it is.
+14. **One back end, thin channels.** Flows, rules, numbers, AI calls and gates live in the back end. A channel adapter or PWA component only renders steps and returns answers: it never computes, decides or calls a model. Every flow passes the same golden-transcript test through every adapter, so a new channel (WhatsApp) is an adapter plus its contract tests.
 
 ## 5. Domain model
 
@@ -99,32 +118,40 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 - **Verdicts.** Block scale: effect = Δp(track) − Δp(comparison), 95% bootstrap CI over classes; Working = whole CI < 0 and a fall ≥ 10 points; Not working = a fall < 5 points or a rise; Inconclusive = anything else or < 15 classes per arm. Pilot scale: extra fall = trained error's fall − average fall of untrained errors that had p ≥ 10% at pre-test; exact McNemar on Fixed vs New (12 vs 2 → p = 0.013); Working = extra fall ≥ 10 and p < 0.05; Not working = extra fall < 5 or a rise; Inconclusive otherwise.
 - **Practice Class**: 5 fictional children; seats filled to match her class's error mix; one always correct, one shy (speaks only when named); each child has an error strength 0–1 (starts 0.9) and an engagement level. A child answers wrong with probability = strength, and the wrong number always comes from the bug function. Move effects: show with bundles −0.3, ask to explain −0.2, check by adding back −0.2, just tell the rule −0.05, praise → engagement up, scold → engagement down and the child goes quiet. Ends when every child with the error is correct twice in a row, or at 40 turns. Values are tuning parameters in scenario files.
 - **Move** = one labelled teacher action from the technique's fixed move list. **Rubric** = the moves good teaching of one fix should include; feedback = two strengths plus one thing to try, each quoting her words, no score.
+- **Roles, not posts.** *Reviewer* (gate 3 content approval) and *programme officer* (cohort approval, results) are roles that a BRC, CRC, DIET faculty member or head teacher can hold; one person may hold both. Each works from one weekly batch. Gates never auto-approve: unapproved content waits, and the queue shows its age.
+- **Model run.** About 3 minutes of audio of the track's move done well with the same five simulated children. Teacher lines come only from the approved model-lesson script or method card; children's lines come from the engine and call 1. Rendered offline with a fixed seed, frozen, reviewed at gate 3, then voiced and published, labelled "simulated". It plays before "Start rehearsal" and is sent as audio in either channel. No new AI call.
+- **Funnel** per cohort and track version (officer view, aggregates only): Delivered (system: lessons sent) → Tried (self-report: "Tried it in class?" yes) → Practised (system: Practice Class sessions) → Changed (next check, blind-scored counts). Until the next check, Changed reads "awaiting next check".
+- **Reflection pointer** (call 9). After an optional voice reflection, she gets one next step chosen from the approved track and method-card steps, linked to her own words. Never a score or a judgement.
+- **CRC visit brief.** For a school visit, per teacher who opted in: the track's error in plain words, the current lesson, one thing to look for, one question to ask a child. No numbers. Optional; nothing depends on it.
+- **Mixed-level persona.** Scenario flag `mixed_level`: 2 of the 5 children at Grade 2 level, for multigrade classes. Off by default.
 
 ## 6. Architecture, stack, repo
 
-- **Client**: React + Vite + TypeScript PWA (`vite-plugin-pwa`/Workbox), IndexedDB via Dexie, strings in `ta`/`hi`/`en` JSON, system fonts only, SVG icons only, one app with four roles. Static hosting.
+- **Client (PWA)**: React + Vite + TypeScript (`vite-plugin-pwa`/Workbox). Teacher and mentor flows render through generic step components (message card, choices, photo batch, number grid, voice, audio, link); dedicated screens exist only for the Practice Class, judge mode and the officer and reviewer views. Installing is optional. IndexedDB via Dexie holds Practice Class transcripts and the offline outbox (photos until uploaded and confirmed) only. Copy comes from `strings/{ta,hi,en}.json`, shared with the bot; system fonts only, SVG icons only. Static hosting.
 - **API**: FastAPI (Python 3.12), Pydantic v2, SQLAlchemy 2 + Alembic. SQLite for tests and local dev, managed Postgres in production. S3-compatible storage for published audio only.
 - **Engine**: pure Python, no I/O, fully unit-tested.
 - **Language**: Claude API via the official Python SDK; one versioned prompt file per call.
 - **Speech**: Sarvam AI APIs called directly from our own server (speech-to-text: Saarika/Saaras; voice: Bulbul). No finguru voice server; `services/speech/` is built fresh.
-- **Messaging**: a channel adapter; Telegram Bot API driver now, WhatsApp Cloud API driver later.
+- **Flows and channels**: every teacher and mentor flow (T1–T4, T6, M1–M2, including check photos and confirmation) is defined once in a channel-neutral flow engine (`services/api/flows/`) as steps: message, choice, photo batch, number grid, voice, media, link. Thin adapters render steps per channel: `telegram/` (the bot), `pwa/` (a JSON step API the web app renders), `whatsapp/` (stub now, WhatsApp Cloud API later). A teacher has one pseudonymous id and can use either channel or both.
 - **Ops**: GitHub Actions (lint, types, tests, eval smoke on every push); one audit row per AI call.
 
 ```text
 cohort-coach/
   CLAUDE.md  README.md  LICENSE  .env.example  tasks.py  pyproject.toml
-  apps/pwa/                 teacher, mentor, officer and judge screens
+  apps/pwa/                 step renderer for teacher and mentor flows; Practice Class, judge mode, officer and reviewer screens
   services/api/             FastAPI routes, auth stub, consent, sync, review queue
-  services/api/channels/    adapter + telegram/ + whatsapp/ (stub)
+  services/api/flows/       channel-neutral flow engine: every teacher and mentor flow, defined once
+  services/api/channels/    thin adapters: telegram/, pwa/, whatsapp/ (stub); render steps, parse answers, no logic
+  strings/                  en/hi/ta copy shared by every channel
   services/speech/          Sarvam client: STT, TTS, voice clones, fallbacks
   engine/                   bugs.py items.py diagnosis.py grouping.py mentors.py evaluation.py simulator.py
-  ai/registry.py            single source of truth for the 8 calls (feeds README and judge mode)
+  ai/registry.py            single source of truth for the 9 calls (feeds README and judge mode)
   ai/client.py              model routing, caching, structured output, retries, budget, audit
-  ai/prompts/               c01_child_voice.v1.md … c08_answer_reading.v1.md
+  ai/prompts/               c01_child_voice.v1.md … c09_reflection_pointer.v1.md
   ai/calls/                 one module per call
   ai/validators/            numbers, quotes, length, language, prefilter, readability, arithmetic, pii
   ai/guard/                 gates, badges, explanations
-  content/                  scenarios/, rubrics/, movelists/, personas/, tracks/, templates/, rejections/
+  content/                  scenarios/, rubrics/, movelists/, personas/, tracks/, model_runs/, templates/, rejections/
   data/synthetic/           block generator (seed 2026)
   evals/                    sets/, runners/, results.md (generated)
   tests/                    mirrors the Python packages; golden fixtures in tests/fixtures/
@@ -144,10 +171,11 @@ cohort-coach/
 | 6 | Reflection digest | `MODEL_DIGEST` → `claude-haiku-5-5` | weekly | code strips names and schools first; LLM assigns themes, code counts | mentor usefulness rating |
 | 7 | Output checker | `MODEL_CHECK` → `claude-haiku-5-5` | everything headed to a teacher | structured verdict + reason; includes reading-level and accumulated rejection examples; fail → human | red-team set: 0 unsafe reach a teacher |
 | 8 | Answer reading | `MODEL_READ` → `claude-haiku-5-5`; retry `claude-sonnet-5-5` | per sheet photo | reads blind (never sees expected answers); digits-only schema; reads outside {correct ∪ error answers} or below the confidence bar go to the teacher; Devanagari digits normalised; photo deleted after | hand-keyed set: ≥ 98% of auto-accepted reads correct; ≤ 15% sent to teacher |
+| 9 | Reflection pointer | `MODEL_POINTER` → `claude-haiku-5-5` | after a voice reflection | names stripped before the call; output = one step id from the approved track and method cards plus a ≤ 25-word link quoting her words verbatim; code renders the step text; no numbers, no judgement, no score; pre-filter and call 7; on any failure nothing new is sent | 40 reflections incl. 10 red-team: 100% valid step ids and verbatim quotes; 0 unsafe |
 
 Model IDs are from Anthropic's current lineup; confirm them on the model pages before first use and keep them in `ai/config.py`, overridable by env.
 
-**Eval bars** (from the design; changing one needs a human-confirmed `DECISIONS.md` entry): engine items 100% correct with 0 collisions · simulator fidelity 100% · simulator realism median ≥ 4/5 · move labeller ≥ 85% agreement · feedback quotes 100% valid, usefulness median ≥ 4 · track drafts ≥ 80% accepted with minor edits, arithmetic 100% · red team 0 unsafe outputs reach a teacher · evaluation statistics ≥ 95% of planted effects recovered and ≤ 5% false "working" · answer reading ≥ 98% of auto-accepted reads correct and ≤ 15% sent to the teacher · Practice Class turn latency median < 3 s text, < 5 s voice. Human-rated evals show "pending" until ratings exist, never a placeholder number.
+**Eval bars** (from the design; changing one needs a human-confirmed `DECISIONS.md` entry): engine items 100% correct with 0 collisions · simulator fidelity 100% · simulator realism median ≥ 4/5 · move labeller ≥ 85% agreement · feedback quotes 100% valid, usefulness median ≥ 4 · track drafts ≥ 80% accepted with minor edits, arithmetic 100% · red team 0 unsafe outputs reach a teacher · evaluation statistics ≥ 95% of planted effects recovered and ≤ 5% false "working" · answer reading ≥ 98% of auto-accepted reads correct and ≤ 15% sent to the teacher · reflection pointer 100% valid step ids and quotes, 0 unsafe · model runs 100% engine-number match (inside the simulator fidelity eval) · Practice Class turn latency median < 3 s text, < 5 s voice. Human-rated evals show "pending" until ratings exist, never a placeholder number.
 
 **Every call must**:
 
@@ -181,15 +209,15 @@ Model IDs are from Anthropic's current lineup; confirm them on the model pages b
 | What | Target |
 | --- | --- |
 | Data per teacher per 3-week track | < 10 MB, measured |
-| Check-entry sync | ~2 KB per class |
+| Check entry | sheet photos, ~80 KB each (~2.5 MB per class); queued offline in Telegram's outbox or the PWA's |
 | Voice lesson | ~0.6 MB per 5 min (OGG/Opus 16 kbps) |
-| Practice Class | ~1 MB per voice session, ~50 KB in text mode |
-| Sheet photo | ~80 KB each (~2.5 MB per class), queued offline |
-| First load | < 1 MB compressed JS; installable PWA; works offline after first load |
+| Model run | ~0.35 MB per 3 min (OGG/Opus 16 kbps) |
+| Practice Class | ~1 MB per voice session, ~50 KB in text mode, measured on Slow 3G |
+| PWA first load | < 1 MB compressed JS; install optional; shell cached after first load |
 | Target phone | Android Go-class, 2 GB RAM, Chrome; test on Slow 3G and one real low-end phone |
 | Practice Class turn latency | median < 3 s text, < 5 s voice |
 
-Only the Practice Class needs a live connection; it degrades to text mode on weak signal or when Sarvam is unreachable, and to offline practice cards with scripted branches. Everything else works offline or queues. Say this trade-off out loud in docs and deck.
+Only the Practice Class needs a live connection; it degrades to text mode on weak signal or when Sarvam is unreachable, and to offline practice cards with scripted branches. Everything else queues when she is offline, in Telegram's outbox or the PWA's, and downloaded lessons and model runs replay offline in both. Say this trade-off out loud in docs and deck.
 
 ## 10. Commands
 
@@ -243,6 +271,8 @@ Stop and ask a human when: a secret or account is needed; a gate needs a real ph
 - Lesson videos are roadmap only: a templated slideshow synced to the same script and Sarvam audio, no video model.
 - Judging extras in scope: badges, rejection reasons feeding call 7, confidence notes, cost per teacher per track (cents), pre-filter, reading-level check, injection red-team category, shared audit trail, explanation lines, a stated target phone, and the stated Practice Class trade-off.
 - Teacher-facing explanations use counts, overriding the design doc's "40%" example.
+- 19 Oct · Two channels, one back end: teacher and mentor flows run in Telegram and in the PWA from one channel-neutral flow engine; each channel is a thin adapter, and WhatsApp later is a third. The Practice Class and the officer and reviewer screens are web only.
+- 19 Oct · From the Challenge 3 evidence review: reviewer and officer are roles, not posts; a model run before rehearsal; a funnel with source labels; call 9 reflection pointer; an opt-in CRC visit brief with no numbers; time caps; a mixed-level persona flag. Rejected: recording real lessons, video exemplars, grouping by teacher age or experience, teacher-chosen courses, CRCs as coaches, admin automation.
 
 ## 14. Do not
 
@@ -252,3 +282,6 @@ Stop and ask a human when: a secret or account is needed; a gate needs a real ph
 - Add a vector DB, a video model, user accounts with passwords, or a second frontend framework.
 - Call paid APIs from unit tests or CI; hardcode eval results; weaken thresholds; mark a task done without evidence.
 - Ship a screen with untranslated strings, a percentage shown to a teacher, or simulated data without its label.
+- Record a real classroom or a child's voice, or add video exemplars.
+- Call simulated practice proven, or cite IDR or APU as evidence that something works.
+- Show a CRC, BRC or officer any number about a single teacher's class.

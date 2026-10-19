@@ -4,7 +4,7 @@
 > **Handoff** — P07 built and run live once; voice latency over target
 > - Where we are: P07 🟡 (voice turn, hold-to-speak, text fallback, stub speech, limits, scripts). The new Sarvam key works: 36 child-voice clips synthesised and 24 live voice turns timed, median 7515 ms against the 5 s target (not met; plan in `docs/speech.md`). P06 staging is still not deployed.
 > - Needed from people: 1. Run `python scripts/check_voices.py --out <folder>` and listen to the 36 clips: five distinct children? (Gopi, Shivani). 2. Listen for five distinct children in hi, ta, en; Hindi and Tamil review of the new strings (Shivani, Seema, Gopi). 3. Hosting accounts for staging, `docs/deploy.md` (Gopi). 4. Round 3 with Seema.
-> - Resume with: `/next-phase` (P08, answer-sheet capture, needs no new account)
+> - **Kit v3 adopted 2026-10-19 (see `docs/build/reports/MIGRATION-v1-v3.md`).** P05 is now the flow engine and channel adapters and needs the Telegram bot token before it starts (Gopi). The next phase is decided after the migration is reviewed; do not run `/next-phase` until Gopi says go.
 
 **Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
 
@@ -18,15 +18,15 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P01 | Engine core | P0 | Fri 16 – Sat 17 | ✅ | 2026-10-16 15:30 (`f92f846`) | 2026-10-16 | [report](reports/P01-engine-core.md) | CI for this phase after push; Seema to confirm key variants |
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ✅ | 2026-10-16 20:45 (`a0d858f`) | 2026-10-16 | [report](reports/P02-simulated-block-statistics.md) | CI for this phase after push; demo cohorts small by design |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ✅ | 2026-10-16 (`9bfc51c`) | 2026-10-17 | [report](reports/P03-ai-platform-guardrails.md) | Live red team on 12 seeds passed; cache hits confirmed |
-| P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report) |
-| P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | ✅ | 2026-10-17 (`6306eb7`) | 2026-10-17 | [report](reports/P05-pwa-shell-check-cards.md) | Installable, offline T1–T3, 3 languages, bundle 112 kB |
+| P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report). **v3 steps 11 (model-run renderer) and 12 (`mixed_level` flag) are open: do them at the start of P06** |
+| P05 | Flow engine, channel adapters, PWA shell, judge mode | P0 | Tue 20 | ✅ | 2026-10-17 (`6306eb7`) | 2026-10-17 | [report](reports/P05-pwa-shell-check-cards.md) | Installable, offline T1–T3, 3 languages, bundle 112 kB |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | 🔄 | 2026-10-17 (`0e57872`) | | | Staging |
 | P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built; run live once (24 turns, median 7515 ms, over the 5 s target; plan documented) |
-| P08 | Answer-sheet capture and import | P0/P1 | Fri 23 | ⬜ | | | | |
+| P08 | Answer-sheet capture (both channels) and import | P0/P1 | Fri 23 | ⬜ | | | | |
 | P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
-| P10 | Telegram channel | P0 | Sun 25 | ⬜ | | | | |
+| P10 | Teacher flows on both channels | P0 | Sun 25 | ⬜ | | | | |
 | P11 | Mentor loop | P1 | Sun 25 | ⬜ | | | | |
-| P12 | Officer and outcome views | P0 | Mon 26 | ⬜ | | | | Gate 2 |
+| P12 | Officer views, funnel, roles, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2 |
 | P13 | Evals, red team, cost, latency | P0 | Tue 27 | ⬜ | | | | |
 | P14 | Real-scenario hardening | P0 | Tue 27 | ⬜ | | | | |
 | P15 | Production deploy and freeze | P0 | Wed 28 | ⬜ | | | | Freeze |
@@ -46,7 +46,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 
 | Owner | Item | Needed by phase | Placeholder in place? | File |
 | --- | --- | --- | --- | --- |
-| Gopi | Telegram bot reuse paths (optional; default build fresh) | P10 | yes | DECISIONS.md |
+| Gopi | **Telegram bot token (BotFather) in `.env` as `TELEGRAM_BOT_TOKEN`: blocks P05 (v3 moved the bot into P05)**; reuse paths optional | P05 | no | `.env.example` |
 | Shivani, Gopi | Review hi/ta/Hinglish profanity lists; full 50 red-team prompts | P13 | yes (12 seeds) | content/safety/, evals/sets/redteam.yaml |
 | Seema, Gopi | Native review of hi/ta number words, jargon, error names, badge and explanation wording | P09 | yes (drafts) | content/lang/, ai/guard/ |
 | Shivani | Review Hindi UI strings (`python scripts/i18n.py export`) | P06 | yes (draft) | apps/pwa/src/i18n/hi.json |
@@ -56,6 +56,15 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Gopi | Make repo public before submission (`gh repo edit --visibility public`) | P16 | n/a | — |
 | Seema | Review fictional teacher names | P05 | yes (draft list) | content/personas/teachers_simulated.yaml |
 | Seema | Confirm extra heard-and-reversed variants (3064, 300604) and NCERT match of the 20 items | P04 | yes | docs/engine.md |
+
+## Open decisions from kit v3 (defaults apply; see DECISIONS.md)
+
+| ID | Question | Default | Needed by | Owner |
+| --- | --- | --- | --- | --- |
+| OD-11 | How judges see the teacher flow | Real flows in the PWA's judge mode on simulated data, and the same flows in Telegram with `/start judge` | P05 | Gopi |
+| OD-12 | Time caps | Teacher at most 20 min a week, mentor 30, reviewer 15; revisit with round 4 data | P10 | Seema |
+| OD-13 | Who holds the reviewer and officer roles in the pilot | Seema holds both; a DIET faculty member or head teacher takes one if they agree | P12 | Seema |
+| OD-14 | Pilot roll numbers | Unique roll number from the register on each sheet; Seema confirms the register is stable between tests | Pre-test day | Seema |
 
 ## Environments (no secrets here)
 

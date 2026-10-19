@@ -20,14 +20,14 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ⬜ | | | | |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ⬜ | | | | |
 | P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | ⬜ | | | | Gate 1 |
-| P05 | PWA shell, judge mode, check entry, error cards | P0 | Tue 20 | ⬜ | | | | |
+| P05 | Flow engine, channel adapters, PWA shell, judge mode | P0 | Tue 20 | ⬜ | | | | |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | ⬜ | | | | Staging |
 | P07 | Voice | P0 | Thu 22 | ⬜ | | | | |
-| P08 | Answer-sheet capture and import | P0/P1 | Fri 23 | ⬜ | | | | |
+| P08 | Answer-sheet capture (both channels) and import | P0/P1 | Fri 23 | ⬜ | | | | |
 | P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
-| P10 | Telegram channel | P0 | Sun 25 | ⬜ | | | | |
+| P10 | Teacher flows on both channels | P0 | Sun 25 | ⬜ | | | | |
 | P11 | Mentor loop | P1 | Sun 25 | ⬜ | | | | |
-| P12 | Officer and outcome views | P0 | Mon 26 | ⬜ | | | | Gate 2 |
+| P12 | Officer views, funnel, roles, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2 |
 | P13 | Evals, red team, cost, latency | P0 | Tue 27 | ⬜ | | | | |
 | P14 | Real-scenario hardening | P0 | Tue 27 | ⬜ | | | | |
 | P15 | Production deploy and freeze | P0 | Wed 28 | ⬜ | | | | Freeze |

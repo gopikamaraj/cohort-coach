@@ -19,6 +19,10 @@ Flag as **blocking**:
 6. **AI computing numbers:** prompts, calls or code paths where Claude computes, estimates or states a statistic, count, percentage, verdict or cost, or where AI text containing numbers skips the numbers validator.
 7. **Network in tests:** unit tests or CI that can reach paid APIs, or that pass only with a key present.
 8. **Done without proof:** tasks or acceptance criteria ticked in `docs/build/tasks/` or the report with no evidence line.
+9. **Problem claims:** a claim about teachers, training or the school system in the README, docs, deck or video script without DOC + PDF page from `docs/design/evidence-digest.md`; IDR or APU cited as evidence that something works; a dropped (?) flag; an FLN or BaSE figure stated as a national fact without its scope (five States; EdTech users only).
+10. **Proven-practice claims:** any wording that calls simulated practice proven or effective before a pilot verdict exists.
+11. **Unlabelled adoption:** a funnel or adoption number without its source label (system or self-report); a delivery or completion figure presented as adoption; any claim that a voice note was listened to or watched.
+12. **Channel drift:** domain logic, a computed number, a gate decision or an AI call inside `services/api/channels/` or a PWA component; a flow without a golden-transcript test on every adapter; copy hardcoded in an adapter instead of `strings/`.
 
 Output:
 

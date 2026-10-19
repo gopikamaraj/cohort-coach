@@ -12,12 +12,42 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 | OD-4 | Accounts: who creates the Telegram bot and the Sarvam account (with voice cloning) | Gopi, both | P07, P10 | Gopi |
 | OD-5 | Curriculum alignment for items and techniques | NCERT Grade 3 (the Delhi pilot); Tamil Nadu's Ennum Ezhuthum mapping goes in the roadmap | P04, P09 | Seema |
 | OD-6 | Which language leads the demo video | Hindi teacher audio with one Tamil segment; English narration and burned-in English subtitles | P16 | Shivani |
-| OD-7 | Voice-lesson languages in the prototype | Hindi and English required; Tamil if time (cut-list item 6) | P09 | Gopi |
+| OD-7 | Voice-lesson languages in the prototype | Hindi and English required; Tamil if time (cut-list item 11) | P09 | Gopi |
 | OD-8 | Demo mentor | Seema nominates a real primary teacher by 25 Oct with written consent; until then a consenting team member's recording, labelled as such | P11 | Seema |
 | OD-9 | Answer-reading eval data | Seema or Shivani photograph the unmarked pilot Form A sheets; the header band (class code, roll number) is masked locally before any upload; Shivani hand-keys the truth | P08, P13 | Seema, Shivani |
 | OD-10 | Backup if Week 2 slips | Apply the cut list in order; Gopi decides anything beyond it | Any | Gopi |
+| OD-11 | How judges see the teacher flow | They run the real teacher flows in the PWA's judge mode on simulated data, and the same flows in Telegram with `/start judge` | P05 | Gopi |
+| OD-12 | Time caps | Teacher ≤ 20 min a week, mentor ≤ 30, reviewer ≤ 15; revisit with round 4 data | P10 | Seema |
+| OD-13 | Who holds the reviewer and officer roles in the pilot | Seema holds both; a DIET faculty member or head teacher takes one if they agree | P12 | Seema |
+| OD-14 | Pilot roll numbers | Every child has a unique roll number in the register that won't change between tests; the teacher writes it on each sheet from the register (children write nothing at the top). Seema confirms with each school | Pre-test day | Seema |
 
 ## Settled decisions
+
+### 2026-10-19 · Two channels, one back end
+- **Decision:** teacher and mentor flows run on both Telegram and the PWA. Each flow is defined once in a channel-neutral flow engine as steps (message, choice, photo batch, number grid, voice, media, link), and thin adapters render them per channel. A teacher has one pseudonymous id across channels and can use either or both. The Practice Class and the officer and reviewer screens stay web only. WhatsApp will be a third adapter. Privacy is the same on every channel: per-sheet reads in server memory only, photos deleted after reading, class counts stored.
+- **Why:** some teachers live in Telegram, others prefer an app icon. One back end keeps rules, numbers and guardrails identical on every channel and turns WhatsApp into an adapter rather than a rebuild.
+- **Cost control:** the PWA uses generic step components, not one screen per flow; a golden-transcript test runs every flow through every adapter; an import rule keeps logic out of channels. If behind, cut-list item 8 trims PWA web push and PWA voice reflections first.
+- **Supersedes:** the "small web app" part of the Telegram-first entry and the judge-mode replay (OD-11).
+- **Confirmed by:** Gopi.
+
+### 2026-10-19 · Telegram-first teacher channel; small web app (superseded in part by "Two channels, one back end")
+- **Decision:** every teacher and mentor flow runs in the bot: T1 Home, T2 check by photo with in-chat confirmation (typed fallback), T3 error cards, T4 track, T6 next term, M1–M2. The web app keeps the Practice Class (one stable link from the bot; it opens in the browser, or in the installed PWA if she added it; installing is optional), judge mode and the officer and reviewer screens. Per-sheet reads stay in server memory, keyed by sequence number with a 30-minute TTL, until confirmation; only class counts are stored; photos are deleted from our server and from the chat.
+- **Why:** teachers already juggle several apps, and installing one more is the main adoption risk. Telegram queues messages offline on its own.
+- **Alternatives:** the full PWA (install friction); Telegram only, with a voice-note Practice Class (loses the materials tray and the pacing).
+- **Supersedes:** the PWA parts of design §Screens by role, and the "only her phone links a sheet to a child" mechanism (she still holds the roll order).
+- **Confirmed by:** Gopi.
+
+### 2026-10-19 · Changes from the Challenge 3 evidence review
+- **Decision:** (1) reviewer and programme officer are roles that a BRC, CRC, DIET faculty member or head teacher can hold, each working from one weekly batch; nothing auto-approves. (2) A model run (audio of the move done well with the same simulated class, built from approved content and reviewed) plays before rehearsal. (3) An officer funnel, Delivered → Tried → Practised → Changed, with source labels; no completion figure alone. (4) Call 9, the reflection pointer: one approved next step after a voice reflection. (5) An optional CRC visit brief, opt-in, with no numbers. (6) Time caps. (7) A mixed-level persona flag.
+- **Why:** support posts are overloaded or vacant (FLN 58, 59, 110; NITI 145, 147); training rarely demonstrates or lets teachers practise (FLN 56; NITI 147); monitoring tracks inputs (FLN 54, 72, 73); classroom feedback is rare (AIC 74; NITI 147, 148); teacher time is scarce (FLN 25, 27; NITI 146, 185); most schools are multigrade (FLN 35; NITI 139, 150). Sources: `docs/design/evidence-digest.md`.
+- **Rejected:** recording real lessons for AI feedback (one 50-teacher pilot where 68% were comfortable recording, AIC 75; children's voices would enter the data); video exemplars (data cost); grouping by teacher age or experience (the BaSE splits are about EdTech adoption; IDR 3 is anecdote); teacher-chosen courses or credits (opinion only, IDR 4–6); CRCs as coaches; admin automation (off-challenge).
+- **Bets where sources disagree:** training alone doesn't change practice (FLN 136, 140), but practice plus feedback plus follow-through might (FLN 64; AIC 39, 75), and the next check decides. The problem is too much of the wrong training, so tracks are targeted and capped. We attack quality and sidestep access with teachers' own phones (BaSE 53, 56). Simulated practice is untested in every source and is presented as a hypothesis.
+- **Confirmed by:** Gopi.
+
+### 2026-10-19 · Pilot sheets reach Seema as photos
+- **Decision:** Seema doesn't meet teachers. Each class teacher runs the test from a one-page teacher guide (dictation numbers inside, no answer key), photographs every sheet in roll-number order and sends the photos to Seema on WhatsApp or email, with the class code, date, children present, minutes taken and dictation language. Photos stay on Seema's device and in the local import; the header band is masked before any upload (OD-9). Roll numbers: OD-14.
+- **Why:** Seema's time.
+- **Confirmed by:** Gopi.
 
 ### 2026-10-17 · P07 limits on the voice endpoint, found in review
 - **Decision:** `/voice-turn` refuses a finished rehearsal before any speech call, refuses audio over 2 MB or 30 s, turns any unexpected speech error into `text_mode`, and has a daily speech budget (`SPEECH_BUDGET_INR_DAILY`, default 200 INR, in memory per process). A per-IP rate limit stays parked until the staging URL is public. Audio length is read from the decoded samples, because ffmpeg's piped WAV header carries no length (found while adding the 30 s check).
