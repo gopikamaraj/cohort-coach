@@ -9,6 +9,7 @@ import { flush } from "../lib/sync";
 import { isOnline } from "../lib/net";
 import { go } from "../lib/router";
 import { Keypad, SimulatedBanner } from "../components/parts";
+import { applyReads, downscale, readSheet, SheetError } from "../lib/sheets";
 import { useApp } from "../state";
 
 const MAX_DIGITS = 9;
@@ -21,6 +22,9 @@ export default function Check() {
   const [child, setChild] = useState(0);
   const [q, setQ] = useState(0);
   const [message, setMessage] = useState("");
+  const [reading, setReading] = useState(false);
+  const [photoNote, setPhotoNote] = useState("");
+  const [flags, setFlags] = useState<Record<number, number[]>>({}); // boxes to check, per child; not saved
   const items = formKey ? (keys.forms[formKey]?.items.length ?? 10) : 10;
   // Writes go one after another, so the last key typed is always the last thing saved.
   const writes = useRef<Promise<void>>(Promise.resolve());
@@ -63,6 +67,7 @@ export default function Check() {
     const row = next[child] ?? Array.from({ length: items }, () => "");
     row[q] = fn(row[q] ?? "");
     next[child] = row;
+    if (flags[child]?.includes(q)) setFlags({ ...flags, [child]: (flags[child] ?? []).filter((i) => i !== q) });
     save(next, formKey);
   };
 
@@ -78,6 +83,37 @@ export default function Check() {
     if (child + 1 >= rows.length) save([...rows, Array.from({ length: items }, () => "")], formKey);
     setChild(child + 1);
     setQ(0);
+    setPhotoNote("");
+  };
+
+  // Photo of this child's sheet: the server reads it blind, the boxes fill in, and she checks them.
+  const onPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // the same photo can be chosen again
+    if (!file || !formKey) return;
+    if (!isOnline()) {
+      setPhotoNote("check.photo_offline");
+      return;
+    }
+    const current = rows[child] ?? [];
+    if (!current.every((c) => c === "") && !window.confirm(tr("check.photo_replace"))) return;
+    setReading(true);
+    setPhotoNote("");
+    try {
+      const cells = await readSheet(await downscale(file), formKey);
+      const { row, flagged } = applyReads(cells, items);
+      const next = rows.map((r) => [...r]);
+      next[child] = row;
+      save(next, formKey);
+      setFlags({ ...flags, [child]: flagged });
+      setQ(flagged[0] ?? 0);
+      setPhotoNote("check.photo_done");
+    } catch (e) {
+      const kind = e instanceof SheetError ? e.kind : "other";
+      setPhotoNote(kind === "offline" ? "check.photo_offline" : kind === "typing" ? "check.photo_typing" : kind === "bad_photo" ? "check.photo_bad" : "check.photo_failed");
+    } finally {
+      setReading(false);
+    }
   };
 
   const finish = async () => {
@@ -125,16 +161,27 @@ export default function Check() {
           <button
             key={i}
             type="button"
-            className={i === q ? "box box-on" : "box"}
+            className={`${i === q ? "box box-on" : "box"}${flags[child]?.includes(i) ? " box-check" : ""}`}
             aria-pressed={i === q}
+            data-check={flags[child]?.includes(i) ? "true" : undefined}
             onClick={() => setQ(i)}
             data-testid={`box-${i + 1}`}
           >
             <span className="box-q">{tr("check.q", { n: i + 1 })}</span>
             <span className="box-v">{shown(row[i] ?? "")}</span>
+            {flags[child]?.includes(i) ? <span className="box-flag">{tr("check.photo_flag")}</span> : null}
           </button>
         ))}
       </div>
+      <label className={reading ? "btn btn-secondary photo-btn is-busy" : "btn btn-secondary photo-btn"} data-testid="photo-label">
+        {reading ? tr("check.photo_reading") : tr("check.photo")}
+        <input type="file" accept="image/*" capture="environment" className="sr" onChange={(e) => void onPhoto(e)} disabled={reading} data-testid="photo-input" />
+      </label>
+      {photoNote ? (
+        <p role="status" data-testid="photo-note">
+          {tr(photoNote as "check.photo_done")}
+        </p>
+      ) : null}
       <Keypad
         onDigit={digit}
         onBack={back}

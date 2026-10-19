@@ -511,3 +511,23 @@ ol.steps li {
   outline: 4px solid currentColor;
   outline-offset: 2px;
 }
+
+.box-check {
+  border-color: #b45309;
+  background: #fff7ed;
+}
+.box-flag {
+  display: block;
+  font-size: 0.75rem;
+  color: #b45309;
+}
+.photo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  cursor: pointer;
+}
+.photo-btn.is-busy {
+  opacity: 0.7;
+}

@@ -9,6 +9,7 @@ from ai.config import load_env
 from services.api.judge import router as judge_router
 from services.api.practice import router as practice_router
 from services.api.profiles import router as profiles_router
+from services.api.sheets import router as sheets_router
 
 load_env()
 
@@ -28,6 +29,7 @@ if origin := os.environ.get("PWA_ORIGIN"):
 app.include_router(judge_router)
 app.include_router(practice_router)
 app.include_router(profiles_router)
+app.include_router(sheets_router)
 
 
 @app.get("/api/health")
