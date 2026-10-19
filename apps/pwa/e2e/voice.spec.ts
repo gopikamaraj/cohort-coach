@@ -64,6 +64,7 @@ test("a very short tap is not sent: she is asked to hold and speak", async ({
   });
   await begin(page);
   const talk = page.getByTestId("talk");
+  await talk.scrollIntoViewIfNeeded(); // the mouse only reaches what is inside the viewport
   const box = (await talk.boundingBox())!;
   await page.mouse.move(box.x + 10, box.y + 10);
   await page.mouse.down();

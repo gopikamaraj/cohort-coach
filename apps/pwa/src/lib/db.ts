@@ -56,6 +56,11 @@ export interface TranscriptRow {
   ended?: boolean;
   card?: unknown;
   ratings?: Record<string, string>;
+  // Review (kept on this phone only): which language and seed, when it ended, and her own tag.
+  language?: string;
+  seed?: number;
+  endedAt?: number;
+  impact?: "positive" | "none" | "negative";
 }
 
 export interface OutboxRow {

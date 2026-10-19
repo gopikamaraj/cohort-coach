@@ -3,6 +3,9 @@
 // turn on a panel that shows the five AI layers of each turn.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChildrenRow, FeedbackView, LayersPanel, Materials } from "../components/practice";
+import { CuePanel, ImpactPicker, PracticeTabs, ReviewTab, type PracticeTab } from "../components/review";
+import { LANG_NAMES, type Lang } from "../i18n";
+import { setImpact, type Impact } from "../lib/review";
 import { SimulatedBanner } from "../components/parts";
 import { db, getSetting, setSetting } from "../lib/db";
 import {
@@ -53,7 +56,7 @@ interface Sample {
 }
 
 export default function Practice() {
-  const { tr, role, klass, profile, online } = useApp();
+  const { tr, lang, role, klass, profile, online } = useApp();
   const query = useQuery();
   const [phase, setPhase] = useState<Phase>("intro");
   const [session, setSession] = useState<CreatedSession | null>(null);
@@ -69,6 +72,10 @@ export default function Practice() {
   const [share, setShare] = useState(false);
   const [showLayers, setShowLayers] = useState(() => localStorage.getItem("cc.layers") === "1");
   const [sample, setSample] = useState<Sample | null>(null);
+  const [tab, setTab] = useState<PracticeTab>("practise");
+  const [cueOpen, setCueOpen] = useState(false);
+  const [goalOpen, setGoalOpen] = useState(true); // open until she says her first line, then out of the way
+  const [impact, setImpactState] = useState<Impact | undefined>(undefined);
   const [voiceOn, setVoiceOn] = useState(false);
   const [voiceFails, setVoiceFails] = useState(0);
   const [vstate, setVstate] = useState<VoiceState>("idle");
@@ -115,11 +122,14 @@ export default function Practice() {
     setOver(null);
     setRating({});
     setFlagged(false);
+    setImpactState(undefined);
+    setCueOpen(false);
+    setGoalOpen(true);
     const urlSeed = query.get("seed");
     try {
       const created = await createSession({
         scenario: scenarioFor(profile?.track ?? null),
-        language: localStorage.getItem("cc.lang") ?? "en",
+        language: lang,
         judge: role === "judge",
         ...(profile ? { counts: profile.counts, checked: profile.childrenChecked } : {}),
         ...(seed !== undefined ? { seed } : urlSeed ? { seed: Number(urlSeed) } : {}),
@@ -127,7 +137,10 @@ export default function Practice() {
       setSession(created);
       setVoiceFails(0);
       setVoiceOn(voiceDefault(created.voice.available, canRecord(), slowLink(), localStorage.getItem(VOICE_PREF_KEY)));
-      rowId.current = await startTranscript(created.session_id, klass?.id ?? "none", scenarioFor(profile?.track ?? null));
+      rowId.current = await startTranscript(created.session_id, klass?.id ?? "none", scenarioFor(profile?.track ?? null), undefined, {
+        language: created.language,
+        seed: created.seed,
+      });
       setPhase("playing");
     } catch (e) {
       fail(e);
@@ -138,7 +151,10 @@ export default function Practice() {
     const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
     setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers }]);
     setSpeaker(r.speaker);
-    if (rowId.current !== null) await appendTurn(rowId.current, { turn: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker });
+    if (r.turn === 1) setGoalOpen(false);
+    const moveId = r.layers.processing.label.move_id;
+    const move = session?.moves.find((m) => m.id === moveId)?.label;
+    if (rowId.current !== null) await appendTurn(rowId.current, { turn: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, ...(move ? { move } : {}) });
     if (r.finished) setOver(r.finished_reason === "all_correct" ? "practice.over_all" : "practice.over_cap");
   };
 
@@ -305,11 +321,28 @@ export default function Practice() {
 
   const banner = klass?.simulated ? <SimulatedBanner /> : null;
   const cap = session?.turn_cap ?? 40;
+  const tabs = <PracticeTabs tab={tab} onTab={setTab} />;
+
+  if (tab === "review") {
+    return (
+      <section aria-labelledby="pr-title">
+        <h1 id="pr-title">{tr("practice.title")}</h1>
+        {tabs}
+        <ReviewTab
+          onAgain={(seed) => {
+            setTab("practise");
+            void start(seed);
+          }}
+        />
+      </section>
+    );
+  }
 
   if (phase === "intro" || phase === "starting") {
     return (
       <section aria-labelledby="pr-title">
         <h1 id="pr-title">{tr("practice.title")}</h1>
+        {tabs}
         {banner}
         <p>{tr("practice.intro")}</p>
         <p data-testid="goal-intro">{tr("practice.goal_line", { error: tr(`err.desc.${scenarioFor(profile?.track ?? null)}` as "err.desc.SUB-SFL") })}</p>
@@ -379,8 +412,16 @@ export default function Practice() {
     return (
       <section aria-labelledby="pr-title">
         <h1 id="pr-title">{tr("practice.title")}</h1>
+        {tabs}
         {banner}
         <FeedbackView card={card} rating={rating} onRate={rate} onFlag={flag} flagged={flagged} />
+        <ImpactPicker
+          value={impact}
+          onChange={(v) => {
+            setImpactState(v);
+            if (rowId.current !== null) void setImpact(rowId.current, v);
+          }}
+        />
         <p className="muted">{tr("practice.saved")}</p>
         <button type="button" className="btn btn-primary" onClick={() => void start(session?.seed)} data-testid="retry">
           {tr("practice.retry")}
@@ -392,9 +433,18 @@ export default function Practice() {
   return (
     <section aria-labelledby="pr-title">
       <h1 id="pr-title">{tr("practice.title")}</h1>
+      {tabs}
       {banner}
+      {session && session.language !== lang ? (
+        <div className="card" role="status" data-testid="lang-banner">
+          <p>{tr("practice.lang_changed", { lang: LANG_NAMES[session.language as Lang] ?? session.language })}</p>
+          <button type="button" className="btn btn-secondary" onClick={() => void start(session.seed)} data-testid="lang-restart">
+            {tr("practice.lang_restart", { lang: LANG_NAMES[lang] })}
+          </button>
+        </div>
+      ) : null}
       {session ? (
-        <details className="card" open data-testid="goal">
+        <details className="card" open={goalOpen} onToggle={(e) => setGoalOpen(e.currentTarget.open)} data-testid="goal">
           <summary>{tr("practice.goal_title")}</summary>
           <p>{tr("practice.goal_line", { error: tr(`err.desc.${session.goal.error}` as "err.desc.SUB-SFL") })}</p>
           <p className="muted">{tr("practice.goal_tips")}</p>
@@ -436,6 +486,23 @@ export default function Practice() {
       {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
       {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
       {session ? <Materials items={session.materials} disabled={busy || over !== null} onTap={tap} /> : null}
+      {session ? (
+        <>
+          <button type="button" className="btn btn-secondary" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
+            {cueOpen ? tr("cue.hide") : tr("cue.button")}
+          </button>
+          {cueOpen ? (
+            <CuePanel
+              moves={session.moves}
+              onUse={(line) => {
+                setVoiceOn(false); // she will type or edit the line
+                setText(line);
+                setCueOpen(false);
+              }}
+            />
+          ) : null}
+        </>
+      ) : null}
       {voiceOn ? (
         <div className="compose">
           <button

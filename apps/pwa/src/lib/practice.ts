@@ -8,6 +8,12 @@ export interface PracticeChild {
   shy: boolean;
 }
 
+export interface PracticeMove {
+  id: string;
+  label: string;
+  examples: string[]; // things she could say, in her language (empty for a move that is never cued)
+}
+
 export interface CreatedSession {
   session_id: string;
   seed: number;
@@ -18,7 +24,7 @@ export interface CreatedSession {
   turn_cap: number;
   goal: { error: string; tips: string[] };
   voice: { available: boolean; mode: string };
-  moves: { id: string; label: string }[];
+  moves: PracticeMove[];
 }
 
 export interface Layers {
@@ -152,13 +158,19 @@ export function scenarioFor(track: string | null): string {
 
 // --- the transcript: on this phone only ---------------------------------------------------
 
-export async function startTranscript(sessionId: string, classId: string, scenario: string, store: CohortDb = db): Promise<number> {
-  return store.transcripts.add({ classId, createdAt: Date.now(), turns: [], sessionId, scenario, ended: false });
+export async function startTranscript(
+  sessionId: string,
+  classId: string,
+  scenario: string,
+  store: CohortDb = db,
+  meta: { language?: string; seed?: number } = {},
+): Promise<number> {
+  return store.transcripts.add({ classId, createdAt: Date.now(), turns: [], sessionId, scenario, ended: false, ...meta });
 }
 
 export async function appendTurn(
   rowId: number,
-  entry: { turn: number; teacher: string; child: string; speaker: string | null },
+  entry: { turn: number; teacher: string; child: string; speaker: string | null; move?: string },
   store: CohortDb = db,
 ): Promise<void> {
   const row = await store.transcripts.get(rowId);
@@ -167,5 +179,5 @@ export async function appendTurn(
 }
 
 export async function finishTranscript(rowId: number, card: FeedbackCard, store: CohortDb = db): Promise<void> {
-  await store.transcripts.update(rowId, { ended: true, card });
+  await store.transcripts.update(rowId, { ended: true, card, endedAt: Date.now() });
 }

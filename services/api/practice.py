@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 from ai import config
 from ai.client import BudgetExceeded, CallContext
 from engine.model import ErrorCode
-from services.practice.content import LANGS, load_scenario
+from services.practice.content import LANGS, load_personas, load_scenario
 from services.practice.session import (
     PracticeSession,
     SessionFinished,
@@ -130,7 +130,7 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
             "tips": [p.try_next[session.language] for p in loaded.rubric.points],
         },
         "voice": {"available": speech.available, "mode": speech.mode},
-        "moves": [{"id": m.id, "label": m.label[session.language]} for m in loaded.movelist.moves],
+        "moves": _moves_with_cues(session),
     }
 
 
@@ -157,6 +157,33 @@ def post_turn(session_id: str, body: TurnRequest, ctx: CallContext = AI_CONTEXT)
 def _synth(speech: SpeechService, text: str, session: PracticeSession, speaker: str) -> bytes:
     persona = session.personas.get(speaker)
     return speech.synthesize(text, session.language, voice_for(persona.id if persona else ""))
+
+
+def _moves_with_cues(session: PracticeSession) -> list[dict[str, Any]]:
+    """Each move with things she could say, in her language, using the children in this class.
+
+    The example lines are content (content/movelists), written with an example child's name; the
+    name is swapped for one of her five children so the cue can be used as it stands. A move that
+    makes children go quiet (scolding) is never offered as a cue.
+    """
+    lang = session.language
+    kids = [c.name for c in session.state.children if not c.shy] or [
+        c.name for c in session.state.children
+    ]
+    example_names = sorted({k.names[lang] for k in load_personas().children}, key=len, reverse=True)
+    out: list[dict[str, Any]] = []
+    for i, m in enumerate(session.loaded.movelist.moves):
+        entry: dict[str, Any] = {"id": m.id, "label": m.label[lang], "examples": []}
+        if not m.quiet and m.engagement >= 0:
+            for j, line in enumerate(m.examples[lang]):
+                name = kids[(i + j) % len(kids)]
+                for example in example_names:
+                    if example in line and example not in kids:
+                        line = line.replace(example, name)
+                        break
+                entry["examples"].append(line)
+        out.append(entry)
+    return out
 
 
 def _text_mode(why: str) -> HTTPException:

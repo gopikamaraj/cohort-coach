@@ -181,3 +181,13 @@ Recorded here because they changed the build; numbers are in `docs/evidence/eval
 ## Files
 
 `engine/simulator.py` (pure), `services/practice/` (content, templates, session, stub), `ai/calls/c01…c03*.py`, `services/api/practice.py`, `scripts/practice_cli.py`, `content/{movelists,rubrics,scenarios,personas,templates,schemas}`, `evals/runners/sim_fidelity.py`, `evals/sets/sim_fidelity/`.
+
+## Review, impact tags, cues and language (added 2026-10-19)
+
+- **What to practise.** The screen starts with the goal (the error in plain words) and the rubric's "try next" lines in her language. Both come from content files, not from AI.
+- **What can I say?** A button opens a cue card: for every move on the list, example lines in her language (`content/movelists/*.yaml`, `examples`), with the example child's name replaced by one of her five children. Tapping a line puts it in the box to change. A move that makes children go quiet is never cued. Four delivery tips (speak slowly, ask then wait, say the name first, praise the trying) are drafts for Seema.
+- **Recorded on the phone.** Each rehearsal is saved in IndexedDB as it goes: turns, the move she used (labelled by call 2), language, seed, and the feedback card. Nothing is sent. She can delete one recording or all of them.
+- **Review tab.** Lists rehearsals newest first with date, the error practised, number of turns and her tag. Opening one replays it turn by turn (Previous and Next), shows the moves she used with counts, her feedback card and an impact picker, and "Practise again with the same children". The summary is counts ("Rehearsals: 4. Helped: 2. No difference: 1. Did not help: 1."), never percentages.
+- **Impact tag.** "Did this rehearsal help?": It helped, No difference, It did not help. It is her own view, kept on the phone, labelled as hers; it is not a score and nothing else reads it (`CLAUDE.md` rules 3 and 11). It does not say anything about whether children improved: only the next check shows that.
+- **Language.** The session is created in the language selected in the app; goal, tips, cues, child names, materials, feedback and explanation lines arrive in it. If she switches language mid-rehearsal, a banner offers "Restart in <language>" (same children). A Playwright test checks that the home, check and practice screens (with the cue card open) show no English words in Hindi or Tamil.
+- Tested by `apps/pwa/e2e/review.spec.ts`, `apps/pwa/src/lib/review.test.ts` and `tests/practice/test_api.py`.

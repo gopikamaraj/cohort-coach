@@ -39,7 +39,8 @@ def test_create_session_returns_children_materials_and_the_cap(client: TestClien
     assert "error" not in str(body["children"])  # the teacher is not told who has which error
     assert body["seed"] == 5
     assert body["materials"] == ["bundles", "sticks", "chart"] and body["turn_cap"] == 40
-    assert {"id": "ask_explain", "label": "Asks the child to explain her steps"} in body["moves"]
+    ask = next(m for m in body["moves"] if m["id"] == "ask_explain")
+    assert ask["label"] == "Asks the child to explain her steps" and ask["examples"]
 
 
 def test_a_full_rehearsal_over_the_api(client: TestClient) -> None:
@@ -173,3 +174,23 @@ def test_each_turn_reports_how_long_each_model_call_took(client: TestClient) -> 
     ev = res.json()["layers"]["evaluation"]
     assert set(ev["call_ms"]) <= {"label", "child", "check"} and "child" in ev["call_ms"]
     assert all(isinstance(v, int) and v >= 0 for v in ev["call_ms"].values())
+
+
+def test_every_move_comes_with_things_to_say_in_her_language_and_with_her_children(
+    client: TestClient,
+) -> None:
+    from services.practice.content import load_personas
+
+    for lang in ("en", "hi", "ta"):
+        body = create(client, language=lang)
+        kids = [c["name"] for c in body["children"]]
+        persona_names = {k.names[lang] for k in load_personas().children}
+        moves = {m["id"]: m for m in body["moves"]}
+        assert moves["scold"]["examples"] == []  # never cue a move that silences children
+        assert all(m["examples"] for k, m in moves.items() if k != "scold")
+        for m in moves.values():
+            for line in m["examples"]:
+                named = [n for n in persona_names if n in line]
+                assert all(n in kids for n in named), (lang, line)  # only children in this class
+    en = create(client)["moves"]
+    assert any("52" in e for m in en for e in m["examples"])  # the cue uses the real numbers
