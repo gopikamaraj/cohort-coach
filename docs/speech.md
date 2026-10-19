@@ -2,7 +2,7 @@
 
 A teacher can hold a button and speak to the five pretend children, and hear each child answer in a different voice. Speech is the second AI layer on top of the text pipeline, not a separate path: speech-to-text produces her words, the same pipeline (label, engine, child line, gates) produces the child's line, and text-to-speech reads it. If any speech step fails, she is moved to typing and nothing is lost.
 
-**Status, stated plainly.** Built and tested against mocked HTTP, real ffmpeg and a stub speech service, and since the key was replaced (2026-10-17) run live once: all 36 clips (twelve children in en, hi, ta) synthesised, so the twelve speaker names are accepted by Sarvam, and 24 live voice turns were timed (`evals/results/voice_latency.json`). The voice median is **over** the 5 s target (below). Whether the five children sound distinct is still for a person to confirm: `scripts/check_voices.py` saves the clips for listening.
+**Status, stated plainly.** Built and tested against mocked HTTP, real ffmpeg and a stub speech service, and since the key was replaced (2026-10-17) run live once: all 36 clips (twelve children in en, hi, ta) synthesised, so the twelve speaker names are accepted by Sarvam (`evals/results/voice_check.json`), and 24 live voice turns were timed (`evals/results/voice_latency.json`). The voice median is **over** the 5 s target (below). Whether the five children sound distinct is still for a person to confirm: `scripts/check_voices.py` saves the clips for listening.
 
 ## The path of one voice turn
 

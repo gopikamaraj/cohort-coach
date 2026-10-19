@@ -6,7 +6,7 @@
 > - Needed from people: 1. Run `python scripts/check_voices.py --out <folder>` and listen to the 36 clips: five distinct children? (Gopi, Shivani). 2. Listen for five distinct children in hi, ta, en; Hindi and Tamil review of the new strings (Shivani, Seema, Gopi). 3. Hosting accounts for staging, `docs/deploy.md` (Gopi). 4. Round 3 with Seema.
 > - **Kit v3 adopted 2026-10-19 (see `docs/build/reports/MIGRATION-v1-v3.md`).** P05 is now the flow engine and channel adapters and needs the Telegram bot token before it starts (Gopi). The next phase is decided after the migration is reviewed; do not run `/next-phase` until Gopi says go.
 
-**Today:** 2026-10-17 · **Days to submission (31 Oct):** 14 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
+**Today:** 2026-10-19 · **Days to submission (31 Oct):** 12 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
 
 ## Phases
 
@@ -18,10 +18,10 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P01 | Engine core | P0 | Fri 16 – Sat 17 | ✅ | 2026-10-16 15:30 (`f92f846`) | 2026-10-16 | [report](reports/P01-engine-core.md) | CI for this phase after push; Seema to confirm key variants |
 | P02 | Simulated block, grouping, mentors, statistics | P0 | Sat 17 | ✅ | 2026-10-16 20:45 (`a0d858f`) | 2026-10-16 | [report](reports/P02-simulated-block-statistics.md) | CI for this phase after push; demo cohorts small by design |
 | P03 | AI platform and guardrails core | P0 | Sun 18 | ✅ | 2026-10-16 (`9bfc51c`) | 2026-10-17 | [report](reports/P03-ai-platform-guardrails.md) | Live red team on 12 seeds passed; cache hits confirmed |
-| P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report). **v3 steps 11 (model-run renderer) and 12 (`mixed_level` flag) are open: do them at the start of P06** |
+| P04 | Practice Class engine + calls 1–3 (text) | P0 | Mon 19 | 🟡 | 2026-10-17 (`6b18369`) | 2026-10-17 | [report](reports/P04-practice-class-engine.md) | Gate 1 end-to-end passed; text-turn latency over 3 s (plan in report). **v3 acceptance is open: steps 11 (model-run renderer) and 12 (`mixed_level` flag) are not built; do them at the start of P06 (tasks in `tasks/P06.md`)** |
 | P05 | Flow engine, channel adapters, PWA shell, judge mode | P0 | Tue 20 | ⬜ reopened | 2026-10-17 (`6306eb7`) | 2026-10-17 | [report](reports/P05-pwa-shell-check-cards.md) | v1 build kept as the base; v3 rewrite pending (tasks: `tasks/P05.md`, v3 carry-over). Blocked on the bot token. v1: Installable, offline T1–T3, 3 languages, bundle 112 kB |
-| P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | 🔄 | 2026-10-17 (`0e57872`) | | | Staging |
-| P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built; run live once (24 turns, median 7515 ms, over the 5 s target; plan documented) |
+| P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | 🟡 | 2026-10-17 (`0e57872`) | 2026-10-17 | [report](reports/P06-practice-class-ui.md) | Staging blocked on hosting accounts; v3 follow-ups open (model-run button, 9-call map) |
+| P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built; run live once (24 turns, median 7515 ms, over the 5 s target; plan documented). Open: voice latency fix, bytes per session on Slow 3G (v3), listening check |
 | P08 | Answer-sheet capture (both channels) and import | P0/P1 | Fri 23 | ⬜ | | | | |
 | P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
 | P10 | Teacher flows on both channels | P0 | Sun 25 | ⬜ | | | | |

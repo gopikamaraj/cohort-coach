@@ -1,6 +1,6 @@
 # Migration: kit v1 to kit v3 (19 Oct 2026)
 
-**Status:** plan written; NOW items MIG-T01 to MIG-T03 below; reviews and the closing summary are appended at the end.
+**Status:** plan written, NOW items MIG-T01 to MIG-T03 done, first review round fixed (section 6). Nothing in the build phases has been started; waiting for Gopi.
 
 ## 1. What was found (step 1)
 
@@ -19,7 +19,7 @@ The "copy over the repo" was partial: only `CLAUDE.md` was overwritten in place.
 ## 2. Build-time changes re-applied (step 2)
 
 - **`CLAUDE.md`:** the Speech line ("called directly from our own server… No finguru voice server; `services/speech/` is built fresh"). One conflict: v3 rewrote the next bullet ("Messaging" became "Flows and channels"). Resolved by keeping the build's Speech line and v3's new "Flows and channels" bullet.
-- **`DECISIONS.md`:** OD-1 ("MIT (applied in P00)") and OD-2 (voice decided no) merged cleanly. One conflict at the top of "Settled decisions": v3 added four 19 Oct entries, the build added 15 entries from 16 and 17 Oct. Resolved by keeping both, newest first (v3's four, then the build's); no entry dropped (30 entries: 11 from v1, 15 from the build, 4 new in v3).
+- **`DECISIONS.md`:** OD-1 ("MIT (applied in P00)") and OD-2 (voice decided no) merged cleanly. One conflict at the top of "Settled decisions": v3 added four 19 Oct entries, the build added 15 entries from 16 and 17 Oct. Resolved by keeping both, newest first (v3's four, then the build's); no entry dropped (30 entries: 11 from v1, 15 from the build, 4 new in v3; the migration then added 2 more, 32 in all).
 - **Lost and unrecoverable:** nothing. The only overwritten tracked file was `CLAUDE.md` and its build change was one line, recovered. Everything else the build wrote is in git and untouched.
 - **`PROGRESS.md`:** new phase titles (P05, P08, P10, P12); P04 steps 11 and 12 marked open and pointed to P06; the bot token is now a P05 blocker in "Waiting on people"; OD-11 to OD-14 added; a note that P05 is reopened for the v3 rewrite.
 - Commit: `ad5fa7c docs: adopt kit v3, re-apply build-time changes`.
@@ -40,7 +40,8 @@ NOW = breaks a non-negotiable, makes a test or the docs lie, or blocks P05. Ever
 | 2 | Dexie holds per-child answers (`checks`) plus `profiles`, `syncQueue`; v3 limits Dexie to transcripts and the photo outbox | §6 Client, P05 step 4 | `apps/pwa/src/lib/db.ts:84-92` stores all of them; on-device only, never sent | Replace with flow-engine check (photos, `number_grid` typed fallback); drop `checks`/`profiles`/`syncQueue` after the photo flow lands; keep `transcripts`, `outbox`, `settings` | P05 then P08 | Vitest: schema has only the allowed stores; payload contract test |
 | 3 | Check photos via bot or PWA; per-sheet reads in memory, 30-min TTL; photo deletion in Telegram and PWA outbox | §4.2, P08 steps 2–5 | Absent (`outbox` store exists, unused) | Build in P08 | P08 | golden transcript; temp-file and log assertions; TTL test |
 | 4 | `services/api/flows/` flow engine; thin adapters; WhatsApp stub | §4.14, §6, P05 | `flows/` absent; `channels/{telegram,whatsapp}/` are empty packages | Build in P05 | P05 | engine transitions; adapter contract tests |
-| 5 | Import rule: channels and PWA import nothing from `engine/` or `ai/` | rule 14, P05 tests | Nothing to violate yet (channels are empty); no rule exists | Add test with the flow engine | P05 | the import-rule test |
+| 5 | Import rule: channels and PWA import nothing from `engine/` or `ai/` | rule 14, P05 tests | Channels are empty, so nothing imports `engine/` or `ai/` there; no rule or test exists yet | Add the test with the flow engine | P05 | the import-rule test |
+| 5b | PWA components compute and decide: per-child diagnosis, counting and cards run on the phone (`apps/pwa/src/lib/diagnosis.ts:1-12`, `cards.ts:4,33`, `screens/Check.tsx:5-7,154`). Rule 14 says a PWA component never computes or decides. It is a lookup of engine-generated answer keys, so it does not break rule 4.1, but it is superseded | rule 14, P05 | Built in P05 v1 and shipped | Move diagnosis, counting and cards to the back end (flow engine and the check flow); `diagnosis.ts` and `check.ts` stay only as the interim typed fallback until P08 replaces them | P05 then P08 | the import-rule test; golden transcript for the check flow |
 | 6 | Copy in `strings/{en,hi,ta}.json` shared with the bot | §6, P05 step 7 | Copy lives in `apps/pwa/src/i18n/` | Move to `strings/` when the bot needs it; keep the CSV export | P05 | `i18n.test.ts` key completeness reads `strings/` |
 | 7 | One pseudonymous teacher id across channels, linking code, one consent, "Delete my data" | P05 step 3 | `consents` table only; no teacher id | Build in P05 | P05 | cross-channel linking and delete tests |
 | 8 | Registry ready for 9 calls; call 9 "arrives in P10" on the AI map | §7, P06 step 3 | Registry and `AiMap.tsx` list 8; P03 acceptance already says "8 design calls (call 9 joins in P10)" | Add a planned-call row (P06), register call 9 with its prompt in P10 | P06 / P10 | `AiMap` shows a 9th row; registry test lists 9 in P10 |
@@ -59,7 +60,7 @@ NOW = breaks a non-negotiable, makes a test or the docs lie, or blocks P05. Ever
 | 21 | P14: offline tests per matrix row rewritten for both channels | P14 | Not built | Fold into P14 | P14 | per-row tests |
 | 22 | P16: five evidence figures, the hypothesis slide, problem-claims check | P16 | Not built | Fold into P16 | P16 | integrity-auditor items 9–11 |
 | 23 | `docs/privacy.md` (photo and read lifecycle per channel) | P08 docs | Absent (P06 report mentions it) | Write in P08 | P08 | doc exists; privacy-guardian |
-| 24 | Dependencies for P05: `python-telegram-bot` ≥ 21, an import-rule tool | P05 step 2 | Not installed | Add in P05 | P05 | CI |
+| 24 | Dependencies for P05: `python-telegram-bot` ≥ 21, an import-rule tool | P05 step 2 | `python-telegram-bot>=21` is declared (`pyproject.toml:16`) and installed; the bot code is absent; no import-rule tool | Add the import-rule tool in P05 | P05 | CI |
 | 25 | Telegram bot token and handle | P05 human input | `TELEGRAM_BOT_TOKEN=` is in `.env.example`, no value | **Human: Gopi** | before P05 | n/a |
 | 26 | Stale v1 files outside the repo (see §3.3) | n/a | present | **Human: Gopi** | now | n/a |
 
@@ -77,3 +78,43 @@ NOW = breaks a non-negotiable, makes a test or the docs lie, or blocks P05. Ever
 | MIG-T03 | DECISIONS: "Kit v3 adopted" reconciliation and "P07 live check" entries, newest first; v3 banner on `docs/offline.md` and `docs/architecture.md`; P05 reopened in PROGRESS | `tests/test_kit_v3.py` |
 
 These three were one commit because they share one test file and the pre-commit check runs the whole suite (a partial commit of the shared test would fail).
+
+## 6. Reviews and fixes (step 6)
+
+Three reviews ran on the v1 to HEAD code and on the migration commits (privacy-guardian, integrity-auditor and judge-reviewer, with the v3 criteria read from `.claude/agents/` on disk).
+
+- **integrity-auditor: honest with fixes.** The merge is faithful (the merged `CLAUDE.md` differs from v3 in the one build line; `DECISIONS.md` lost nothing; nothing weakened). Fixed: row 5b added (PWA logic breaks rule 14 as an interim); row 24 corrected; entry count; the guard test's wording regex broadened; PROGRESS date and P06 status; "36 clips" now has a generated result file (`scripts/check_voices.py` writes `evals/results/voice_check.json`).
+- **judge-reviewer: pass with fixes.** Fixed: P04 and P07 carry their open v3 criteria in PROGRESS and in their task files; P05's task file now holds the v3 acceptance criteria and the missing tasks (onboarding and T1 flows, strings first, judge API and Playwright test, the "if behind" rule); the missing v3 items were added to the P08, P10, P12 and P16 task files; a stub `docs/judge-test-script.md` each phase appends to; hours per phase and a drop-dead time below.
+- **privacy-guardian:** see the end of this section.
+
+### Hours per phase (estimates, not evidence) against 12 days
+
+| Phase | Remaining work, hours | Note |
+| --- | --- | --- |
+| P05 (v3 rewrite) | 14 to 18 | the biggest risk; start with a mocked Telegram if the token is late |
+| P04 carry-over and P06 follow-ups | 4 to 6 | model-run renderer, mixed level, "Hear it done well", 9-call map |
+| P07 follow-up | 1 to 2 | Slow 3G bytes; the voice latency fix is separate and open |
+| P08 | 10 to 12 | the check flow on two channels |
+| P09 | 8 to 10 | includes the model-run publish step |
+| P10 | 10 to 12 | T4, T6, call 9, time budget |
+| P11 | 5 to 6 | |
+| P12 | 8 to 10 | roles, funnel, visit brief |
+| P13 | 6 to 8 | evals including eval 10 |
+| P14 | 6 to 8 | |
+| P15 | 4 to 6 | |
+| P16 | 10 to 12 | team shares video and deck |
+| **Total** | **about 86 to 110** | against roughly 12 days of one developer (about 120 hours at 10 hours a day, none lost to blockers) |
+
+That fits only if nothing slips, and two blockers are already open (the bot token, and staging hosting accounts). Decide the cuts now rather than at "if behind": the cheapest in the v3 cut list are item 8 (PWA web push and PWA voice reflections), item 5 (reflection digest), item 4 (call 9, keeping taps and reflections), item 3 (visit brief) and item 2 (mixed-level persona); then item 6 (WhatsApp stub). These are Gopi's decisions; I have not cut anything.
+
+**Drop-dead time for P05:** Wed 21 Oct midday. After that the PWA `photo_batch` and `voice` components and the T4/T6 flows slip, and Telegram renders them first (the v3 "if behind" rule: never move logic into an adapter to save time).
+
+- **privacy-guardian: clear with fixes, no blocking item, nothing breaks a non-negotiable today.** Items 1 to 3, 9 and 10 are mostly vacuous until P05, P08, P10 and P12 exist and must be re-audited then. Findings and where they went: the report understated the PWA-logic rule 14 issue (row 5b added); the Dexie stores contradict section 6 now (device-only, so not a rule 2 breach; exit criterion V3-T16 in `tasks/P05.md`); record-mode fixtures can capture teacher text on disk, `classroom.teacher_name` is non-null, `input_hash` has no salt and there is no server-side "Delete my data" (all in V3-T15); `docs/privacy.md` and the full table list for `docs/architecture.md` (in `tasks/P08.md`).
+
+## 7. What is lost, what you must confirm, and the human inputs
+
+- **Lost and unrecoverable:** nothing (section 2).
+- **Merge conflicts:** two, both resolved by keeping both sides (section 2).
+- **Decisions to confirm:** the three in section 3; also the reconciliation entry "Kit v3 adopted" and the "P07 live check" entry in `DECISIONS.md`, and the cuts in the hours table (none taken).
+- **Human inputs now needed:** the Telegram bot token and handle before P05 (Gopi); OD-11 to OD-14 defaults (Gopi, Seema, Seema, Seema); replace or delete the stale v1 `CLAUDE.md`, `BUILD_PROMPTS.md` and `STARTER_PROMPT.md` in `fln_src/`; the listening check of the 36 voice clips (Gopi, Shivani).
+- **NOW commits:** `ad5fa7c` (kit adopted), `5d874b6` (plan and carry-over tasks), `02adae3` (MIG-T01 to T03), and the review-fix commit that follows this section.

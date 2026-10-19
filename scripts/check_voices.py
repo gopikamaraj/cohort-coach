@@ -15,6 +15,8 @@ Audio is for listening only and is never committed. Costs a few rupees of Sarvam
 from __future__ import annotations
 
 import argparse
+import datetime
+import json
 import sys
 import tempfile
 from pathlib import Path
@@ -56,7 +58,7 @@ def main(argv: list[str]) -> int:
         return 1
     out = Path(args.out) if args.out else Path(tempfile.mkdtemp(prefix="cc-voices-"))
     out.mkdir(parents=True, exist_ok=True)
-    cache, bad = SpeechCache(), 0
+    cache, bad, made = SpeechCache(), 0, 0
     for child, voice in all_voices().items():
         for lang, line in LINES.items():
             try:
@@ -66,7 +68,22 @@ def main(argv: list[str]) -> int:
                 print(f"  FAIL {child:<8} {lang} speaker={voice.speaker}: {exc}")
                 continue
             (out / f"{child}-{lang}.ogg").write_bytes(ogg)
+            made += 1
     print(f"Wrote clips to {out}. Listen to them; {bad} failed.")
+    result = {
+        "measure": "child_voice_synthesis_check",
+        "source": "scripts/check_voices.py",
+        "date": datetime.date.today().isoformat(),
+        "children": len(all_voices()),
+        "languages": sorted(LINES),
+        "clips_made": made,
+        "clips_failed": bad,
+        "note": "synthesis only: whether the voices sound distinct needs a person to listen",
+    }
+    path = ROOT / "evals" / "results" / "voice_check.json"
+    body = json.dumps(result, indent=2, sort_keys=True) + "\n"
+    path.write_text(body, encoding="utf-8", newline="\n")
+    print("wrote evals/results/voice_check.json")
     if args.dict:
         for lang in ("hi", "ta"):
             body = pronunciation.dictionary_json(lang)

@@ -1,0 +1,14 @@
+{
+  "children": 12,
+  "clips_failed": 0,
+  "clips_made": 36,
+  "date": "2026-10-19",
+  "languages": [
+    "en",
+    "hi",
+    "ta"
+  ],
+  "measure": "child_voice_synthesis_check",
+  "note": "synthesis only: whether the voices sound distinct needs a person to listen",
+  "source": "scripts/check_voices.py"
+}

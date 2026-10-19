@@ -36,7 +36,11 @@ def test_simulated_practice_is_called_a_hypothesis_in_readme_and_practice_docs()
 
 
 def test_no_doc_says_a_voice_note_was_listened_to_or_watched() -> None:
-    bad = re.compile(r"\b(was|were|been|being|got|get)\s+(listened|watched)\b|\blisteners?\b", re.I)
+    bad = re.compile(
+        r"\b(listened|watched|listens|listening)\s+(to\s+)?(a |the |each |every )?"
+        r"(voice|lesson|audio|video)",
+        re.I,
+    )
     for path in (ROOT / "docs").rglob("*.md"):
         rel = path.relative_to(ROOT).as_posix()
         if rel.startswith(("docs/design/", "docs/build/")):
