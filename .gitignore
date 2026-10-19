@@ -20,3 +20,6 @@ apps/pwa/test-results/
 apps/pwa/playwright-report/
 apps/pwa/lh.json
 e2e-api.log
+
+# synthetic handwritten-sheet test set: generated, large, not committed
+data/synthetic_sheets/
