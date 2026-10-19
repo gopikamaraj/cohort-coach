@@ -12,6 +12,7 @@ ANTHROPIC_API_KEY unset the client refuses `live` and `record`.
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import logging
@@ -151,12 +152,20 @@ def _usage_from_response(resp: Any) -> Usage:
     )
 
 
-def _live_client() -> Any:
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise LiveNotAllowed("ANTHROPIC_API_KEY is not set; live and record modes are refused")
+@functools.cache
+def _client_for(api_key: str) -> Any:
     import anthropic
 
-    return anthropic.Anthropic(max_retries=0)  # we own retries so each is audited
+    # We own retries so each is audited. One client per key keeps the connection pool (and its
+    # TLS session) open between calls instead of paying a new handshake on every call.
+    return anthropic.Anthropic(api_key=api_key, max_retries=0)
+
+
+def _live_client() -> Any:
+    key = os.environ.get("ANTHROPIC_API_KEY")
+    if not key:
+        raise LiveNotAllowed("ANTHROPIC_API_KEY is not set; live and record modes are refused")
+    return _client_for(key)
 
 
 def check_budget(sink: SqlAuditSink, *, judge: bool) -> None:

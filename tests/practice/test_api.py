@@ -155,3 +155,21 @@ def test_no_log_record_at_any_level_holds_what_she_typed(
     everything = caplog.text + " ".join(str(r.args) for r in caplog.records)
     assert "zebra-canary-phrase" not in everything and "9876543210" not in everything
     assert "tell me how you got 37" not in everything
+
+
+def test_create_session_tells_the_teacher_what_to_practise(client: TestClient) -> None:
+    for lang in ("en", "hi", "ta"):
+        body = create(client, language=lang)
+        goal = body["goal"]
+        assert goal["error"] == "SUB-SFL"
+        assert 3 <= len(goal["tips"]) <= 6 and all(t.strip() for t in goal["tips"])
+    assert any("bundle" in tip.lower() for tip in create(client)["goal"]["tips"])
+
+
+def test_each_turn_reports_how_long_each_model_call_took(client: TestClient) -> None:
+    s = create(client)
+    url = f"/api/practice/sessions/{s['session_id']}/turns"
+    res = client.post(url, json={"text": "Tell me how you got that."})
+    ev = res.json()["layers"]["evaluation"]
+    assert set(ev["call_ms"]) <= {"label", "child", "check"} and "child" in ev["call_ms"]
+    assert all(isinstance(v, int) and v >= 0 for v in ev["call_ms"].values())

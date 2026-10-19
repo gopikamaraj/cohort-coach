@@ -217,3 +217,16 @@ def test_record_mode_saves_a_fixture_that_recorded_mode_replays(
 
 def test_violation_type_is_exported() -> None:
     assert Violation("x").code == "x"
+
+
+def test_the_live_client_is_reused_so_connections_stay_open(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "key-one")
+    first = client_mod._live_client()
+    assert client_mod._live_client() is first  # one connection pool, not a new handshake per call
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "key-two")
+    assert client_mod._live_client() is not first  # a changed key gets its own client
+    monkeypatch.delenv("ANTHROPIC_API_KEY")
+    with pytest.raises(LiveNotAllowed):
+        client_mod._live_client()

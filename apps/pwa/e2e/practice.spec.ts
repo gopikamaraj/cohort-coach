@@ -230,3 +230,13 @@ test("feedback thumbs and the flag are kept on the phone; sharing is off by defa
   expect(Object.values(kept.ratings ?? {})).toContain("up");
   expect(kept.flags).toBe(1);
 });
+
+test("the screen says what she is practising and lists the moves to try", async ({ page }) => {
+  await page.goto("/#/practice?seed=5");
+  await expect(page.getByTestId("goal-intro")).toContainText("take the smaller digit from the larger");
+  await page.getByTestId("start-practice").click();
+  await expect(page.getByTestId("goal")).toBeVisible();
+  await expect(page.getByTestId("goal")).toContainText("What to practise");
+  expect(await page.getByTestId("goal").locator("li").count()).toBeGreaterThanOrEqual(3);
+  await expect(page.getByTestId("goal")).toContainText(/bundle/i);
+});

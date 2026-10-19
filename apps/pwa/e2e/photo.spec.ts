@@ -123,3 +123,30 @@ test("offline, the photo is not sent and she is told to type", async ({ page, co
   expect(calls).toBe(0);
   await context.setOffline(false);
 });
+
+test("it only asks before replacing when the child already has digits written", async ({ page }) => {
+  const allBlank = Array.from({ length: 10 }, () => ({ text: "", status: "blank" }));
+  let reply: unknown[] = allBlank;
+  await page.route("**/api/sheets/read", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ form: "A", retried: false, cells: reply }) }),
+  );
+  const asked: string[] = [];
+  page.on("dialog", async (d) => {
+    asked.push(d.message());
+    await d.accept();
+  });
+  await begin(page);
+  const photo = { name: "sheet.png", mimeType: "image/png", buffer: PNG };
+  await page.getByTestId("photo-input").setInputFiles(photo); // nothing written yet
+  await expect(page.getByTestId("box-1")).toContainText("blank");
+  expect(asked).toHaveLength(0);
+  await page.getByTestId("photo-input").setInputFiles(photo); // only blank marks so far: still nothing to lose
+  await expect(page.getByTestId("photo-note")).toBeVisible();
+  expect(asked).toHaveLength(0);
+  reply = CELLS;
+  await page.getByTestId("photo-input").setInputFiles(photo);
+  await expect(page.getByTestId("box-1")).toContainText("346");
+  await page.getByTestId("photo-input").setInputFiles(photo); // now digits are there: she is asked
+  await expect.poll(() => asked.length).toBe(1);
+  expect(asked[0]).toContain("Replace them");
+});

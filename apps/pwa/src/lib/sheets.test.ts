@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BLANK } from "./check";
+import { BLANK, hasAnswers } from "./check";
 import { applyReads, readSheet, SheetError, type SheetCell } from "./sheets";
 
 const ok = (text: string): SheetCell => ({ text, status: "ok" });
@@ -40,5 +40,18 @@ describe("readSheet", () => {
     }) as unknown as typeof fetch;
     await expect(readSheet(photo, "A", offline)).rejects.toBeInstanceOf(SheetError);
     await expect(readSheet(photo, "A", offline)).rejects.toMatchObject({ kind: "offline" });
+  });
+});
+
+describe("hasAnswers (when the photo asks before replacing)", () => {
+  it("is false for an empty row, a row of blank marks, and unreadable marks", () => {
+    expect(hasAnswers(["", "", ""])).toBe(false);
+    expect(hasAnswers([BLANK, BLANK, ""])).toBe(false);
+    expect(hasAnswers(["?", "", BLANK])).toBe(false);
+    expect(hasAnswers([])).toBe(false);
+  });
+  it("is true as soon as one box has a digit", () => {
+    expect(hasAnswers(["", "7", ""])).toBe(true);
+    expect(hasAnswers([BLANK, "346"])).toBe(true);
   });
 });

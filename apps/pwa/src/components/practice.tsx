@@ -142,6 +142,7 @@ export function LayersPanel({ layers }: { layers: Layers }) {
         <Row label={tr("layers.evaluation")}>
           <span data-testid="layer-eval">
             {e.latency_ms} ms · {e.tokens.in}/{e.tokens.out} tok · cache {e.tokens.cache_read} · ${e.cost_usd.toFixed(4)}
+            {e.call_ms ? ` · label ${e.call_ms.label ?? "–"} ms · child line ${e.call_ms.child ?? "–"} ms · check ${e.call_ms.check ?? "–"} ms` : ""}
             {e.stages ? ` · speech-to-text ${e.stages.stt_ms} ms · voice wait ${e.stages.tts_wait_ms} ms` : ""}
           </span>
         </Row>

@@ -280,6 +280,15 @@ def take_turn(
             "tokens": stats["tokens"],
             "cost_usd": stats["cost_usd"],
             "calls": stats["calls"],
+            "call_ms": {
+                k: v.latency_ms
+                for k, v in (
+                    ("label", label.run if label else None),
+                    ("child", line.run),
+                    ("check", checker_run),
+                )
+                if v is not None
+            },  # fmt: skip
         },
         "output": {"child_line": line.text, "source": line.source, "badge": badge},
     }

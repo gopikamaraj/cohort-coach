@@ -312,6 +312,7 @@ export default function Practice() {
         <h1 id="pr-title">{tr("practice.title")}</h1>
         {banner}
         <p>{tr("practice.intro")}</p>
+        <p data-testid="goal-intro">{tr("practice.goal_line", { error: tr(`err.desc.${scenarioFor(profile?.track ?? null)}` as "err.desc.SUB-SFL") })}</p>
         <button type="button" className="btn btn-primary" onClick={() => void start()} disabled={phase === "starting"} data-testid="start-practice">
           {phase === "starting" ? tr("practice.starting") : tr("practice.start")}
         </button>
@@ -392,6 +393,18 @@ export default function Practice() {
     <section aria-labelledby="pr-title">
       <h1 id="pr-title">{tr("practice.title")}</h1>
       {banner}
+      {session ? (
+        <details className="card" open data-testid="goal">
+          <summary>{tr("practice.goal_title")}</summary>
+          <p>{tr("practice.goal_line", { error: tr(`err.desc.${session.goal.error}` as "err.desc.SUB-SFL") })}</p>
+          <p className="muted">{tr("practice.goal_tips")}</p>
+          <ul className="plain">
+            {session.goal.tips.map((tip) => (
+              <li key={tip}>{tip}</li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
       {session ? <ChildrenRow children={session.children} speaker={speaker} /> : null}
       <p className="muted" data-testid="turn-counter">
         {tr("practice.turn", { n: turns.length, cap })}

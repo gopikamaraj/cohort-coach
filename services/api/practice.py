@@ -124,6 +124,11 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
         "children": [{"name": c.name, "shy": c.shy} for c in session.state.children],
         "materials": loaded.scenario.materials,
         "turn_cap": loaded.config.max_turns,
+        # what she is practising: the rubric's "try next" lines, in her language (content, not AI)
+        "goal": {
+            "error": session.error,
+            "tips": [p.try_next[session.language] for p in loaded.rubric.points],
+        },
         "voice": {"available": speech.available, "mode": speech.mode},
         "moves": [{"id": m.id, "label": m.label[session.language]} for m in loaded.movelist.moves],
     }

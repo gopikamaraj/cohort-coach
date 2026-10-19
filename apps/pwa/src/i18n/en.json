@@ -181,5 +181,8 @@
   "check.photo_bad": "That photo could not be used. Take it again, with the whole sheet in view.",
   "check.photo_failed": "Something went wrong reading the photo. Type the answers, or try again.",
   "check.photo_replace": "This child already has answers. Replace them with the photo?",
+  "practice.goal_title": "What to practise",
+  "practice.goal_line": "Help children who {error}. Teach as you would in class; the pretend children make the mistakes your own class makes.",
+  "practice.goal_tips": "Things to try:",
   "audit.checks": "Checks passed"
 }

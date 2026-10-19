@@ -16,6 +16,7 @@ export interface CreatedSession {
   children: PracticeChild[];
   materials: string[];
   turn_cap: number;
+  goal: { error: string; tips: string[] };
   voice: { available: boolean; mode: string };
   moves: { id: string; label: string }[];
 }
@@ -50,6 +51,7 @@ export interface Layers {
     cost_usd: number;
     calls: string[];
     stages?: { stt_ms: number; tts_wait_ms: number };
+    call_ms?: { label?: number; child?: number; check?: number };
   };
   output: { child_line: string; source: string; badge: string };
 }

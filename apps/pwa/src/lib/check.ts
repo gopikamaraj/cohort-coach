@@ -18,6 +18,11 @@ export function readRow(row: string[]): Reading[] {
   return row.map(readCell);
 }
 
+/** Does the row hold any real answer (a digit)? Blank marks alone do not count: nothing would be lost. */
+export function hasAnswers(row: string[]): boolean {
+  return row.some((cell) => /\d/.test(cell));
+}
+
 /** A row with nothing typed in it yet (the empty row "Next child" opens). */
 export function isEmptyRow(row: string[]): boolean {
   return row.every((cell) => cell === "");

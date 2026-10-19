@@ -2,7 +2,7 @@
 // autosave after every key, and on-device diagnosis when she finishes. Per-child answers are
 // saved on this phone only; only class counts are queued to send.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BLANK, enteredChildren, finishCheck, UNREADABLE } from "../lib/check";
+import { BLANK, enteredChildren, finishCheck, hasAnswers, UNREADABLE } from "../lib/check";
 import { activeClass, db, getSetting } from "../lib/db";
 import { keys } from "../lib/diagnosis";
 import { flush } from "../lib/sync";
@@ -95,8 +95,7 @@ export default function Check() {
       setPhotoNote("check.photo_offline");
       return;
     }
-    const current = rows[child] ?? [];
-    if (!current.every((c) => c === "") && !window.confirm(tr("check.photo_replace"))) return;
+    if (hasAnswers(rows[child] ?? []) && !window.confirm(tr("check.photo_replace"))) return;
     setReading(true);
     setPhotoNote("");
     try {
