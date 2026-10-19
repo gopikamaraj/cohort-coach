@@ -727,6 +727,10 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 
 **Goal.** Everything a judge opens tells the same true story, with every number traceable.
 
+**Read first.** `docs/build/PARKING.md` (the 2026-10-19 entry, "Generic Practice Class: topic packs and a reviewed materials pipeline": what is parked and why); `CLAUDE.md` §4 (rules 1, 2, 8, 11, 13, 14) and §14; the gate 3 definition in `CLAUDE.md` §7 ("Gates and badges"). The roadmap text and the slide are the only P16 deliverables for this idea: asset generation is optional authoring work, not a feature build, and runtime generation stays banned (the PARKING entry; `CLAUDE.md` §14).
+
+**Human inputs.** Optional, owner Shivani, before the Meshy credits expire (Gopi will say when): generate a starter set of materials for 2–3 roadmap topics (fraction strips, a clock face, coins, an abacus) with the Meshy web app or MCP server, and commit them to `docs/roadmap-assets/` with a manifest and `LICENSE-NOTES.md` recording the plan type and date for each asset. If none are generated, the roadmap slide shows the pack spec without sample assets.
+
 **Build.**
 
 1. README, which judges read first: the one-line idea; demo link and 3-step judge instructions; "Where AI is used" (generated from the registry, linking each call's prompt file, module, validators and eval result); an architecture diagram (mermaid); short summaries of guardrails, offline behaviour and privacy; run locally in three commands; repo map; licence; team.
@@ -738,12 +742,24 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 7. Public-repo hygiene: secret scan clean; no real child or teacher data; no private URLs; decide whether `docs/design/` and `docs/build/` stay public (default yes: they show the rigour), removing team-internal notes if any.
 8. `docs/submission/checklist.md`: demo link works logged out on desktop and phone; repo public; video public and plays logged out; deck uploaded; every link in deck and README works; the bot works; budget headroom; uptime monitor on. Human-owned items list their owner.
 9. Problem claims: every claim about teachers, training or the school system in the README, deck and video script cites `docs/design/evidence-digest.md` (DOC + PDF page), keeps (?) flags, notes FLN's five-State scope and BaSE's EdTech-user sample, and never cites IDR or APU as evidence that something works.
+10. `docs/roadmap.md`, "Topic packs" section: the pack anatomy (engine rules; move list; rubric; scenario values and personas; materials kit), the pipeline as a mermaid diagram (scenario lists materials → Claude Code calls the Meshy MCP server → render to 2D sprites with states → `content/materials/` with a manifest → gate 3 expert review → publish), the review gate, what stays human-owned (error functions and their tests, rubrics, scenario values, the review itself), and one worked example: the current SUB-SFL pack mapped onto the five parts. State that generated materials are authoring-time only: nothing is generated inside the live app, and no live 3D is shipped.
+11. One roadmap slide in `docs/submission/deck.md`, "Beyond Grade 3 maths", with the pack anatomy and, only if real files exist in `docs/roadmap-assets/`, 2–3 sample sprites, each labelled "generated, review pending" or "reviewed by <name>" as the recorded facts dictate; no wording calls a sample sprite teacher-ready, effective or proven (rule 13). Nothing on the slide claims a capability that `docs/build/PARKING.md` lists as parked.
 
 **Roadmap content** for `docs/roadmap.md`: a one-block pilot with a DIET from January 2027, then a district; literacy tracks for Hindi and Tamil letter and vowel-sign errors; a WhatsApp channel; lesson videos as a templated slideshow synced to the same script and Sarvam audio (no video model); IVR for teachers without smartphones; a new-teacher induction track on the same cohorts (AIC 74; NITI 147, 148). Integration: item-level data from state assessments where it exists (no separate check), UDISE+ school codes, track hours counted toward the NEP 2020 goal of 50 hours of CPD a year, content hosted on DIKSHA, cluster resource persons using the optional visit brief (not as facilitators: many posts are vacant or overloaded, FLN 59, 110; NITI 145, 147). Later, gated on data volume: vector search over method cards once there are enough of them, and a knowledge graph of approach × analogy × child profile × region × outcome. Include cost at scale from the measured cost per teacher.
+
+**Tests.** In the existing docs and claims test style (written when P16 is built): nothing under `docs/roadmap-assets/` is imported by `apps/pwa` or `services/api`; the CI bundle budget still passes and no file under `apps/pwa` or `services/api` references `docs/roadmap-assets` (grep); every asset under `docs/roadmap-assets/` has a row in `LICENSE-NOTES.md` (plan type and date); no file under `docs/` or the README says "reviewed by" or "expert" about a material without a reviewer name and date on the same line or in `LICENSE-NOTES.md` (grep over `docs/` and `README.md`).
 
 **Acceptance.**
 
 - [ ] The checklist is complete with evidence, except human-owned items, each with an owner.
+- [ ] The roadmap says generated materials are authoring-time only and reviewed before use.
+- [ ] No sample asset appears without a `LICENSE-NOTES.md` row.
+- [ ] No claim of expert review unless a reviewer name and date are recorded.
+- [ ] The deck and README claim no capability that `PARKING.md` lists as parked.
+
+**Evidence for judges.** The roadmap slide "Beyond Grade 3 maths" and the pack-anatomy diagram.
+
+**If behind.** Drop the sample assets and keep the pack spec; never delay a launch gate for this.
 
 ---
 
