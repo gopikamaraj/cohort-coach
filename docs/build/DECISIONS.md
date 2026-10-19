@@ -23,6 +23,12 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 
 ## Settled decisions
 
+### 2026-10-19 · Kit v3 adopted; how it sits with the 16 and 17 Oct build entries
+- **Decision:** the v3 kit (CLAUDE.md, BUILD_PROMPTS, DECISIONS, agents, evidence digest) is the spec from 19 Oct. Where a build entry conflicts, v3 wins: (1) "P05 PWA decisions" items 1 to 4 and 6 to 8 (on-device check entry with `checks`, `profiles` and `syncQueue` in Dexie, a phone-made class id, judge mode as a role strip) describe the v1 build and stay in force only as the interim typed fallback; the flow engine, adapters, one pseudonymous teacher id and photo checks replace them in P05 and P08, after which Dexie keeps only transcripts, the outbox and settings. (2) P05 is reopened for the v3 rewrite (its v1 code is the base). (3) P04 steps 11 (model-run renderer) and 12 (`mixed_level`) are done at the start of P06. (4) The build's Sarvam, P03 API and voice entries are unaffected; the build's Speech line in CLAUDE.md is kept. (5) `MODEL_POINTER` is registered in config and `.env.example` now; call 9 itself is built in P10. (6) README and `docs/practice-class.md` now say simulated practice is a hypothesis the pilot tests (rule 13).
+- **Why:** the v3 entries are newer and Gopi confirmed them; the v1 code is not wrong, it is superseded.
+- **Alternatives:** keep v1 as final (rejected: contradicts the two-channels decision); delete the v1 entries (rejected: history is kept).
+- **Confirmed by:** pending Gopi (this reconciliation); the v3 entries it relies on were confirmed by Gopi on 19 Oct.
+
 ### 2026-10-19 · Two channels, one back end
 - **Decision:** teacher and mentor flows run on both Telegram and the PWA. Each flow is defined once in a channel-neutral flow engine as steps (message, choice, photo batch, number grid, voice, media, link), and thin adapters render them per channel. A teacher has one pseudonymous id across channels and can use either or both. The Practice Class and the officer and reviewer screens stay web only. WhatsApp will be a third adapter. Privacy is the same on every channel: per-sheet reads in server memory only, photos deleted after reading, class counts stored.
 - **Why:** some teachers live in Telegram, others prefer an app icon. One back end keeps rules, numbers and guardrails identical on every channel and turns WhatsApp into an adapter rather than a rebuild.
@@ -48,6 +54,12 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 - **Decision:** Seema doesn't meet teachers. Each class teacher runs the test from a one-page teacher guide (dictation numbers inside, no answer key), photographs every sheet in roll-number order and sends the photos to Seema on WhatsApp or email, with the class code, date, children present, minutes taken and dictation language. Photos stay on Seema's device and in the local import; the header band is masked before any upload (OD-9). Roll numbers: OD-14.
 - **Why:** Seema's time.
 - **Confirmed by:** Gopi.
+
+### 2026-10-17 · P07 live check: the replaced Sarvam key works; voice latency over target
+- **Decision:** after Gopi replaced the key, `scripts/check_voices.py` synthesised all 36 clips (twelve children in en, hi, ta), so the twelve speaker names are accepted; `scripts/voice_latency.py --live` timed 24 voice turns: median 7515 ms, p90 9938 ms against the 5 s target (`evals/results/voice_latency.json`). The target stays at 5 s; the plan is to shrink the text pipeline first, then stream the reply audio. This supersedes "the Sarvam key in `.env` is rejected" below.
+- **Why:** the numbers are real and the bar is not relaxed.
+- **Alternatives:** relax the voice bar (rejected: needs a human-confirmed entry).
+- **Confirmed by:** pending Gopi.
 
 ### 2026-10-17 · P07 limits on the voice endpoint, found in review
 - **Decision:** `/voice-turn` refuses a finished rehearsal before any speech call, refuses audio over 2 MB or 30 s, turns any unexpected speech error into `text_mode`, and has a daily speech budget (`SPEECH_BUDGET_INR_DAILY`, default 200 INR, in memory per process). A per-IP rate limit stays parked until the staging URL is public. Audio length is read from the decoded samples, because ffmpeg's piped WAV header carries no length (found while adding the 30 s check).

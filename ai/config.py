@@ -13,6 +13,7 @@ DEFAULT_MODELS: dict[str, str] = {
     "MODEL_METHOD": "claude-sonnet-5-5",
     "MODEL_DRAFT": "claude-opus-5-5",
     "MODEL_DIGEST": "claude-haiku-5-5",
+    "MODEL_POINTER": "claude-haiku-5-5",  # call 9 (reflection pointer), built in P10
     "MODEL_CHECK": "claude-haiku-5-5",
     "MODEL_READ": "claude-haiku-5-5",
     "MODEL_READ_RETRY": "claude-sonnet-5-5",

@@ -1,5 +1,7 @@
 # Offline, low data, cheap phones (v1, after P05)
 
+> **Kit v3 (19 Oct):** this page describes the v1 build, where the check is entered on the phone and only counts sync. In v3 the check arrives as photos through the bot or the PWA and the flows run on one back end; this page is rewritten in P05 and P14. See `docs/build/DECISIONS.md` (2026-10-19 · Kit v3 adopted) and `docs/build/reports/MIGRATION-v1-v3.md`.
+
 Only the Practice Class needs a live connection. Everything else works offline or queues until a signal returns. This page is the matrix, with how each row is verified. Rows for features built in later phases are marked "later" and are filled in as they land.
 
 **Target phone:** an Android Go-class phone with 2 GB of RAM running Chrome. **Install:** a PWA from the browser, no app store. **First load:** under 1 MB of compressed JavaScript; the measured figure is in `docs/evidence/bundle_size.json`. Fonts are the phone's system fonts and there are no images, only SVG icons.

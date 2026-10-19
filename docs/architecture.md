@@ -1,5 +1,7 @@
 # Architecture (v1, after P03)
 
+> **Kit v3 (19 Oct):** this page describes the v1 build, where the check is entered on the phone and only counts sync. In v3 the check arrives as photos through the bot or the PWA and the flows run on one back end; this page is rewritten in P05 and P14. See `docs/build/DECISIONS.md` (2026-10-19 · Kit v3 adopted) and `docs/build/reports/MIGRATION-v1-v3.md`.
+
 What exists today. Later phases add the PWA, Practice Class, voice, Telegram and review screens; this page grows with them.
 
 ## AI in five layers

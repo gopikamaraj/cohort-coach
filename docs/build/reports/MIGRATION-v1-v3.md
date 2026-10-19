@@ -70,4 +70,10 @@ NOW = breaks a non-negotiable, makes a test or the docs lie, or blocks P05. Ever
 
 ## 5. NOW tasks (step 5)
 
-(commits and results are added below as each lands)
+| Task | What | Test |
+| --- | --- | --- |
+| MIG-T01 | Rule 13: README and `docs/practice-class.md` say simulated practice is a hypothesis the pilot tests; a guard against "proven" wording and against "listened" or "watched" in docs | `tests/test_kit_v3.py` |
+| MIG-T02 | `MODEL_POINTER` in `ai/config.py` and `.env.example`; every model variable listed in `.env.example` | `tests/test_kit_v3.py` |
+| MIG-T03 | DECISIONS: "Kit v3 adopted" reconciliation and "P07 live check" entries, newest first; v3 banner on `docs/offline.md` and `docs/architecture.md`; P05 reopened in PROGRESS | `tests/test_kit_v3.py` |
+
+These three were one commit because they share one test file and the pre-commit check runs the whole suite (a partial commit of the shared test would fail).

@@ -5,6 +5,8 @@
 
 Groups primary teachers for training by the specific error their pupils make, not by geography. A termly 10-item check shows what Grade 3 children get wrong; teachers whose classes share an error get a 3-week voice track on that one error, and rehearse it privately in a Practice Class with simulated children before trying it on real ones.
 
+**What is and is not known.** Rehearsing with simulated children is a hypothesis, not a result: no source we have tested it, and the pilot in Seema's partner schools is what tests it. We will report the verdict whatever it is. Whether children improve is shown only by the next check, never by lessons delivered or sessions held.
+
 Team A-Z 0-9 · Hack2skill × Anthropic "AI for Foundational Learning" · Challenge 3 (Teacher Support & Training).
 
 ## Where AI is used

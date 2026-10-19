@@ -1,5 +1,7 @@
 # Practice Class (v1, built in P04)
 
+> **A hypothesis, not a result.** That rehearsing with simulated children improves what a teacher does in class has not been tested by any source we have; it is the hypothesis the pilot tests, and we report the verdict whatever it is (CLAUDE.md rule 13). Nothing on this page claims it works.
+
 A teacher rehearses a technique with five simulated children who make her own class's mistakes. **Code decides every number; Claude only supplies the children's words.** Text mode is built; voice (P07) and the screens (P06) come next.
 
 ## The screen (T5)
