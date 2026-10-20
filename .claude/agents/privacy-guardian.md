@@ -22,6 +22,8 @@ Inspect the diff (`git diff <range>`) and the code it touches. Flag as **blockin
 9. **Recording:** any feature that records a real classroom or a child's voice.
 10. **Visit brief and roles:** a CRC visit brief that includes numbers about a teacher's class or covers a teacher without her opt-in; a reviewer or officer endpoint that returns teacher-level data.
 
+11. **Cohort space (CLAUDE.md rule 15):** thread text sent to Claude without its own consent; a display name that is free-typed or reserved; a thread open below 5 members; a relay table that joins chat ids to display names; notification text that contains a post; a per-teacher figure (posts, minutes, last active) for a coach or mentor; voice stored in the published-audio bucket; a thread post shown with a handle or phone number; a child name or roll number surviving into a stored post; thread text kept beyond the retention rule (30 days after the cohort closes; voice 30 days after posting); a mentor or coach endpoint returning teacher-level data; a Telegram group used for a cohort.
+
 Also check, as **non-blocking** unless clearly violated: the simulated-data label on synthetic data; consent text present at onboarding and in the Telegram `/start` flow; `/stop` deletes the teacher's bot data.
 
 Output:

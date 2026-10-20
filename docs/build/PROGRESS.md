@@ -25,8 +25,8 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P08 | Answer-sheet capture (both channels) and import | P0/P1 | Fri 23 | ⬜ | | | | |
 | P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
 | P10 | Teacher flows on both channels | P0 | Sun 25 | ⬜ | | | | |
-| P11 | Mentor loop | P1 | Sun 25 | ⬜ | | | | |
-| P12 | Officer views, funnel, roles, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2 |
+| P11 | Cohort space, mentor pages, coach pages | P0/P1/P2 | Sun 25 | ⬜ | | | | Brief extended 20 Oct (steps 7–16); simple Coach and Mentor screens already exist from the profile pass: UI only, with no cohort, item-status or moderation logic, so rule 15 is not yet implemented |
+| P12 | Coach and officer views, funnel, roles, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2; depends on P11 |
 | P13 | Evals, red team, cost, latency | P0 | Tue 27 | ⬜ | | | | |
 | P14 | Real-scenario hardening | P0 | Tue 27 | ⬜ | | | | |
 | P15 | Production deploy and freeze | P0 | Wed 28 | ⬜ | | | | Freeze |
@@ -62,9 +62,12 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | ID | Question | Default | Needed by | Owner |
 | --- | --- | --- | --- | --- |
 | OD-11 | How judges see the teacher flow | Real flows in the PWA's judge mode on simulated data, and the same flows in Telegram with `/start judge` | P05 | Gopi |
-| OD-12 | Time caps | Teacher at most 20 min a week, mentor 30, reviewer 15; revisit with round 4 data | P10 | Seema |
-| OD-13 | Who holds the reviewer and officer roles in the pilot | Seema holds both; a DIET faculty member or head teacher takes one if they agree | P12 | Seema |
+| OD-12 | Time caps | Teacher at most 20 min a week, mentor 30, coach 30 (was reviewer 15; see OD-15); revisit with round 4 data | P10 | Seema |
+| OD-13 | Who holds the coach (reviewer) and officer roles in the pilot | Seema holds both; a DIET faculty member or head teacher takes one if they agree | P12 | Seema |
 | OD-14 | Pilot roll numbers | Unique roll number from the register on each sheet; Seema confirms the register is stable between tests | Pre-test day | Seema |
+| OD-15 | Who is the coach, and the 30-minute cap | Reviewer extended; assigned per cohort; cap 30 | P11 | Seema |
+| OD-16 | Post- or pre-moderation of the cohort thread | Post-moderation with filters and Report | P11 | Gopi |
+| OD-17 | Thread retention | 30 days after close, max 90 days after the last post; 7 days for held posts | P11 | Gopi |
 
 ## Environments (no secrets here)
 

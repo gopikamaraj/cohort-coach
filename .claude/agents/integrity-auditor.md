@@ -24,6 +24,8 @@ Flag as **blocking**:
 11. **Unlabelled adoption:** a funnel or adoption number without its source label (system or self-report); a delivery or completion figure presented as adoption; any claim that a voice note was listened to or watched.
 12. **Channel drift:** domain logic, a computed number, a gate decision or an AI call inside `services/api/channels/` or a PWA component; a flow without a golden-transcript test on every adapter; copy hardcoded in an adapter instead of `strings/`.
 
+13. **Cohort space claims:** an AI-authored thread post; a mentor item shown "in use" without a published track version that includes it; the funnel presenting thread activity as adoption (thread counts are system-labelled engagement only).
+
 Output:
 
 - **Verdict:** HONEST, HONEST WITH FIXES, or BLOCK.

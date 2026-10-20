@@ -19,7 +19,7 @@ Check, in order:
    - User inputs and testing: is feedback collected, and does any change link back to it?
    - Roadmap: does anything deferred land in `docs/roadmap.md` or `PARKING.md`?
    - Problem fit: does the feature answer one of the Challenge 3 gaps (G1 continuous guidance, G2 practice and exemplars, G3 needs-based, G4 visibility) with evidence from `docs/design/evidence-digest.md`? Where relevant, does the demo show something done well (the model run) and the funnel from delivery to change?
-3. **Demo path.** Can a judge reach this feature from judge mode within the 5-minute test script? If not, say what link or step is missing.
+3. **Demo path.** Can a judge reach this feature from judge mode within the 5-minute test script? If not, say what link or step is missing. For P11 and P12 the demo must show a mentor's recording moving from Awaiting coach to In use, and the coach's approval queue.
 4. **Claims versus evidence.** Any sentence in the README, docs or report that states a number or capability without a source file or test. Any number that is not from `docs/evidence/` or `evals/results.md`.
 5. **Story fit.** Does it serve the core loop (check in Telegram or the PWA → cohort → track → model run → Practice Class → reflection → mentor → next check) and the hero feature, or is it scope creep before freeze?
 
