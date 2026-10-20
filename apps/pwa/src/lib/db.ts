@@ -1,5 +1,6 @@
 // Everything the phone keeps. Per-child answers (`checks`) live here and only here: nothing in
 // this file sends them anywhere. The sync queue holds class-level counts only.
+import type { Difference } from "./observation";
 import Dexie, { type Table } from "dexie";
 
 export interface ClassRow {
@@ -19,6 +20,7 @@ export interface CheckRow {
   formKey: string;
   children: string[][];
   updatedAt: number;
+  viaPhoto?: number[]; // which children were filled from a photo (the photo itself is never kept)
 }
 
 /** The class-level result: how many children showed each error. No child appears here. */
@@ -61,6 +63,7 @@ export interface TranscriptRow {
   seed?: number;
   endedAt?: number;
   impact?: "positive" | "none" | "negative";
+  observation?: { likeness: "like" | "some" | "not_like"; differences: Difference[]; sent: boolean; at: number };
 }
 
 export interface OutboxRow {

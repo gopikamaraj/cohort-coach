@@ -29,11 +29,13 @@ export default function Check() {
   // Writes go one after another, so the last key typed is always the last thing saved.
   const writes = useRef<Promise<void>>(Promise.resolve());
   const inFlight = useRef(0);
+  const photoKids = useRef<Set<number>>(new Set(check?.viaPhoto ?? []));
 
   useEffect(() => {
     if (check) {
       setFormKey(check.formKey);
       setRows(check.children);
+      photoKids.current = new Set(check.viaPhoto ?? []);
     }
   }, [check]);
 
@@ -45,7 +47,7 @@ export default function Check() {
       writes.current = writes.current.then(async () => {
         const cls = klass ?? (await activeClass(false));
         const termNow = await getSetting("term", term);
-        await db.checks.put({ id: `${cls.id}:${termNow}`, classId: cls.id, term: termNow, formKey: form, children: next, updatedAt: Date.now() });
+        await db.checks.put({ id: `${cls.id}:${termNow}`, classId: cls.id, term: termNow, formKey: form, children: next, updatedAt: Date.now(), viaPhoto: [...photoKids.current] });
         inFlight.current -= 1;
         if (inFlight.current === 0) setMessage(tr("check.saved"));
       });
@@ -103,6 +105,7 @@ export default function Check() {
       const { row, flagged } = applyReads(cells, items);
       const next = rows.map((r) => [...r]);
       next[child] = row;
+      photoKids.current.add(child);
       save(next, formKey);
       setFlags({ ...flags, [child]: flagged });
       setQ(flagged[0] ?? 0);

@@ -22,6 +22,12 @@ export default function Home() {
           <a className="btn btn-secondary" href={href("/practice")} data-testid="home-practice">
             {tr("home.action.practice")}
           </a>
+          <a className="btn btn-secondary" href={href("/programme")} data-testid="home-programme">
+            {tr("home.action.programme")}
+          </a>
+          <a className="btn btn-secondary" href={href("/history")} data-testid="home-history">
+            {tr("home.action.history")}
+          </a>
         </>
       ) : (
         <>
@@ -30,6 +36,12 @@ export default function Home() {
             {tr("home.action.check")}
           </a>
           <p className="muted">{tr("home.demo_hint")}</p>
+          <a className="btn btn-secondary" href={href("/programme")}>
+            {tr("home.action.programme")}
+          </a>
+          <a className="btn btn-secondary" href={href("/history")}>
+            {tr("home.action.history")}
+          </a>
         </>
       )}
     </section>

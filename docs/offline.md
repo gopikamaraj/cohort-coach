@@ -43,3 +43,11 @@ Per-child answers (`checks`), the class result (`profiles`), the send queue, Pra
 | Voice lesson, Practice Class, photos | see `CLAUDE.md` section 9 | later phases |
 
 Throttled mobile Lighthouse figures (emulated phone, simulated slow 4G, CPU slowed 4×) are in `docs/evidence/lighthouse_mobile.json`; they are one run on one machine, so read them as directional. Screenshots at 360 px in the three languages are in `docs/evidence/screenshots/`. A run on a real low-end phone is still to be done (P14).
+
+## Screens added 2026-10-20
+
+| Screen | Offline | Needs a connection for |
+| --- | --- | --- |
+| What I entered | Works fully (reads this phone) | Nothing |
+| My programme | Shows the steps known on this phone; cohort and lessons need the server | Cohort and lesson status |
+| Class observation | Saved on the phone, sent when online | The send |

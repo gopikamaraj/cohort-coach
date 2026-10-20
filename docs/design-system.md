@@ -69,3 +69,7 @@ None that carries meaning. Transitions are 120 ms opacity at most, and are remov
 ## Accessibility
 
 Body contrast 16.3:1, secondary 7.2:1. Every control has a visible label; audio and icon-only controls have text names. The page language attribute follows the chosen language. Layout is checked at 360 px in the screenshots under `docs/evidence/screenshots/`.
+
+## Larger screens (2026-10-20)
+
+The phone frame is for phones only. From 768 px the app is a centred column (up to 820 px, 1000 px from 1200 px) with the same components; the bottom menu scrolls sideways when it does not fit. `apps/pwa/e2e/programme.spec.ts` checks for sideways scrolling at 320, 360, 768 and 1280 px.

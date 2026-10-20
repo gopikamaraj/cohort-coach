@@ -132,7 +132,7 @@ test("teacher screens show no English words in Hindi or Tamil", async ({ page })
   test.setTimeout(120_000);
   const allowed = new Set(["English"]); // the language names in the switch
   for (const lang of ["hi", "ta"]) {
-    for (const route of ["home", "check", "practice"]) {
+    for (const route of ["home", "check", "practice", "programme", "history"]) {
       await page.goto("/");
       await page.evaluate((l) => {
         localStorage.clear();

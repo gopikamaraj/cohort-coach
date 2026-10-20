@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { TranscriptRow } from "../lib/db";
 import type { FeedbackCard, PracticeMove } from "../lib/practice";
+import { DIFFERENCES, LIKENESS, saveObservation, sendPendingObservations, type Difference, type Likeness } from "../lib/observation";
 import { deleteAllSessions, deleteSession, IMPACTS, impactCounts, listSessions, moveCounts, setImpact, turnsOf, type Impact } from "../lib/review";
 import { useApp } from "../state";
 
@@ -12,9 +13,9 @@ export type PracticeTab = "practise" | "review";
 export function PracticeTabs({ tab, onTab }: { tab: PracticeTab; onTab: (t: PracticeTab) => void }) {
   const { tr } = useApp();
   return (
-    <div className="tabs" role="tablist">
+    <div className="subtabs" role="tablist">
       {(["practise", "review"] as const).map((t) => (
-        <button key={t} type="button" role="tab" aria-selected={tab === t} className={tab === t ? "tab tab-on" : "tab"} onClick={() => onTab(t)} data-testid={`tab-${t}`}>
+        <button key={t} type="button" role="tab" aria-selected={tab === t} className={tab === t ? "subtab subtab-on" : "subtab"} onClick={() => onTab(t)} data-testid={`tab-${t}`}>
           {tr(t === "practise" ? "practice.tab_practise" : "practice.tab_review")}
         </button>
       ))}
@@ -80,17 +81,66 @@ export function CuePanel({ moves, onUse }: { moves: PracticeMove[]; onUse: (line
   );
 }
 
+/** After she has tried it in class: were the real children like the pretend ones? Choices only. */
+export function ObservationForm({ id, saved, online, onSaved }: { id: number; saved: TranscriptRow["observation"]; online: boolean; onSaved: () => void }) {
+  const { tr } = useApp();
+  const [likeness, setLikeness] = useState<Likeness | undefined>(saved?.likeness);
+  const [diffs, setDiffs] = useState<Difference[]>((saved?.differences ?? []) as Difference[]);
+  const toggle = (d: Difference) => setDiffs(diffs.includes(d) ? diffs.filter((x) => x !== d) : [...diffs, d]);
+  return (
+    <fieldset className="stack" data-testid="observation">
+      <legend>{tr("obs.title")}</legend>
+      <p>{tr("obs.q")}</p>
+      <div className="row">
+        {LIKENESS.map((l) => (
+          <button key={l} type="button" className={likeness === l ? "btn btn-primary" : "btn btn-secondary"} aria-pressed={likeness === l} onClick={() => setLikeness(l)} data-testid={`obs-${l}`}>
+            {tr(`obs.${l}` as "obs.like")}
+          </button>
+        ))}
+      </div>
+      <p>{tr("obs.diff")}</p>
+      <div className="row">
+        {DIFFERENCES.map((d) => (
+          <button key={d} type="button" className={diffs.includes(d) ? "btn btn-primary" : "btn btn-secondary"} aria-pressed={diffs.includes(d)} onClick={() => toggle(d)} data-testid={`obs-diff-${d}`}>
+            {tr(`obs.${d}` as "obs.quieter")}
+          </button>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="btn btn-primary"
+        disabled={!likeness}
+        data-testid="obs-save"
+        onClick={() => {
+          if (likeness) void saveObservation(id, { likeness, differences: diffs }, online).then(onSaved);
+        }}
+      >
+        {tr("obs.save")}
+      </button>
+      {saved ? (
+        <p role="status" data-testid="obs-state">
+          {saved.sent ? tr("obs.saved_sent") : tr("obs.saved_local")}
+        </p>
+      ) : null}
+      <p className="muted">{tr("obs.note")}</p>
+    </fieldset>
+  );
+}
+
 interface ReviewProps {
   onAgain: (seed: number) => void;
 }
 
 export function ReviewTab({ onAgain }: ReviewProps) {
-  const { tr, lang } = useApp();
+  const { tr, lang, online } = useApp();
   const [rows, setRows] = useState<TranscriptRow[] | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
   const [upto, setUpto] = useState(1);
 
-  const refresh = useCallback(async () => setRows(await listSessions()), []);
+  const refresh = useCallback(async () => {
+    await sendPendingObservations(online); // anything saved while offline goes out now
+    setRows(await listSessions());
+  }, [online]);
   useEffect(() => {
     void refresh();
   }, [refresh]);
@@ -158,6 +208,7 @@ export function ReviewTab({ onAgain }: ReviewProps) {
             </ul>
           </>
         ) : null}
+        <ObservationForm id={id} saved={open.observation} online={online} onSaved={() => void refresh()} />
         <ImpactPicker
           value={open.impact}
           onChange={(v) => {

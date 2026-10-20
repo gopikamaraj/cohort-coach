@@ -155,6 +155,20 @@ class SpeechCall(Base):
     error_kind: Mapped[str | None] = mapped_column(String(16))
 
 
+class SimObservation(Base):
+    """A teacher's view, after trying it in class, of how like her real class the simulated children
+    were. Choices only (no free text, no class or teacher id): a signal for tuning the simulator."""
+
+    __tablename__ = "sim_observations"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    scenario: Mapped[str] = mapped_column(String(12))
+    language: Mapped[str] = mapped_column(String(4))
+    likeness: Mapped[str] = mapped_column(String(10))  # like | some | not_like
+    differences: Mapped[list[str]] = mapped_column(JSON, default=list)
+
+
 class ReviewItem(Base):
     """AI content waiting for, or past, human review (track drafts, method cards)."""
 

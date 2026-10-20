@@ -6,6 +6,8 @@ import Audit from "./screens/Audit";
 import Home from "./screens/Home";
 import Practice from "./screens/Practice";
 import Judge from "./screens/Judge";
+import History from "./screens/History";
+import Programme from "./screens/Programme";
 import { StatusLine } from "./components/parts";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, useApp, type Role } from "./state";
@@ -39,6 +41,8 @@ function Shell() {
     { to: "/check", label: tr("nav.check") },
     { to: "/cards", label: tr("nav.cards") },
     { to: "/practice", label: tr("nav.practice") },
+    { to: "/programme", label: tr("nav.programme") },
+    { to: "/history", label: tr("nav.history") },
   ];
   return (
     <div className="stage">
@@ -89,13 +93,15 @@ function Shell() {
           {route === "/check" ? <Check /> : null}
           {route === "/cards" ? <Cards /> : null}
           {route === "/practice" ? <Practice /> : null}
+          {route === "/programme" ? <Programme /> : null}
+          {route === "/history" ? <History /> : null}
           {route === "/aimap" ? <AiMap /> : null}
           {route === "/audit" ? <Audit /> : null}
           {route === "/later" ? <Later /> : null}
         </main>
-        <nav className="tabs" aria-label={tr("common.menu")}>
+        <nav className="navbar" aria-label={tr("common.menu")}>
           {tabs.map((tab) => (
-            <a key={tab.to} href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "tab tab-on" : "tab"}>
+            <a key={tab.to} href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "navtab navtab-on" : "navtab"}>
               {tab.label}
             </a>
           ))}

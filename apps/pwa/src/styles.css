@@ -75,21 +75,76 @@ ul.cards {
   background: var(--paper);
   background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(157, 180, 210, 0.35) 31px, rgba(157, 180, 210, 0.35) 32px);
 }
+/* Larger screens: the same app grows into a centred column, never a fixed phone frame. */
 @media (min-width: 768px) {
   .stage {
     display: flex;
     justify-content: center;
-    padding: var(--s5) 0;
+    padding: var(--s5) var(--s4);
     background: #e9edf1;
   }
   .frame {
-    width: 392px;
-    height: min(780px, calc(100vh - 48px));
-    min-height: 0;
-    border: 16px solid var(--slate);
-    border-radius: 36px;
+    width: min(100%, 820px);
+    min-height: calc(100vh - 48px);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
     overflow: hidden;
   }
+  main {
+    padding: var(--s5) var(--s6);
+  }
+  .boxes {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .keypad {
+    max-width: 440px;
+  }
+}
+@media (min-width: 1200px) {
+  :root {
+    font-size: 19px;
+  }
+  .frame {
+    width: min(100%, 1000px);
+  }
+}
+@media (max-width: 359px) {
+  :root {
+    font-size: 16px;
+  }
+  .navtab {
+    padding: 0 var(--s2);
+    font-size: 16px;
+  }
+  .strip {
+    flex-wrap: wrap;
+  }
+}
+img,
+svg,
+table {
+  max-width: 100%;
+}
+.table-scroll {
+  overflow-x: auto;
+  margin: var(--s2) 0;
+}
+.table-scroll table {
+  border-collapse: collapse;
+  font-size: 16px;
+}
+.table-scroll th,
+.table-scroll td {
+  border: 1px solid var(--rule);
+  padding: 2px 6px;
+  text-align: center;
+}
+ol.prog {
+  padding-left: 0;
+  list-style: none;
+}
+.card {
+  overflow-wrap: anywhere;
 }
 
 .strip {
@@ -138,24 +193,26 @@ main {
   padding: var(--s4);
   background: rgba(251, 252, 253, 0.9);
 }
-.tabs {
+.navbar {
   display: flex;
+  overflow-x: auto;
   border-top: 1px solid var(--rule);
   background: var(--paper);
 }
-.tab {
-  flex: 1;
+.navtab {
+  flex: 1 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 56px;
-  padding: 0 var(--s1);
+  padding: 0 var(--s3);
   text-align: center;
   font-size: 16px;
+  white-space: nowrap;
   color: var(--muted);
   text-decoration: none;
 }
-.tab-on {
+.navtab-on {
   color: var(--pen);
   font-weight: 700;
   border-top: 4px solid var(--pen);
@@ -532,9 +589,6 @@ ol.steps li {
   opacity: 0.7;
 }
 
-.tabs { display: flex; gap: 8px; margin: 8px 0 12px; }
-.tab { flex: 1; min-height: 48px; border: 2px solid #cbd5e1; background: #fff; border-radius: 10px; font: inherit; }
-.tab-on { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
 .cue-line { text-align: left; width: 100%; margin: 4px 0; white-space: normal; height: auto; }
 .review-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin: 6px 0; text-align: left; height: auto; }
 .chip { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #e2e8f0; font-size: 0.85rem; }
@@ -542,3 +596,6 @@ ol.steps li {
 .chip-none { background: #e2e8f0; }
 .chip-negative { background: #fee2e2; }
 .impact .row { flex-wrap: wrap; }
+.subtabs { display: flex; gap: 8px; margin: 8px 0 12px; }
+.subtab { flex: 1; min-height: 48px; border: 2px solid #cbd5e1; background: #fff; border-radius: 10px; font: inherit; }
+.subtab-on { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
