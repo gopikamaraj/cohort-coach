@@ -15,6 +15,7 @@
 | Classroom observation (choices only) | Tune the simulator | Server table `sim_observations`, no id | While the product is improved | Admin | Consent `feedback` |
 | App, content and card feedback (rating, up to 500 characters) | Improve the app | Server table `feedback`, no name, class or device id; text refused if it holds a phone number, email or ID number | While the product is improved | Admin | Consent `feedback` |
 | Consent records | Prove what she agreed to | Her phone, and the server (`consents`) under a random device id | While the programme runs | Admin | Legal obligation to keep proof (*to confirm*) |
+| Cohort thread posts, display name, voice replies (P11, not built yet) | Peer support in a cohort | Server, private storage for voice; Telegram relay ids in an adapter-only table | Text 30 days after the cohort closes and at most 90 days after the last post; voice 30 days; held or hidden bodies 7 days | Cohort members see pseudonyms; coach and admin can map a pseudonym to a teacher; mentors and coaches never get teacher ids | Separate consent `cohort` (off by default); voice also needs the speech consent |
 | Data used (bytes) | Show her what the app costs | Her phone only | Until she clears it | Her only | Not sent |
 
 ## 2. DPDP principles and where each is met
