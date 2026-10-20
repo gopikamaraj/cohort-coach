@@ -2,7 +2,7 @@
 
 Usage:
   python scripts/i18n.py export [out.csv]  key, en, hi, ta per string (default docs/build/i18n.csv)
-  python scripts/i18n.py import in.csv     write hi, ta and en back into apps/pwa/src/i18n/*.json
+  python scripts/i18n.py import in.csv     write hi, ta and en back into strings/*.json
   python scripts/i18n.py todo [--check]    list keys missing or empty in hi or ta in i18n-todo.md
 
 English is the source of truth; a key with no Hindi or Tamil falls back to English in the app and
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-I18N = ROOT / "apps" / "pwa" / "src" / "i18n"
+I18N = ROOT / "strings"
 TODO = ROOT / "docs" / "build" / "i18n-todo.md"
 LANGS = ("en", "hi", "ta")
 HEADER = """# i18n to-do

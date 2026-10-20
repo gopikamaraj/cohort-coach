@@ -1,9 +1,9 @@
 // Typed strings in three languages. English is the source of truth: a key missing in hi or ta
 // falls back to English and is remembered (`missingKeys`) so it can be listed in
 // docs/build/i18n-todo.md by `python scripts/i18n.py todo`.
-import en from "./en.json";
-import hi from "./hi.json";
-import ta from "./ta.json";
+import en from "../../../../strings/en.json";
+import hi from "../../../../strings/hi.json";
+import ta from "../../../../strings/ta.json";
 
 export type Lang = "en" | "hi" | "ta";
 export const LANGS: readonly Lang[] = ["en", "hi", "ta"];

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { allTables, missingKeys, t, type Key } from "./index";
-import en from "./en.json";
+import en from "../../../../strings/en.json";
 
 const SRC = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
 

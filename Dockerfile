@@ -11,6 +11,7 @@ COPY engine ./engine
 COPY ai ./ai
 COPY services ./services
 COPY content ./content
+COPY strings ./strings
 COPY data/__init__.py ./data/__init__.py
 # The simulated block only: never raw pilot files.
 COPY data/synthetic ./data/synthetic

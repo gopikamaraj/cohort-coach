@@ -264,3 +264,51 @@ class ProfileSync(Base):
     untracked: Mapped[dict[str, Any]] = mapped_column(JSON)
     simulated: Mapped[bool] = mapped_column(Boolean, default=False)
     received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class Teacher(Base):
+    """One pseudonymous teacher across channels. No name, phone or handle is stored here."""
+
+    __tablename__ = "teachers"
+
+    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)  # "t-" + 16 random hex
+    lang: Mapped[str] = mapped_column(String(4), default="en")
+    consent: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)
+    judge: Mapped[bool] = mapped_column(Boolean, default=False)
+    class_id: Mapped[str | None] = mapped_column(String(20))  # the random class id her phone made
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ChannelLink(Base):
+    """Which chat or device is which teacher. Only a channel adapter's entry point reads this table:
+    chat ids are personal data and never join to anything shown to other people."""
+
+    __tablename__ = "channel_links"
+
+    channel: Mapped[str] = mapped_column(String(10), primary_key=True)  # pwa | telegram | whatsapp
+    external_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(ForeignKey("teachers.teacher_id"), index=True)
+
+
+class LinkCode(Base):
+    """A one-time code that joins a second channel to a teacher. Valid for 15 minutes, used once."""
+
+    __tablename__ = "link_codes"
+
+    code: Mapped[str] = mapped_column(String(8), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(ForeignKey("teachers.teacher_id"), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class FlowState(Base):
+    """Where a teacher is in a flow. `data` holds answers that are not child data (language, consent
+    choices, a few replay keys), never a child's answers."""
+
+    __tablename__ = "flow_state"
+
+    teacher_id: Mapped[str] = mapped_column(ForeignKey("teachers.teacher_id"), primary_key=True)
+    flow_id: Mapped[str] = mapped_column(String(20))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    step_id: Mapped[str] = mapped_column(String(30))
+    data: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
