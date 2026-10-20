@@ -5,11 +5,13 @@ import { isLang, t as translate, type Key, type Lang } from "./i18n";
 import { activeClass, clearPhone, db, getSetting, setSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
 import { demoChildren, DEMO_FORM } from "./lib/demo";
 import { finishCheck } from "./lib/check";
-import { flush, pendingCount } from "./lib/sync";
+import { pendingCount } from "./lib/sync";
+import { flushAllowed } from "./lib/sendnow";
+import { requestPersistence } from "./lib/storage";
 import { isOnline, setForcedOffline, useForcedOffline, useOnline } from "./lib/net";
 
-export type Role = "teacher" | "mentor" | "officer" | "judge";
-const ROLES: readonly Role[] = ["teacher", "mentor", "officer", "judge"];
+export type Role = "teacher" | "coach" | "mentor" | "admin" | "judge";
+export const ROLES: readonly Role[] = ["judge", "teacher", "coach", "mentor", "admin"];
 
 interface AppState {
   lang: Lang;
@@ -72,8 +74,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Load on open, and send what is waiting whenever a signal is there.
   useEffect(() => {
+    void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
     void reload().then(async () => {
-      await flush(isOnline());
+      await flushAllowed(isOnline());
       setPending(await pendingCount());
     });
   }, [reload, online]);
@@ -103,7 +106,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await db.checks.put({ id: `${row.id}:${termNow}`, classId: row.id, term: termNow, formKey: DEMO_FORM, children: rows, updatedAt: Date.now() });
     await finishCheck(row.id, termNow, DEMO_FORM, rows, true);
     await reload();
-    await flush(isOnline());
+    await flushAllowed(isOnline());
     setPending(await pendingCount());
   }, [reload]);
 
@@ -128,7 +131,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       forcedOffline,
       setOffline: (on: boolean) => {
         setForcedOffline(on);
-        if (!on) void flush(isOnline()).then(reload);
+        if (!on) void flushAllowed(isOnline()).then(reload);
       },
       klass,
       profile,

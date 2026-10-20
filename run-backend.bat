@@ -2,6 +2,8 @@
 rem Starts the Cohort Coach API on http://localhost:8000 (auto-reloads on code changes).
 rem Reads settings from .env (AI_MODE, SPEECH_MODE, keys). Stop with Ctrl+C.
 cd /d "%~dp0"
+rem Local testing only: leaves the admin page open. A real server sets ADMIN_KEY instead.
+set ADMIN_OPEN=1
 if not exist ".venv\Scripts\python.exe" (
   echo The Python environment is missing. Run: python tasks.py setup
   pause

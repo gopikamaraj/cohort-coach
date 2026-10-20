@@ -4,9 +4,11 @@
 import { useCallback, useEffect, useState } from "react";
 import type { TranscriptRow } from "../lib/db";
 import type { FeedbackCard, PracticeMove } from "../lib/practice";
+import { hasConsent } from "../lib/consent";
 import { DIFFERENCES, LIKENESS, saveObservation, sendPendingObservations, type Difference, type Likeness } from "../lib/observation";
 import { deleteAllSessions, deleteSession, IMPACTS, impactCounts, listSessions, moveCounts, setImpact, turnsOf, type Impact } from "../lib/review";
 import { useApp } from "../state";
+import { useConsent } from "../lib/useConsent";
 
 export type PracticeTab = "practise" | "review";
 
@@ -84,6 +86,7 @@ export function CuePanel({ moves, onUse }: { moves: PracticeMove[]; onUse: (line
 /** After she has tried it in class: were the real children like the pretend ones? Choices only. */
 export function ObservationForm({ id, saved, online, onSaved }: { id: number; saved: TranscriptRow["observation"]; online: boolean; onSaved: () => void }) {
   const { tr } = useApp();
+  const sharing = Boolean(useConsent()?.feedback);
   const [likeness, setLikeness] = useState<Likeness | undefined>(saved?.likeness);
   const [diffs, setDiffs] = useState<Difference[]>((saved?.differences ?? []) as Difference[]);
   const toggle = (d: Difference) => setDiffs(diffs.includes(d) ? diffs.filter((x) => x !== d) : [...diffs, d]);
@@ -112,7 +115,7 @@ export function ObservationForm({ id, saved, online, onSaved }: { id: number; sa
         disabled={!likeness}
         data-testid="obs-save"
         onClick={() => {
-          if (likeness) void saveObservation(id, { likeness, differences: diffs }, online).then(onSaved);
+          if (likeness) void saveObservation(id, { likeness, differences: diffs }, online && sharing).then(onSaved);
         }}
       >
         {tr("obs.save")}
@@ -122,7 +125,7 @@ export function ObservationForm({ id, saved, online, onSaved }: { id: number; sa
           {saved.sent ? tr("obs.saved_sent") : tr("obs.saved_local")}
         </p>
       ) : null}
-      <p className="muted">{tr("obs.note")}</p>
+      <p className="muted">{sharing ? tr("obs.note") : tr("obs.need_consent")}</p>
     </fieldset>
   );
 }
@@ -138,7 +141,7 @@ export function ReviewTab({ onAgain }: ReviewProps) {
   const [upto, setUpto] = useState(1);
 
   const refresh = useCallback(async () => {
-    await sendPendingObservations(online); // anything saved while offline goes out now
+    await sendPendingObservations(online && hasConsent("feedback")); // anything saved while offline goes out now
     setRows(await listSessions());
   }, [online]);
   useEffect(() => {

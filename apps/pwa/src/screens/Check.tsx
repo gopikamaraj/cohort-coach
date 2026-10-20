@@ -5,10 +5,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BLANK, enteredChildren, finishCheck, hasAnswers, UNREADABLE } from "../lib/check";
 import { activeClass, db, getSetting } from "../lib/db";
 import { keys } from "../lib/diagnosis";
-import { flush } from "../lib/sync";
+import { flushAllowed } from "../lib/sendnow";
+import { hasConsent } from "../lib/consent";
 import { isOnline } from "../lib/net";
 import { go } from "../lib/router";
 import { Keypad, SimulatedBanner } from "../components/parts";
+import { Icon } from "../components/icons";
 import { applyReads, downscale, readSheet, SheetError } from "../lib/sheets";
 import { useApp } from "../state";
 
@@ -93,6 +95,10 @@ export default function Check() {
     const file = event.target.files?.[0];
     event.target.value = ""; // the same photo can be chosen again
     if (!file || !formKey) return;
+    if (!hasConsent("core")) {
+      setPhotoNote("check.photo_need_notice");
+      return;
+    }
     if (!isOnline()) {
       setPhotoNote("check.photo_offline");
       return;
@@ -128,7 +134,7 @@ export default function Check() {
     const termNow = await getSetting("term", term);
     await finishCheck(cls.id, termNow, formKey, rows, cls.simulated);
     await reload();
-    void flush(isOnline()).then(reload);
+    void flushAllowed(isOnline()).then(reload);
     go("/cards");
   };
 
@@ -176,7 +182,7 @@ export default function Check() {
         ))}
       </div>
       <label className={reading ? "btn btn-secondary photo-btn is-busy" : "btn btn-secondary photo-btn"} data-testid="photo-label">
-        {reading ? tr("check.photo_reading") : tr("check.photo")}
+        <Icon name="camera" /> <span>{reading ? tr("check.photo_reading") : tr("check.photo")}</span>
         <input type="file" accept="image/*" capture="environment" className="sr" onChange={(e) => void onPhoto(e)} disabled={reading} data-testid="photo-input" />
       </label>
       {photoNote ? (

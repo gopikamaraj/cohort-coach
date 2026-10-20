@@ -9,34 +9,32 @@ import Judge from "./screens/Judge";
 import History from "./screens/History";
 import Programme from "./screens/Programme";
 import { StatusLine } from "./components/parts";
+import { Icon } from "./components/icons";
+import { ToastProvider } from "./components/toast";
+import Admin from "./screens/Admin";
+import PrivacyNotice from "./screens/PrivacyNotice";
+import Profile from "./screens/Profile";
+import { Coach, Mentor } from "./screens/RoleScreens";
 import { go, href, useRoute, type Route } from "./lib/router";
-import { AppProvider, useApp, type Role } from "./state";
+import { AppProvider, ROLES, useApp, type Role } from "./state";
 
 const ROLE_HOME: Record<Role, Route> = {
   teacher: "/home",
   judge: "/judge",
-  mentor: "/later",
-  officer: "/later",
+  mentor: "/mentor",
+  coach: "/coach",
+  admin: "/admin",
 };
 
-function Later() {
-  const { tr, role } = useApp();
-  return (
-    <section aria-labelledby="later-title">
-      <h1 id="later-title">{tr(`role.${role}`)}</h1>
-      <p data-testid="later">{tr("role.later")}</p>
-      <a className="btn btn-primary" href={href("/home")}>
-        {tr("nav.home")}
-      </a>
-    </section>
-  );
-}
+const ICONS: Record<string, string> = {
+  "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin",
+};  // fmt: skip
 
 function Shell() {
   const route = useRoute();
   const { tr, role, setRole, lang, setLang } = useApp();
-  const tabs: { to: Route; label: string }[] = [
-    ...(role === "judge" ? [{ to: "/judge" as Route, label: tr("role.judge") }] : []),
+  const teacherTabs: { to: Route; label: string }[] = [
     { to: "/home", label: tr("nav.home") },
     { to: "/check", label: tr("nav.check") },
     { to: "/cards", label: tr("nav.cards") },
@@ -44,6 +42,15 @@ function Shell() {
     { to: "/programme", label: tr("nav.programme") },
     { to: "/history", label: tr("nav.history") },
   ];
+  const mine = { to: "/profile" as Route, label: tr("nav.profile") };
+  const byRole: Record<Role, { to: Route; label: string }[]> = {
+    teacher: [...teacherTabs, mine],
+    mentor: [{ to: "/mentor", label: tr("role.mentor") }, ...teacherTabs, mine],
+    coach: [{ to: "/coach", label: tr("role.coach") }, mine],
+    admin: [{ to: "/admin", label: tr("role.admin") }, mine],
+    judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/admin", label: tr("role.admin") }, mine],
+  };
+  const tabs = byRole[role];
   return (
     <div className="stage">
       <div className="frame">
@@ -59,7 +66,7 @@ function Shell() {
                 go(ROLE_HOME[next]);
               }}
             >
-              {(["judge", "teacher", "mentor", "officer"] as Role[]).map((r) => (
+              {ROLES.map((r) => (
                 <option key={r} value={r}>
                   {tr(`role.${r}`)}
                 </option>
@@ -97,12 +104,17 @@ function Shell() {
           {route === "/history" ? <History /> : null}
           {route === "/aimap" ? <AiMap /> : null}
           {route === "/audit" ? <Audit /> : null}
-          {route === "/later" ? <Later /> : null}
+          {route === "/profile" ? <Profile /> : null}
+          {route === "/privacy" ? <PrivacyNotice /> : null}
+          {route === "/admin" ? <Admin /> : null}
+          {route === "/coach" ? <Coach /> : null}
+          {route === "/mentor" ? <Mentor /> : null}
         </main>
         <nav className="navbar" aria-label={tr("common.menu")}>
           {tabs.map((tab) => (
             <a key={tab.to} href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "navtab navtab-on" : "navtab"}>
-              {tab.label}
+              <Icon name={ICONS[tab.to] ?? "info"} />
+              <span>{tab.label}</span>
             </a>
           ))}
         </nav>
@@ -114,7 +126,9 @@ function Shell() {
 export default function App() {
   return (
     <AppProvider>
-      <Shell />
+      <ToastProvider>
+        <Shell />
+      </ToastProvider>
     </AppProvider>
   );
 }

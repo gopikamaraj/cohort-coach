@@ -3,15 +3,19 @@
 // "this is wrong" flag. The flag is kept on the phone for now: these cards are made by code.
 import { useState } from "react";
 import { buildCards } from "../lib/cards";
-import { db } from "../lib/db";
+import { IconButton } from "../components/icons";
+import { useToast } from "../components/toast";
+import { sendFeedback } from "../lib/feedback";
+import { useConsent } from "../lib/useConsent";
 import { Sticks, SimulatedBanner } from "../components/parts";
 import { href } from "../lib/router";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
 
 export default function Cards() {
-  const { tr, klass, profile, check } = useApp();
-  const [soon, setSoon] = useState<string | null>(null);
+  const { tr, lang, role, online, klass, profile, check } = useApp();
+  const toast = useToast();
+  const consent = useConsent();
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
 
   if (!profile) {
@@ -28,9 +32,13 @@ export default function Cards() {
 
   const view = buildCards(profile, check ? check.children : null);
   const flag = (code: string) => {
+    if (!consent?.feedback) {
+      toast(tr("feedback.need_consent"));
+      return;
+    }
     setFlagged(new Set(flagged).add(code));
-    // Kept on the phone and queued: no free text, just which card.
-    void db.syncQueue.add({ kind: "flag", classId: profile.classId, payload: { card: code, term: profile.term }, createdAt: Date.now(), tries: 0 });
+    // No free text, just which card; the admin reviews it.
+    void sendFeedback({ kind: "card_flag", language: lang, role, context: code }, online).then(() => toast(tr("cards.flagged"), "ok"));
   };
 
   return (
@@ -54,15 +62,9 @@ export default function Cards() {
               {c.example ? <p className="example">{tr("cards.example", { example: c.example })}</p> : null}
               {c.isFocus ? <p className="focus">{tr("cards.focus")}</p> : null}
               <div className="row">
-                <button type="button" className="btn btn-secondary" onClick={() => setSoon(c.code)}>
-                  {tr("cards.audio")}
-                </button>
-                <button type="button" className="btn btn-flag" onClick={() => flag(c.code)} disabled={flagged.has(c.code)}>
-                  {tr("cards.flag")}
-                </button>
+                <IconButton icon="speaker" label={tr("cards.audio")} iconOnly testId={`listen-${c.code}`} onClick={() => toast(tr("cards.audio_soon"))} />
+                <IconButton icon="flag" label={tr("cards.flag")} iconOnly variant="flag" testId={`flag-${c.code}`} onClick={() => flag(c.code)} disabled={flagged.has(c.code)} />
               </div>
-              {soon === c.code ? <p className="muted" role="status">{tr("cards.audio_soon")}</p> : null}
-              {flagged.has(c.code) ? <p role="status">{tr("cards.flagged")}</p> : null}
             </li>
           );
         })}

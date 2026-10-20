@@ -5,6 +5,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChildrenRow, FeedbackView, LayersPanel, Materials } from "../components/practice";
 import { CuePanel, ImpactPicker, PracticeTabs, ReviewTab, type PracticeTab } from "../components/review";
 import { LANG_NAMES, type Lang } from "../i18n";
+import { Icon } from "../components/icons";
+import { getConsent, setConsent, recordOnServer, type Choices } from "../lib/consent";
+import { useConsent } from "../lib/useConsent";
+import { sendFeedback } from "../lib/feedback";
 import { setImpact, type Impact } from "../lib/review";
 import { SimulatedBanner } from "../components/parts";
 import { db, getSetting, setSetting } from "../lib/db";
@@ -72,6 +76,7 @@ export default function Practice() {
   const [share, setShare] = useState(false);
   const [showLayers, setShowLayers] = useState(() => localStorage.getItem("cc.layers") === "1");
   const [sample, setSample] = useState<Sample | null>(null);
+  const consent = useConsent();
   const [tab, setTab] = useState<PracticeTab>("practise");
   const [cueOpen, setCueOpen] = useState(false);
   const [goalOpen, setGoalOpen] = useState(true); // open until she says her first line, then out of the way
@@ -303,8 +308,12 @@ export default function Practice() {
     if (rowId.current !== null) void db.transcripts.update(rowId.current, { ratings: next });
   };
   const flag = () => {
+    if (!consent?.feedback) {
+      setNotice("feedback.need_consent");
+      return;
+    }
     setFlagged(true);
-    void db.syncQueue.add({ kind: "flag", classId: klass?.id ?? "none", payload: { card: "practice", term: profile?.term ?? 1 }, createdAt: Date.now(), tries: 0 });
+    void sendFeedback({ kind: "card_flag", language: lang, role, context: "practice" }, online);
   };
   const toggleLayers = () => {
     const next = !showLayers;
@@ -346,8 +355,29 @@ export default function Practice() {
         {banner}
         <p>{tr("practice.intro")}</p>
         <p data-testid="goal-intro">{tr("practice.goal_line", { error: tr(`err.desc.${scenarioFor(profile?.track ?? null)}` as "err.desc.SUB-SFL") })}</p>
-        <button type="button" className="btn btn-primary" onClick={() => void start()} disabled={phase === "starting"} data-testid="start-practice">
-          {phase === "starting" ? tr("practice.starting") : tr("practice.start")}
+        {consent?.practice_ai ? null : (
+          <div className="panel notice-card" data-testid="practice-consent">
+            <h2>
+              <Icon name="shield" /> <span>{tr("practice.consent_title")}</span>
+            </h2>
+            <p>{tr("practice.consent_body")}</p>
+          </div>
+        )}
+        <button
+          type="button"
+          className="btn btn-primary btn-with-icon"
+          onClick={() => {
+            if (!consent?.practice_ai) {
+              const before = getConsent();
+              const base: Choices = { core: true, counts: false, practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
+              void recordOnServer(before, setConsent({ ...base, core: true, practice_ai: true }));
+            }
+            void start();
+          }}
+          disabled={phase === "starting"}
+          data-testid="start-practice"
+        >
+          <Icon name="practice" /> <span>{phase === "starting" ? tr("practice.starting") : consent?.practice_ai ? tr("practice.start") : tr("practice.consent_allow")}</span>
         </button>
         <label className="check">
           <input
@@ -488,8 +518,8 @@ export default function Practice() {
       {session ? <Materials items={session.materials} disabled={busy || over !== null} onTap={tap} /> : null}
       {session ? (
         <>
-          <button type="button" className="btn btn-secondary" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
-            {cueOpen ? tr("cue.hide") : tr("cue.button")}
+          <button type="button" className="btn btn-secondary btn-with-icon" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
+            <Icon name="bulb" /> <span>{cueOpen ? tr("cue.hide") : tr("cue.button")}</span>
           </button>
           {cueOpen ? (
             <CuePanel

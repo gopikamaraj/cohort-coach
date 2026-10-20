@@ -37,7 +37,7 @@ async function enterCheck(page: Page, rows: string[][]) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}')));
 });
 
 test("judge mode loads a simulated class: Home, then cards with counts, never a percentage", async ({ page }) => {
@@ -178,10 +178,14 @@ test("Advance to Term 2 starts a new term for the simulated class", async ({ pag
   await expect(page.getByTestId("line-SUB-SFL")).toHaveText("6 of 28 children take the smaller digit from the larger.");
 });
 
-test("mentor and officer screens say they come later; role switching works", async ({ page }) => {
+test("each role has its own home, and role switching works", async ({ page }) => {
   await page.goto("/#/judge");
   await page.getByTestId("role").selectOption("mentor");
-  await expect(page.getByTestId("later")).toContainText("built in a later step");
+  await expect(page.getByTestId("mentor")).toBeVisible();
+  await page.getByTestId("role").selectOption("coach");
+  await expect(page.getByTestId("coach")).toBeVisible();
+  await page.getByTestId("role").selectOption("admin");
+  await expect(page.getByTestId("admin")).toBeVisible();
   await page.getByTestId("role").selectOption("teacher");
   await expect(page.getByRole("heading", { name: "Home" })).toBeVisible();
 });

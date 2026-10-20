@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ai.config import load_env
+from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
 from services.api.practice import router as practice_router
 from services.api.profiles import router as profiles_router
@@ -23,11 +24,12 @@ if origin := os.environ.get("PWA_ORIGIN"):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[origin.rstrip("/")],
-        allow_methods=["GET", "POST"],
-        allow_headers=["Content-Type"],
+        allow_methods=["GET", "POST", "PATCH", "DELETE"],
+        allow_headers=["Content-Type", "X-Admin-Key"],
         allow_credentials=False,
     )
 app.include_router(judge_router)
+app.include_router(feedback_router)
 app.include_router(practice_router)
 app.include_router(profiles_router)
 app.include_router(programme_router)

@@ -41,7 +41,7 @@ export interface ProfileRow {
 
 export interface QueueRow {
   id?: number;
-  kind: "profile" | "flag";
+  kind: "profile" | "flag" | "feedback";
   classId: string;
   payload: Record<string, unknown>;
   createdAt: number;

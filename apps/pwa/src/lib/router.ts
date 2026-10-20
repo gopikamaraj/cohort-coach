@@ -2,12 +2,12 @@
 // server rewrite, so a static host and the offline cache both serve every screen.
 import { useSyncExternalStore } from "react";
 
-export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/later";
-export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/later"];
+export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor";
+export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor"];
 
 function current(): Route {
   const raw = window.location.hash.replace(/^#/, "").split("?")[0] ?? "";
-  const path = raw.startsWith("/later") ? "/later" : raw;
+  const path = raw;
   return (ROUTES as readonly string[]).includes(path) ? (path as Route) : "/judge";
 }
 

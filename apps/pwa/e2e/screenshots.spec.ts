@@ -14,7 +14,7 @@ for (const lang of ["en", "hi", "ta"] as const) {
     mkdirSync(OUT, { recursive: true });
     await page.goto("/");
     await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
     await page.goto("/#/judge");
@@ -39,7 +39,7 @@ test("the desktop view puts the phone in a frame", async ({ page }) => {
   await page.setViewportSize({ width: 1100, height: 860 });
   await page.goto("/");
   await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
   await page.goto("/#/judge");
@@ -53,7 +53,7 @@ test("Practice Class screenshots: intro, a turn with the AI layers, feedback, AI
   mkdirSync(OUT, { recursive: true });
   await page.goto("/");
   await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
   await page.goto("/#/practice?seed=5");
@@ -96,7 +96,7 @@ for (const lang of ["hi", "ta"] as const) {
     mkdirSync(OUT, { recursive: true });
     await page.goto("/");
     await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
     await page.goto("/#/practice");

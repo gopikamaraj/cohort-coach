@@ -48,7 +48,7 @@ async function rehearse(page: Page, turns: TurnJson[]) {
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
 });
@@ -196,7 +196,11 @@ test("the AI map shows 8 calls by 5 layers and the audit trail shows metadata on
   for (const line of LINES.filter((l) => !l.startsWith("/tap"))) expect(text).not.toContain(line);
 });
 
-test("feedback thumbs and the flag are kept on the phone; sharing is off by default and remembered", async ({ page }) => {
+test("feedback thumbs stay on the phone, the flag goes to the team; sharing is off by default and remembered", async ({ page }) => {
+  const flags: string[] = [];
+  page.on("request", (r) => {
+    if (/\/api\/feedback$/.test(r.url())) flags.push(r.postData() ?? "");
+  });
   await page.goto("/#/practice?seed=5");
   const share = page.getByRole("checkbox");
   await expect(share).not.toBeChecked(); // off by default
@@ -212,7 +216,9 @@ test("feedback thumbs and the flag are kept on the phone; sharing is off by defa
   await page.getByTestId("strength-0").getByRole("button", { name: /Helpful/ }).first().click();
   await expect(page.getByText("Thanks for telling us.")).toBeVisible();
   await page.getByRole("button", { name: "This is wrong" }).click();
-  await expect(page.getByText("This card is marked on your phone")).toBeVisible();
+  await expect(page.getByText("The team will review this card")).toBeVisible();
+  await expect.poll(() => flags.length).toBe(1);
+  expect(JSON.parse(flags[0]!)).toMatchObject({ kind: "card_flag", context: "practice" });
   const kept = await page.evaluate(
     () =>
       new Promise<{ ratings?: Record<string, string>; flags: number }>((resolve, reject) => {
@@ -228,7 +234,7 @@ test("feedback thumbs and the flag are kept on the phone; sharing is off by defa
       }),
   );
   expect(Object.values(kept.ratings ?? {})).toContain("up");
-  expect(kept.flags).toBe(1);
+  expect(kept.flags).toBe(0); // it went to the team, not into the phone queue
 });
 
 test("the screen says what she is practising and lists the moves to try", async ({ page }) => {

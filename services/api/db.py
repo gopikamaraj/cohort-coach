@@ -169,6 +169,25 @@ class SimObservation(Base):
     differences: Mapped[list[str]] = mapped_column(JSON, default=list)
 
 
+class Feedback(Base):
+    """App, simulation, content and card feedback. Anonymous: no user, class or device id."""
+
+    __tablename__ = "feedback"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    kind: Mapped[str] = mapped_column(
+        String(12), index=True
+    )  # app | simulation | content | card_flag
+    rating: Mapped[int | None] = mapped_column(Integer)
+    text: Mapped[str | None] = mapped_column(String(500))
+    language: Mapped[str] = mapped_column(String(4))
+    role: Mapped[str] = mapped_column(String(10))
+    context: Mapped[str | None] = mapped_column(String(40))  # e.g. the error code of a flagged card
+    status: Mapped[str] = mapped_column(String(10), default="new", index=True)  # new | reviewed
+    admin_note: Mapped[str | None] = mapped_column(String(300))
+
+
 class ReviewItem(Base):
     """AI content waiting for, or past, human review (track drafts, method cards)."""
 
@@ -216,7 +235,7 @@ class Consent(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     subject_id: Mapped[str] = mapped_column(index=True)
-    scope: Mapped[str]  # share_rehearsal | mentor_method | mentor_contact
+    scope: Mapped[str]  # e.g. counts.v1, practice_ai.v1, share_rehearsal.v1, feedback.v1, core.v1
     granted: Mapped[bool]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 

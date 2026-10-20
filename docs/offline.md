@@ -51,3 +51,9 @@ Throttled mobile Lighthouse figures (emulated phone, simulated slow 4G, CPU slow
 | What I entered | Works fully (reads this phone) | Nothing |
 | My programme | Shows the steps known on this phone; cohort and lessons need the server | Cohort and lesson status |
 | Class observation | Saved on the phone, sent when online | The send |
+
+| Screen | Offline | Needs a connection for |
+| --- | --- | --- |
+| My profile (classes, backup, data used, privacy) | Works fully | Only sending feedback, which queues until online |
+| Privacy notice | Works fully | Nothing |
+| Admin and Coach | No | Everything (they read the server) |
