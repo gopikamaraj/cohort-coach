@@ -15,6 +15,7 @@ import Admin from "./screens/Admin";
 import PrivacyNotice from "./screens/PrivacyNotice";
 import Profile from "./screens/Profile";
 import { Coach, Mentor } from "./screens/RoleScreens";
+import Flow from "./screens/Flow";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
 
@@ -109,6 +110,7 @@ function Shell() {
           {route === "/admin" ? <Admin /> : null}
           {route === "/coach" ? <Coach /> : null}
           {route === "/mentor" ? <Mentor /> : null}
+          {route === "/flow" ? <Flow /> : null}
         </main>
         <nav className="navbar" aria-label={tr("common.menu")}>
           {tabs.map((tab) => (

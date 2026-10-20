@@ -6,6 +6,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ai.config import load_env
+from services.api.channels.pwa import router as flow_router
+from services.api.channels.telegram.webhook import router as telegram_router
 from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
 from services.api.practice import router as practice_router
@@ -25,10 +27,12 @@ if origin := os.environ.get("PWA_ORIGIN"):
         CORSMiddleware,
         allow_origins=[origin.rstrip("/")],
         allow_methods=["GET", "POST", "PATCH", "DELETE"],
-        allow_headers=["Content-Type", "X-Admin-Key"],
+        allow_headers=["Content-Type", "X-Admin-Key", "X-Device-Id", "X-Judge"],
         allow_credentials=False,
     )
 app.include_router(judge_router)
+app.include_router(flow_router)
+app.include_router(telegram_router)
 app.include_router(feedback_router)
 app.include_router(practice_router)
 app.include_router(profiles_router)

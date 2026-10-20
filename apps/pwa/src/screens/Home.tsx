@@ -43,6 +43,9 @@ export default function Home() {
             <a className="tile" href={href("/history")} data-testid="home-history">
               <Icon name="history" size={28} /> <span>{tr("home.action.history")}</span>
             </a>
+            <a className="tile" href={href("/flow")} data-testid="home-flow">
+              <Icon name="practice" size={28} /> <span>{tr("home.action.flow")}</span>
+            </a>
             <a className="tile" href={href("/profile")} data-testid="home-profile">
               <Icon name="profile" size={28} /> <span>{tr("home.action.profile")}</span>
             </a>
