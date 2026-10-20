@@ -57,6 +57,9 @@ def process(db: Session, update: dict[str, Any], sender: Sender) -> None:
         if teacher is not None:
             _send_all(sender, chat_id, eng.start(teacher))
             return
+    if text.split()[0:1] == ["/stop"]:
+        _send_all(sender, chat_id, eng.ask_delete(eng.teacher_for("telegram", chat_id)))
+        return
     judge = arg.lower() == "judge"
     teacher = eng.teacher_for("telegram", chat_id, judge=judge)
     _send_all(sender, chat_id, eng.start(teacher))

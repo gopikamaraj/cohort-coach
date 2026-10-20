@@ -15,7 +15,7 @@ from typing import Any
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from services.api.db import ChannelLink, FlowState, LinkCode, ProfileSync, Teacher
+from services.api.db import ChannelLink, Consent, FlowState, LinkCode, ProfileSync, Teacher
 from services.api.flows import facts
 from services.api.flows.steps import Answer, Flow, Step
 
@@ -126,6 +126,12 @@ class FlowEngine:
         tid = teacher.teacher_id
         if teacher.class_id:
             self.db.execute(delete(ProfileSync).where(ProfileSync.class_id == teacher.class_id))
+        devices = [
+            r.external_id
+            for r in self.db.query(ChannelLink).filter_by(teacher_id=tid, channel="pwa")
+        ]
+        if devices:  # her consent history goes too: erasure means erasure
+            self.db.execute(delete(Consent).where(Consent.subject_id.in_(devices)))
         self.db.execute(delete(LinkCode).where(LinkCode.teacher_id == tid))
         self.db.execute(delete(ChannelLink).where(ChannelLink.teacher_id == tid))
         self.db.execute(delete(FlowState).where(FlowState.teacher_id == tid))
@@ -192,6 +198,12 @@ class FlowEngine:
         back = self.flows[st.flow_id].nodes[st.step_id].reentry
         if back:
             st.step_id = back
+        return self._turn(teacher, self._emit(teacher, st, self._ctx(teacher, st)))
+
+    def ask_delete(self, teacher: Teacher) -> Turn:
+        """/stop: go to the delete confirmation. Nothing is deleted until she confirms."""
+        st = self._state(teacher)
+        self._go(st, "t1:confirm_delete")
         return self._turn(teacher, self._emit(teacher, st, self._ctx(teacher, st)))
 
     def answer(self, teacher: Teacher, step_id: str, value: str, key: str | None = None) -> Turn:

@@ -57,3 +57,10 @@ Throttled mobile Lighthouse figures (emulated phone, simulated slow 4G, CPU slow
 | My profile (classes, backup, data used, privacy) | Works fully | Only sending feedback, which queues until online |
 | Privacy notice | Works fully | Nothing |
 | Admin and Coach | No | Everything (they read the server) |
+
+## Step-by-step flows (P05)
+
+`/api/flow/answer` takes an idempotency key, so an answer resent after a dropped connection changes
+nothing the second time (tested at the API level). The web screen needs a connection to load the
+next step; the PWA outbox that queues answers offline is not built for this path yet (P08). In
+Telegram, messages sent while offline are held by Telegram and arrive when the phone reconnects.

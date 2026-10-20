@@ -46,3 +46,9 @@ Models and per-call policies (timeout, retries, effort, max tokens) are in `ai/c
 ## Data stored by the AI layer
 
 Tables `ai_calls`, `review_items`, `review_decisions`, `teacher_flags`, `consents` (`services/api/db.py`). None holds a child's data, a rehearsal transcript, a photo or teacher free text. See `docs/guardrails.md` for what the audit trail does and does not hold.
+
+## Channels (v3, P05)
+
+One back end, three thin adapters; the diagram and the table of files are in [channels.md](channels.md).
+The flow engine owns state, consent, linking and deletion; adapters render steps and return answers,
+and a test fails if one imports `engine/` or `ai/`.

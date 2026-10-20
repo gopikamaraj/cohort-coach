@@ -71,3 +71,17 @@ def test_signed_links_verify_and_a_changed_token_does_not() -> None:
     assert verify(token[:-2] + "xx") is None
     assert verify("garbage") is None
     assert verify(sign({"lang": "ta"}, ttl_s=-1)) is None  # expired
+
+
+def test_delete_also_removes_her_consent_history_and_stop_asks_first(db: Session) -> None:
+    from services.api.db import Consent
+
+    eng = FlowEngine(db)
+    t = eng.teacher_for("pwa", DEVICE)
+    onboard(eng, t, "en")
+    db.add(Consent(subject_id=DEVICE, scope="counts.v1", granted=True))
+    db.commit()
+    assert eng.ask_delete(t).steps[-1].id == "confirm_delete"
+    assert db.query(Teacher).count() == 1  # asking deletes nothing
+    eng.answer(t, "confirm_delete", "yes")
+    assert db.query(Consent).filter_by(subject_id=DEVICE).count() == 0

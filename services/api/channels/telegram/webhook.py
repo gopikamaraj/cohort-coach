@@ -7,6 +7,7 @@ no secret configured the route is closed. Replies go out over the Bot API with h
 from __future__ import annotations
 
 import hmac
+import logging
 import os
 from typing import Any
 
@@ -17,6 +18,9 @@ from sqlalchemy.orm import Session
 from services.api.channels.base import Message
 from services.api.channels.telegram import keyboard, process
 from services.api.profiles import SESSION
+
+# httpx logs request URLs at INFO, and the bot token is in the URL.
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 router = APIRouter(prefix="/api/telegram", tags=["telegram"])
 
@@ -32,9 +36,12 @@ class HttpSender:
         payload: dict[str, Any] = {"chat_id": chat_id, "text": message.text}
         if rows:
             payload["reply_markup"] = {"inline_keyboard": rows}
-        httpx.post(
-            f"https://api.telegram.org/bot{self.token}/sendMessage", json=payload, timeout=10
-        )
+        try:
+            httpx.post(
+                f"https://api.telegram.org/bot{self.token}/sendMessage", json=payload, timeout=10
+            )
+        except httpx.HTTPError:  # not re-raised: the error text would carry the token URL
+            pass
 
 
 @router.post("/webhook")

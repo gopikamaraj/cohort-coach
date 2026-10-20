@@ -13,6 +13,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session, sessionmaker
 
+from services.api import strings
 from services.api.channels import telegram, whatsapp
 from services.api.channels.base import Button, Message, parse_button, render_step
 from services.api.db import Base, FlowState, Teacher, make_engine
@@ -205,3 +206,25 @@ def test_the_telegram_webhook_is_closed_without_the_secret(
     monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "x")
     bad = {"X-Telegram-Bot-Api-Secret-Token": "wrong"}
     assert client.post("/api/telegram/webhook", json=upd, headers=bad).status_code == 403
+
+
+def test_a_judge_session_shows_the_simulated_label_in_both_channels(
+    world: tuple[TestClient, sessionmaker[Session]],
+) -> None:
+    client, factory = world
+    h = {"X-Device-Id": DEVICE, "X-Judge": "1"}
+    client.get("/api/flow/current", headers=h)
+    for step_id, value in SCRIPT[:5]:
+        client.post("/api/flow/answer", headers=h, json={"step_id": step_id, "value": value})
+    web = client.get("/api/flow/current", headers=h).json()["messages"]
+    with factory() as db:
+        fake = Fake()
+        telegram.process(db, {"message": {"chat": {"id": 8}, "text": "/start judge"}}, fake)
+        for i, (step_id, value) in enumerate(SCRIPT[:5]):
+            cb = {"id": str(i), "data": f"{step_id}:{value}", "message": {"chat": {"id": 8}}}
+            telegram.process(db, {"callback_query": cb}, fake)
+        fake.sent.clear()
+        telegram.process(db, {"message": {"chat": {"id": 8}, "text": "/start"}}, fake)
+    label = strings.text("hi", "common.simulated")
+    assert web[0]["text"].startswith(label) and fake.sent[0].text.startswith(label)
+    assert shape(fake.sent[0])[1] == shape(_msg(web[0]))[1]
