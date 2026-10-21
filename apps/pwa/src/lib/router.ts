@@ -2,12 +2,12 @@
 // server rewrite, so a static host and the offline cache both serve every screen.
 import { useSyncExternalStore } from "react";
 
-export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer" | "/watch";
-export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer", "/watch"];
+export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer" | "/watch" | "/tour";
+export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer", "/watch", "/tour"];
 
 function current(): Route {
   const raw = window.location.hash.replace(/^#/, "").split("?")[0] ?? "";
-  const path = raw;
+  const path = raw.startsWith("/tour/") ? "/tour" : raw; // /tour/<n> is one route; the screen reads n
   return (ROUTES as readonly string[]).includes(path) ? (path as Route) : "/roles";
 }
 
@@ -18,6 +18,11 @@ function subscribe(listener: () => void): () => void {
 
 export function useRoute(): Route {
   return useSyncExternalStore(subscribe, current, () => "/roles" as Route);
+}
+
+/** The whole hash, so a screen that reads a number from it (the tour step) follows the link. */
+export function useHash(): string {
+  return useSyncExternalStore(subscribe, () => window.location.hash, () => "");
 }
 
 /** The ?name=value part of the hash, for deep links such as #/practice?seed=5. */

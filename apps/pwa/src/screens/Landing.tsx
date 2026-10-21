@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import type { Key } from "../i18n";
-import { go, href, useQuery, type Route } from "../lib/router";
+import { go, useQuery, type Route } from "../lib/router";
 import { dialogSeen, loadRoles, markDialogSeen, type RoleConfig, type RoleId, type RolesResponse } from "../lib/roles";
 import { useApp, type Role } from "../state";
+import { WALK_START } from "../lib/tour";
 
 export const ROLE_HOME: Record<RoleId, Route> = {
   teacher: "/home",
@@ -99,10 +100,10 @@ export default function Landing() {
         </div>
       ) : null}
       {cfg ? (
-        <Dialog cfg={cfg} onEnter={() => enter(cfg.id)} onWalk={() => { markDialogSeen(cfg.id); setRole(cfg.id as Role); go("/judge"); }} onBack={() => setOpen(null)} />
+        <Dialog cfg={cfg} onEnter={() => enter(cfg.id)} onWalk={() => { markDialogSeen(cfg.id); setRole(cfg.id as Role); window.location.hash = `/tour/${WALK_START[cfg.id]}`; }} onBack={() => setOpen(null)} />
       ) : (
         <div className="cards" data-testid="role-cards">
-          <a className="tile tile-start" href={href("/judge")} data-testid="card-tour">
+          <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
             <Icon name="judge" size={28} />
             <span>
               <strong>{tr("landing.tour")}</strong>

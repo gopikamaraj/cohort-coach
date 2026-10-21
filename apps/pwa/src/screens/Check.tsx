@@ -19,7 +19,7 @@ import { useApp } from "../state";
 
 const MAX_DIGITS = 9;
 
-export default function Check() {
+export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const { tr, term, klass, check, reload } = useApp();
   const formKeys = Object.keys(keys.forms);
   const [formKey, setFormKey] = useState<string | null>(check?.formKey ?? null);
@@ -159,7 +159,8 @@ export default function Check() {
     await finishCheck(cls.id, termNow, formKey, rows, cls.simulated, undefined, stages);
     await reload();
     void flushAllowed(isOnline()).then(reload);
-    go("/cards");
+    if (onDone) onDone();
+    else go("/cards");
   };
 
   if (!formKey) {

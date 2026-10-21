@@ -18,6 +18,7 @@ import { Coach, Mentor, Officer } from "./screens/RoleScreens";
 import Flow from "./screens/Flow";
 import Landing from "./screens/Landing";
 import Watch from "./screens/Watch";
+import Tour from "./screens/Tour";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
 
@@ -32,7 +33,7 @@ const ROLE_HOME: Record<Role, Route> = {
 
 const ICONS: Record<string, string> = {
   "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice", "/tour": "judge",
 };  // fmt: skip
 
 function Shell() {
@@ -55,7 +56,7 @@ function Shell() {
     admin: [{ to: "/admin", label: tr("role.admin") }, mine],
     judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
-  const tabs = route === "/roles" ? [] : byRole[role];
+  const tabs = route === "/roles" || route === "/tour" ? [] : byRole[role];
   const wide = role === "coach" || role === "officer" || role === "admin";
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
@@ -118,6 +119,7 @@ function Shell() {
           {route === "/flow" ? <Flow /> : null}
           {route === "/roles" ? <Landing /> : null}
           {route === "/watch" ? <Watch /> : null}
+          {route === "/tour" ? <Tour /> : null}
           {route === "/officer" ? <Officer /> : null}
         </main>
         <nav className="navbar" aria-label={tr("common.menu")}>
