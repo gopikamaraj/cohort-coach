@@ -246,3 +246,13 @@ def test_an_unknown_style_or_language_is_refused(client: TestClient) -> None:
     assert client.post("/api/practice/watch", json={"style": "angry"}).status_code == 422
     res = client.post("/api/practice/watch", json={"style": "experienced", "language": "fr"})
     assert res.status_code == 422
+
+
+def test_hints_over_the_api_are_judge_mode_only_and_carry_no_labels(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    sid = create(client)["session_id"]
+    body = client.get(f"/api/practice/sessions/{sid}/hints").json()
+    assert body["hints"] and set(body["hints"][0]) == {"move", "line"}
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    assert client.get(f"/api/practice/sessions/{sid}/hints").status_code == 403

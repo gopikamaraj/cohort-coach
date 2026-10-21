@@ -9,25 +9,9 @@ import type { Key } from "../i18n";
 import { fetchMeter, fetchRun, nextPlayback, TURN_MS, type Meter, type Playback, type Style, type WatchRun, type WatchTurn } from "../lib/watch";
 import { useJudge } from "../lib/roles";
 import { useApp } from "../state";
+import { Meters } from "../components/meters";
 
 const STYLES: Style[] = ["experienced", "struggling"];
-
-function Meters({ turn }: { turn: WatchTurn }) {
-  const { tr } = useApp();
-  return (
-    <ul className="meters" aria-label={tr("watch.meter")}>
-      {turn.children.map((c) => (
-        <li key={c.name}>
-          <span>{c.name}</span>
-          <span className="meter" aria-hidden="true">
-            <span style={{ width: `${Math.round(c.level * 100)}%` }} />
-          </span>
-          <span>{tr(`watch.band.${c.band}` as Key)}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 function Machinery({ turn }: { turn: WatchTurn }) {
   const { tr } = useApp();
@@ -82,7 +66,7 @@ function TurnCard({ turn, machinery }: { turn: WatchTurn; machinery: boolean }) 
           </p>
         </>
       ) : null}
-      <Meters turn={turn} />
+      <Meters children={turn.children} />
       {machinery ? <Machinery turn={turn} /> : null}
     </article>
   );

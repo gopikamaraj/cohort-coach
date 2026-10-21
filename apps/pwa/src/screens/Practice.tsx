@@ -28,6 +28,10 @@ import {
 } from "../lib/practice";
 import { useQuery } from "../lib/router";
 import { useJudge } from "../lib/roles";
+import { fetchHints } from "../lib/breakit";
+import { Meters } from "../components/meters";
+import { BreakIt } from "../components/breakit";
+import type { ChildMeter } from "../lib/watch";
 import {
   canRecord,
   MAX_RECORD_MS,
@@ -53,6 +57,9 @@ interface TurnView {
   badge: string;
   slow: boolean;
   layers: Layers;
+  textEn: string;
+  move: { label: string; strategy: boolean; quality: string } | null;
+  meters: ChildMeter[];
 }
 
 interface Sample {
@@ -84,6 +91,8 @@ export default function Practice() {
   const [goalOpen, setGoalOpen] = useState(true); // open until she says her first line, then out of the way
   const [impact, setImpactState] = useState<Impact | undefined>(undefined);
   const [voiceOn, setVoiceOn] = useState(false);
+  const [hintsOn, setHintsOn] = useState(false);
+  const [hintList, setHintList] = useState<{ move: string; line: string }[]>([]);
   const [voiceFails, setVoiceFails] = useState(0);
   const [vstate, setVstate] = useState<VoiceState>("idle");
   const rowId = useRef<number | null>(null);
@@ -156,7 +165,7 @@ export default function Practice() {
 
   const applyTurn = async (r: TurnResponse, shown: string) => {
     const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
-    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers }]);
+    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers, textEn: r.child_text_en ?? "", move: r.move ?? null, meters: r.children ?? [] }]);
     setSpeaker(r.speaker);
     if (r.turn === 1) setGoalOpen(false);
     const moveId = r.layers.processing.label.move_id;
@@ -281,6 +290,19 @@ export default function Practice() {
       setBusy(false);
     }
   };
+
+  // Try with hints (judge mode): three replies for the next turn, built by the server from the move list.
+  useEffect(() => {
+    if (!judgeMode || !hintsOn || !session || over !== null || phase !== "playing") {
+      setHintList([]);
+      return;
+    }
+    let live = true;
+    void fetchHints(session.session_id).then((h) => live && setHintList(h));
+    return () => {
+      live = false;
+    };
+  }, [judgeMode, hintsOn, session, turns.length, over, phase]);
 
   const send = () => {
     const line = text.trim();
@@ -510,6 +532,19 @@ export default function Practice() {
               )}
             </p>
             {t.slow ? <p className="muted" role="status">{tr("practice.slow")}</p> : null}
+            {judgeMode && t.child && t.textEn && lang !== "en" ? (
+              <p className="muted" data-testid={`subtitle-${t.n}`}>
+                {tr("watch.subtitle")}: {t.textEn}
+              </p>
+            ) : null}
+            {judgeMode && t.move ? (
+              <p className="muted" data-testid={`move-tag-${t.n}`}>
+                {tr("watch.move", { move: t.move.label })}
+                {t.move.strategy ? `, ${tr("watch.strategy")}` : ""}
+                {t.move.quality === "common_mistake" ? `, ${tr("watch.mistake")}` : ""}
+              </p>
+            ) : null}
+            {judgeMode && t.meters.length > 0 ? <Meters children={t.meters} /> : null}
             {judgeMode && showLayers ? <LayersPanel layers={t.layers} /> : null}
           </div>
         ))}
@@ -575,6 +610,22 @@ export default function Practice() {
         </div>
       ) : (
         <>
+          {judgeMode ? (
+            <label className="check">
+              <input type="checkbox" checked={hintsOn} onChange={(e) => setHintsOn(e.target.checked)} data-testid="hints-toggle" />
+              <span>{tr("hints.toggle")}</span>
+            </label>
+          ) : null}
+          {hintsOn && hintList.length > 0 ? (
+            <div className="stack" data-testid="hints">
+              <p className="muted">{tr("hints.intro")}</p>
+              {hintList.map((h) => (
+                <button key={h.move} type="button" className="btn btn-secondary" disabled={busy || over !== null} onClick={() => void doTurn({ text: h.line }, h.line)} data-testid={`hint-${h.move}`}>
+                  {h.line}
+                </button>
+              ))}
+            </div>
+          ) : null}
           <form
             className="compose"
             onSubmit={(e) => {
@@ -597,6 +648,7 @@ export default function Practice() {
           ) : null}
         </>
       )}
+      {judgeMode ? <BreakIt /> : null}
       <button type="button" className="btn btn-secondary" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
         {tr("practice.end")}
       </button>

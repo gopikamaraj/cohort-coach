@@ -24,6 +24,7 @@ from ai.config import ai_mode
 from engine.model import ErrorCode
 from services.api.roles import judge_session, require
 from services.practice.content import LANGS, load_personas, load_scenario
+from services.practice.hints import hints
 from services.practice.session import (
     PracticeSession,
     SessionFinished,
@@ -351,3 +352,12 @@ def get_watch_meter() -> dict[str, Any]:
     if not judge_session():
         raise HTTPException(403, "The demo teacher is available in the demo only.")
     return WATCH_METER.snapshot()
+
+
+@router.get("/sessions/{session_id}/hints")
+def get_hints(session_id: str) -> dict[str, Any]:
+    """Three replies for the next turn (judge mode only). The quality of each is not sent."""
+    if not judge_session():
+        raise HTTPException(403, "Hints are available in the demo only.")
+    session = _get(session_id)
+    return {"hints": hints(session)}

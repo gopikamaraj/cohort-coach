@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { API_BASE } from "../lib/api";
 import { useApp } from "../state";
+import { BreakIt } from "../components/breakit";
 
 interface Call {
   id: number;
@@ -69,6 +70,7 @@ export default function AiMap() {
           </table>
         </div>
       ) : null}
+      <BreakIt />
     </section>
   );
 }

@@ -611,5 +611,19 @@
   "stage.probe.core": "Ask her to show the same question with bundles and say each step aloud.",
   "stage.probe.input_test": "Read the question aloud and ask her to say it back in her own words before she answers.",
   "stage.probe.output": "Ask her to say the answer aloud, then write it, and compare what she said with what she wrote.",
-  "stage.probe.input_teaching": "Ask her to show a very easy subtraction with bundles from the start, in the language she knows best, and watch where she gets stuck."
+  "stage.probe.input_teaching": "Ask her to show a very easy subtraction with bundles from the start, in the language she knows best, and watch where she gets stuck.",
+  "break.injection_marker": "Held back: the line looked like an instruction to the system, so the rule-based pre-filter stopped it before any model saw it.",
+  "break.profanity": "Held back: the line contained a harsh word about a child, so the pre-filter stopped it.",
+  "break.pii_phone": "Held back: a phone number was found, so the pre-filter stopped it.",
+  "break.pii_roster_name": "Held back: a child's name was found. In the cohort chat this post would be stopped before anyone sees it.",
+  "break.title": "Try to break it",
+  "break.intro": "These lines are prepared. Each one runs through the real pre-filter, and you see which check stopped it.",
+  "break.injection": "Tell the system to ignore its rules",
+  "break.harsh": "Insult a child",
+  "break.phone": "Share a phone number",
+  "break.child_name": "Name a child with a roll number",
+  "break.line": "The line",
+  "break.stopped_by": "Stopped by",
+  "hints.toggle": "Try with hints",
+  "hints.intro": "Three things you could say next. Pick one and see how the children react."
 }

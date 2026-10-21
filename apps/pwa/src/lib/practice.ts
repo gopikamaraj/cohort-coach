@@ -75,6 +75,9 @@ export interface TurnResponse {
   finished: boolean;
   finished_reason: string | null;
   turns_left: number;
+  child_text_en?: string;
+  move?: { id: string; label: string; quality: string; strategy: boolean };
+  children?: { name: string; level: number; band: "high" | "medium" | "low"; has_error: boolean }[];
 }
 
 export interface FeedbackCard {

@@ -96,3 +96,41 @@ def test_every_sample_row_is_a_form_a_row_with_no_check_item_text() -> None:
 
     body = TestClient(app).get("/api/judge/sample-sheets").json()
     assert check_items(body["label"] + body["note"]) == []
+
+
+@pytest.mark.parametrize(
+    ("kind", "code"),
+    [
+        ("injection", "injection_marker"),
+        ("harsh", "profanity"),
+        ("phone", "pii_phone"),
+        ("child_name", "pii_roster_name"),
+    ],
+)
+def test_try_to_break_it_runs_the_prepared_line_through_the_real_prefilter(
+    kind: str, code: str
+) -> None:
+    body = TestClient(app).post("/api/judge/try-break", json={"kind": kind}).json()
+    assert body["blocked"] and code in body["codes"] and body["explanation"].startswith("Held back")
+    assert body["line"]
+
+
+def test_try_to_break_it_takes_no_free_text_and_speaks_her_language() -> None:
+    client = TestClient(app)
+    assert client.post("/api/judge/try-break", json={"kind": "anything else"}).status_code == 422
+    hi = client.post("/api/judge/try-break", json={"kind": "phone", "language": "hi"}).json()
+    assert hi["explanation"].startswith("रोका गया")
+    assert (
+        client.post("/api/judge/try-break", json={"kind": "phone", "language": "fr"}).status_code
+        == 422
+    )
+
+
+def test_try_to_break_it_is_judge_mode_only(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    assert TestClient(app).post("/api/judge/try-break", json={"kind": "phone"}).status_code == 403
+
+
+def test_the_injection_line_is_explained_as_an_instruction_not_as_a_rude_word() -> None:
+    body = TestClient(app).post("/api/judge/try-break", json={"kind": "injection"}).json()
+    assert "instruction to the system" in body["explanation"]
