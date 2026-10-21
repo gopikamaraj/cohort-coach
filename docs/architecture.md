@@ -14,7 +14,7 @@ flowchart LR
     E --> O[Output<br/>badged card, voice line, track]
 ```
 
-The eight calls, with the five layers written out for each, are in `ai/registry.py`. The README section "Where AI is used" and `GET /api/judge/ai-map` are generated from it.
+The ten calls (call 10, the demo teacher, runs in judge mode only), with the five layers written out for each, are in `ai/registry.py`. The README section "Where AI is used" and `GET /api/judge/ai-map` are generated from it.
 
 ## One path for every call
 
