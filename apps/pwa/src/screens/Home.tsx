@@ -5,10 +5,12 @@ import { SimulatedBanner } from "../components/parts";
 import type { Key } from "../i18n";
 import { Icon } from "../components/icons";
 import { useConsent } from "../lib/useConsent";
+import { useJudge } from "../lib/roles";
 
 export default function Home() {
   const { tr, term, klass, profile } = useApp();
   const consent = useConsent();
+  const judge = useJudge();
   const errorName = profile?.track ? tr(`err.${profile.track}` as Key) : null;
   return (
     <section aria-labelledby="home-title">
@@ -43,6 +45,11 @@ export default function Home() {
             <a className="tile" href={href("/history")} data-testid="home-history">
               <Icon name="history" size={28} /> <span>{tr("home.action.history")}</span>
             </a>
+            {judge ? (
+              <a className="tile" href={href("/watch")} data-testid="home-watch">
+                <Icon name="practice" size={28} /> <span>{tr("home.action.watch")}</span>
+              </a>
+            ) : null}
             <a className="tile" href={href("/flow")} data-testid="home-flow">
               <Icon name="practice" size={28} /> <span>{tr("home.action.flow")}</span>
             </a>

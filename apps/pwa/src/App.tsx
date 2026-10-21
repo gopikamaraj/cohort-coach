@@ -17,6 +17,7 @@ import Profile from "./screens/Profile";
 import { Coach, Mentor, Officer } from "./screens/RoleScreens";
 import Flow from "./screens/Flow";
 import Landing from "./screens/Landing";
+import Watch from "./screens/Watch";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
 
@@ -31,7 +32,7 @@ const ROLE_HOME: Record<Role, Route> = {
 
 const ICONS: Record<string, string> = {
   "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice",
 };  // fmt: skip
 
 function Shell() {
@@ -116,6 +117,7 @@ function Shell() {
           {route === "/mentor" ? <Mentor /> : null}
           {route === "/flow" ? <Flow /> : null}
           {route === "/roles" ? <Landing /> : null}
+          {route === "/watch" ? <Watch /> : null}
           {route === "/officer" ? <Officer /> : null}
         </main>
         <nav className="navbar" aria-label={tr("common.menu")}>
