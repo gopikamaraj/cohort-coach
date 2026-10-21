@@ -9,6 +9,15 @@ moves:
   strength: 0.0
   engagement: 0.0
   quiet: false
+  quality: neutral
+  strategy: false
+  sample_lines:
+    en:
+    - Who can tell me 52 minus 29?
+    hi:
+    - 52 में से 29 घटाओ तो कितना, कौन बताएगा?
+    ta:
+    - 52 - 29 எவ்வளவு என்று யார் சொல்வார்கள்?
   label:
     en: Poses a problem or asks a child to answer
     hi: सवाल देना या बच्चे से जवाब पूछना
@@ -32,6 +41,15 @@ moves:
   strength: -0.2
   engagement: 0.05
   quiet: false
+  quality: strong
+  strategy: false
+  sample_lines:
+    en:
+    - Tell me how you got your answer. What did you do first?
+    hi:
+    - बताओ, तुमने जवाब कैसे निकाला? पहले तुमने क्या किया?
+    ta:
+    - பதிலை எப்படிப் பெற்றாய் என்று சொல். முதலில் என்ன செய்தாய்?
   label:
     en: Asks the child to explain her steps
     hi: बच्चे से अपने कदम समझाने को कहना
@@ -55,6 +73,15 @@ moves:
   strength: -0.3
   engagement: 0.1
   quiet: false
+  quality: strong
+  strategy: true
+  sample_lines:
+    en:
+    - Let us show 52 with bundles of ten and loose sticks.
+    hi:
+    - आओ, 52 को दस-दस के गट्ठर और खुली तीलियों से दिखाएँ।
+    ta:
+    - 52 ஐப் பத்துக் கட்டுகளாலும் தனிக் குச்சிகளாலும் காட்டுவோம்.
   label:
     en: Uses bundles of ten sticks
     hi: दस-दस के गट्ठर और खुली तीलियाँ इस्तेमाल करना
@@ -75,6 +102,15 @@ moves:
   strength: -0.3
   engagement: 0.1
   quiet: false
+  quality: strong
+  strategy: true
+  sample_lines:
+    en:
+    - You only have 2 loose sticks. Open one bundle and exchange it for ten sticks.
+    hi:
+    - तुम्हारे पास सिर्फ़ 2 खुली तीलियाँ हैं। एक गट्ठर खोलो और दस तीलियाँ ले लो।
+    ta:
+    - உன்னிடம் 2 தனிக் குச்சிகள் மட்டுமே உள்ளன. ஒரு கட்டைப் பிரித்து பத்துக் குச்சிகளாக மாற்று.
   label:
     en: Opens a bundle to exchange it for ten sticks
     hi: एक गट्ठर खोलकर दस तीलियाँ बनाना
@@ -95,6 +131,15 @@ moves:
   strength: -0.2
   engagement: 0.05
   quiet: false
+  quality: strong
+  strategy: true
+  sample_lines:
+    en:
+    - Let us check by adding back. What is 23 plus 29?
+    hi:
+    - आओ, वापस जोड़कर जाँचें। 23 और 29 जोड़ो तो कितना?
+    ta:
+    - திரும்பக் கூட்டிச் சரிபார்ப்போம். 23 + 29 எவ்வளவு?
   label:
     en: Checks by adding back
     hi: जोड़कर जाँचना
@@ -115,6 +160,15 @@ moves:
   strength: -0.05
   engagement: 0.0
   quiet: false
+  quality: common_mistake
+  strategy: false
+  sample_lines:
+    en:
+    - 'Just remember the rule: always take the smaller number from the bigger one.'
+    hi:
+    - 'बस नियम याद रखो: हमेशा छोटी संख्या को बड़ी में से घटाओ।'
+    ta:
+    - 'விதியை நினைவில் வை: எப்போதும் சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி.'
   label:
     en: Just tells the rule
     hi: सिर्फ़ नियम बता देना
@@ -135,6 +189,15 @@ moves:
   strength: 0.0
   engagement: 0.15
   quiet: false
+  quality: neutral
+  strategy: false
+  sample_lines:
+    en:
+    - Good, thank you for trying.
+    hi:
+    - अच्छा, कोशिश करने के लिए धन्यवाद।
+    ta:
+    - நல்லது, முயன்றதற்கு நன்றி.
   label:
     en: Praises effort
     hi: कोशिश की तारीफ़ करना
@@ -155,6 +218,15 @@ moves:
   strength: 0.0
   engagement: -0.3
   quiet: true
+  quality: common_mistake
+  strategy: false
+  sample_lines:
+    en:
+    - That is wrong again. Pay attention!
+    hi:
+    - फिर गलत! ध्यान दो!
+    ta:
+    - மீண்டும் தவறு! கவனி!
   label:
     en: Scolds the child
     hi: बच्चे को डाँटना
@@ -170,3 +242,148 @@ moves:
     - फिर ग़लत! ध्यान लगाओ!
     ta:
     - மறுபடியும் தவறு! கவனி!
+- id: decomposition
+  behaviour: work_aloud
+  strength: -0.3
+  engagement: 0.1
+  quiet: false
+  quality: strong
+  strategy: true
+  label:
+    en: Subtracts the tens, then the ones, bridging through a ten
+    hi: पहले दहाइयाँ, फिर इकाइयाँ घटाना, दस के पुल से
+    ta: முதலில் பத்துகள், பிறகு ஒன்றுகளைக் கழித்தல், பத்தின் வழியாக
+  description:
+    en: The teacher takes away the tens first, then the ones in two steps through the next ten, with bundles.
+    hi: शिक्षक पहले दहाइयाँ हटाता है, फिर इकाइयाँ दो चरणों में, अगले दस से होकर, गट्ठरों के साथ।
+    ta: ஆசிரியர் முதலில் பத்துகளை எடுக்கிறார், பிறகு அடுத்த பத்தின் வழியாக இரண்டு படிகளில் ஒன்றுகளை, கட்டுகளுடன்.
+  examples:
+    en:
+    - Take away 2 bundles first, then the sticks in two steps.
+    hi:
+    - पहले 2 गट्ठर हटाओ, फिर तीलियाँ दो कदमों में।
+    ta:
+    - முதலில் 2 கட்டுகளை எடு, பிறகு குச்சிகளை இரண்டு படிகளில்.
+  sample_lines:
+    en:
+    - 'Take away 2 bundles of ten first. Then take the loose sticks in two steps: first to the next ten, then the rest.'
+    hi:
+    - 'पहले दस के 2 गट्ठर हटाओ। फिर खुली तीलियाँ दो कदमों में हटाओ: पहले अगले दस तक, फिर बाकी।'
+    ta:
+    - 'முதலில் பத்துக் கட்டுகள் 2 ஐ எடு. பிறகு தனிக் குச்சிகளை இரண்டு படிகளில் எடு: முதலில் அடுத்த பத்து வரை, பிறகு மீதி.'
+- id: compensation
+  behaviour: work_aloud
+  strength: -0.25
+  engagement: 0.05
+  quiet: false
+  quality: strong
+  strategy: true
+  label:
+    en: Subtracts a nearby ten, then adjusts
+    hi: पास का दस घटाकर फिर सुधारना
+    ta: அருகிலுள்ள பத்தைக் கழித்து, பிறகு சரிசெய்தல்
+  description:
+    en: For a number near a ten, the teacher subtracts the ten and then gives the extra back.
+    hi: दस के पास की संख्या के लिए शिक्षक दस घटाता है और फिर ज़्यादा घटाया हुआ लौटाता है।
+    ta: பத்துக்கு அருகிலுள்ள எண்ணுக்கு, ஆசிரியர் பத்தைக் கழித்து, கூடுதலாகக் கழித்ததைத் திருப்பிக் கூட்டுகிறார்.
+  examples:
+    en:
+    - 29 is close to 30. Take away 30, then give 1 back.
+    hi:
+    - 29, 30 के पास है। 30 घटाओ, फिर 1 वापस जोड़ दो।
+    ta:
+    - 29, 30 க்கு அருகில் உள்ளது. 30 ஐக் கழி, பிறகு 1 ஐத் திருப்பிக் கூட்டு.
+  sample_lines:
+    en:
+    - 'For 52 minus 29: 29 is close to 30. Take away 30 from 52, then give 1 back.'
+    hi:
+    - '52 में से 29: 29, 30 के पास है। 52 में से 30 घटाओ, फिर 1 वापस जोड़ दो।'
+    ta:
+    - '52 - 29: 29, 30 க்கு அருகில் உள்ளது. 52 இலிருந்து 30 ஐக் கழி, பிறகு 1 ஐத் திருப்பிக் கூட்டு.'
+- id: repeat_rule_louder
+  behaviour: agree
+  strength: -0.02
+  engagement: -0.05
+  quiet: false
+  quality: common_mistake
+  strategy: false
+  label:
+    en: Repeats the rule again, louder
+    hi: नियम को और ज़ोर से दोहराना
+    ta: விதியை மேலும் உரக்கச் சொல்லுதல்
+  description:
+    en: The teacher says the same rule again, louder, without changing the way it is taught.
+    hi: शिक्षक वही नियम बिना तरीका बदले और ज़ोर से दोहराता है।
+    ta: ஆசிரியர் முறையை மாற்றாமல் அதே விதியை மேலும் உரக்கச் சொல்கிறார்.
+  examples:
+    en:
+    - I said it already! Take the smaller from the bigger!
+    hi:
+    - मैंने बताया न! छोटी को बड़ी में से घटाओ!
+    ta:
+    - நான் சொல்லிவிட்டேனே! சிறியதைப் பெரியதிலிருந்து கழி!
+  sample_lines:
+    en:
+    - I said it already. Take the smaller number from the bigger number. Listen carefully.
+    hi:
+    - मैं बता चुकी हूँ। छोटी संख्या को बड़ी संख्या में से घटाओ। ध्यान से सुनो।
+    ta:
+    - நான் ஏற்கனவே சொன்னேன். சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. கவனமாகக் கேள்.
+- id: give_the_answer
+  behaviour: agree
+  strength: 0.0
+  engagement: -0.1
+  quiet: false
+  quality: common_mistake
+  strategy: false
+  label:
+    en: Gives the answer away
+    hi: जवाब खुद बता देना
+    ta: பதிலைத் தானே சொல்லிவிடுதல்
+  description:
+    en: The teacher tells the answer instead of letting the child work it out.
+    hi: शिक्षक बच्चे को सोचने देने के बजाय खुद जवाब बता देता है।
+    ta: குழந்தை யோசிக்க விடாமல் ஆசிரியர் பதிலைச் சொல்லிவிடுகிறார்.
+  examples:
+    en:
+    - The answer is 23. Write 23.
+    hi:
+    - जवाब 23 है। 23 लिखो।
+    ta:
+    - பதில் 23. 23 என்று எழுது.
+  sample_lines:
+    en:
+    - The answer is 23. Just write 23.
+    hi:
+    - जवाब 23 है। बस 23 लिख लो।
+    ta:
+    - பதில் 23. 23 என்று எழுதிவிடு.
+- id: order_probe
+  behaviour: explain
+  strength: -0.2
+  engagement: 0.05
+  quiet: false
+  quality: strong
+  strategy: true
+  label:
+    en: Asks whether the order matters (2 minus 6 and 6 minus 2)
+    hi: पूछना कि क्रम मायने रखता है या नहीं (2 − 6 और 6 − 2)
+    ta: வரிசை முக்கியமா என்று கேட்டல் (2 - 6 மற்றும் 6 - 2)
+  description:
+    en: The teacher asks whether 2 minus 6 is the same as 6 minus 2, so the child sees the order matters.
+    hi: शिक्षक पूछता है कि 2 − 6 और 6 − 2 एक जैसे हैं या नहीं, ताकि बच्चा देखे कि क्रम मायने रखता है।
+    ta: 2 - 6 உம் 6 - 2 உம் ஒன்றா என்று ஆசிரியர் கேட்கிறார், வரிசை முக்கியம் என்று குழந்தை காண.
+  examples:
+    en:
+    - Is 2 minus 6 the same as 6 minus 2?
+    hi:
+    - क्या 2 − 6 और 6 − 2 एक जैसे हैं?
+    ta:
+    - 2 - 6 உம் 6 - 2 உம் ஒன்றா?
+  sample_lines:
+    en:
+    - Is 2 minus 6 the same as 6 minus 2? Show it with sticks.
+    hi:
+    - क्या 2 − 6 और 6 − 2 एक जैसे हैं? तीलियों से दिखाओ।
+    ta:
+    - 2 - 6 உம் 6 - 2 உம் ஒன்றா? குச்சிகளால் காட்டு.

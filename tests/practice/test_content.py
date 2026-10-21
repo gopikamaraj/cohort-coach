@@ -160,3 +160,24 @@ def test_exported_json_schemas_are_current() -> None:
         cwd=ROOT, capture_output=True, text=True,
     )  # fmt: skip
     assert done.returncode == 0, done.stdout
+
+
+@pytest.mark.parametrize("error", [ErrorCode.SUB_SFL, ErrorCode.SUB_NODEC])
+def test_subtraction_scenarios_have_strategies_and_hint_lines(error: ErrorCode) -> None:
+    moves = {m.id: m for m in load_scenario(error.value).movelist.moves}
+    assert {"decomposition", "compensation", "repeat_rule_louder", "give_the_answer"} <= set(moves)
+    assert moves["decomposition"].strategy and moves["compensation"].strategy
+    assert (error is ErrorCode.SUB_SFL) == ("order_probe" in moves)
+    for quality in ("strong", "common_mistake", "neutral"):
+        with_lines = [m for m in moves.values() if m.quality == quality and m.sample_lines]
+        assert with_lines, (error, quality)
+        for m in with_lines:
+            assert set(m.sample_lines) == set(LANGS), m.id
+            assert all(line.strip() for ls in m.sample_lines.values() for line in ls), m.id
+
+
+def test_the_new_moves_keep_the_effect_rules() -> None:
+    cfg = load_scenario("SUB-SFL").config
+    assert cfg.moves["decomposition"].strength < 0 < cfg.moves["decomposition"].engagement
+    assert cfg.moves["repeat_rule_louder"].strength > cfg.moves["show_bundles"].strength
+    assert cfg.moves["give_the_answer"].strength == 0.0

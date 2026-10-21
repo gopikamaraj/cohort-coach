@@ -52,9 +52,34 @@
           "title": "Label",
           "type": "object"
         },
+        "quality": {
+          "default": "neutral",
+          "enum": [
+            "strong",
+            "common_mistake",
+            "neutral"
+          ],
+          "title": "Quality",
+          "type": "string"
+        },
         "quiet": {
           "default": false,
           "title": "Quiet",
+          "type": "boolean"
+        },
+        "sample_lines": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Sample Lines",
+          "type": "object"
+        },
+        "strategy": {
+          "default": false,
+          "title": "Strategy",
           "type": "boolean"
         },
         "strength": {

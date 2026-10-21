@@ -1,0 +1,35 @@
+{
+  "call": "c03_feedback",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "strengths": [
+        {
+          "comment": "You asked Priya to explain her steps, and this showed you exactly where her thinking went wrong. That is a very useful move.",
+          "quote": "Tell me how you got that.",
+          "rubric_point": "ask_explain",
+          "turn_id": 2
+        },
+        {
+          "comment": "You guided her to open a bundle when she had too few loose sticks. She then solved the problem herself.",
+          "quote": "Open a bundle to exchange it for ten sticks.",
+          "rubric_point": "exchange_ten",
+          "turn_id": 4
+        }
+      ],
+      "try_next": {
+        "quote": "[tapped bundles]",
+        "rubric_point": "show_bundles",
+        "suggestion": "You could also try saying aloud what you are showing with the bundles, for example 'Here are 5 bundles and 2 sticks.' Then Priya can see the number and also hear it in words.",
+        "turn_id": 3
+      }
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 2017,
+    "input_tokens": 988,
+    "output_tokens": 281
+  }
+}

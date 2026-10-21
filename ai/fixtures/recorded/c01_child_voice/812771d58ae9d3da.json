@@ -3,7 +3,7 @@
   "model": "claude-sonnet-5-5",
   "outputs": [
     {
-      "text": "2 minus 9 I can't do, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37."
+      "text": "I can't do 2 minus 9, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37."
     }
   ],
   "prompt_version": 2,

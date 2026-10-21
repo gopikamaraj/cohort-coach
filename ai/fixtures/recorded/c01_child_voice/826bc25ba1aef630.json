@@ -1,0 +1,16 @@
+{
+  "call": "c01_child_voice",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "text": "Miss, 23 plus 29 is 52. But 52 was what we started with, so it matches... why was I puzzled? I am not sure, Miss."
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 1560,
+    "cache_write_tokens": 0,
+    "input_tokens": 444,
+    "output_tokens": 56
+  }
+}

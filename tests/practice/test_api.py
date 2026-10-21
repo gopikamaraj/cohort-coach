@@ -187,7 +187,9 @@ def test_every_move_comes_with_things_to_say_in_her_language_and_with_her_childr
         persona_names = {k.names[lang] for k in load_personas().children}
         moves = {m["id"]: m for m in body["moves"]}
         assert moves["scold"]["examples"] == []  # never cue a move that silences children
-        assert all(m["examples"] for k, m in moves.items() if k != "scold")
+        silent = {"scold", "repeat_rule_louder", "give_the_answer"}  # never cue a bad move
+        assert all(m["examples"] for k, m in moves.items() if k not in silent)
+        assert all(not moves[k]["examples"] for k in silent if k in moves)
         for m in moves.values():
             for line in m["examples"]:
                 named = [n for n in persona_names if n in line]

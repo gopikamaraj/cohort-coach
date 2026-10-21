@@ -12,7 +12,7 @@ import json
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -47,6 +47,11 @@ class MoveDef(BaseModel):
     label: dict[str, str]
     description: dict[str, str]
     examples: dict[str, list[str]]
+    # How a move reads to a judge: a strong move, a common mistake, or neutral. `strategy` marks the
+    # approved teaching strategies, shown in the move tag. `sample_lines` feed the hint options.
+    quality: Literal["strong", "common_mistake", "neutral"] = "neutral"
+    strategy: bool = False
+    sample_lines: dict[str, list[str]] = Field(default_factory=dict)
 
     @field_validator("behaviour")
     @classmethod
@@ -59,6 +64,11 @@ class MoveDef(BaseModel):
     @classmethod
     def _langs(cls, v: dict[str, Any]) -> dict[str, Any]:
         return _all_langs(v)
+
+    @field_validator("sample_lines")
+    @classmethod
+    def _sample_langs(cls, v: dict[str, Any]) -> dict[str, Any]:
+        return _all_langs(v) if v else v
 
 
 class MoveList(BaseModel):
