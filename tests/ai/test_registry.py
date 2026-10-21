@@ -9,7 +9,7 @@ from ai.registry import BY_ID, CALLS, LAYERS, get_call
 
 
 def test_registry_lists_all_eight_calls_with_all_five_layers() -> None:
-    assert [c.id for c in CALLS] == [1, 2, 3, 4, 5, 6, 7, 8]
+    assert [c.id for c in CALLS] == [1, 2, 3, 4, 5, 6, 7, 8, 10]
     for call in CALLS:
         for layer in LAYERS:
             assert len(call.layers[layer]) > 20, (call.key, layer)
@@ -47,7 +47,7 @@ def test_live_turn_calls_retry_at_most_once() -> None:
 
 
 def test_practice_class_calls_log_metadata_only() -> None:
-    assert {c.id for c in CALLS if c.metadata_only} == {1, 2, 3, 8}
+    assert {c.id for c in CALLS if c.metadata_only} == {1, 2, 3, 8, 10}
 
 
 def test_pricing_has_source_url_and_date() -> None:

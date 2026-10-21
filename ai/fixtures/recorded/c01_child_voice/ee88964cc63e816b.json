@@ -1,0 +1,17 @@
+{
+  "call": "c01_child_voice",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "english": "Thank you, Miss! I liked doing it.",
+      "text": "Thank you, Miss! I liked doing it."
+    }
+  ],
+  "prompt_version": 3,
+  "usage": {
+    "cache_read_tokens": 1770,
+    "cache_write_tokens": 0,
+    "input_tokens": 336,
+    "output_tokens": 43
+  }
+}

@@ -28,6 +28,7 @@ class ChildLineResult:
     source: str  # ai | template | silent
     gate: GateResult | None
     run: CallResult | None
+    english: str = ""  # the subtitle: same digits as `text`
 
 
 def _facts(plan: TurnPlan, name: str, temperament: str, language: str) -> dict[str, object]:
@@ -46,7 +47,24 @@ def _facts(plan: TurnPlan, name: str, temperament: str, language: str) -> dict[s
     }
 
 
-def _validators(plan: TurnPlan, language: str, text: str) -> list[ValidatorResult]:
+def _subtitle(plan: TurnPlan, language: str, text: str, english: str) -> ValidatorResult:
+    """The English subtitle must carry the same digits as the line, and only the engine's."""
+    if language == "en":
+        return ValidatorResult("subtitle", ())
+    if not english.strip():
+        return ValidatorResult("subtitle", (Violation("subtitle_missing"),))
+    said, shown = set(extract_numbers(text)), set(extract_numbers(english))
+    bad: list[Violation] = []
+    if said != shown:
+        bad.append(Violation("subtitle_numbers_differ", f"{sorted(said)} vs {sorted(shown)}"))
+    if shown - set(plan.allowed_numbers):
+        bad.append(Violation("number_not_allowed", "a subtitle number is not the engine's"))
+    return ValidatorResult("subtitle", tuple(bad))
+
+
+def _validators(
+    plan: TurnPlan, language: str, text: str, english: str = ""
+) -> list[ValidatorResult]:
     results = gate1(
         GateInput(
             text=text,
@@ -60,6 +78,7 @@ def _validators(plan: TurnPlan, language: str, text: str) -> list[ValidatorResul
         results.append(
             ValidatorResult("answer_present", (Violation("answer_missing"),) if missing else ())
         )
+    results.append(_subtitle(plan, language, text, english))
     return results
 
 
@@ -84,9 +103,12 @@ def child_line(
 
     def check(out: BaseModel) -> list[ValidatorResult]:
         assert isinstance(out, ChildLine)
-        return _validators(plan, language, out.text)
+        return _validators(plan, language, out.text, out.english)
 
-    ctx = replace(base, validators=check, fallback=lambda: ChildLine(text=template))
+    template_en = render_line(plan, "en")
+    ctx = replace(
+        base, validators=check, fallback=lambda: ChildLine(text=template, english=template_en)
+    )
     payload = CallInput(
         trusted=_facts(plan, name, temperament, language),
         untrusted={"teacher_line": teacher_line, "history": "\n".join(history[-6:])},
@@ -95,7 +117,7 @@ def child_line(
     line = run.output
     assert isinstance(line, ChildLine)
     if run.fallback_used:
-        return ChildLineResult(template, "template", None, run)
+        return ChildLineResult(template, "template", None, run, template_en)
     if on_candidate is not None:
         on_candidate(line.text, name)
     gate = run_gates(
@@ -116,5 +138,6 @@ def child_line(
         context=base,
     )
     if not gate.releasable:
-        return ChildLineResult(template, "template", gate, run)
-    return ChildLineResult(line.text, "ai", gate, run)
+        return ChildLineResult(template, "template", gate, run, template_en)
+    english = line.text if language == "en" else line.english
+    return ChildLineResult(line.text, "ai", gate, run, english)

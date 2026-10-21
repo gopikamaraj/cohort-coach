@@ -1,0 +1,35 @@
+{
+  "call": "c03_feedback",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "strengths": [
+        {
+          "comment": "You asked Priya to explain her steps before correcting her. That let you see exactly where her thinking went wrong.",
+          "quote": "Tell me how you got that.",
+          "rubric_point": "ask_explain",
+          "turn_id": 2
+        },
+        {
+          "comment": "You noticed there were only 2 loose ones and guided her to open a bundle. She then got 23 on her own.",
+          "quote": "Open a bundle to exchange it for ten sticks.",
+          "rubric_point": "exchange_ten",
+          "turn_id": 4
+        }
+      ],
+      "try_next": {
+        "quote": "[tapped bundles]",
+        "rubric_point": "show_bundles",
+        "suggestion": "You could also try showing 52 with bundles and sticks in words, for example '5 bundles and 2 sticks', and then letting the child say what she sees. That helps her notice the problem herself before you step in.",
+        "turn_id": 3
+      }
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 2017,
+    "input_tokens": 970,
+    "output_tokens": 286
+  }
+}

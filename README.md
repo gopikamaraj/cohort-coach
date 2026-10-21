@@ -24,6 +24,7 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 | 6 | Reflection digest | `claude-haiku-5-5` | weekly |
 | 7 | Output checker | `claude-haiku-5-5` | everything headed to a teacher |
 | 8 | Answer reading | `claude-haiku-5-5` | per sheet photo |
+| 10 | Demo teacher (judge mode only) | `claude-haiku-5-5` | live Watch run in judge mode |
 
 **Call 1: Child voices.** Say one short line as a simulated Grade 3 child in the Practice Class.
 
@@ -88,6 +89,14 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 - *guardrails*: Reads outside the correct and error answers, or below the confidence bar, go to the teacher; Devanagari digits normalised; the photo is deleted right after.
 - *evaluation*: Hand-keyed set: at least 98% of auto-accepted reads correct, at most 15% sent to the teacher.
 - *output*: Per-box digits for the engine to diagnose, on her phone.
+
+**Call 10: Demo teacher (judge mode only).** Play the teacher in a Practice Class Watch run, in an experienced or a struggling style, so a visitor can compare.
+
+- *input*: The scenario, the approved move list, the style, the transcript so far and the engine's state of the five simulated children.
+- *processing*: A small model picks one approved move and writes a line of at most 25 words in the chosen style.
+- *guardrails*: The move id must be on the approved list for the style; every number must come from the scenario's allowed set; no answer leak beyond the style; no check item; on any failure the move's template line is used. The server refuses the call outside a judge session.
+- *evaluation*: 20 runs per style: approved ids 100%, numbers in the allowed set, and the experienced runs cover more rubric points than the struggling runs in at least 18 of 20 pairs (rubric coverage is internal to the eval, never shown to a teacher).
+- *output*: A teacher line labelled 'AI playing the teacher (demo only)'; never shown to a real teacher, who hears the reviewed model run.
 
 Gates: code validators → rule-based pre-filter → output checker (call 7) → human approval (track content, method cards) → teacher flag. Badges: *Checked ✓* after the first two automatic gates, *Checked ✓ · Reviewed ✓* after a human approves too. Details: [docs/guardrails.md](docs/guardrails.md), [docs/architecture.md](docs/architecture.md). Live map: `GET /api/judge/ai-map`; audit trail: `GET /api/judge/audit`.
 <!-- AI-USED:END -->

@@ -56,7 +56,7 @@ def test_dummy_call_end_to_end(sink: SqlAuditSink, write_recording: Callable[...
     )
     row = sink.recent(1)[0]
     # A complete audit row: every field the design asks for.
-    assert row.call_id == 1 and row.call_key == "c01_child_voice" and row.prompt_version == 2
+    assert row.call_id == 1 and row.call_key == "c01_child_voice" and row.prompt_version == 3
     assert row.model == "claude-sonnet-5-5" and row.mode == "recorded"
     assert (row.tokens_in, row.tokens_out) == (120, 20)
     assert row.tokens_cache_read == 0 and row.tokens_cache_write == 0

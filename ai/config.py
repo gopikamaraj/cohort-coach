@@ -14,10 +14,16 @@ DEFAULT_MODELS: dict[str, str] = {
     "MODEL_DRAFT": "claude-opus-5-5",
     "MODEL_DIGEST": "claude-haiku-5-5",
     "MODEL_POINTER": "claude-haiku-5-5",  # call 9 (reflection pointer), built in P10
+    "MODEL_DEMO_TEACHER": "claude-haiku-5-5",  # call 10, judge mode only
     "MODEL_CHECK": "claude-haiku-5-5",
     "MODEL_READ": "claude-haiku-5-5",
     "MODEL_READ_RETRY": "claude-sonnet-5-5",
 }
+
+
+def judge_mode() -> bool:
+    """True when this deployment is the judge-mode demo. Decided by the server, never a request."""
+    return os.environ.get("JUDGE_MODE", "1") == "1"
 
 
 def model_for(env_var: str) -> str:
@@ -47,6 +53,7 @@ POLICIES: dict[str, CallPolicy] = {
     "c06_digest": CallPolicy(30, 2, "low", 1200, thinking="off"),
     "c07_checker": CallPolicy(12, 1, "low", 800, thinking="off"),
     "c08_answer_reading": CallPolicy(timeout_s=20, max_retries=1, effort="low", max_tokens=600),
+    "c10_demo_teacher": CallPolicy(10, 1, "low", 400, thinking="off"),
 }
 
 

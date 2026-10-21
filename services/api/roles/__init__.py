@@ -8,7 +8,6 @@ teacher; a production session cannot change role by changing client state. Real 
 
 from __future__ import annotations
 
-import os
 from collections.abc import Callable
 from functools import cache
 from pathlib import Path
@@ -16,6 +15,8 @@ from typing import Any
 
 import yaml
 from fastapi import APIRouter, Depends, Header, HTTPException
+
+from ai.config import judge_mode
 
 ROLES = ("teacher", "mentor", "coach", "officer")
 CONFIG = Path(__file__).with_name("permissions.yaml")
@@ -32,7 +33,7 @@ def config() -> dict[str, Any]:
 
 def judge_session() -> bool:
     """True when this deployment is the judge-mode demo. Never read from a request."""
-    return os.environ.get("JUDGE_MODE", "1") == "1"
+    return judge_mode()
 
 
 def role_of(x_role: str | None = Header(default=None)) -> str:

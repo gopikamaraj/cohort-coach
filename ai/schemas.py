@@ -10,9 +10,13 @@ Language = Literal["en", "hi", "ta"]
 
 
 class ChildLine(BaseModel):
-    """Call 1: what a simulated child says. The number comes from the engine, never from Claude."""
+    """Call 1: what a simulated child says. The number comes from the engine, never from Claude.
+
+    `english` is the subtitle: the same line in English with the same digits (prompt v3).
+    """
 
     text: str = Field(max_length=400)
+    english: str = Field(default="", max_length=400)
 
 
 class PosedProblem(BaseModel):
@@ -30,6 +34,14 @@ class MoveLabel(BaseModel):
     addressed_child: str
     posed_problem: PosedProblem | None = None
     confidence: float = Field(ge=0, le=1)
+
+
+class DemoTeacherTurn(BaseModel):
+    """Call 10 (judge mode only): the AI teacher's next move and line in a Watch run."""
+
+    move_id: str
+    addressed_child: str
+    line: str = Field(max_length=300)
 
 
 class FeedbackPoint(BaseModel):

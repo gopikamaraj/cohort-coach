@@ -213,3 +213,31 @@ def test_all_four_tracked_errors_can_be_rehearsed(ctx: CallContext) -> None:
         r = take_turn(s, text=f"{first}, what is the answer? Show me?", context=ctx)
         assert r.speaker == first and r.child_text
         end_session(s, context=ctx)
+
+
+def test_each_turn_carries_a_move_tag_a_subtitle_and_a_confusion_meter(ctx: CallContext) -> None:
+    s = start_session("SUB-SFL", "en", seed=5)
+    results = run_script(s, ctx)
+    first, third = results[0], results[2]
+    assert first.move["id"] == "pose_problem" and first.move["quality"] == "neutral"
+    assert third.move["id"] == "show_bundles" and third.move["strategy"] is True
+    assert third.move["label"]  # in her language
+    assert all(r.child_text_en for r in results if r.child_text)
+    for r in results:
+        assert len(r.children) == 5
+        assert {c["band"] for c in r.children} <= {"high", "medium", "low"}
+        assert all(0.0 <= c["level"] <= 1.0 for c in r.children)
+    # the meter comes from the engine: showing bundles lowers the strength of the child spoken to
+    speaker = next(c for c in results[1].children if c["name"] == name_of(s))
+    after = next(c for c in results[3].children if c["name"] == name_of(s))
+    assert after["level"] < speaker["level"]
+
+
+def test_the_confusion_band_is_a_word_for_the_engine_strength() -> None:
+    from services.practice.session import confusion_band
+
+    assert (confusion_band(0.9), confusion_band(0.5), confusion_band(0.1)) == (
+        "high",
+        "medium",
+        "low",
+    )

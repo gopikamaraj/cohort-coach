@@ -263,3 +263,30 @@ def test_the_checker_is_told_the_wrong_answer_is_deliberate(sink: SqlAuditSink) 
     seen = fake.messages.calls[1]["messages"][0]["content"][-1]["text"]
     assert '"answer_is_deliberately_wrong": true' in seen and '"target_error": "SUB-SFL"' in seen
     assert '"engine_answer": 37' in seen and "<candidate_text>" in seen
+
+
+def test_the_english_subtitle_must_carry_the_same_digits_as_the_line(sink: SqlAuditSink) -> None:
+    kw = {**KW, "language": "hi"}
+    plan = plan_wrong_answer()
+    bad = ChildLine(text="37, मैम!", english="36, Miss!")
+    res = child_line(plan, teacher_line="x", context=live(sink, FakeClient([bad, bad])), **kw)
+    assert res.source == "template"
+    assert res.run is not None and "subtitle" in {r.name for r in res.run.results if not r.ok}
+
+
+def test_a_missing_subtitle_is_refused_for_a_non_english_line(sink: SqlAuditSink) -> None:
+    kw = {**KW, "language": "hi"}
+    bare = ChildLine(text="37, मैम!")
+    res = child_line(
+        plan_wrong_answer(), teacher_line="x", context=live(sink, FakeClient([bare, bare])), **kw
+    )
+    assert res.source == "template" and res.english  # the template carries its own subtitle
+
+
+def test_a_good_subtitle_is_returned_with_the_line(sink: SqlAuditSink) -> None:
+    kw = {**KW, "language": "hi"}
+    good = ChildLine(text="37, मैम!", english="37, Miss!")
+    res = child_line(
+        plan_wrong_answer(), teacher_line="x", context=live(sink, FakeClient([good, PASS])), **kw
+    )
+    assert res.source == "ai" and res.english == "37, Miss!"

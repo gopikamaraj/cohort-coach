@@ -73,6 +73,24 @@ class TurnResult:
     cost_usd: float
     finished: bool
     finished_reason: str | None
+    child_text_en: str = ""  # the English subtitle, same digits as child_text
+    move: dict[str, Any] = field(default_factory=dict)  # the teacher's move as a tag
+    children: list[dict[str, Any]] = field(default_factory=list)  # the confusion meter
+
+
+def confusion_band(strength: float) -> str:
+    """A word for how strongly a child still holds the mistake. Computed by code from the engine."""
+    return "high" if strength >= 0.66 else "medium" if strength >= 0.33 else "low"
+
+
+def _move_tag(session: PracticeSession, move_id: str) -> dict[str, Any]:
+    for m in session.loaded.movelist.moves:
+        if m.id == move_id:
+            return {
+                "id": m.id, "label": m.label[session.language], "quality": m.quality,
+                "strategy": m.strategy,
+            }  # fmt: skip
+    return {"id": move_id, "label": move_id, "quality": "neutral", "strategy": False}
 
 
 def _pick_names(language: str, seed: int) -> list[PersonaChild]:
@@ -306,6 +324,17 @@ def take_turn(
         cost_usd=stats["cost_usd"],
         finished=new_state.finished,
         finished_reason=new_state.finished_reason,
+        child_text_en=line.english,
+        move=_move_tag(session, move_id),
+        children=[
+            {
+                "name": c.name,
+                "level": round(c.strength, 2),
+                "band": confusion_band(c.strength),
+                "has_error": c.error is not None,
+            }
+            for c in new_state.children
+        ],  # fmt: skip
     )
 
 

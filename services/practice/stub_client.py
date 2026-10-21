@@ -63,15 +63,17 @@ class _Messages:
     def _child(facts: dict[str, Any]) -> ChildLine:
         intent, answer = facts["intent"], facts.get("answer")
         if intent == "answer" and answer is not None:
-            return ChildLine(text=f"{answer}, Miss!")
+            return ChildLine(text=f"{answer}, Miss!", english=f"{answer}, Miss!")
         if intent in {"explain", "work_aloud", "doubt"} and facts.get("steps"):
-            return ChildLine(text=". ".join(s["meaning"] for s in facts["steps"]) + ".")
+            said = ". ".join(s["meaning"] for s in facts["steps"]) + "."
+            return ChildLine(text=said, english=said)
         lines = {
             "agree": "OK Miss, let me look again.",
             "thanks": "Thank you, Miss!",
             "quiet": "Yes, Miss.",
         }
-        return ChildLine(text=lines.get(intent, "Miss, I did not understand."))
+        said = lines.get(intent, "Miss, I did not understand.")
+        return ChildLine(text=said, english=said)
 
     @staticmethod
     def _label(model: Any, facts: dict[str, Any], line: str) -> Any:

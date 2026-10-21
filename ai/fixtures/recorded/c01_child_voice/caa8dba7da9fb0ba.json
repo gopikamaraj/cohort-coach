@@ -1,0 +1,17 @@
+{
+  "call": "c01_child_voice",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "english": "Miss, I added 23 and 29 and it came 52. That is what we started with, but why did it not feel right?",
+      "text": "Miss, I added 23 and 29 and it came 52. That is what we started with, but why did it not feel right?"
+    }
+  ],
+  "prompt_version": 3,
+  "usage": {
+    "cache_read_tokens": 1770,
+    "cache_write_tokens": 0,
+    "input_tokens": 440,
+    "output_tokens": 82
+  }
+}
