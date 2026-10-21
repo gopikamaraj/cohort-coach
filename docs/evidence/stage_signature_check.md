@@ -47,7 +47,7 @@ docs/build/synthetic-sheets-stage-addendum.md:18: dictation number 346
 
 - Part 1: the only overlap is the designed one (PV-HEARD and PV-REVERSE share the "both heard and reversed" answers on items 1 and 2 of both forms). Every other signature set is disjoint from the others and from the correct answer on items 1 to 5 and 7 to 10 of both forms.
 - Part 2: each synthetic sheet S01 to S07 lands in the stage the specification expects.
-- Part 3: the scan lists every Form A or Form B item (and every dictation target) in the files given. The hits are the deliberate negative examples in the validator tests (section E) and the sheet answer rows (section G), which are test data, not lesson content. No worked example, hint or order probe added in this change contains a check item.
+- Part 3: the scan lists every Form A or Form B item (and every dictation target) in the files given. The hits are the deliberate negative examples in the validator tests (section E) and the sheet answer rows (section G), which are test data, not lesson content. The scan covered only the three files named in the command, and matches digits only (not spoken-word forms). A separate grep of the other lines added in this change (BUILD_PROMPTS, CLAUDE.md, DECISIONS, PROGRESS, guardrails, architecture, agents) found no check item. Addendum line 335 uses 346 as the PV-HEARD example from CLAUDE.md section 5, and the addendum names 45 - 19 only as the validator's negative example. The script is not committed; the P08 unit test and eval 1 replace it.
 
 ## Script
 

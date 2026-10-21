@@ -85,6 +85,8 @@ These reuse the P11 and P12 screens; the landing page and the dialog are the onl
 
 ### Behaviour
 
+- **Who counts as a judge.** Whether a session is a judge session, and so whether every role is selectable, is decided by the server (a signed, expiring judge link or the deployment's judge setting), never by `localStorage`, the header switcher or a request body. In production a session cannot enter the officer or coach role by changing client state; `require()` refuses it. Test: flip the client role flag in a production session and expect 403 on officer and coach routes. A signed judge link carries an expiry and is rate-limited per IP; recorded in `DECISIONS.md` (OD-19 sets the cost cap, this adds the link rules).
+
 - **Demo and judge mode.** Every role is selectable. A role switcher stays in the header. The dialog shows the first time a role is entered in that browser (a flag in `localStorage`, no server state).
 - **Production.** The landing page lists only the roles recorded for her pseudonymous id (assigned by the officer, with her consent, in the role-assignment screen; no passwords). A single-role person goes straight to the dashboard and sees the dialog once.
 - **Layout.** Teacher and mentor dashboards render inside a phone frame at 768 px and wider (both are phone-first and also run in Telegram). Coach and officer use the full width.
@@ -190,6 +192,8 @@ Each chip runs the real pipeline. The guardrail response is shown with its one-l
 Call 10 is added to `ai/registry.py` (so the README "Where AI is used", the AI map, `docs/guardrails.md` and `docs/architecture.md` list ten calls), with all five layers described.
 
 ### Recorded runs, live cap, cost meter
+
+- **No visitor text in stored runs.** Recorded runs hold only scripted or AI-teacher lines. A judge's free text, hint choices and "Try to break it" lines follow the Practice Class rule: audit rows are metadata only and the transcript stays on the visitor's device.
 
 - **Recorded runs.** For each scenario and style, runs of the live system are stored with date, model versions, prompt versions, seed and scenario version, and labelled "recorded run". They are produced by a script that calls the live system once and writes the transcript, layers and feedback card. A recorded run is never presented as live.
 - **Automatic fallback.** Judge mode switches to a recorded run when a call fails or a turn takes longer than 8 s, and says so on screen ("Showing a recorded run: the live call was slow").
@@ -338,7 +342,7 @@ Further rules:
 
 ### F3. Confirm-step tags
 
-Beside the existing confirm step the teacher can tag a sheet: **Unreadable**, **Two answers**, **Missed the teaching on this** (she knows from her register). Tags live with the per-sheet reads: in memory on the server with the 30-minute TTL, keyed by sequence number, or on her device. Only **class counts per (error, stage)** are stored, and they are suppressed below 5 classes when shown to anyone other than the teacher of that class. No per-child stage and no tag is ever stored.
+Beside the existing confirm step the teacher can tag a sheet: **Unreadable**, **Two answers**, **Missed the teaching on this** (she knows from her register). Tags live with the per-sheet reads: in memory on the server with the 30-minute TTL, keyed by sequence number, or on her device. Only **class counts per (error, stage)** are stored, and they are suppressed below 5 classes when shown to anyone other than the teacher of that class. The missed-teaching count shown beside the verdict is the same kind of class-level count: stored per class, suppressed below 5 classes for anyone but the teacher of that class. No per-child stage and no tag is ever stored; the no-tag-column test also covers this count.
 
 ### F4. Error card (T3)
 
