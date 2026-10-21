@@ -191,3 +191,21 @@ Recorded here because they changed the build; numbers are in `docs/evidence/eval
 - **Impact tag.** "Did this rehearsal help?": It helped, No difference, It did not help. It is her own view, kept on the phone, labelled as hers; it is not a score and nothing else reads it (`CLAUDE.md` rules 3 and 11). It does not say anything about whether children improved: only the next check shows that.
 - **Language.** The session is created in the language selected in the app; goal, tips, cues, child names, materials, feedback and explanation lines arrive in it. If she switches language mid-rehearsal, a banner offers "Restart in <language>" (same children). A Playwright test checks that the home, check and practice screens (with the cue card open) show no English words in Hindi or Tamil.
 - Tested by `apps/pwa/e2e/review.spec.ts`, `apps/pwa/src/lib/review.test.ts` and `tests/practice/test_api.py`.
+
+## Judge-mode demo modes (addendum v3.1, built 22 Oct)
+
+In judge mode the Practice Class has more than free typing. Real teachers never see these.
+
+| Mode | What it is | Where |
+| --- | --- | --- |
+| Watch | An AI plays the teacher in an experienced or a struggling style, then the normal feedback card shows. Both runs can sit side by side. Playback has pause, step, 2× and skip to feedback. | `#/watch` (`services/practice/watch.py`) |
+| Try with hints | Each turn offers three replies built by code from the move list (a strong move, a common mistake, a neutral line), shuffled, with no label until the move tag shows. | Practice Class (`services/practice/hints.py`) |
+| Try to break it | Four prepared bad lines run through the real pre-filter; the reason is shown in her language. | Practice Class and the AI map (`POST /api/judge/try-break`) |
+
+Every teacher line in Watch says "AI playing the teacher (demo only)" (call 10). Every child line has an English subtitle (call 1 prompt v3; the digits in both lines must match). Each turn shows a move tag, a confusion meter per child (a word and a bar from the engine's strength) and, on request, "Show the machinery": what code decided, which AI call ran and which checks passed.
+
+**Recorded runs.** `scripts/record_demo_runs.py` runs the live system once per style and language and stores the transcript in `content/demo_runs/` with date, model and prompt versions, seed and scenario version. Judge mode shows the recorded run by default, labelled "recorded run". A live run (capped per hour, `WATCH_LIVE_PER_HOUR`, default 6; cost meter shown) is abandoned for the recorded one if a call fails or a turn takes over 8 s, and the screen says why.
+
+**Stages.** The subtraction scenarios seat three core children, one input-test child (reads the sign as the other operation or swaps the digits of a number) and one output child (says the right number and writes it reversed); an input-teaching child (no method yet, says she is lost) is available through `stage_mix`. The slate under each reply shows what the speaking child wrote. A stage is never shown as a label to the teacher.
+
+**Honest limits.** The two Watch styles show 9 turns each and the experienced run touched more rubric points than the struggling run in the recorded runs (5 of 5 against 1 of 5 for each language); that is one run per cell (`content/demo_runs/*.json`, the `summary` field), not eval 11. Eval 11 (20 runs per style) runs in P13.

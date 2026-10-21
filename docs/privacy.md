@@ -57,3 +57,8 @@
 - **Persistent storage** is requested so the browser does not clear the phone's data; a browser may decline, and the profile page says which it did.
 - **Data used** is counted on the phone from the app's own calls and never sent.
 - Uploads from the Practice Class voice turn may be spooled to a temporary file by the framework above 1 MB; the audio is the teacher's own and is deleted on close (see `docs/speech.md`).
+
+## Stage of breakdown (22 Oct)
+
+The stages (input, core, output) are worked out on the phone from the answers she typed or confirmed, with signature answers the engine writes into the answer keys; a parity test checks the phone's result against the Python engine on 136 synthetic children (`tests/fixtures/stage_cases.json`). The per-child rows never leave the phone. What stays on the phone with the check is her tag "missed the teaching on this" per child position. What reaches the server is nothing new: the class counts per error, as before. A stage is always "most likely", never shown to a child, and never a judgement of a child or a teacher. `POST /api/stages` (stateless, nothing stored or logged, a 300-child cap) exists for the bot's check flow in a later phase and is not called by the web app.
+

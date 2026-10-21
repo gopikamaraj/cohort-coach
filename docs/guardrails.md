@@ -70,6 +70,6 @@ Child-voice lines and child-facing lines in model lessons must sound like a Grad
 
 Every call has a timeout, bounded retries (live turns retry once, stating what was wrong) and a deterministic fallback: a template line, or "needs a human". Non-judge traffic stops at `AI_BUDGET_USD_TOTAL` and `AI_BUDGET_USD_DAILY`; judge traffic stops at `AI_BUDGET_USD_HARD`.
 
-## Call 10: demo teacher (judge mode only, planned 21 Oct)
+## Call 10: demo teacher (judge mode only, built 22 Oct)
 
 The AI that plays the teacher in the Practice Class "Watch" mode. It never reaches a real teacher, who hears the reviewed model run. Guardrails: the move id must be on the scenario's approved list; the line is 25 words or fewer; every number comes from the scenario's allowed set; no answer leak beyond what the style allows (the experienced style leaks nothing); on any failure the move's template line is used and the audit row records the fallback. The server refuses the call outside a judge session, every line is labelled "AI playing the teacher (demo only)", and recorded runs are labelled "recorded run". Eval 11 measures it. Spec: `docs/design/addendum-v3.1.md` §C.
