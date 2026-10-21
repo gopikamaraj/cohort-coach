@@ -892,6 +892,9 @@ class SheetSpec:
     cond_override: dict[str, Any] = field(default_factory=dict)
     cond_notes: list[str] = field(default_factory=list)
     expected_errors: list[str] | None = None
+    expected_stages: list[str] | None = (
+        None  # most-likely stages (addendum v3.1 F); None = not asserted
+    )
     is_sheet: bool = True
     header_name: str | None = None
     selected_form: str | None = None
@@ -899,6 +902,34 @@ class SheetSpec:
 
 def texts_for(form: str, ints: list[str]) -> list[str]:
     return ints
+
+
+# Expected stages for the hero sheets (docs/build/synthetic-sheets-stage-addendum.md). "not attempted"
+# means no stage and the not-attempted line; [] means no stage at all.
+HERO_STAGES: dict[str, list[str]] = {
+    "H02": ["Core"], "H03": ["Input (test)"], "H04": ["Core", "Input (test)"],
+    "H05": ["Core"], "H06": ["Core"], "H07": ["Core"], "H08": ["Core"], "H09": [],
+    "H10": ["Core"], "H11": ["Core"], "H12": [], "H13": ["not attempted"], "H14": [],
+    "H15": ["Core"], "H20": ["Core"], "H26": ["Core"],
+}  # fmt: skip
+
+# Seven Form A rows that exercise the stage signatures (the same rows as the addendum's table).
+STAGE_ROWS: list[tuple[str, str, list[str]]] = [
+    ("S01", "346,728,85,74,82,35,110,26,121,54", ["Input (test)"]),
+    ("S02", "346,728,9,18,36,35,38,26,43,54", ["Input (test)"]),
+    ("S03", "346,728,130,92,118,35,38,26,43,54", ["Input (test)"]),
+    ("S04", "346,728,58,47,28,35,83,62,43,54", ["Output"]),
+    ("S05", "347,738,85,74,82,35,38,26,43,54", ["Input (test)"]),
+    ("S06", "346,728,84,73,83,35,39,26,43,54", ["Core"]),
+    ("S07", "364,782,58,47,28,35,42,34,57,66", ["Core", "Output"]),
+]
+
+
+def stage_specs() -> list[SheetSpec]:
+    return [
+        SheetSpec("STG", sid, sid, "A", "S0-3A", None, row.split(","), expected_stages=stages)
+        for sid, row, stages in STAGE_ROWS
+    ]
 
 
 def hero_specs() -> list[SheetSpec]:
@@ -1073,6 +1104,9 @@ def hero_specs() -> list[SheetSpec]:
         cond_notes=["upside_down_180deg"],
     )
     del s19
+    for spec in h:
+        if spec.hero_id in HERO_STAGES:
+            spec.expected_stages = HERO_STAGES[spec.hero_id]
     return h
 
 
@@ -1354,6 +1388,7 @@ def render_spec(spec: SheetSpec, fonts: dict[str, str], seed: int, out: Path) ->
         "background": bg_kind,
         "image_size": list(size),
         "bytes": len(data),
+        "expected_stages": spec.expected_stages,
     }
     if spec.header_name:
         rec["header_name_written"] = f"{spec.header_name} (made up)"
@@ -1365,6 +1400,25 @@ def render_spec(spec: SheetSpec, fonts: dict[str, str], seed: int, out: Path) ->
 
 
 # ---------------------------------------------------------------------------- self-check ----
+
+
+def stage_check(manifest: list[dict[str, Any]], chk: Any) -> None:
+    """The engine's stage for each sheet that has an expected stage (addendum v3.1 F)."""
+    from engine.forms import PILOT_FORMS
+    from engine.stages import classify_child
+
+    for r in manifest:
+        want = r.get("expected_stages")
+        if want is None or not r.get("is_answer_sheet", True):
+            continue
+        readings = ["blank" if a["value"] is None else a["value"] for a in r["answers"]]
+        res = classify_child(PILOT_FORMS[r["form"]], readings)
+        got = (
+            ["not attempted"]
+            if res.not_attempted and not res.stages
+            else sorted(s.value for s in res.stages)
+        )
+        chk(f"{r['sheet_id']} stages", got, sorted(want))
 
 
 def mcnemar_exact(fixed: int, new: int) -> float:
@@ -1405,6 +1459,7 @@ def self_check(manifest: list[dict[str, Any]]) -> bool:
     for hid, want in exp.items():
         got = sorted(heroes[hid]["errors_present_by_scoring_rule"])
         chk(f"{hid} errors by rule", got, sorted(want))
+    stage_check(manifest, chk)
     h10 = heroes["H10"]
     chk("H10 wrong anchor", h10["anchor_wrong"], True)
     for name, targets in (
@@ -1580,6 +1635,7 @@ def write_outputs(
         "the photo effects (perspective, lighting, blur, noise, crumple, finger, JPEG) are simulated. It does not stand in for real children's handwriting and says nothing about reader accuracy on real sheets.\n\n"
         "## What is here\n\n"
         "- `SIM_COV_H01.jpg` to `SIM_COV_H26.jpg`: 26 coverage sheets (set `COV`, class code S0-3A), one per row of the coverage table.\n"
+        "- `SIM_STG_S01.jpg` to `SIM_STG_S07.jpg`: seven Form A sheets that exercise the stage signatures (set `STG`); `expected_stages` in the manifest is what the engine must report. Robustness only, never eval 9 accuracy.\n"
         "- `SIM_S1-3A-PRE_Rnn.jpg` and `SIM_S1-3A-POST_Rnn.jpg`: the demo class S1-3A, 28 children (roll 1 to 28), Form A pre-test then Form B post-test.\n"
         "- `SIM_S2-3B-PRE_Rnn.jpg` and `SIM_S2-3B-POST_Rnn.jpg`: the untrained comparison class S2-3B, 26 children.\n"
         "- `manifest.json` and `manifest.csv`: the truth, one record per image: what is written (Devanagari kept), its value, crossed-out first attempts, a label per answer, the errors by the scoring rule, the capture conditions, whether the current reader is expected to handle it (`covered`: Y, Edge, N) and `truth_source` (`rendered_by_code`: the truth is what the code drew; nothing was read back by a person).\n"
@@ -1631,7 +1687,7 @@ def main(argv: list[str]) -> int:
     fonts = ensure_fonts(out)
     print("fonts:", ", ".join(f"{k}={Path(v).name}" for k, v in fonts.items()))
     rng = random.Random(args.seed)
-    specs = hero_specs()
+    specs = hero_specs() + stage_specs()
     if not args.quick:
         specs += build_class("S1-3A", "S1", "S1-3A", 28, rng)
         specs += build_class("S2-3B", "S2", "S2-3B", 26, rng)
