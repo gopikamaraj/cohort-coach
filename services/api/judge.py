@@ -88,3 +88,29 @@ def audit(limit: int = Query(50, ge=1, le=200), sink: SqlAuditSink = SINK) -> di
             for r in rows
         ],
     }
+
+
+@router.get("/sample-sheets")
+def sample_sheets() -> dict[str, Any]:
+    """Recorded reads of made-up Form A rows, so a judge can run a check without a photo.
+
+    Judge mode only (the route needs the judge permission, which a production session lacks).
+    """
+    import yaml
+
+    from services.practice.content import CONTENT
+
+    raw = yaml.safe_load((CONTENT / "demo" / "sample_sheets.v1.yaml").read_text(encoding="utf-8"))
+    rows = [str(c["answers"]).split(",") for c in raw["children"]]
+    unsure = {
+        str(i): [int(b) for b in c["unsure"]]
+        for i, c in enumerate(raw["children"])
+        if c.get("unsure")
+    }
+    return {
+        "form": raw["form"],
+        "label": raw["label"],
+        "children": rows,
+        "unsure": unsure,
+        "note": "Simulated. These are made-up rows, not a real class and not a photo.",
+    }

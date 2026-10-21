@@ -51,6 +51,19 @@ _STAGE_OF: dict[str, Stage] = {
 }
 
 
+def stage_rules() -> dict[str, object]:
+    """The constants the phone needs to apply the stage rules (exported with the answer keys)."""
+    return {
+        "min_hits": MIN_HITS,
+        "no_method_items_7_10": NO_METHOD_ITEMS_7_10,
+        "anchor": ANCHOR,
+        "add_items": list(_ADD_ITEMS),
+        "sub_items": list(_SUB_ITEMS),
+        "stage_of": {code: stage.value for code, stage in _STAGE_OF.items()},
+        "pv_reverse": {"with_out_rev": Stage.OUTPUT.value, "otherwise": Stage.INPUT_TEST.value},
+    }
+
+
 def _rev(n: int) -> int:
     return int(str(n)[::-1])
 

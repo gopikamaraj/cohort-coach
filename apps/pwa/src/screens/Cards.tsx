@@ -11,6 +11,7 @@ import { Sticks, SimulatedBanner } from "../components/parts";
 import { href } from "../lib/router";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
+import { StageLines } from "../components/stages";
 
 export default function Cards() {
   const { tr, lang, role, online, klass, profile, check } = useApp();
@@ -69,6 +70,7 @@ export default function Cards() {
           );
         })}
       </ul>
+      {profile.stages ? <StageLines stages={profile.stages} /> : null}
       {view.untracked > 0 ? <p data-testid="untracked">{tr("cards.untracked", { n: view.untracked })}</p> : null}
       {view.anchorWrong > 0 ? <p>{tr("cards.anchor", { n: view.anchorWrong })}</p> : null}
     </section>

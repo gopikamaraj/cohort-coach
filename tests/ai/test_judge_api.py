@@ -78,3 +78,21 @@ def test_readme_where_ai_is_used_is_current() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for name in ("Child voices", "Output checker", "Answer reading"):
         assert name in readme
+
+
+def test_sample_sheets_are_recorded_reads_of_made_up_rows(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("JUDGE_MODE", "1")
+    body = TestClient(app).get("/api/judge/sample-sheets").json()
+    assert body["form"] == "A" and "recorded" in body["label"]
+    assert len(body["children"]) >= 10 and all(len(r) == 10 for r in body["children"])
+    assert body["unsure"] and all(0 <= b < 10 for boxes in body["unsure"].values() for b in boxes)
+    assert not any("name" in str(k).lower() for k in body)  # no child is named
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    assert TestClient(app).get("/api/judge/sample-sheets").status_code == 403
+
+
+def test_every_sample_row_is_a_form_a_row_with_no_check_item_text() -> None:
+    from ai.validators.check_items import check_items
+
+    body = TestClient(app).get("/api/judge/sample-sheets").json()
+    assert check_items(body["label"] + body["note"]) == []

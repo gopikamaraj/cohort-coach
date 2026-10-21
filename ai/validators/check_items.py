@@ -18,6 +18,9 @@ from ai.validators._data import ascii_digits
 
 GOLDEN = Path(__file__).resolve().parents[2] / "docs" / "design" / "pilot_forms.golden.json"
 SCAN_SUFFIXES = {".yaml", ".yml", ".md", ".json", ".txt"}
+# Rows of made-up answer sheets are test data (what a child wrote), never teaching content: they
+# necessarily hold the printed items' answers. Nothing else is exempt.
+EXEMPT = frozenset({"demo/sample_sheets.v1.yaml"})
 
 _UNITS = {
     w: i
@@ -149,6 +152,8 @@ def scan_content(root: Path) -> list[tuple[Path, list[Violation]]]:
     hits: list[tuple[Path, list[Violation]]] = []
     for path in sorted(root.rglob("*")):
         if path.is_file() and path.suffix in SCAN_SUFFIXES:
+            if path.relative_to(root).as_posix() in EXEMPT:
+                continue
             v = check_items(path.read_text(encoding="utf-8"))
             if v:
                 hits.append((path, v))

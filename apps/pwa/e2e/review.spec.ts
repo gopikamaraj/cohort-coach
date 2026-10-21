@@ -141,7 +141,11 @@ test("teacher screens show no English words in Hindi or Tamil", async ({ page })
       }, lang);
       await page.goto(route === "practice" ? "/#/practice?seed=5" : `/#/${route}`);
       await page.reload();
-      if (route === "check" && (await page.getByTestId("form-A").count()) > 0) await page.getByTestId("form-A").click(); // the second language finds the check already started
+      if (route === "check") {
+        // the second language finds the check already started: wait for either screen, then choose a form if it asks
+        await page.getByTestId("form-A").or(page.getByTestId("child-title")).first().waitFor();
+        if ((await page.getByTestId("form-A").count()) > 0) await page.getByTestId("form-A").click({ timeout: 3000 }).catch(() => undefined);
+      }
       if (route === "practice") {
         await page.getByTestId("start-practice").click();
         await expect(page.getByTestId("goal")).toBeVisible();

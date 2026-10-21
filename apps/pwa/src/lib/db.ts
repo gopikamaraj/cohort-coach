@@ -13,6 +13,8 @@ export interface ClassRow {
 /** One class, one term, one paper. `children[i][q]` is the raw text of child i's answer to
  * question q: digits, "_" for a blank box, "?" for one she cannot read, "" for not entered.
  * Rows are in roll order; only this phone knows which row is which child. */
+import type { StageCounts } from "./stagecalc";
+
 export interface CheckRow {
   id: string;
   classId: string;
@@ -21,6 +23,7 @@ export interface CheckRow {
   children: string[][];
   updatedAt: number;
   viaPhoto?: number[]; // which children were filled from a photo (the photo itself is never kept)
+  missed?: number[]; // children she tagged "missed the teaching on this" (stays on this phone)
 }
 
 /** The class-level result: how many children showed each error. No child appears here. */
@@ -35,6 +38,7 @@ export interface ProfileRow {
   track: string | null;
   anchorWrongCount: number;
   untracked: Record<string, number>;
+  stages?: StageCounts; // counts per (error, stage) for the class; never a child
   simulated: boolean;
   createdAt: number;
 }

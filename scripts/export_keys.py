@@ -13,7 +13,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from engine.export_keys import build_answer_keys, build_diagnosis_cases, render  # noqa: E402
+from engine.export_keys import (  # noqa: E402
+    build_answer_keys,
+    build_diagnosis_cases,
+    build_stage_cases,
+    render,
+)
 from engine.forms import PILOT_FORMS  # noqa: E402
 
 TARGETS = {
@@ -21,6 +26,7 @@ TARGETS = {
         build_answer_keys(PILOT_FORMS)
     ),
     ROOT / "tests/fixtures/diagnosis_cases.json": lambda: render(build_diagnosis_cases()),
+    ROOT / "tests/fixtures/stage_cases.json": lambda: render(build_stage_cases()),
 }
 
 

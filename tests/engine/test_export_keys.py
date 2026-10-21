@@ -97,3 +97,31 @@ def test_named_cases_have_hand_written_expectations() -> None:
     assert by_name["715_untracked"]["other_count"] == 2
     assert by_name["blanks_and_junk"]["blank_count"] == 2
     assert by_name["blanks_and_junk"]["unreadable_count"] == 2
+
+
+def test_keys_carry_the_signature_answers_and_the_stage_rules() -> None:
+    keys = build_answer_keys(PILOT_FORMS)
+    stages = keys["rules"]["stages"]
+    assert stages["min_hits"] == 2 and stages["anchor"] == 6
+    assert stages["stage_of"]["IN-OP"] == "Input (test)"
+    item7 = keys["forms"]["A"]["items"][6]
+    assert item7["signatures"]["IN-OP"] == [110] and item7["signatures"]["CORE-OFF1"] == [37, 39]
+    assert keys["forms"]["A"]["items"][5]["signatures"] == {}  # the anchor has none
+
+
+def test_stage_cases_are_generated_from_the_engine() -> None:
+    from engine.export_keys import build_stage_cases
+
+    cases = build_stage_cases()
+    names = {c["name"] for c in cases["children"]}
+    assert {"S01", "S04", "S07", "H04", "missed_teaching_tag"} <= names
+    s07 = next(c for c in cases["children"] if c["name"] == "S07")
+    assert s07["expected"]["stages"] == ["Core", "Output"]
+    assert len(cases["children"]) >= 100 and cases["classes"]
+
+
+def test_the_committed_stage_cases_match_the_engine() -> None:
+    from engine.export_keys import build_stage_cases
+
+    path = ROOT / "tests/fixtures/stage_cases.json"
+    assert path.read_text(encoding="utf-8") == render(build_stage_cases())

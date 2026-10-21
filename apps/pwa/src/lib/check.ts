@@ -3,6 +3,7 @@
 import { classProfile, diagnoseChild, normalizeAnswer, type ChildDiagnosis, type Reading } from "./diagnosis";
 import { db, type CohortDb, type ProfileRow } from "./db";
 import { enqueueProfile } from "./sync";
+import type { StageCounts } from "./stagecalc";
 
 export const BLANK = "_";
 export const UNREADABLE = "?";
@@ -68,8 +69,9 @@ export async function finishCheck(
   rows: string[][],
   simulated: boolean,
   store: CohortDb = db,
+  stages?: StageCounts | null,
 ): Promise<ProfileRow> {
-  const row = profileRow(classId, term, formKey, rows, simulated);
+  const row = { ...profileRow(classId, term, formKey, rows, simulated), ...(stages ? { stages } : {}) };
   await store.profiles.put(row);
   await enqueueProfile(row, store);
   return row;

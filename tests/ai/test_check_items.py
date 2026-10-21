@@ -79,3 +79,19 @@ def test_every_file_under_content_passes() -> None:
 def test_the_scanner_finds_a_planted_item(tmp_path: Path) -> None:
     (tmp_path / "x.yaml").write_text("lines:\n  - 'Take 82 - 39 now'\n", encoding="utf-8")
     assert [h[0].name for h in scan_content(tmp_path)] == ["x.yaml"]
+
+
+def test_no_user_facing_string_contains_a_check_item() -> None:
+    import json
+
+    for lang in ("en", "hi", "ta"):
+        table = json.loads((ROOT / "strings" / f"{lang}.json").read_text(encoding="utf-8"))
+        hits = {k: codes(check_items(v)) for k, v in table.items() if check_items(v)}
+        assert hits == {}, (lang, hits)
+
+
+def test_only_the_made_up_answer_sheet_rows_are_exempt() -> None:
+    from ai.validators.check_items import EXEMPT
+
+    assert EXEMPT == {"demo/sample_sheets.v1.yaml"}
+    assert check_items((ROOT / "content/demo/sample_sheets.v1.yaml").read_text(encoding="utf-8"))

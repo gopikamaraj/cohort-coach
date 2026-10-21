@@ -15,6 +15,7 @@ from services.api.profiles import router as profiles_router
 from services.api.programme import router as programme_router
 from services.api.roles import router as roles_router
 from services.api.sheets import router as sheets_router
+from services.api.stages import router as stages_router
 
 load_env()
 
@@ -40,6 +41,7 @@ app.include_router(practice_router)
 app.include_router(profiles_router)
 app.include_router(programme_router)
 app.include_router(sheets_router)
+app.include_router(stages_router)
 
 
 @app.get("/api/health")

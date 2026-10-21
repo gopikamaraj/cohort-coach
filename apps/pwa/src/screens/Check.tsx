@@ -12,6 +12,9 @@ import { go } from "../lib/router";
 import { Keypad, SimulatedBanner } from "../components/parts";
 import { Icon } from "../components/icons";
 import { applyReads, downscale, readSheet, SheetError } from "../lib/sheets";
+import { stagesFor } from "../lib/stages";
+import { fetchSample } from "../lib/sample";
+import { useJudge } from "../lib/roles";
 import { useApp } from "../state";
 
 const MAX_DIGITS = 9;
@@ -27,6 +30,8 @@ export default function Check() {
   const [reading, setReading] = useState(false);
   const [photoNote, setPhotoNote] = useState("");
   const [flags, setFlags] = useState<Record<number, number[]>>({}); // boxes to check, per child; not saved
+  const judge = useJudge();
+  const [missed, setMissed] = useState<Set<number>>(new Set(check?.missed ?? [])); // tags, on this phone only
   const items = formKey ? (keys.forms[formKey]?.items.length ?? 10) : 10;
   // Writes go one after another, so the last key typed is always the last thing saved.
   const writes = useRef<Promise<void>>(Promise.resolve());
@@ -38,6 +43,7 @@ export default function Check() {
       setFormKey(check.formKey);
       setRows(check.children);
       photoKids.current = new Set(check.viaPhoto ?? []);
+      setMissed(new Set(check.missed ?? []));
     }
   }, [check]);
 
@@ -49,13 +55,30 @@ export default function Check() {
       writes.current = writes.current.then(async () => {
         const cls = klass ?? (await activeClass(false));
         const termNow = await getSetting("term", term);
-        await db.checks.put({ id: `${cls.id}:${termNow}`, classId: cls.id, term: termNow, formKey: form, children: next, updatedAt: Date.now(), viaPhoto: [...photoKids.current] });
+        await db.checks.put({ id: `${cls.id}:${termNow}`, classId: cls.id, term: termNow, formKey: form, children: next, updatedAt: Date.now(), missed: [...missed], viaPhoto: [...photoKids.current] });
         inFlight.current -= 1;
         if (inFlight.current === 0) setMessage(tr("check.saved"));
       });
     },
-    [klass, term, tr],
+    [klass, term, tr, missed],
   );
+
+  // Judge mode: fill the class from recorded reads of made-up sheets; the unsure boxes are marked.
+  const useSample = async () => {
+    try {
+      const sample = await fetchSample();
+      setFormKey(sample.form);
+      photoKids.current = new Set();
+      setMissed(new Set());
+      save(sample.children, sample.form);
+      setFlags(Object.fromEntries(Object.entries(sample.unsure).map(([i, b]) => [Number(i), b])));
+      setChild(Number(Object.keys(sample.unsure)[0] ?? 0));
+      setQ(Object.values(sample.unsure)[0]?.[0] ?? 0);
+      setPhotoNote("check.sample_done");
+    } catch {
+      setPhotoNote("check.photo_failed");
+    }
+  };
 
   const start = (form: string) => {
     setFormKey(form);
@@ -132,7 +155,8 @@ export default function Check() {
     }
     const cls = klass ?? (await activeClass(false));
     const termNow = await getSetting("term", term);
-    await finishCheck(cls.id, termNow, formKey, rows, cls.simulated);
+    const stages = stagesFor(formKey, rows, missed);
+    await finishCheck(cls.id, termNow, formKey, rows, cls.simulated, undefined, stages);
     await reload();
     void flushAllowed(isOnline()).then(reload);
     go("/cards");
@@ -152,6 +176,12 @@ export default function Check() {
             </button>
           ))}
         </fieldset>
+        {judge ? (
+          <button type="button" className="btn btn-primary" onClick={() => void useSample()} data-testid="use-sample">
+            {tr("check.sample")}
+          </button>
+        ) : null}
+        {photoNote ? <p role="status">{tr(photoNote as "check.sample_done")}</p> : null}
       </section>
     );
   }
@@ -181,6 +211,21 @@ export default function Check() {
           </button>
         ))}
       </div>
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={missed.has(child)}
+          onChange={(e) => {
+            const next = new Set(missed);
+            if (e.target.checked) next.add(child);
+            else next.delete(child);
+            setMissed(next);
+            if (formKey) save(rows, formKey);
+          }}
+          data-testid="missed-teaching"
+        />
+        <span>{tr("check.missed")}</span>
+      </label>
       <label className={reading ? "btn btn-secondary photo-btn is-busy" : "btn btn-secondary photo-btn"} data-testid="photo-label">
         <Icon name="camera" /> <span>{reading ? tr("check.photo_reading") : tr("check.photo")}</span>
         <input type="file" accept="image/*" capture="environment" className="sr" onChange={(e) => void onPhoto(e)} disabled={reading} data-testid="photo-input" />

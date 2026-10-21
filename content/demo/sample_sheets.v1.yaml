@@ -1,0 +1,22 @@
+# Recorded reads of synthetic answer sheets (Form A) for "Use sample sheets" in judge mode.
+# Every row is made up: no child, no photo. They mirror rows of the synthetic sheet set
+# (data/synthetic_sheets and docs/build/synthetic-sheets-stage-addendum.md); the ids say which.
+# `unsure` marks a box the reader was not sure of, so the judge sees the confirm step.
+version: 1
+form: A
+label: recorded reads of synthetic sheets
+children:
+  - {id: H06, answers: "346,728,85,74,82,35,42,34,57,66"}
+  - {id: H08, answers: "346,728,85,74,82,35,42,34,43,54"}
+  - {id: H10, answers: "346,728,75,64,72,25,42,34,57,66", unsure: [7]}
+  - {id: H05, answers: "346,728,75,64,72,35,38,26,43,54"}
+  - {id: H03, answers: "364,782,85,74,82,35,38,26,43,54"}
+  - {id: S04, answers: "346,728,58,47,28,35,83,62,43,54"}
+  - {id: S01, answers: "346,728,85,74,82,35,110,26,121,54"}
+  - {id: S06, answers: "346,728,84,73,83,35,39,26,43,54"}
+  - {id: H07, answers: "346,728,85,74,82,35,48,36,53,64"}
+  - {id: H01, answers: "346,728,85,74,82,35,38,26,43,54"}
+  - {id: H01b, answers: "346,728,85,74,82,35,38,26,43,54"}
+  - {id: H09, answers: "346,728,85,74,82,35,42,26,43,54"}
+  - {id: H02, answers: "300406,700208,85,74,82,35,38,26,43,54"}
+  - {id: H13, answers: "346,728,85,74,82,35,38,_,_,_"}
