@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from ai import config
 from ai.client import BudgetExceeded, CallContext
 from engine.model import ErrorCode
+from services.api.roles import judge_session, require
 from services.practice.content import LANGS, load_personas, load_scenario
 from services.practice.session import (
     PracticeSession,
@@ -32,7 +33,11 @@ from services.speech.sarvam import SpeechError
 from services.speech.service import SpeechService, default_service
 from services.speech.voices import voice_for
 
-router = APIRouter(prefix="/api/practice", tags=["practice"])
+router = APIRouter(
+    prefix="/api/practice",
+    tags=["practice"],
+    dependencies=[Depends(require("practice.rehearse"))],
+)
 
 SESSION_TTL_S = 2 * 60 * 60
 MAX_SESSIONS = 500
@@ -112,7 +117,7 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
     _sweep()
     session = start_session(
         body.scenario, body.language, counts=counts, checked=body.checked, seed=body.seed,
-        judge=body.judge,
+        judge=body.judge and judge_session(),
     )  # fmt: skip
     _SESSIONS[session.id] = (session, time.time())
     loaded = session.loaded

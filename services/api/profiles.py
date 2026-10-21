@@ -21,6 +21,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from engine.model import ErrorCode
 from services.api.db import Base, ProfileSync, make_engine
+from services.api.roles import require
 
 router = APIRouter(prefix="/api", tags=["profiles"])
 
@@ -83,7 +84,7 @@ def get_session() -> Iterator[Session]:
 SESSION = Depends(get_session)
 
 
-@router.post("/classes/{class_id}/profile")
+@router.post("/classes/{class_id}/profile", dependencies=[Depends(require("profile.sync"))])
 def post_profile(class_id: str, body: ProfileIn, db: Session = SESSION) -> dict[str, Any]:
     if not CLASS_ID.match(class_id):
         raise HTTPException(422, "The class id must be the random id the app made for this class.")

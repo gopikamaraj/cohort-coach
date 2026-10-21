@@ -12,12 +12,13 @@ from collections import Counter
 from functools import cache
 from typing import Any, Literal
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 
 from services.api.db import SimObservation
 from services.api.profiles import BLOCK_PATH, CLASS_ID, SESSION
+from services.api.roles import require
 from services.practice.content import LANGS
 
 router = APIRouter(prefix="/api", tags=["programme"])
@@ -39,7 +40,7 @@ def _block() -> dict[str, Any]:
     return json.loads(BLOCK_PATH.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
 
 
-@router.get("/programme/{class_id}")
+@router.get("/programme/{class_id}", dependencies=[Depends(require("programme.view_own"))])
 def programme(class_id: str, track: str | None = Query(None)) -> dict[str, Any]:
     if not CLASS_ID.match(class_id):
         raise HTTPException(422, "Unknown class id.")

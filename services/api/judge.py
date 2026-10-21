@@ -9,8 +9,13 @@ from fastapi import APIRouter, Depends, Query
 from ai.audit import SqlAuditSink, default_sink
 from ai.prompt_loader import load_prompt
 from ai.registry import CALLS, LAYERS
+from services.api.roles import require
 
-router = APIRouter(prefix="/api/judge", tags=["judge"])
+router = APIRouter(
+    prefix="/api/judge",
+    tags=["judge"],
+    dependencies=[Depends(require("judge.inspect"))],
+)
 
 
 def get_sink() -> SqlAuditSink:

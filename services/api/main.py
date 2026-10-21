@@ -13,6 +13,7 @@ from services.api.judge import router as judge_router
 from services.api.practice import router as practice_router
 from services.api.profiles import router as profiles_router
 from services.api.programme import router as programme_router
+from services.api.roles import router as roles_router
 from services.api.sheets import router as sheets_router
 
 load_env()
@@ -27,10 +28,11 @@ if origin := os.environ.get("PWA_ORIGIN"):
         CORSMiddleware,
         allow_origins=[origin.rstrip("/")],
         allow_methods=["GET", "POST", "PATCH", "DELETE"],
-        allow_headers=["Content-Type", "X-Admin-Key", "X-Device-Id", "X-Judge"],
+        allow_headers=["Content-Type", "X-Admin-Key", "X-Device-Id", "X-Judge", "X-Role"],
         allow_credentials=False,
     )
 app.include_router(judge_router)
+app.include_router(roles_router)
 app.include_router(flow_router)
 app.include_router(telegram_router)
 app.include_router(feedback_router)

@@ -1,0 +1,83 @@
+# One role-permission config. The server enforces `can` ids through require("<id>"); the landing-page
+# dialog is generated from the same file. Every line is a string key in strings/{en,hi,ta}.json.
+# `planned: P11` means the route arrives in that phase; the test lists every planned id so none
+# can be forgotten, and the dialog shows it as "arrives soon" (never as available).
+# `enforced_by` on a boundary names the test that proves it.
+weekly_minutes:
+  teacher: 20
+  mentor: 30
+  coach: 30
+  officer: null   # OD-25: no cap set yet
+permissions:
+  practice.rehearse: {key: roles.can.practice_rehearse}
+  check.read_sheets: {key: roles.can.check_sheets}
+  profile.sync: {key: roles.can.profile_sync}
+  programme.view_own: {key: roles.can.programme_own}
+  judge.inspect: {key: roles.can.judge_inspect, judge_only: true}
+  cohort.chat: {key: roles.can.cohort_chat, planned: P11}
+  mentor.record: {key: roles.can.mentor_record, planned: P11}
+  mentor.items_view: {key: roles.can.mentor_items, planned: P11}
+  coach.approve_items: {key: roles.can.coach_approve, planned: P11}
+  coach.moderate: {key: roles.can.coach_moderate, planned: P11}
+  library.view: {key: roles.can.library_view, planned: P12}
+  officer.approve_cohorts: {key: roles.can.officer_cohorts, planned: P12}
+  officer.results: {key: roles.can.officer_results, planned: P12}
+  officer.advance_term: {key: roles.can.officer_advance, planned: P12, judge_only: true}
+  officer.assign_roles: {key: roles.can.officer_assign, planned: P12}
+boundaries:
+  role.no_client_elevation:
+    key: roles.cannot.no_elevation
+    enforced_by: tests/roles/test_permissions.py::test_a_production_session_cannot_enter_another_role
+  teacher.never_scored:
+    key: roles.cannot.teacher_not_scored
+    enforced_by: tests/practice/test_call_3.py::test_scores_are_rejected
+  teacher.own_class_only:
+    key: roles.cannot.teacher_own_class
+    planned: P12
+  mentor.own_cohorts_only:
+    key: roles.cannot.mentor_own_cohorts
+    planned: P11
+  mentor.no_class_numbers:
+    key: roles.cannot.mentor_no_numbers
+    planned: P11
+  coach.assigned_only:
+    key: roles.cannot.coach_assigned
+    planned: P11
+  coach.no_teacher_numbers:
+    key: roles.cannot.coach_no_numbers
+    planned: P12
+  officer.aggregates_only:
+    key: roles.cannot.officer_aggregates
+    planned: P12
+  officer.no_approval:
+    key: roles.cannot.officer_no_approval
+    planned: P12
+roles:
+  teacher:
+    card: roles.card.teacher
+    holders: roles.holders.teacher
+    data: roles.data.teacher
+    also_on: [telegram]
+    can: [practice.rehearse, check.read_sheets, profile.sync, programme.view_own, cohort.chat, judge.inspect]
+    cannot: [teacher.own_class_only, teacher.never_scored, role.no_client_elevation]
+  mentor:
+    card: roles.card.mentor
+    holders: roles.holders.mentor
+    data: roles.data.mentor
+    also_on: [telegram]
+    can: [mentor.record, mentor.items_view, cohort.chat]
+    cannot: [mentor.own_cohorts_only, mentor.no_class_numbers, role.no_client_elevation]
+  coach:
+    card: roles.card.coach
+    holders: roles.holders.coach
+    data: roles.data.coach
+    also_on: []
+    can: [coach.approve_items, coach.moderate, library.view]
+    cannot: [coach.assigned_only, coach.no_teacher_numbers, role.no_client_elevation]
+  officer:
+    card: roles.card.officer
+    holders: roles.holders.officer
+    data: roles.data.officer
+    also_on: []
+    can: [officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view]
+    cannot: [officer.aggregates_only, officer.no_approval, role.no_client_elevation]

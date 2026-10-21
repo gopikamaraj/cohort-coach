@@ -13,14 +13,19 @@ from __future__ import annotations
 import base64
 from typing import Any
 
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 
 from ai.calls.c08_answer_reading import read_sheet
 from ai.client import BudgetExceeded, CallContext
 from engine.forms import PILOT_FORMS
 from services.api.practice import AI_CONTEXT
+from services.api.roles import require
 
-router = APIRouter(prefix="/api/sheets", tags=["sheets"])
+router = APIRouter(
+    prefix="/api/sheets",
+    tags=["sheets"],
+    dependencies=[Depends(require("check.read_sheets"))],
+)
 
 MAX_IMAGE_BYTES = 800_000  # a downscaled sheet is about 80 KB; stays under the 1 MB spool limit
 _MAGIC = ((b"\xff\xd8\xff", "image/jpeg"), (b"\x89PNG\r\n\x1a\n", "image/png"))
