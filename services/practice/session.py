@@ -90,6 +90,8 @@ class TurnResult:
     finished: bool
     finished_reason: str | None
     child_text_en: str = ""  # the English subtitle, same digits as child_text
+    written: int | None = None  # what the speaking child wrote on her slate
+    answer: int | None = None  # what she said
     move: dict[str, Any] = field(default_factory=dict)  # the teacher's move as a tag
     children: list[dict[str, Any]] = field(default_factory=list)  # the confusion meter
 
@@ -137,7 +139,12 @@ def start_session(
     kids = _pick_names(language, seed)
     names = [k.names[language] for k in kids]
     seats = fill_seats(
-        counts or {}, checked, loaded.scenario.error, loaded.scenario.seat_mix, names=names
+        counts or {},
+        checked,
+        loaded.scenario.error,
+        loaded.scenario.seat_mix,
+        names=names,
+        stage_mix=loaded.scenario.stage_mix,
     )
     return PracticeSession(
         id=session_id or uuid.uuid4().hex[:12],
@@ -354,6 +361,8 @@ def take_turn(
         finished=new_state.finished,
         finished_reason=new_state.finished_reason,
         child_text_en=line.english,
+        written=plan.written,
+        answer=plan.answer,
         move=_move_tag(session, move_id),
         children=[
             {

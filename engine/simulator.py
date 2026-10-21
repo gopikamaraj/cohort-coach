@@ -34,6 +34,9 @@ APPLIES_TO: dict[ErrorCode, Kind] = {
     ErrorCode.PV_REVERSE: "dictation",
 }
 NEUTRAL = ("other", "off_task")
+# Where a child's mistake most likely arises (addendum v3.1 F). A "core" child errs by the bug
+# function; the others err differently, and every number they say still comes from this module.
+STAGES = ("core", "input-teaching", "input-test", "output")
 
 
 @dataclass(frozen=True)
@@ -208,6 +211,7 @@ class Seat:
     name: str
     error: ErrorCode | None
     shy: bool
+    stage: str = "core"
 
 
 @dataclass(frozen=True)
@@ -220,6 +224,8 @@ class Child:
     streak: int = 0
     quiet_turns: int = 0
     last_answer: int | None = None
+    stage: str = "core"
+    last_written: int | None = None
 
 
 @dataclass(frozen=True)
@@ -250,6 +256,9 @@ class TurnPlan:
     strength_before: Mapping[str, float] = field(default_factory=dict)
     strength_after: Mapping[str, float] = field(default_factory=dict)
     note: str = ""
+    written: int | None = None  # what the child writes on the slate (the spoken answer is `answer`)
+    stage: str = "core"
+    spoken_correct: bool | None = None  # is the number she says right (she may write it wrong)
 
 
 def _clamp(v: float) -> float:
@@ -264,6 +273,7 @@ def new_session(config: ScenarioConfig, seats: Sequence[Seat], seed: int) -> Ses
             shy=s.shy,
             strength=config.start_strength if s.error else 0.0,
             engagement=config.start_engagement,
+            stage=s.stage,
         )
         for s in seats
     )
@@ -286,13 +296,57 @@ def _finish(state: SessionState, config: ScenarioConfig) -> SessionState:
     return state
 
 
-def _answer(child: Child, p: Problem, rng: random.Random) -> tuple[int, bool, ErrorCode | None]:
-    """The child's answer: wrong with probability = strength, from the bug function."""
+def _rev(n: int) -> int:
+    return int(str(n)[::-1])
+
+
+def _near(n: int) -> list[int]:
+    """Off by one in exactly one digit, same length: what a child who misheard might write."""
+    s = str(n)
+    out: set[int] = set()
+    for i, ch in enumerate(s):
+        for d in (-1, 1):
+            t = int(ch) + d
+            if 0 <= t <= 9 and not (i == 0 and t == 0):
+                out.add(int(s[:i] + str(t) + s[i + 1 :]))
+    return sorted(out - {n})
+
+
+def _misheard(p: Problem, rng: random.Random) -> int | None:
+    """What an input-test child answers: the other operation, swapped digits, or one digit off."""
+    if p.kind == "dictation":
+        near = _near(p.a)
+        return rng.choice(near) if near else None
+    other = abs(p.a - p.b) if p.kind == "add" else p.a + p.b
+    swapped = (_rev(p.a) + p.b) if p.kind == "add" else _rev(p.a) - p.b
+    options = [x for x in dict.fromkeys([other, swapped]) if x >= 0 and x != p.correct]
+    return rng.choice(options) if options else None
+
+
+def _answer(
+    child: Child, p: Problem, rng: random.Random
+) -> tuple[int | None, bool, ErrorCode | None, int | None]:
+    """The child answer (spoken), whether it is right all the way through, the error code, and
+    what she writes. Wrong with probability = strength; the wrong number is always the engine's:
+    the bug function (core), the other operation or a digit swap (input-test), the correct answer
+    written the wrong way round (output), or no number at all (input-teaching)."""
     if child.error:
-        wrong = sorted(wrong_answers(child.error, p))
-        if wrong and rng.random() < child.strength:
-            return rng.choice(wrong), False, child.error
-    return p.correct, True, None
+        if child.stage == "core":
+            wrong = sorted(wrong_answers(child.error, p))
+            if wrong and rng.random() < child.strength:
+                n = rng.choice(wrong)
+                return n, False, child.error, n
+        elif child.stage == "output":
+            reversible = _rev(p.correct) != p.correct and p.correct % 10 != 0
+            if reversible and rng.random() < child.strength:
+                return p.correct, False, child.error, _rev(p.correct)
+        elif child.stage == "input-test":
+            heard = _misheard(p, rng) if rng.random() < child.strength else None
+            if heard is not None:
+                return heard, False, child.error, heard
+        elif child.stage == "input-teaching" and rng.random() < child.strength:
+            return None, False, child.error, None
+    return p.correct, True, None, p.correct
 
 
 def _mood(child: Child, doubtful: bool = False, small: bool = False) -> str:
@@ -376,6 +430,7 @@ def plan_turn(
     correct: bool | None = None
     code: ErrorCode | None = None
     steps: tuple[Step, ...] = ()
+    written: int | None = None
     doubtful = False
     small = False
     if speaker is None:
@@ -388,27 +443,29 @@ def plan_turn(
         idx = [c.name for c in children].index(speaker.name)
         now = children[idx]
         if intent == "answer" or now.last_answer is None:
-            answer, correct, code = _answer(now, problem, rng)
+            answer, correct, code, written = _answer(now, problem, rng)
         else:
-            answer = now.last_answer
-            correct = answer == problem.correct
+            answer, written = now.last_answer, now.last_written
+            correct = answer == problem.correct and written == answer
             code = None if correct else now.error
         if intent == "work_aloud":
             # Working it with materials: she gets it right unless the error still holds.
-            answer, correct, code = _answer(now, problem, rng)
-            steps = correct_steps(problem) if correct else _wrong_steps(now, problem, answer)
+            answer, correct, code, written = _answer(now, problem, rng)
+            steps = _steps_for(now, problem, answer)
         elif intent == "explain":
-            steps = correct_steps(problem) if correct else _wrong_steps(now, problem, answer)
-        elif intent == "doubt":
+            steps = _steps_for(now, problem, answer)
+        elif intent == "doubt" and answer is not None:
             steps = doubt_steps(problem, answer)
             doubtful = not correct
+        if answer is None:  # no method yet: she cannot say a number, so she says she is lost
+            intent = "confused"
         streak = (
             (now.streak + 1 if correct else 0)
             if intent in {"answer", "work_aloud"}
             or (now.last_answer is None and intent in {"explain", "doubt"})
             else now.streak
         )
-        children[idx] = replace(now, last_answer=answer, streak=streak)
+        children[idx] = replace(now, last_answer=answer, last_written=written, streak=streak)
 
     # Quiet counters tick down for children who were quiet when the turn began.
     children = [
@@ -420,6 +477,8 @@ def plan_turn(
         numbers |= {problem.a, problem.b} if problem.kind != "dictation" else {problem.a}
     if answer is not None:
         numbers.add(answer)
+    if written is not None:
+        numbers.add(written)
     for s in steps:
         numbers |= set(s.numbers)
     speaker_now = None
@@ -440,6 +499,9 @@ def plan_turn(
         mood=_mood(speaker_now, doubtful, small) if speaker_now else "calm",
         strength_before=before,
         strength_after=after,
+        written=written,
+        stage=speaker_now.stage if speaker_now else "core",
+        spoken_correct=(answer == problem.correct) if (answer is not None and problem) else None,
     )
     nxt = replace(
         state,
@@ -455,6 +517,17 @@ def _wrong_steps(child: Child, p: Problem, answer: int) -> tuple[Step, ...]:
     return reasoning_steps(child.error, p, answer) if child.error else correct_steps(p)
 
 
+def _steps_for(child: Child, p: Problem, answer: int | None) -> tuple[Step, ...]:
+    """The working she says aloud. Right when her spoken answer is right (an output child works it
+    out correctly and only writes it wrong); the error's own working for a core child's wrong
+    answer; none when she has no method yet or misheard the question."""
+    if answer is None:
+        return ()
+    if answer == p.correct:
+        return correct_steps(p)
+    return _wrong_steps(child, p, answer) if child.stage == "core" else ()
+
+
 def fill_seats(
     counts: Mapping[ErrorCode, int],
     checked: int,
@@ -462,6 +535,7 @@ def fill_seats(
     mix: Mapping[ErrorCode, int],
     names: Sequence[str] = ("Child 1", "Child 2", "Child 3", "Child 4", "Child 5"),
     n_seats: int = 5,
+    stage_mix: Sequence[str] = (),
 ) -> tuple[Seat, ...]:
     """Fill the seats to match the class's error mix.
 
@@ -500,7 +574,15 @@ def fill_seats(
         else (max(i for i, c in enumerate(codes) if c is None))
     )
     ordered: list[ErrorCode | None] = [None, *codes]
-    seats = [Seat(names[i], code, shy=(i - 1 == shy_idx)) for i, code in enumerate(ordered)]
+    bad = [m for m in stage_mix if m not in STAGES]
+    if bad:
+        raise ValueError(f"unknown stage {bad[0]!r}; use one of {', '.join(STAGES)}")
+    # stage_mix is read down the seats after the always-correct one; extra seats stay core
+    stages = ["core", *stage_mix, *["core"] * n_seats][:n_seats]
+    seats = [
+        Seat(names[i], code, shy=(i - 1 == shy_idx), stage=stages[i] if code else "core")
+        for i, code in enumerate(ordered)
+    ]
     return tuple(seats)
 
 

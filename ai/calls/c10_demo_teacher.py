@@ -100,6 +100,7 @@ def _validate(
     allowed: frozenset[int],
     problem: Problem,
     turn: int,
+    words_as_digits: bool = True,
 ) -> list[ValidatorResult]:
     move: list[Violation] = []
     if out.move_id not in style.moves:
@@ -116,7 +117,9 @@ def _validate(
         ValidatorResult("length", tuple(check_length(out.line, max_words=MAX_WORDS, min_chars=2))),
         ValidatorResult("numbers", tuple(check_numbers(out.line, allowed))),
         ValidatorResult("check_items", tuple(check_items(out.line))),
-        ValidatorResult("digits_only", tuple(check_digits_only(out.line, language))),
+        ValidatorResult(
+            "digits_only", tuple(check_digits_only(out.line, language)) if words_as_digits else ()
+        ),
         ValidatorResult("prefilter", tuple(pre)),
     ]
 
@@ -142,7 +145,13 @@ def _template(
         if all(
             r.ok
             for r in _validate(
-                cand, style=style, language=language, allowed=allowed, problem=problem, turn=turn
+                cand,
+                style=style,
+                language=language,
+                allowed=allowed,
+                problem=problem,
+                turn=turn,
+                words_as_digits=False,  # reviewed content may say "bundles of ten"; the AI may not
             )
         ):
             return cand

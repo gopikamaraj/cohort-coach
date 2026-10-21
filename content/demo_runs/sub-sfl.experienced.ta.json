@@ -17,7 +17,7 @@
       "c07_checker": 4,
       "c10_demo_teacher": 1
     },
-    "cost_usd": 0.03951,
+    "cost_usd": 0.03699,
     "label": "AI playing the teacher (demo only)",
     "recorded_at": "2026-10-21"
   },
@@ -25,7 +25,7 @@
     {
       "turn": 1,
       "teacher": {
-        "line": "52 - 29 எவ்வளவு என்று யார் சொல்வார்கள்? முயன்று பார்ப்போம்.",
+        "line": "52 - 29 எவ்வளவு என்று யார் சொல்வார்கள்? முதலில் யோசித்துப் பாருங்கள்.",
         "move": {
           "id": "pose_problem",
           "label": "கணக்கைக் கொடுத்தல் அல்லது குழந்தையிடம் பதில் கேட்டல்",
@@ -38,10 +38,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "37, டீச்சர்!",
-        "text_en": "37, Miss!",
+        "text": "81, டீச்சர்!",
+        "text_en": "81, Miss!",
         "intent": "answer",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 81,
+        "said": 81
       },
       "children": [
         {
@@ -85,7 +87,7 @@
           "engine": {
             "speaker": "விஜய்",
             "intent": "answer",
-            "answer": 37,
+            "answer": 81,
             "correct": false
           }
         },
@@ -94,19 +96,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1188
+            "latency_ms": 1296
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1593
+            "latency_ms": 1625
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1296
+            "latency_ms": 1093
           }
         ],
         "validators": [
@@ -169,12 +171,12 @@
         },
         "fallback": null
       },
-      "latency_ms": 2890
+      "latency_ms": 2765
     },
     {
       "turn": 2,
       "teacher": {
-        "line": "விஜய், 37 என்று எப்படிப் பெற்றாய்? முதலில் என்ன செய்தாய் என்று சொல்.",
+        "line": "விஜய், 81 என்று எப்படிப் பெற்றாய்? முதலில் என்ன செய்தாய் என்று சொல்.",
         "move": {
           "id": "ask_explain",
           "label": "குழந்தையிடம் தன் படிகளை விளக்கச் சொல்லுதல்",
@@ -187,10 +189,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "டீச்சர், 2-ல் இருந்து 9 கழிக்க முடியாது. அதனால 9-ல் இருந்து 2 கழித்தேன், 7 வந்தது. அப்புறம் 5-ல் இருந்து 2 கழித்தேன், 3 வந்தது. அதான் 37!",
-        "text_en": "Teacher, I can't take 9 from 2. So I did 9 minus 2, that came to 7. Then I did 5 minus 2, that came to 3. That's why it's 37!",
+        "text": "டீச்சர், 52-ம் 29-ம் சேர்த்தேன். அப்போ 81 வந்தது. அதுதான் பதில்!",
+        "text_en": "Miss, I put 52 and 29 together. Then 81 came. That is the answer!",
         "intent": "explain",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 81,
+        "said": 81
       },
       "children": [
         {
@@ -234,7 +238,7 @@
           "engine": {
             "speaker": "விஜய்",
             "intent": "explain",
-            "answer": 37,
+            "answer": 81,
             "correct": false
           }
         },
@@ -243,19 +247,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1516
+            "latency_ms": 1359
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2703
+            "latency_ms": 2516
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1405
+            "latency_ms": 1108
           }
         ],
         "validators": [
@@ -314,157 +318,12 @@
         },
         "fallback": null
       },
-      "latency_ms": 4108
+      "latency_ms": 3656
     },
     {
       "turn": 3,
       "teacher": {
-        "line": "விஜய், 2 - 9 உம் 9 - 2 உம் ஒன்றா? குச்சிகளால் காட்டு. கவனமாகச் சொல்.",
-        "move": {
-          "id": "order_probe",
-          "label": "வரிசை முக்கியமா என்று கேட்டல் (2 - 6 மற்றும் 6 - 2)",
-          "quality": "strong",
-          "strategy": true
-        },
-        "addressed": "விஜய்",
-        "source": "ai",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "விஜய்",
-        "text": "டீச்சர், 2-ல் இருந்து 9 கழிக்க முடியாது, அதனால 9-ல் இருந்து 2 கழித்தேன், 7 வந்தது. அப்புறம் 5-ல் இருந்து 2 கழித்தேன், 3 வந்தது. அதான் 37!",
-        "text_en": "Miss, I can't take 9 from 2, so I did 9 minus 2 and got 7. Then I did 5 minus 2 and got 3. That's why 37!",
-        "intent": "explain",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "அருண்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "பிரியா",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "விஜய்",
-          "level": 0.5,
-          "band": "medium",
-          "has_error": true
-        },
-        {
-          "name": "ரவி",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "அனு",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "order_probe",
-            "source": "demo teacher",
-            "addressed": "விஜய்"
-          },
-          "engine": {
-            "speaker": "விஜய்",
-            "intent": "explain",
-            "answer": 37,
-            "correct": false
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 1438
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 2233
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1139
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": null
-      },
-      "latency_ms": 3389
-    },
-    {
-      "turn": 4,
-      "teacher": {
-        "line": "விஜய், 52 ஐப் பத்துக் கட்டுகளாலும் தனிக் குச்சிகளாலும் காட்டுவோம். நீ எத்தனை குச்சிகளை வைத்திருக்கிறாய்?",
+        "line": "நீ கூட்டினாய் என்று புரிகிறது. 52 ஐ பத்துக் கட்டுகளாலும் தனிக் குச்சிகளாலும் காட்டுவோம்.",
         "move": {
           "id": "show_bundles",
           "label": "பத்து குச்சிக் கட்டுகளைப் பயன்படுத்துதல்",
@@ -477,10 +336,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "டீச்சர், ஒரு கட்டைப் பிரித்தேன்! இப்போ 4 கட்டும் 12 குச்சியும். 12-ல் இருந்து 9 கழித்தேன், 3. 4-ல் இருந்து 2 கழித்தேன், 2. அதான் 23!",
-        "text_en": "Miss, I opened a bundle! Now 4 bundles and 12 sticks. I took 9 from 12, that's 3. I took 2 from 4, that's 2. So it's 23!",
+        "text": "சரி டீச்சர், 52 ஐ கட்டுகளா காட்டுங்க. நான் 52-ம் 29-ம் சேர்த்து 81 எடுத்தேன், அது சரிதான்!",
+        "text_en": "Okay Miss, show 52 with bundles. I added 52 and 29 and got 81, that is right!",
         "intent": "work_aloud",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 81,
+        "said": 81
       },
       "children": [
         {
@@ -497,8 +358,8 @@
         },
         {
           "name": "விஜய்",
-          "level": 0.2,
-          "band": "low",
+          "level": 0.4,
+          "band": "medium",
           "has_error": true
         },
         {
@@ -524,8 +385,8 @@
           "engine": {
             "speaker": "விஜய்",
             "intent": "work_aloud",
-            "answer": 23,
-            "correct": true
+            "answer": 81,
+            "correct": false
           }
         },
         "ai_calls": [
@@ -533,19 +394,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1546
+            "latency_ms": 1264
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2625
+            "latency_ms": 2421
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1280
+            "latency_ms": 1000
           }
         ],
         "validators": [
@@ -604,12 +465,159 @@
         },
         "fallback": null
       },
-      "latency_ms": 3938
+      "latency_ms": 3436
+    },
+    {
+      "turn": 4,
+      "teacher": {
+        "line": "விஜய், உன்னிடம் 2 தனிக் குச்சிகள் மட்டுமே உள்ளன. ஒரு கட்டைப் பிரித்து பத்துக் குச்சிகளாக மாற்று.",
+        "move": {
+          "id": "exchange_ten",
+          "label": "ஒரு கட்டைப் பிரித்துப் பத்து குச்சிகளாக மாற்றுதல்",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "விஜய்",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "விஜய்",
+        "text": "டீச்சர், ஒரு கட்டைப் பிரித்தேன்! 4 கட்டு, 12 குச்சி. 12-ல் 9 கழிச்சா 3, 4-ல் 2 கழிச்சா 2. அதனால 23, டீச்சர்!",
+        "text_en": "Miss, I opened a bundle! 4 bundles and 12 sticks. 12 minus 9 is 3, 4 minus 2 is 2. So it is 23, Miss!",
+        "intent": "work_aloud",
+        "badge": "checked",
+        "written": 23,
+        "said": 23
+      },
+      "children": [
+        {
+          "name": "அருண்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "பிரியா",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "விஜய்",
+          "level": 0.1,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "ரவி",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "அனு",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "exchange_ten",
+            "source": "demo teacher",
+            "addressed": "விஜய்"
+          },
+          "engine": {
+            "speaker": "விஜய்",
+            "intent": "work_aloud",
+            "answer": 23,
+            "correct": true
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1610
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2421
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1718
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 4155
     },
     {
       "turn": 5,
       "teacher": {
-        "line": "விஜய், 23 + 29 எவ்வளவு? திரும்பக் கூட்டிச் சரிபார்ப்போம்.",
+        "line": "விஜய், திரும்பக் கூட்டிச் சரிபார்ப்போம். 23 + 29 எவ்வளவு? அது 52 வருகிறதா?",
         "move": {
           "id": "check_back",
           "label": "கூட்டிச் சரிபார்த்தல்",
@@ -622,10 +630,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "டீச்சர், 23 + 29 செய்தேன், 52 வருது! ஆனா 52 தானே இருந்தது... ஏன் இப்படி வருது? எனக்குப் புரியலை.",
-        "text_en": "Miss, I did 23 + 29 and it comes to 52! But it was 52 to begin with... why does it come like this? I don't understand.",
+        "text": "டீச்சர், 23 கூட்டல் 29 ... 52 வருது! ஆனா எனக்கு ஏன் இப்படி வருதுன்னு புரியலை டீச்சர்.",
+        "text_en": "Miss, 23 plus 29 ... it comes to 52! But I don't understand why it comes out like this, Miss.",
         "intent": "doubt",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 23,
+        "said": 23
       },
       "children": [
         {
@@ -678,19 +688,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1233
+            "latency_ms": 1797
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2108
+            "latency_ms": 2389
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1875
+            "latency_ms": 1171
           }
         ],
         "validators": [
@@ -749,12 +759,12 @@
         },
         "fallback": null
       },
-      "latency_ms": 4000
+      "latency_ms": 3577
     },
     {
       "turn": 6,
       "teacher": {
-        "line": "நல்லது விஜய், 23 + 29 = 52 என்று சரியாகச் சரிபார்த்தாய். முயன்றதற்கு நன்றி.",
+        "line": "நல்லது விஜய், முயன்றதற்கு நன்றி. 23 + 29 = 52 என்று நீ சரிபார்த்தாய்.",
         "move": {
           "id": "praise",
           "label": "முயற்சியைப் பாராட்டுதல்",
@@ -767,10 +777,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "நன்றி டீச்சர்! எனக்கு ரொம்ப சந்தோஷம்!",
-        "text_en": "Thank you, Miss! I am very happy!",
+        "text": "நன்றி டீச்சர்! இப்போ எனக்குக் கொஞ்சம் புரியுது.",
+        "text_en": "Thank you, Miss! Now I understand a little.",
         "intent": "thanks",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -823,19 +835,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1656
+            "latency_ms": 1671
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1625
+            "latency_ms": 1734
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1453
+            "latency_ms": 1016
           }
         ],
         "validators": [
@@ -894,173 +906,30 @@
         },
         "fallback": null
       },
-      "latency_ms": 3078
+      "latency_ms": 2781
     },
     {
       "turn": 7,
       "teacher": {
-        "line": "விஜய், 23 + 29 = 52 சரி. இப்போ 52 - 29 இல் முதலில் என்ன செய்தாய் என்று சொல்.",
-        "move": {
-          "id": "ask_explain",
-          "label": "குழந்தையிடம் தன் படிகளை விளக்கச் சொல்லுதல்",
-          "quality": "strong",
-          "strategy": false
-        },
-        "addressed": "விஜய்",
-        "source": "ai",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "விஜய்",
-        "text": "டீச்சர், முதலில் ஒரு கட்டைப் பிரித்தேன்! 4 கட்டும் 12 குச்சியும். 12-ல் 9 கழித்தேன், 3. 4-ல் 2 கழித்தேன், 2. அதான் 23!",
-        "text_en": "Miss, first I opened a bundle! 4 bundles and 12 sticks. I took 9 from 12, that is 3. I took 2 from 4, that is 2. So it is 23!",
-        "intent": "explain",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "அருண்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "பிரியா",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "விஜய்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": true
-        },
-        {
-          "name": "ரவி",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "அனு",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "ask_explain",
-            "source": "demo teacher",
-            "addressed": "விஜய்"
-          },
-          "engine": {
-            "speaker": "விஜய்",
-            "intent": "explain",
-            "answer": 23,
-            "correct": true
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 3203
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 2625
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1203
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": null
-      },
-      "latency_ms": 3828
-    },
-    {
-      "turn": 8,
-      "teacher": {
-        "line": "விஜய், 2 - 6 உம் 6 - 2 உம் ஒன்றா? குச்சிகளால் காட்டு.",
+        "line": "இங்கே ஒரு கேள்வி: 2 - 6 உம் 6 - 2 உம் ஒன்றா? குச்சிகளால் காட்டு.",
         "move": {
           "id": "order_probe",
           "label": "வரிசை முக்கியமா என்று கேட்டல் (2 - 6 மற்றும் 6 - 2)",
           "quality": "strong",
           "strategy": true
         },
-        "addressed": "விஜய்",
+        "addressed": null,
         "source": "ai",
         "label": "AI playing the teacher (demo only)"
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "டீச்சர், நான் சொன்னேனே! முதலில் ஒரு கட்டைப் பிரித்தேன், 4 கட்டும் 12 குச்சியும். 12-ல் 9 கழித்தேன், 3. 4-ல் 2 கழித்தேன், 2. அதான் 23!",
-        "text_en": "Miss, I told you! First I opened a bundle, 4 bundles and 12 sticks. I took 9 from 12, 3. I took 2 from 4, 2. That's 23!",
+        "text": "டீச்சர், நான் காட்டுறேன்! 4 கட்டு, 12 குச்சி. 12-ல் 9 கழிச்சேன், 3. 4-ல் 2 கழிச்சேன், 2. அதனால 23, டீச்சர்!",
+        "text_en": "Miss, I will show! 4 bundles, 12 sticks. I took 9 from 12, that is 3. I took 2 from 4, that is 2. So 23, Miss!",
         "intent": "explain",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 23,
+        "said": 23
       },
       "children": [
         {
@@ -1113,19 +982,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1250
+            "latency_ms": 1546
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 3139
+            "latency_ms": 2266
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1406
+            "latency_ms": 1735
           }
         ],
         "validators": [
@@ -1184,17 +1053,17 @@
         },
         "fallback": null
       },
-      "latency_ms": 4561
+      "latency_ms": 4016
     },
     {
-      "turn": 9,
+      "turn": 8,
       "teacher": {
-        "line": "விஜய், 2 குச்சிகள் மட்டுமே உள்ளன. ஒரு கட்டைப் பிரித்து பத்துக் குச்சிகளாக மாற்று. பிறகு 29 ஐ எடுப்போம்.",
+        "line": "விஜய், நீ 12-ல் இருந்து 9 கழித்தாய். அந்த 12 எங்கிருந்து வந்தது? முதலில் என்ன செய்தாய் என்று சொல்.",
         "move": {
-          "id": "exchange_ten",
-          "label": "ஒரு கட்டைப் பிரித்துப் பத்து குச்சிகளாக மாற்றுதல்",
+          "id": "ask_explain",
+          "label": "குழந்தையிடம் தன் படிகளை விளக்கச் சொல்லுதல்",
           "quality": "strong",
-          "strategy": true
+          "strategy": false
         },
         "addressed": "விஜய்",
         "source": "ai",
@@ -1202,10 +1071,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "சரி டீச்சர்! நான் ஒரு கட்டைப் பிரித்தேன், 4 கட்டும் 12 குச்சியும். 12-ல் 9 கழித்தேன், 3. 4-ல் 2 கழித்தேன், 2. அதான் 23!",
-        "text_en": "Okay Miss! I opened a bundle, 4 bundles and 12 sticks. I did 12 minus 9, 3. I did 4 minus 2, 2. That is 23!",
-        "intent": "work_aloud",
-        "badge": "checked"
+        "text": "டீச்சர், 52-ல் 4 கட்டு, 12 குச்சி வச்சேன். ஒரு கட்டைப் பிரிச்சேன், அதனால 12 குச்சி வந்துச்சு. அப்புறம் 12-ல் 9 கழிச்சேன், 3. 4-ல் 2 கழிச்சேன், 2. 23, டீச்சர்!",
+        "text_en": "Miss, I put 4 bundles and 12 sticks for 52. I opened a bundle, so 12 sticks came. Then 12 minus 9, 3. 4 minus 2, 2. It's 23, Miss!",
+        "intent": "explain",
+        "badge": "checked",
+        "written": 23,
+        "said": 23
       },
       "children": [
         {
@@ -1242,13 +1113,13 @@
       "machinery": {
         "code": {
           "move": {
-            "move_id": "exchange_ten",
+            "move_id": "ask_explain",
             "source": "demo teacher",
             "addressed": "விஜய்"
           },
           "engine": {
             "speaker": "விஜய்",
-            "intent": "work_aloud",
+            "intent": "explain",
             "answer": 23,
             "correct": true
           }
@@ -1258,19 +1129,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1735
+            "latency_ms": 1468
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2436
+            "latency_ms": 3796
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1264
+            "latency_ms": 1828
           }
         ],
         "validators": [
@@ -1329,7 +1200,154 @@
         },
         "fallback": null
       },
-      "latency_ms": 3718
+      "latency_ms": 5656
+    },
+    {
+      "turn": 9,
+      "teacher": {
+        "line": "சரி விஜய், 52 இலிருந்து 29 கழித்தால் 23 வருதா? திரும்பக் கூட்டி சரிபார்ப்போம்.",
+        "move": {
+          "id": "check_back",
+          "label": "கூட்டிச் சரிபார்த்தல்",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "விஜய்",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "விஜய்",
+        "text": "டீச்சர், 23 + 29 கூட்டினா 52 வருது. ஆனா அப்போ நான் செஞ்சது சரிதானே? எனக்குப் புரியலை டீச்சர்.",
+        "text_en": "Miss, when I add 23 + 29 it comes to 52. But then what I did is right, isn't it? I don't understand, Miss.",
+        "intent": "doubt",
+        "badge": "checked",
+        "written": 23,
+        "said": 23
+      },
+      "children": [
+        {
+          "name": "அருண்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "பிரியா",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "விஜய்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "ரவி",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "அனு",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "check_back",
+            "source": "demo teacher",
+            "addressed": "விஜய்"
+          },
+          "engine": {
+            "speaker": "விஜய்",
+            "intent": "doubt",
+            "answer": 23,
+            "correct": true
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1500
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 7296
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1155
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 8468
     }
   ],
   "feedback": {
@@ -1337,24 +1355,24 @@
       {
         "point": "ask_explain",
         "text": "குழந்தையிடம் படிகளை விளக்கச் சொன்னீர்கள், அது அவள் சிந்தனையைக் காட்டியது.",
-        "quote": "37 என்று எப்படிப் பெற்றாய்? முதலில் என்ன செய்தாய் என்று சொல்.",
+        "quote": "81 என்று எப்படிப் பெற்றாய்? முதலில் என்ன செய்தாய் என்று சொல்.",
         "turn": 2,
-        "comment": "திருத்தும் முன் விஜய் பதிலை எப்படிப் பெற்றான் என்று கேட்டீர்கள். அவன் சிந்தனை தெளிவாகத் தெரிந்தது."
+        "comment": "திருத்தும் முன் விஜய் எப்படி யோசித்தான் என்று கேட்டீர்கள். அவன் கூட்டியிருக்கிறான் என்பது அதனால் தெளிவாகத் தெரிந்தது."
       },
       {
-        "point": "show_bundles",
-        "text": "எண்ணைக் கட்டுகளாலும் குச்சிகளாலும் காட்டினீர்கள்.",
-        "quote": "52 ஐப் பத்துக் கட்டுகளாலும் தனிக் குச்சிகளாலும் காட்டுவோம்.",
+        "point": "exchange_ten",
+        "text": "ஒரு கட்டைப் பிரித்துப் பத்து குச்சிகளாக மாற்றினீர்கள்.",
+        "quote": "ஒரு கட்டைப் பிரித்து பத்துக் குச்சிகளாக மாற்று.",
         "turn": 4,
-        "comment": "எண்ணைக் கட்டுகளாலும் தனிக் குச்சிகளாலும் காட்டினீர்கள். அது குழந்தைக்குப் புரிய உதவும்."
+        "comment": "குச்சிகள் போதாதபோது ஒரு கட்டைப் பிரித்துப் பத்தாக மாற்றச் சொன்னீர்கள். அதனால் அவன் 12 குச்சிகளை எடுக்க முடிந்தது."
       }
     ],
     "try_next": {
       "point": "let_answer",
       "text": "நீங்கள் பதில் சொல்லும் முன் குழந்தையைத் தன் பதிலைச் சொல்ல விடுங்கள்.",
-      "suggestion": "தொடக்கத்தில் குழந்தை தன் பதிலைச் சொன்ன பிறகு, நீங்கள் பதில் சொல்லாமல் இன்னொரு குழந்தையிடமும் கேட்டுப் பாருங்கள். அவர்கள் சிந்தனையும் வெளிப்படும்.",
-      "quote": "52 - 29 எவ்வளவு என்று யார் சொல்வார்கள்? முயன்று பார்ப்போம்.",
-      "turn": 1
+      "suggestion": "தொடக்கத்தில் கேள்வி கேட்டு, குழந்தை தன் பதிலைச் சொல்ல விட்டீர்கள். அடுத்த முறை விஜய் 23 கண்டபின், பத்துக் கட்டுகளால் 52-இலிருந்து 29 கழிப்பதை அவனே விளக்கிக் காட்டும்படி இன்னும் கொஞ்சம் நேரம் கொடுத்துப் பாருங்கள்.",
+      "quote": "2 - 6 உம் 6 - 2 உம் ஒன்றா? குச்சிகளால் காட்டு.",
+      "turn": 7
     },
     "note": null,
     "badge": "checked",

@@ -26,7 +26,7 @@ export interface Machinery {
 export interface WatchTurn {
   turn: number;
   teacher: { line: string; move: MoveTag; source: string; label: string };
-  child: { speaker: string | null; text: string; text_en: string; intent: string; badge: string };
+  child: { speaker: string | null; text: string; text_en: string; intent: string; badge: string; written: number | null; said: number | null };
   children: ChildMeter[];
   machinery: Machinery;
   latency_ms: number;

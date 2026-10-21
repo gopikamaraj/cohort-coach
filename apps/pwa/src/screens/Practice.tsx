@@ -58,6 +58,7 @@ interface TurnView {
   slow: boolean;
   layers: Layers;
   textEn: string;
+  written: number | null;
   move: { label: string; strategy: boolean; quality: string } | null;
   meters: ChildMeter[];
 }
@@ -165,7 +166,7 @@ export default function Practice() {
 
   const applyTurn = async (r: TurnResponse, shown: string) => {
     const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
-    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers, textEn: r.child_text_en ?? "", move: r.move ?? null, meters: r.children ?? [] }]);
+    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [] }]);
     setSpeaker(r.speaker);
     if (r.turn === 1) setGoalOpen(false);
     const moveId = r.layers.processing.label.move_id;
@@ -532,6 +533,11 @@ export default function Practice() {
               )}
             </p>
             {t.slow ? <p className="muted" role="status">{tr("practice.slow")}</p> : null}
+            {t.child && t.written !== null ? (
+              <p className="slate" data-testid={`slate-${t.n}`}>
+                {tr("practice.slate", { who: t.speaker ?? "", n: t.written })}
+              </p>
+            ) : null}
             {judgeMode && t.child && t.textEn && lang !== "en" ? (
               <p className="muted" data-testid={`subtitle-${t.n}`}>
                 {tr("watch.subtitle")}: {t.textEn}

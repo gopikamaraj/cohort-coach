@@ -905,3 +905,13 @@ h2 .icon {
     gap: var(--s4);
   }
 }
+
+.slate {
+  font-family: var(--hand, inherit);
+  margin: 0;
+  padding: 4px 10px;
+  border: 2px solid var(--rule);
+  background: #2f3b3a;
+  color: #f4f1e8;
+  display: inline-block;
+}

@@ -17,7 +17,7 @@
       "c07_checker": 4,
       "c10_demo_teacher": 1
     },
-    "cost_usd": 0.0267,
+    "cost_usd": 0.02271,
     "label": "AI playing the teacher (demo only)",
     "recorded_at": "2026-10-21"
   },
@@ -38,10 +38,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "37, டீச்சர்!",
-        "text_en": "37, Miss!",
+        "text": "81, டீச்சர்!",
+        "text_en": "81, Miss!",
         "intent": "answer",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 81,
+        "said": 81
       },
       "children": [
         {
@@ -85,7 +87,7 @@
           "engine": {
             "speaker": "விஜய்",
             "intent": "answer",
-            "answer": 37,
+            "answer": 81,
             "correct": false
           }
         },
@@ -94,19 +96,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1718
+            "latency_ms": 1671
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1969
+            "latency_ms": 1688
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1171
+            "latency_ms": 1078
           }
         ],
         "validators": [
@@ -169,12 +171,12 @@
         },
         "fallback": null
       },
-      "latency_ms": 3156
+      "latency_ms": 2781
     },
     {
       "turn": 2,
       "teacher": {
-        "line": "இல்லை விஜய், பதில் 23. 23 என்று எழுதிவிடு.",
+        "line": "இல்லை, விஜய். பதில் 23. 23 என்று எழுதிவிடு.",
         "move": {
           "id": "give_the_answer",
           "label": "பதிலைத் தானே சொல்லிவிடுதல்",
@@ -187,10 +189,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "சரி டீச்சர், அடுத்த தடவை பார்த்து செய்து பார்க்கிறேன்.",
-        "text_en": "Okay Miss, next time I will look carefully and try it.",
+        "text": "சரி டீச்சர், அடுத்த முறை இப்படி செய்ய முயற்சி செய்கிறேன்.",
+        "text_en": "Okay Miss, next time I will try to do it this way.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -243,19 +247,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 2031
+            "latency_ms": 1235
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1858
+            "latency_ms": 1811
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1734
+            "latency_ms": 1250
           }
         ],
         "validators": [
@@ -314,12 +318,12 @@
         },
         "fallback": null
       },
-      "latency_ms": 3608
+      "latency_ms": 3078
     },
     {
       "turn": 3,
       "teacher": {
-        "line": "நான் ஏற்கனவே சொன்னேன். சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. கவனமாகக் கேள்.",
+        "line": "நான் ஏற்கனவே சொன்னேன். சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. கவனமாகக் கேள்!",
         "move": {
           "id": "repeat_rule_louder",
           "label": "விதியை மேலும் உரக்கச் சொல்லுதல்",
@@ -332,10 +336,12 @@
       },
       "child": {
         "speaker": "விஜய்",
-        "text": "சரி டீச்சர், கவனமாகக் கேட்கிறேன். இந்தத் தடவை செய்து பார்க்கிறேன்.",
-        "text_en": "Okay Miss, I will listen carefully. This time I will try it.",
+        "text": "சரி டீச்சர், கவனமாகக் கேட்கிறேன். இந்த முறை முயற்சி செய்கிறேன்.",
+        "text_en": "Okay Miss, I will listen carefully. I will try this time.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -388,19 +394,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1641
+            "latency_ms": 1327
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1733
+            "latency_ms": 1687
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 2109
+            "latency_ms": 1125
           }
         ],
         "validators": [
@@ -459,173 +465,30 @@
         },
         "fallback": null
       },
-      "latency_ms": 3843
+      "latency_ms": 2828
     },
     {
       "turn": 4,
       "teacher": {
-        "line": "விஜய், விதியை நினைவில் வை: எப்போதும் சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. பதில் 23.",
-        "move": {
-          "id": "tell_rule",
-          "label": "விதியை மட்டும் சொல்லிவிடுதல்",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": "விஜய்",
-        "source": "ai",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "விஜய்",
-        "text": "சரி டீச்சர், நினைவில் வைக்கிறேன். இந்தத் தடவை முயற்சி செய்கிறேன்.",
-        "text_en": "Okay Miss, I will remember. I will try this time.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "அருண்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "பிரியா",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "விஜய்",
-          "level": 0.83,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "ரவி",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "அனு",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "tell_rule",
-            "source": "demo teacher",
-            "addressed": "விஜய்"
-          },
-          "engine": {
-            "speaker": "விஜய்",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 1375
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 2860
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1328
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": null
-      },
-      "latency_ms": 4235
-    },
-    {
-      "turn": 5,
-      "teacher": {
-        "line": "விஜய், இந்தத் தடவையும் தவறு. பதில் 23. 23 என்று எழுதிவிடு. அடுத்த கணக்கைக் கவனி.",
+        "line": "பதில் 23. 52 - 29 = 23. அதை எழுதிவிடு, அருண்.",
         "move": {
           "id": "give_the_answer",
           "label": "பதிலைத் தானே சொல்லிவிடுதல்",
           "quality": "common_mistake",
           "strategy": false
         },
-        "addressed": "விஜய்",
+        "addressed": "அருண்",
         "source": "ai",
         "label": "AI playing the teacher (demo only)"
       },
       "child": {
-        "speaker": "விஜய்",
-        "text": "சரி டீச்சர், எழுதிவிட்டேன். அடுத்த கணக்கைப் பார்க்கிறேன்.",
-        "text_en": "Okay Miss, I have written it. I will look at the next sum.",
+        "speaker": "அருண்",
+        "text": "சரி டீச்சர், எழுதிக்கிறேன். அடுத்த முறை முயற்சி செய்கிறேன்.",
+        "text_en": "Okay Miss, I will write it. I will try next time.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -642,7 +505,7 @@
         },
         {
           "name": "விஜய்",
-          "level": 0.83,
+          "level": 0.88,
           "band": "high",
           "has_error": true
         },
@@ -664,10 +527,10 @@
           "move": {
             "move_id": "give_the_answer",
             "source": "demo teacher",
-            "addressed": "விஜய்"
+            "addressed": "அருண்"
           },
           "engine": {
-            "speaker": "விஜய்",
+            "speaker": "அருண்",
             "intent": "agree",
             "answer": null,
             "correct": null
@@ -678,13 +541,601 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1750
+            "latency_ms": 1219
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 8765
+            "latency_ms": 1811
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1047
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 2875
+    },
+    {
+      "turn": 5,
+      "teacher": {
+        "line": "மீண்டும் தவறு! கவனி! 52 - 29 எவ்வளவு என்று நீ இன்னும் சொல்லவில்லை. கவனமாக இரு!",
+        "move": {
+          "id": "scold",
+          "label": "குழந்தையைக் கடிந்துகொள்ளுதல்",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": "ரவி",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "ரவி",
+        "text": "சரி டீச்சர்.",
+        "text_en": "Yes, Miss.",
+        "intent": "quiet",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "அருண்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "பிரியா",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "விஜய்",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "ரவி",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "அனு",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "scold",
+            "source": "demo teacher",
+            "addressed": "ரவி"
+          },
+          "engine": {
+            "speaker": "ரவி",
+            "intent": "quiet",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1530
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2171
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1093
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3264
+    },
+    {
+      "turn": 6,
+      "teacher": {
+        "line": "விதியை நினைவில் வை: எப்போதும் சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி.",
+        "move": {
+          "id": "tell_rule",
+          "label": "விதியை மட்டும் சொல்லிவிடுதல்",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "ரவி",
+        "text": "சரி டீச்சர்.",
+        "text_en": "Yes, Miss.",
+        "intent": "quiet",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "அருண்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "பிரியா",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "விஜய்",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "ரவி",
+          "level": 0.85,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "அனு",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "tell_rule",
+            "source": "demo teacher",
+            "addressed": "ரவி"
+          },
+          "engine": {
+            "speaker": "ரவி",
+            "intent": "quiet",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2406
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1766
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1264
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3031
+    },
+    {
+      "turn": 7,
+      "teacher": {
+        "line": "பதில் 23. 23 என்று எழுதிவிடு.",
+        "move": {
+          "id": "give_the_answer",
+          "label": "பதிலைத் தானே சொல்லிவிடுதல்",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "ரவி",
+        "text": "சரி டீச்சர்.",
+        "text_en": "Okay, Miss.",
+        "intent": "quiet",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "அருண்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "பிரியா",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "விஜய்",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "ரவி",
+          "level": 0.85,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "அனு",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "give_the_answer",
+            "source": "demo teacher",
+            "addressed": "ரவி"
+          },
+          "engine": {
+            "speaker": "ரவி",
+            "intent": "quiet",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2485
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1264
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 969
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 2250
+    },
+    {
+      "turn": 8,
+      "teacher": {
+        "line": "நான் ஏற்கனவே சொன்னேன். சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. கவனமாகக் கேள்!",
+        "move": {
+          "id": "repeat_rule_louder",
+          "label": "விதியை மேலும் உரக்கச் சொல்லுதல்",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "ரவி",
+        "text": "சரி டீச்சர், முயற்சி செய்கிறேன்.",
+        "text_en": "Okay Miss, I will try.",
+        "intent": "agree",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "அருண்",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "பிரியா",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "விஜய்",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "ரவி",
+          "level": 0.83,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "அனு",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "repeat_rule_louder",
+            "source": "demo teacher",
+            "addressed": "ரவி"
+          },
+          "engine": {
+            "speaker": "ரவி",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1889
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1875
           },
           {
             "call": 7,
@@ -749,318 +1200,30 @@
         },
         "fallback": null
       },
-      "latency_ms": 9843
+      "latency_ms": 2937
     },
     {
-      "turn": 6,
+      "turn": 9,
       "teacher": {
-        "line": "விதியை நினைவில் வை: எப்போதும் சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி.",
-        "move": {
-          "id": "tell_rule",
-          "label": "விதியை மட்டும் சொல்லிவிடுதல்",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": null,
-        "source": "template",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "விஜய்",
-        "text": "சரி டீச்சர், எனக்குப் புரிந்தது. அடுத்த கணக்கில் இப்படியே செய்து பார்க்கிறேன்.",
-        "text_en": "Okay Miss, I understood. I will try it like this in the next sum.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "அருண்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "பிரியா",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "விஜய்",
-          "level": 0.78,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "ரவி",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "அனு",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "tell_rule",
-            "source": "demo teacher",
-            "addressed": "விஜய்"
-          },
-          "engine": {
-            "speaker": "விஜய்",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "template",
-            "latency_ms": 3391
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 2703
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 968
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": false
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": "template:validators"
-      },
-      "latency_ms": 3703
-    },
-    {
-      "turn": 7,
-      "teacher": {
-        "line": "பதில் 23. 23 என்று எழுதிவிடு.",
-        "move": {
-          "id": "give_the_answer",
-          "label": "பதிலைத் தானே சொல்லிவிடுதல்",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": null,
-        "source": "template",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "விஜய்",
-        "text": "சரி டீச்சர், எழுதிக்கொள்கிறேன். அடுத்த கணக்கில் பார்க்கிறேன்.",
-        "text_en": "Okay Miss, I will write it down. I will see in the next problem.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "அருண்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "பிரியா",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "விஜய்",
-          "level": 0.78,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "ரவி",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "அனு",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "give_the_answer",
-            "source": "demo teacher",
-            "addressed": "விஜய்"
-          },
-          "engine": {
-            "speaker": "விஜய்",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "template",
-            "latency_ms": 4264
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 1812
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1186
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": false
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": "template:validators"
-      },
-      "latency_ms": 3031
-    },
-    {
-      "turn": 8,
-      "teacher": {
-        "line": "நான் ஏற்கனவே சொன்னேன். சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. கவனமாகக் கேள்.",
+        "line": "நான் ஏற்கனவே சொன்னேன். சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி. கவனமாகக் கேள்!",
         "move": {
           "id": "repeat_rule_louder",
           "label": "விதியை மேலும் உரக்கச் சொல்லுதல்",
           "quality": "common_mistake",
           "strategy": false
         },
-        "addressed": "விஜய்",
+        "addressed": "ரவி",
         "source": "ai",
         "label": "AI playing the teacher (demo only)"
       },
       "child": {
-        "speaker": "விஜய்",
-        "text": "சரி டீச்சர், கவனமாகக் கேட்டேன். அடுத்த கணக்கில் அப்படியே செய்து பார்க்கிறேன்.",
-        "text_en": "Okay Miss, I listened carefully. I will try it that way in the next sum.",
+        "speaker": "ரவி",
+        "text": "சரி டீச்சர், இனிமேல் முயற்சி செய்கிறேன்.",
+        "text_en": "Okay Miss, I will try from now on.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -1077,13 +1240,13 @@
         },
         {
           "name": "விஜய்",
-          "level": 0.76,
+          "level": 0.88,
           "band": "high",
           "has_error": true
         },
         {
           "name": "ரவி",
-          "level": 0.9,
+          "level": 0.81,
           "band": "high",
           "has_error": true
         },
@@ -1099,10 +1262,10 @@
           "move": {
             "move_id": "repeat_rule_louder",
             "source": "demo teacher",
-            "addressed": "விஜய்"
+            "addressed": "ரவி"
           },
           "engine": {
-            "speaker": "விஜய்",
+            "speaker": "ரவி",
             "intent": "agree",
             "answer": null,
             "correct": null
@@ -1113,19 +1276,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1389
+            "latency_ms": 3141
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2156
+            "latency_ms": 1406
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1593
+            "latency_ms": 1156
           }
         ],
         "validators": [
@@ -1184,152 +1347,7 @@
         },
         "fallback": null
       },
-      "latency_ms": 3796
-    },
-    {
-      "turn": 9,
-      "teacher": {
-        "line": "விதியை நினைவில் வை: எப்போதும் சிறிய எண்ணைப் பெரிய எண்ணிலிருந்து கழி.",
-        "move": {
-          "id": "tell_rule",
-          "label": "விதியை மட்டும் சொல்லிவிடுதல்",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": null,
-        "source": "template",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "விஜய்",
-        "text": "சரி டீச்சர். நினைவில் வைத்துக்கொள்கிறேன்.",
-        "text_en": "Okay Miss. I will remember it.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "அருண்",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "பிரியா",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "விஜய்",
-          "level": 0.71,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "ரவி",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "அனு",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "tell_rule",
-            "source": "demo teacher",
-            "addressed": "விஜய்"
-          },
-          "engine": {
-            "speaker": "விஜய்",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "template",
-            "latency_ms": 3155
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 2031
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1938
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": false
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": "template:validators"
-      },
-      "latency_ms": 3969
+      "latency_ms": 2578
     }
   ],
   "feedback": {
@@ -1339,23 +1357,23 @@
         "text": "முதலில் குழந்தையைத் தன் பதிலைச் சொல்ல விட்டீர்கள்.",
         "quote": "52 - 29 எவ்வளவு என்று யார் சொல்வார்கள்?",
         "turn": 1,
-        "comment": "கணக்கைக் கேள்வியாகக் கேட்டு, குழந்தை தன் பதிலைச் சொல்ல இடம் கொடுத்தீர்கள். இது நல்ல தொடக்கம்."
+        "comment": "முதலில் கேள்வியை வைத்து, குழந்தை தன் பதிலைச் சொல்ல இடம் கொடுத்தீர்கள். அதுதான் நல்ல தொடக்கம்."
       }
     ],
     "try_next": {
       "point": "ask_explain",
       "text": "திருத்தும் முன் குழந்தை பதிலை எப்படிப் பெற்றாள் என்று கேளுங்கள்.",
-      "suggestion": "குழந்தை 37 என்று சொன்னதும், பதிலைச் சொல்லும் முன் \"இதை எப்படிச் செய்தாய்?\" என்று கேட்டுப் பாருங்கள். அவள் சிந்தனையைக் கேட்டால் தவறு எங்கே என்று இருவரும் பார்க்க முடியும்.",
-      "quote": "இல்லை விஜய், பதில் 23. 23 என்று எழுதிவிடு.",
+      "suggestion": "குழந்தை 81 என்று சொன்னபோது, உடனே திருத்தாமல் \"இந்த பதிலை எப்படிப் பெற்றாய்?\" என்று கேட்டுப் பாருங்கள். அவள் சிந்தனை எங்கே மாறியது என்று தெரியும்.",
+      "quote": "இல்லை, விஜய். பதில் 23. 23 என்று எழுதிவிடு.",
       "turn": 2
     },
-    "note": null,
+    "note": "ஒரு இடத்தில் கடிந்துகொள்ளுதல் வந்தது. அமைதியான சொற்களால் குழந்தைகள் மீண்டும் முயல எளிதாகும். 'வா, சேர்ந்து பார்ப்போம்' என்று சொல்லிக் குச்சிகளால் காட்டலாம்.",
     "badge": "checked",
     "source": "ai"
   },
   "summary": {
     "turns": 9,
-    "moves_used": 4,
+    "moves_used": 5,
     "rubric_points_touched": 1,
     "rubric_points": 5
   }

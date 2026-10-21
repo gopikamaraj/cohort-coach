@@ -131,7 +131,7 @@ def child_line(
             checker_facts={
                 "intent": plan.intent,
                 "engine_answer": plan.answer,
-                "answer_is_deliberately_wrong": plan.correct is False,
+                "answer_is_deliberately_wrong": plan.spoken_correct is False,
                 "allowed_numbers": sorted(plan.allowed_numbers),
             },
         ),

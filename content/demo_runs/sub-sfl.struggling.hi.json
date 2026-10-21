@@ -17,7 +17,7 @@
       "c07_checker": 4,
       "c10_demo_teacher": 1
     },
-    "cost_usd": 0.0229,
+    "cost_usd": 0.02225,
     "label": "AI playing the teacher (demo only)",
     "recorded_at": "2026-10-21"
   },
@@ -25,7 +25,7 @@
     {
       "turn": 1,
       "teacher": {
-        "line": "52 में से 29 घटाओ तो कितना होगा, कौन बताएगा?",
+        "line": "52 में से 29 घटाओ तो कितना? कौन बताएगा?",
         "move": {
           "id": "pose_problem",
           "label": "सवाल देना या बच्चे से जवाब पूछना",
@@ -38,10 +38,12 @@
       },
       "child": {
         "speaker": "विजय",
-        "text": "37, मैम! मुझे पक्का पता है।",
-        "text_en": "37, Miss! I am sure about it.",
+        "text": "81, मैम!",
+        "text_en": "81, Miss!",
         "intent": "answer",
-        "badge": "checked"
+        "badge": "checked",
+        "written": 81,
+        "said": 81
       },
       "children": [
         {
@@ -85,7 +87,7 @@
           "engine": {
             "speaker": "विजय",
             "intent": "answer",
-            "answer": 37,
+            "answer": 81,
             "correct": false
           }
         },
@@ -94,19 +96,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1515
+            "latency_ms": 1483
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2094
+            "latency_ms": 1921
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1061
+            "latency_ms": 2266
           }
         ],
         "validators": [
@@ -169,157 +171,12 @@
         },
         "fallback": null
       },
-      "latency_ms": 3172
+      "latency_ms": 4188
     },
     {
       "turn": 2,
       "teacher": {
-        "line": "नहीं विजय, जवाब 23 है। बस 23 लिख लो।",
-        "move": {
-          "id": "give_the_answer",
-          "label": "जवाब खुद बता देना",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": "विजय",
-        "source": "ai",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "विजय",
-        "text": "ठीक है मैम, मैं कोशिश करूँगा।",
-        "text_en": "Okay Miss, I will try.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "अरुण",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "प्रिया",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "विजय",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "रवि",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "अनु",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "give_the_answer",
-            "source": "demo teacher",
-            "addressed": "विजय"
-          },
-          "engine": {
-            "speaker": "विजय",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 1936
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 1906
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1546
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": null
-      },
-      "latency_ms": 3485
-    },
-    {
-      "turn": 3,
-      "teacher": {
-        "line": "मैं बता चुकी हूँ। छोटी संख्या को बड़ी संख्या में से घटाओ। ध्यान से सुनो, विजय!",
+        "line": "मैं बता चुकी हूँ। छोटी संख्या को बड़ी संख्या में से घटाओ। ध्यान से सुनो।",
         "move": {
           "id": "repeat_rule_louder",
           "label": "नियम को और ज़ोर से दोहराना",
@@ -332,10 +189,12 @@
       },
       "child": {
         "speaker": "विजय",
-        "text": "जी मैम, मैं ध्यान से सुनूँगा। मैं फिर से कोशिश करूँगा।",
-        "text_en": "Yes Miss, I will listen carefully. I will try again.",
+        "text": "ठीक है मैम, मैं फिर से कोशिश करता हूँ।",
+        "text_en": "Okay Miss, I will try again.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -388,19 +247,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 2421
+            "latency_ms": 1796
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1813
+            "latency_ms": 1203
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1015
+            "latency_ms": 1141
           }
         ],
         "validators": [
@@ -459,28 +318,30 @@
         },
         "fallback": null
       },
-      "latency_ms": 2843
+      "latency_ms": 2375
     },
     {
-      "turn": 4,
+      "turn": 3,
       "teacher": {
-        "line": "सुनो सब, बस नियम याद रखो: हमेशा छोटी संख्या को बड़ी में से घटाओ।",
+        "line": "विजय, नियम याद रखो: 29 में से 52 नहीं घटता, 52 में से 29 घटाओ। फिर से सोचो।",
         "move": {
           "id": "tell_rule",
           "label": "सिर्फ़ नियम बता देना",
           "quality": "common_mistake",
           "strategy": false
         },
-        "addressed": null,
+        "addressed": "विजय",
         "source": "ai",
         "label": "AI playing the teacher (demo only)"
       },
       "child": {
         "speaker": "विजय",
-        "text": "जी मैम, ठीक है। मैं याद रखूँगा और कोशिश करूँगा।",
-        "text_en": "Yes Miss, okay. I will remember it and I will try.",
+        "text": "जी मैम, मैं नियम याद रखूँगा। मैं फिर से सोचता हूँ।",
+        "text_en": "Yes Miss, I will remember the rule. I will think again.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -533,19 +394,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 1172
+            "latency_ms": 3296
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1985
+            "latency_ms": 1610
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1765
+            "latency_ms": 1405
           }
         ],
         "validators": [
@@ -604,28 +465,177 @@
         },
         "fallback": null
       },
-      "latency_ms": 3765
+      "latency_ms": 3015
+    },
+    {
+      "turn": 4,
+      "teacher": {
+        "line": "जवाब 23 है। बस 23 लिख लो, विजय।",
+        "move": {
+          "id": "give_the_answer",
+          "label": "जवाब खुद बता देना",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": "विजय",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "ठीक है मैम, मैं लिख लेता हूँ। मैं ध्यान से करने की कोशिश करूँगा।",
+        "text_en": "Okay Miss, I will write it down. I will try to do it carefully.",
+        "intent": "agree",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.83,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "give_the_answer",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1172
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2000
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1110
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3125
     },
     {
       "turn": 5,
       "teacher": {
-        "line": "मैं बता चुकी हूँ। छोटी संख्या को बड़ी संख्या में से घटाओ। 52 में से 29 घटाओ, ध्यान से सुनो!",
+        "line": "मैं फिर बता रही हूँ! छोटी संख्या को बड़ी संख्या में से घटाओ। ध्यान से सुनो, विजय।",
         "move": {
           "id": "repeat_rule_louder",
           "label": "नियम को और ज़ोर से दोहराना",
           "quality": "common_mistake",
           "strategy": false
         },
-        "addressed": null,
+        "addressed": "विजय",
         "source": "ai",
         "label": "AI playing the teacher (demo only)"
       },
       "child": {
         "speaker": "विजय",
-        "text": "जी मैम, ठीक है। मैं एक बार और कोशिश करूँगा।",
-        "text_en": "Yes Miss, okay. I will try one more time.",
+        "text": "जी मैम, मैं सुन रहा हूँ। मैं फिर से करके देखता हूँ।",
+        "text_en": "Yes Miss, I am listening. I will try it again.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -678,19 +688,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "ai",
-            "latency_ms": 4328
+            "latency_ms": 2952
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2061
+            "latency_ms": 1922
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1781
+            "latency_ms": 1156
           }
         ],
         "validators": [
@@ -749,300 +759,10 @@
         },
         "fallback": null
       },
-      "latency_ms": 3875
+      "latency_ms": 3109
     },
     {
       "turn": 6,
-      "teacher": {
-        "line": "जवाब 23 है, विजय। बस 23 लिख लो और आगे बढ़ो।",
-        "move": {
-          "id": "give_the_answer",
-          "label": "जवाब खुद बता देना",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": "विजय",
-        "source": "ai",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "विजय",
-        "text": "जी मैम, ठीक है। मैं लिख लूँगा और आगे बढ़ूँगा।",
-        "text_en": "Yes Miss, okay. I will write it down and move ahead.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "अरुण",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "प्रिया",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "विजय",
-          "level": 0.81,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "रवि",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "अनु",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "give_the_answer",
-            "source": "demo teacher",
-            "addressed": "विजय"
-          },
-          "engine": {
-            "speaker": "विजय",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 1921
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 1936
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1561
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": null
-      },
-      "latency_ms": 3530
-    },
-    {
-      "turn": 7,
-      "teacher": {
-        "line": "जवाब 23 है। बस 23 लिख लो और आगे बढ़ो।",
-        "move": {
-          "id": "give_the_answer",
-          "label": "जवाब खुद बता देना",
-          "quality": "common_mistake",
-          "strategy": false
-        },
-        "addressed": "विजय",
-        "source": "ai",
-        "label": "AI playing the teacher (demo only)"
-      },
-      "child": {
-        "speaker": "विजय",
-        "text": "ठीक है मैम, लिख लिया। मैं आगे बढ़ता हूँ।",
-        "text_en": "Okay Miss, I wrote it down. I will move ahead.",
-        "intent": "agree",
-        "badge": "checked"
-      },
-      "children": [
-        {
-          "name": "अरुण",
-          "level": 0.0,
-          "band": "low",
-          "has_error": false
-        },
-        {
-          "name": "प्रिया",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "विजय",
-          "level": 0.81,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "रवि",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        },
-        {
-          "name": "अनु",
-          "level": 0.9,
-          "band": "high",
-          "has_error": true
-        }
-      ],
-      "machinery": {
-        "code": {
-          "move": {
-            "move_id": "give_the_answer",
-            "source": "demo teacher",
-            "addressed": "विजय"
-          },
-          "engine": {
-            "speaker": "विजय",
-            "intent": "agree",
-            "answer": null,
-            "correct": null
-          }
-        },
-        "ai_calls": [
-          {
-            "call": 10,
-            "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 2625
-          },
-          {
-            "call": 1,
-            "name": "Child voices",
-            "source": "ai",
-            "latency_ms": 2687
-          },
-          {
-            "call": 7,
-            "name": "Output checker",
-            "source": "ai",
-            "latency_ms": 1328
-          }
-        ],
-        "validators": [
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "number_words",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "readability",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          },
-          {
-            "name": "subtitle",
-            "ok": true
-          },
-          {
-            "name": "move",
-            "ok": true
-          },
-          {
-            "name": "length",
-            "ok": true
-          },
-          {
-            "name": "numbers",
-            "ok": true
-          },
-          {
-            "name": "check_items",
-            "ok": true
-          },
-          {
-            "name": "digits_only",
-            "ok": true
-          },
-          {
-            "name": "prefilter",
-            "ok": true
-          }
-        ],
-        "checker": {
-          "passed": true,
-          "failed_items": []
-        },
-        "fallback": null
-      },
-      "latency_ms": 4031
-    },
-    {
-      "turn": 8,
       "teacher": {
         "line": "बस नियम याद रखो: हमेशा छोटी संख्या को बड़ी में से घटाओ।",
         "move": {
@@ -1057,10 +777,12 @@
       },
       "child": {
         "speaker": "विजय",
-        "text": "जी मैम, याद रखूँगा। छोटी संख्या को बड़ी में से घटाऊँगा।",
-        "text_en": "Yes Miss, I will remember. I will subtract the smaller number from the bigger one.",
+        "text": "जी मैम, ठीक है। मैं कोशिश करूँगा।",
+        "text_en": "Yes Miss, okay. I will try.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -1113,19 +835,19 @@
             "call": 10,
             "name": "Demo teacher",
             "source": "template",
-            "latency_ms": 3266
+            "latency_ms": 3000
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 2608
+            "latency_ms": 1860
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1780
+            "latency_ms": 1671
           }
         ],
         "validators": [
@@ -1184,28 +906,30 @@
         },
         "fallback": "template:validators"
       },
-      "latency_ms": 4405
+      "latency_ms": 3546
     },
     {
-      "turn": 9,
+      "turn": 7,
       "teacher": {
-        "line": "मैं फिर कह रही हूँ! छोटी संख्या को बड़ी संख्या में से घटाओ। ध्यान से सुनो!",
+        "line": "जवाब 23 है। बस 23 लिख लो।",
         "move": {
-          "id": "repeat_rule_louder",
-          "label": "नियम को और ज़ोर से दोहराना",
+          "id": "give_the_answer",
+          "label": "जवाब खुद बता देना",
           "quality": "common_mistake",
           "strategy": false
         },
         "addressed": null,
-        "source": "ai",
+        "source": "template",
         "label": "AI playing the teacher (demo only)"
       },
       "child": {
         "speaker": "विजय",
-        "text": "जी मैम, मैं कोशिश करूँगा। ध्यान से सुन रहा हूँ।",
-        "text_en": "Yes Miss, I will try. I am listening carefully.",
+        "text": "ठीक है मैम, लिख लेता हूँ।",
+        "text_en": "Okay Miss, I will write it down.",
         "intent": "agree",
-        "badge": "checked"
+        "badge": "checked",
+        "written": null,
+        "said": null
       },
       "children": [
         {
@@ -1222,7 +946,7 @@
         },
         {
           "name": "विजय",
-          "level": 0.74,
+          "level": 0.76,
           "band": "high",
           "has_error": true
         },
@@ -1242,7 +966,7 @@
       "machinery": {
         "code": {
           "move": {
-            "move_id": "repeat_rule_louder",
+            "move_id": "give_the_answer",
             "source": "demo teacher",
             "addressed": "विजय"
           },
@@ -1257,20 +981,20 @@
           {
             "call": 10,
             "name": "Demo teacher",
-            "source": "ai",
-            "latency_ms": 1421
+            "source": "template",
+            "latency_ms": 2485
           },
           {
             "call": 1,
             "name": "Child voices",
             "source": "ai",
-            "latency_ms": 1561
+            "latency_ms": 1671
           },
           {
             "call": 7,
             "name": "Output checker",
             "source": "ai",
-            "latency_ms": 1108
+            "latency_ms": 1421
           }
         ],
         "validators": [
@@ -1300,7 +1024,7 @@
           },
           {
             "name": "move",
-            "ok": true
+            "ok": false
           },
           {
             "name": "length",
@@ -1327,9 +1051,303 @@
           "passed": true,
           "failed_items": []
         },
-        "fallback": null
+        "fallback": "template:validators"
       },
-      "latency_ms": 2686
+      "latency_ms": 3125
+    },
+    {
+      "turn": 8,
+      "teacher": {
+        "line": "बस नियम याद रखो: हमेशा छोटी संख्या को बड़ी में से घटाओ।",
+        "move": {
+          "id": "tell_rule",
+          "label": "सिर्फ़ नियम बता देना",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "ठीक है मैम, मैं यही करूँगा। छोटी को बड़ी में से घटाऊँगा।",
+        "text_en": "Okay Miss, I will do exactly that. I will take the smaller one away from the bigger one.",
+        "intent": "agree",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.71,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "tell_rule",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2983
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1578
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1671
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3250
+    },
+    {
+      "turn": 9,
+      "teacher": {
+        "line": "बस नियम याद रखो: हमेशा छोटी संख्या को बड़ी में से घटाओ।",
+        "move": {
+          "id": "tell_rule",
+          "label": "सिर्फ़ नियम बता देना",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "जी मैम, ठीक है। याद रखूँगा।",
+        "text_en": "Yes Miss, okay. I will remember.",
+        "intent": "agree",
+        "badge": "checked",
+        "written": null,
+        "said": null
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.66,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "tell_rule",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2875
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1375
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1578
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 2953
     }
   ],
   "feedback": {
@@ -1337,17 +1355,17 @@
       {
         "point": "let_answer",
         "text": "आपने पहले बच्चे को अपना जवाब बोलने दिया।",
-        "quote": "52 में से 29 घटाओ तो कितना होगा, कौन बताएगा?",
+        "quote": "52 में से 29 घटाओ तो कितना? कौन बताएगा?",
         "turn": 1,
-        "comment": "आपने सवाल खुलकर पूछा और बच्चे को पहले अपना जवाब बोलने का मौका दिया। इससे उसकी सोच सामने आई।"
+        "comment": "आपने सवाल साफ़ रखा और बच्चे को पहले अपना जवाब बोलने का मौका दिया। इससे बच्चे की सोच सामने आई।"
       }
     ],
     "try_next": {
       "point": "ask_explain",
       "text": "सुधारने से पहले बच्चे से पूछें कि उसने जवाब कैसे निकाला।",
-      "suggestion": "जब बच्चा 37 कहे, तो जवाब बताने से पहले उससे पूछकर देखिए, \"तुमने यह कैसे निकाला?\" फिर आप देख पाएँगी कि उसने कहाँ गड़बड़ की, और उसी जगह से आगे बढ़ सकती हैं।",
-      "quote": "नहीं विजय, जवाब 23 है। बस 23 लिख लो।",
-      "turn": 2
+      "suggestion": "जब बच्चा 81 बोले, तो नियम बताने से पहले पूछ सकती हैं, \"तुमने यह कैसे निकाला?\" इससे पता चलेगा कि उसने कहाँ गड़बड़ की, और फिर आप गट्ठर और तीलियों से दिखा सकती हैं।",
+      "quote": "52 में से 29 घटाओ तो कितना? कौन बताएगा?",
+      "turn": 1
     },
     "note": null,
     "badge": "checked",

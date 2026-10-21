@@ -61,6 +61,11 @@ function TurnCard({ turn, machinery }: { turn: WatchTurn; machinery: boolean }) 
           <p>
             <strong>{turn.child.speaker}:</strong> {turn.child.text}
           </p>
+          {typeof turn.child.written === "number" ? (
+            <p className="slate" data-testid={`slate-${turn.turn}`}>
+              {tr("practice.slate", { who: turn.child.speaker ?? "", n: turn.child.written })}
+            </p>
+          ) : null}
           <p className="muted" data-testid={`subtitle-${turn.turn}`}>
             {tr("watch.subtitle")}: {turn.child.text_en}
           </p>

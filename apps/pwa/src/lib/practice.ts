@@ -76,6 +76,8 @@ export interface TurnResponse {
   finished_reason: string | null;
   turns_left: number;
   child_text_en?: string;
+  written?: number | null;
+  answer?: number | null;
   move?: { id: string; label: string; quality: string; strategy: boolean };
   children?: { name: string; level: number; band: "high" | "medium" | "low"; has_error: boolean }[];
 }

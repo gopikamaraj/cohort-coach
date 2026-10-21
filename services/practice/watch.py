@@ -145,7 +145,7 @@ def run_watch(
                 },
                 "child": {
                     "speaker": r.speaker, "text": r.child_text, "text_en": r.child_text_en,
-                    "intent": r.intent, "badge": r.badge,
+                    "intent": r.intent, "badge": r.badge, "written": r.written, "said": r.answer,
                 },
                 "children": r.children,
                 "machinery": _machinery(r.layers, dt),

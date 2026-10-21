@@ -95,6 +95,13 @@
       "title": "Seat Mix",
       "type": "object"
     },
+    "stage_mix": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Stage Mix",
+      "type": "array"
+    },
     "start_engagement": {
       "maximum": 1,
       "minimum": 0,

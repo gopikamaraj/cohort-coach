@@ -21,6 +21,7 @@ from engine.model import ErrorCode
 from engine.simulator import (
     BEHAVIOURS,
     NEUTRAL,
+    STAGES,
     MoveEffect,
     Problem,
     ScenarioConfig,
@@ -131,6 +132,9 @@ class Scenario(BaseModel):
     materials: list[str]
     material_moves: dict[str, str]
     seat_mix: dict[ErrorCode, int]
+    # How the children with errors err, seat by seat after the always-correct one (core, input-test,
+    # output, input-teaching). Empty: every child errs by the bug function.
+    stage_mix: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _checks(self) -> Scenario:
@@ -141,6 +145,9 @@ class Scenario(BaseModel):
         for p in self.problems:
             if not valid_problem(Problem(p.kind, p.a, p.b)):  # type: ignore[arg-type]
                 raise ValueError(f"invalid problem {p}")
+        bad = [m for m in self.stage_mix if m not in STAGES]
+        if bad:
+            raise ValueError(f"unknown stage {bad[0]!r}")
         if set(self.material_moves) != set(self.materials):
             raise ValueError("material_moves must cover exactly the materials")
         return self

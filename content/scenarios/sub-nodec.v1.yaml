@@ -40,3 +40,8 @@ material_moves:
 seat_mix:
   SUB-NODEC: 3
   SUB-SFL: 1
+stage_mix:
+- core
+- input-test
+- output
+- core

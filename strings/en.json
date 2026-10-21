@@ -625,5 +625,6 @@
   "break.line": "The line",
   "break.stopped_by": "Stopped by",
   "hints.toggle": "Try with hints",
-  "hints.intro": "Three things you could say next. Pick one and see how the children react."
+  "hints.intro": "Three things you could say next. Pick one and see how the children react.",
+  "practice.slate": "On {who}'s slate: {n}"
 }

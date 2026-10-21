@@ -153,3 +153,10 @@ def test_the_demo_teacher_refuses_to_run_outside_judge_mode(
     monkeypatch.setenv("JUDGE_MODE", "0")
     with pytest.raises(PermissionError):
         run(sink, [good()])
+
+
+def test_a_reviewed_template_may_say_ten_but_the_ai_line_may_not(sink: SqlAuditSink) -> None:
+    words = good("show_bundles", "Show 52 with bundles of ten and loose sticks.")
+    res, _ = run(sink, [words, words], turn=3)
+    assert res.source == "template" and res.move_id == "show_bundles"  # the move list line passes
+    assert "ten" in res.line
