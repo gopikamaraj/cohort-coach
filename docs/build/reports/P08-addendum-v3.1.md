@@ -44,3 +44,11 @@ Re-recorded the Practice Class fixtures twice (call 1 v3 and the new moves) and 
 - Eval 11's bar is not run: the experienced run covered 5 of 5 rubric points and the struggling run 1 of 5 in the recorded runs, one run per cell, not 20 pairs.
 - The stage rules say "most likely"; they are not a diagnosis, and no stage reaches a child.
 - Input-teaching children exist in the engine but no scenario seats them by default.
+
+## Recorded fixtures
+
+Every change to `ai/fixtures/recorded/` came from `AI_MODE=record python scripts/practice_cli.py --scenario sub-sfl --lang en --seed 5 --record --script evals/sets/practice_scripts/sub-sfl-en.txt` (run three times: new moves, call 1 v3, and once after the review), about USD 0.015 to 0.02 each. None was edited by hand. The record mode rewrites a fixture when the same input is recorded again, so `812771d58ae9d3da.json` (call 1, prompt v2) changed wording from the first run in commit `81baa7c`. Older fixtures for earlier prompt versions are left in place; they are not used once the prompt version changes.
+
+## Design doc edits
+
+`docs/design/addendum-v3.1.md` was edited after the privacy review (who counts as a judge; the missed-teaching count is class-level) and when the stage seating and mishearing kinds were settled; the conflicts and their resolution are in the 22 Oct entry of `DECISIONS.md`. `docs/evidence/stage_signature_check.md` is a one-off design check; the permanent version is `tests/engine/test_stages.py` and `tests/fixtures/stage_cases.json`.
