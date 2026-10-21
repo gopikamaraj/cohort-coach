@@ -248,3 +248,48 @@ Not created here. The library lists topic packs and their status (draft, in revi
 - an edit creates a new version and leaves the old one in use until the new one is approved and active (same rule as mentor items);
 - the audit row records both keys;
 - usage counts below 5 classes are hidden.
+
+---
+
+## E. Teaching strategies (from the team's subtraction materials)
+
+Two alternative moves are added, as approved moves, to the SUB-SFL and SUB-NODEC move lists, scenarios and track content. We use the strategies, never the source worksheets' wording or items.
+
+| Strategy | What the teacher does | Fits | Worked example (not a check item) |
+| --- | --- | --- | --- |
+| Decomposition | Subtract the tens, then the ones, bridging through a ten, shown with bundles | SUB-SFL, SUB-NODEC | 63 − 28: take away 2 bundles (63 → 43), then 8 sticks in two steps: 3 to reach 40, then 5 more → 35 |
+| Compensation | Subtract a nearby ten, then adjust; for a number being subtracted that is near a ten | SUB-SFL, SUB-NODEC | 63 − 29: take away 30 (63 → 33), then give 1 back → 34 |
+
+The existing strategies (bundles and exchange, ask her to explain, check by adding back) stay. Each has an approval status in the strategy library (section D).
+
+### Changes that follow
+
+- **Output stage routine** (section F) becomes "check by adding back" (the inverse operation). Children with ADD-NOCARRY check with bundles instead, because adding back does not expose a dropped carry.
+- **Order probe for SUB-SFL**: "Is 2 − 6 the same as 6 − 2?" It appears as a probe line on the SUB-SFL error card and as a Practice Class move (`order_probe`), in the move list with sample lines.
+- **Two practice levels per track**: level 1 without regrouping, level 2 with regrouping. Practice sets come from the item generator with an exclusion list (below).
+- **Terms.** Lessons use the terms teachers already know. The Hindi words for borrowing or regrouping, for decomposition and for compensation are placeholders until Shivani confirms them (OD-24): `TODO-HUMAN(Shivani): Hindi term for borrowing/regrouping`, and the same for each strategy.
+- **Provenance.** The strategies come from the team's subtraction materials. No worksheet text or item is copied; a note in `content/` records that.
+
+### The no-check-items validator
+
+No lesson, practice set, script, model run, hint option or worked example may contain any item from Form A or Form B of the pilot test.
+
+What counts as a check item, from `docs/design/pilot_forms.golden.json` (read, never copied into content):
+
+- **Computation items** (3 to 5 and 7 to 10 on both forms; item 6, the anchor, too): the same two numbers in either order, with either operation, in prose or in structured fields. 45 − 19, 19 − 45 and 19 + 45 are all forbidden; note that **45 − 19 is Form A item 8**.
+- **Dictation items** (1 and 2): the target number, as digits or as the spoken words in English and Hindi given in the golden file (Tamil words are a placeholder until Seema supplies them).
+
+Where it runs:
+
+1. **Content gate**: before a draft reaches the review queue (P09), over the draft text and its structured fields. A hit blocks the item and shows the matching form and item number.
+2. **CI**: over every file under `content/` (scenarios, move lists, strategies, tracks, model runs, hints, worked examples) and over published manifests.
+3. **Item generator**: practice sets are generated with the forbidden pairs as an exclusion list.
+
+The forbidden list is derived from the golden file at run time, so it never drifts; a test asserts the list has 18 computation items (nine per form) and four dictation numbers before it is trusted.
+
+### Tests (first)
+
+- 45 − 19, 19 − 45, 19 + 45, "forty-five minus nineteen" and "तीन सौ छियालीस" each fail the validator; 63 − 28 and 63 − 29 pass;
+- a structured item `{a: 74, op: "-", b: 36}` fails, with the form and item number in the message;
+- the generator never returns a practice item whose pair is on the list;
+- the validator runs on hint options, worked examples and model-run scripts.

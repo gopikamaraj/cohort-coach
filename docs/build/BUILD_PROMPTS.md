@@ -469,7 +469,14 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **C6 (P1).** "Show the machinery" panel rendering the `layers` trace per turn; speed controls (pause, step, 2×, skip to feedback).
 - **C7 (P1).** Try with hints: three options per turn built by code from `sample_lines` and `quality` tags in the move list (add `repeat_rule_louder`, `give_the_answer` and neutral moves), plus free text; side-by-side feedback cards for the two Watch runs.
 - **C8 (P1).** "Try to break it" chips (injection, asking a child for the answer key, a child's name in a cohort post) running the real pipeline with the explanation line.
-- **Tests first.** Call 10 validators reject an unapproved id, a number outside the allowed set, and an answer leak by the experienced style; the template line is used on failure; call 10 returns 403 outside a judge session; the recorded run is labelled and carries provenance; the fallback triggers at 8 s with a fake clock; the live cap blocks the next run; call 1 v2 returns two lines whose numbers are equal; hint options always include one of each quality and none contains a check item; no demo mode needs the microphone.
+- **Added 21 Oct: teaching strategies and the no-check-items validator (addendum v3.1 §E).** Extends P04 content (done), so it sits here. About 7 h; compensation is on the cut list.
+
+- **E1 (P0).** `ai/validators/check_items.py` and its CI test: no lesson, practice set, script, model run, hint option or worked example contains a Form A or Form B item (either order, either operation, plus the dictation numbers as digits and as words); derived from `docs/design/pilot_forms.golden.json` at run time; runs at the content gate and in CI over `content/` and published manifests. `mypy --strict` applies (it is in `ai/validators/`).
+- **E2 (P0).** Move lists, scenarios and rubrics for SUB-SFL and SUB-NODEC gain the approved moves `decomposition` and `compensation`, with sample lines and one example each; `order_probe` for SUB-SFL; two practice levels per track (without, then with regrouping). Seema reviews; Hindi terms are `TODO-HUMAN(Shivani)` placeholders (OD-24).
+- **E3 (P0).** The item generator accepts an exclusion list and never returns a check item for practice sets.
+- **Tests first.** The validator cases in the addendum (45 − 19 fails, 63 − 28 passes, dictation words fail, structured items fail with form and item number); the generator exclusion; a CI test that every file under `content/` passes.
+
+**Tests first.** Call 10 validators reject an unapproved id, a number outside the allowed set, and an answer leak by the experienced style; the template line is used on failure; call 10 returns 403 outside a judge session; the recorded run is labelled and carries provenance; the fallback triggers at 8 s with a fake clock; the live cap blocks the next run; call 1 v2 returns two lines whose numbers are equal; hint options always include one of each quality and none contains a check item; no demo mode needs the microphone.
 - **Done when.** A judge watches the experienced and the struggling run side by side and can tell which is stronger from the feedback cards and the move tags (human check).
 
 **Tests first.** Config and enforcement match in both directions; every `cannot` id has a denial test; dialog keys exist in en, hi, ta; no percentage in the teacher and mentor dialogs; the dialog shows once per role per browser; deep links open the right role offline.
@@ -521,7 +528,13 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **D1.** Content status and versions for scenarios, strategies and tracks: draft → in review → approved → active → retired; every edit makes a new version; the old version stays in use until the new one is approved and active.
 - **D2.** Two keys: the coach's approval is gate 3 (the review queue); the programme officer's activation switches content on for the block; neither alone publishes; each writes an audit row (role, pseudonymous id, action, version).
 - **D3.** A `configurable` marker with a safe minimum and maximum for the few thresholds that may be changed; a refusal path for anything outside the range.
-- **Tests first.** Coach-only and officer-only attempts leave content inactive; an edit makes a new version; an out-of-range threshold is refused; the audit row has both keys.
+- **Added 21 Oct: strategies in track content (addendum v3.1 §E).** About 2 h.
+
+- **E4.** The track template and call 5 prompt use the approved strategies per error (decomposition, compensation, bundles, explain, add back) from the strategy library; the order probe appears as a probe line in the SUB-SFL lessons; practice levels 1 and 2 appear in the lessons' "try tomorrow" step.
+- **E5.** The no-check-items validator runs at the content gate (gate 1) before pre-filter and call 7; a hit blocks the item and names the form and item.
+- **Tests first.** A draft containing 45 − 19 is blocked before it reaches the review queue.
+
+**Tests first.** Coach-only and officer-only attempts leave content inactive; an edit makes a new version; an out-of-range threshold is refused; the audit row has both keys.
 
 **Tests first.** Batch request builder (recorded); slot filler; the arithmetic validator flags an untagged "52 − 29 = 37" and accepts a tagged child answer; review state machine (draft → checked → in review → approved or rejected → published, with the mentor branch); the reason enum is enforced; a published file stays within the size budget; badge rules.
 
