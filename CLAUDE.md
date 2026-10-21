@@ -36,7 +36,7 @@ Read in this order when unsure:
 
 1. This file.
 2. `docs/build/BUILD_PROMPTS.md` — the phase you are on (goal, steps, tests, acceptance).
-3. `docs/design/cohort-coach-design.md` — the full design: screens, calls, evals, thresholds.
+3. `docs/design/cohort-coach-design.md` — the full design: screens, calls, evals, thresholds. Then `docs/design/addendum-v3.1.md` (21 Oct: landing page and roles, guided tour, Practice Class demo modes, content library, teaching strategies, stage of breakdown); it wins over the design doc where they differ.
 4. `docs/design/pilot-test-pack.md` and `docs/design/pilot_forms.golden.json` — the real pilot papers, answer key, scoring rules and impact method.
 5. `docs/build/DECISIONS.md` — decisions taken during the build.
 6. `docs/design/evidence-digest.md` — the Challenge 3 evidence (six documents, DOC + PDF page). The only source for claims about teachers, training or the school system.
@@ -49,7 +49,7 @@ On conflict: a newer entry in `DECISIONS.md` wins, then this file, then the buil
 
 Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 
-- **Demo link**: a testable version plus any software needed to test it. Ours: the web app URL opens straight into judge mode (no login), where judges walk the full teacher flow in the PWA on simulated data; they can run the same flow in Telegram with `/start judge`.
+- **Demo link**: a testable version plus any software needed to test it. Ours: the web app URL opens a landing page with four role cards (Teacher, Mentor, Coach, Programme officer) and a 5-minute guided tour, in judge mode (no login), all on simulated data; judges can run the same teacher flow in Telegram with `/start judge`.
 - **Source code**: the GitHub repo, so judges can verify how AI is used. The README opens with "Where AI is used".
 - **3-minute public YouTube video**: the challenge and how we address it, a UI walkthrough, key features, and features that make it easy for the intended users. Judges need not watch past 3:00, so ours ends at 2:55.
 - **Short PowerPoint deck** covering:
@@ -146,6 +146,7 @@ cohort-coach/
   apps/pwa/                 step renderer for teacher and mentor flows; Practice Class, judge mode; mentor pages (/mentor), cohort thread (/cohort), coach pages (/coach), officer screens
   services/api/             FastAPI routes, auth stub, consent, sync, review queue
   services/api/flows/       channel-neutral flow engine: every teacher and mentor flow, defined once (step types include text)
+  services/api/roles/       permissions.yaml: the one role-permission config the server enforces and the landing-page dialogs display
   services/api/cohorts/     cohort lifecycle, membership, mentor items, the cohort thread, moderation, retention
   services/api/channels/    thin adapters: telegram/, pwa/, whatsapp/ (stub); render steps, parse answers, no logic
   strings/                  en/hi/ta copy shared by every channel
