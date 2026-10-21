@@ -26,6 +26,11 @@ Flag as **blocking**:
 
 13. **Cohort space claims:** an AI-authored thread post; a mentor item shown "in use" without a published track version that includes it; the funnel presenting thread activity as adoption (thread counts are system-labelled engagement only).
 
+14. **Demo modes and call 10 (addendum v3.1 §C):** a recorded run shown without the "recorded run" label and its provenance (date, model and prompt versions, seed); a recorded run presented as live; a demo-teacher line with a number outside the scenario's allowed set or a leak the style does not allow; a rubric score shown to a teacher.
+15. **Stages (addendum v3.1 §F):** causal wording about a child or a teacher (a stage stated as a cause rather than "most likely"); a stage line on an error card without its one-minute probe; signature answers hard-coded rather than generated from the form items; a disjointness test that was loosened beyond the one designed PV-HEARD and PV-REVERSE overlap.
+16. **Check items in content:** any Form A or Form B item (either order, either operation, or a dictation number) in a lesson, practice set, script, model run, hint option or worked example, or the no-check-items validator or its CI step removed or narrowed.
+17. **Role dialogs:** scope-dialog text that does not map to an enforced permission in `services/api/roles/permissions.yaml`, or an enforced permission or boundary with no dialog line.
+
 Output:
 
 - **Verdict:** HONEST, HONEST WITH FIXES, or BLOCK.

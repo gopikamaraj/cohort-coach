@@ -6,7 +6,7 @@
 > - Needed from people: 1. Run `python scripts/check_voices.py --out <folder>` and listen to the 36 clips: five distinct children? (Gopi, Shivani). 2. Listen for five distinct children in hi, ta, en; Hindi and Tamil review of the new strings (Shivani, Seema, Gopi). 3. Hosting accounts for staging, `docs/deploy.md` (Gopi). 4. Round 3 with Seema.
 > - **Kit v3 adopted 2026-10-19 (see `docs/build/reports/MIGRATION-v1-v3.md`).** P05 is now the flow engine and channel adapters and needs the Telegram bot token before it starts (Gopi). The next phase is decided after the migration is reviewed; do not run `/next-phase` until Gopi says go.
 
-**Today:** 2026-10-19 · **Days to submission (31 Oct):** 12 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
+**Today:** 2026-10-21 · **Days to submission (31 Oct):** 10 · **Budget spent:** USD 0.52 of 350 (judging reserve 150 untouched)
 
 ## Phases
 
@@ -22,12 +22,12 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P05 | Flow engine, channel adapters, PWA shell, judge mode | P0 | Tue 20 | 🟡 | 2026-10-17 (`6306eb7`) | 2026-10-20 (`84cdad6`) | [report](reports/P05-flow-engine-adapters.md) | v3 backend built: flow engine, onboarding and T1, web/Telegram/WhatsApp-stub adapters, golden transcripts. Open: real-phone check (Gopi), PWA photo/voice step components (P08), Dexie reduction, QR code, server-side judge API. v1: Installable, offline T1–T3, 3 languages, bundle 112 kB |
 | P06 | Practice Class UI, overlay, staging | P0 | Wed 21 | 🟡 | 2026-10-17 (`0e57872`) | 2026-10-17 | [report](reports/P06-practice-class-ui.md) | Staging blocked on hosting accounts; v3 follow-ups open (model-run button, 9-call map) |
 | P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built; run live once (24 turns, median 7515 ms, over the 5 s target; plan documented). Open: voice latency fix, bytes per session on Slow 3G (v3), listening check |
-| P08 | Answer-sheet capture (both channels) and import | P0/P1 | Fri 23 | ⬜ | | | | |
-| P09 | Content pipeline | P0 | Sat 24 | ⬜ | | | | |
+| P08 | Answer-sheet capture (both channels), stages, roles shell, Practice Class demo modes, import | P0/P1 | Fri 23 | ⬜ | | | | |
+| P09 | Content pipeline, versions and the two keys, strategies | P0 | Sat 24 | ⬜ | | | | |
 | P10 | Teacher flows on both channels | P0 | Sun 25 | ⬜ | | | | |
 | P11 | Cohort space, mentor pages, coach pages | P0/P1/P2 | Sun 25 | ⬜ | | | | Brief extended 20 Oct (steps 7–16); simple Coach and Mentor screens already exist from the profile pass: UI only, with no cohort, item-status or moderation logic, so rule 15 is not yet implemented |
-| P12 | Coach and officer views, funnel, roles, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2; depends on P11 |
-| P13 | Evals, red team, cost, latency | P0 | Tue 27 | ⬜ | | | | |
+| P12 | Coach and officer views, funnel, roles, guided tour, content library, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2; depends on P11 |
+| P13 | Evals (including 11), red team, cost, latency | P0 | Tue 27 | ⬜ | | | | |
 | P14 | Real-scenario hardening | P0 | Tue 27 | ⬜ | | | | |
 | P15 | Production deploy and freeze | P0 | Wed 28 | ⬜ | | | | Freeze |
 | P16 | Submission pack | P0 | Thu 29 – Fri 30 | ⬜ | | | | |
@@ -56,6 +56,23 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Gopi | Make repo public before submission (`gh repo edit --visibility public`) | P16 | n/a | — |
 | Seema | Review fictional teacher names | P05 | yes (draft list) | content/personas/teachers_simulated.yaml |
 | Seema | Confirm extra heard-and-reversed variants (3064, 300604) and NCERT match of the 20 items | P04 | yes | docs/engine.md |
+| Seema | One-minute probes per stage (`content/probes/`), sample lines per move (including common mistakes), `content/personas/mishear.yaml`, the new strategy lines and practice levels | P08 | no | content/ |
+| Shivani | Hindi terms for borrowing or regrouping and the two strategies; whether the textbook teaches them; the PV-REVERSE stage rule (OD-21, OD-23, OD-24) | P08 | yes (English placeholders) | content/ |
+| Gopi | Hourly cap for live demo runs (OD-19) once the cost per Watch run is measured | P08 | no | DECISIONS.md |
+
+## Added 21 Oct (addendum v3.1): where the tasks went
+
+Spec: `docs/design/addendum-v3.1.md`; synthetic sheets: `docs/build/synthetic-sheets-stage-addendum.md`; decisions: DECISIONS.md (21 Oct) and OD-18 to OD-25. Tasks for changes aimed at done phases (P04 to P07) sit in P08, the next open phase.
+
+| Phase | New tasks | Added effort | P0 part |
+| --- | --- | --- | --- |
+| P08 | A1–A4 roles shell; C1–C8 demo modes and call 10; E1–E3 strategies and validator; F-a–F-d stages; G1 sheets | about 55 h | about 30 h |
+| P09 | D1–D3 versions and two keys; E4–E5 strategies in tracks; F-e routines | about 9 h | about 6 h |
+| P11 | A5–A6 mentor and coach inside the role system | about 2 h | 2 h |
+| P12 | A7–A8 officer and production roles; B1–B3 guided tour; D4–D5 library; F-f officer stage view | about 20 h | about 11 h |
+| P13 | Eval 11; eval 1 covers signatures; eval 2 re-run on call 1 v2 | about 3 h | 3 h |
+
+**Calendar risk.** The addendum adds about 89 h (about 52 h for the P0 parts alone) to a build that already had little slack: P05 closed 🟡 on 20 Oct, P06 and P07 are 🟡, and P08 to P16 are untouched with 10 days left. P08 as written is a two-day phase. Cut items 17 to 24 first (BUILD_PROMPTS cut list); if P08 is not finished by Sat 24 Oct, move Watch's polish (C6 to C8) and F-d to after P12 and keep A1–A4, C1–C5, E1–E3, F-a–F-c and G1.
 
 ## Open decisions from kit v3 (defaults apply; see DECISIONS.md)
 
@@ -68,6 +85,14 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | OD-15 | Who is the coach, and the 30-minute cap | Reviewer extended; assigned per cohort; cap 30 | P11 | Seema |
 | OD-16 | Post- or pre-moderation of the cohort thread | Post-moderation with filters and Report | P11 | Gopi |
 | OD-17 | Thread retention | 30 days after close, max 90 days after the last post; 7 days for held posts | P11 | Gopi |
+| OD-18 | Live demo-teacher runs with recorded fallback | Live under the hourly cap and budget; recorded runs on failure, a turn over 8 s, or the cap | P08 | Gopi |
+| OD-19 | Live-run cap per hour in judge mode | Set from the P04 cost per run and recorded in DECISIONS | P08 | Gopi |
+| OD-20 | Tour order | Check first | P12 | Gopi |
+| OD-21 | PV-REVERSE stage rule | Input (test) if confined to items 1–2; Output if computed answers are also reversed | P08 | Shivani |
+| OD-22 | Stage-routine threshold and length | ≥ 25% of children checked (≥ 10 checked); ≤ 60 s | P09 | Seema |
+| OD-23 | Hindi terms for borrowing or regrouping, decomposition, compensation | Placeholders until confirmed | P08 | Shivani |
+| OD-24 | Does the state textbook teach decomposition and compensation? | Assume not; label as added strategies | P08 | Shivani |
+| OD-25 | Programme officer weekly time cap | None set; measure in round 4 (added by Claude, not on Gopi's list) | P12 | Seema |
 
 ## Environments (no secrets here)
 

@@ -24,6 +24,8 @@ Inspect the diff (`git diff <range>`) and the code it touches. Flag as **blockin
 
 11. **Cohort space (CLAUDE.md rule 15):** thread text sent to Claude without its own consent; a display name that is free-typed or reserved; a thread open below 5 members; a relay table that joins chat ids to display names; notification text that contains a post; a per-teacher figure (posts, minutes, last active) for a coach or mentor; voice stored in the published-audio bucket; a thread post shown with a handle or phone number; a child name or roll number surviving into a stored post; thread text kept beyond the retention rule (30 days after the cohort closes; voice 30 days after posting); a mentor or coach endpoint returning teacher-level data; a Telegram group used for a cohort.
 
+12. **Stages and demo mode (addendum v3.1):** a per-child stage or a confirm-step tag ("Unreadable", "Two answers", "Missed the teaching on this") persisted on the server, in a log or in an audit row (only class counts per (error, stage) may be stored); a stage label shown to a child, or an officer view or endpoint that shows a stage at teacher level or for fewer than 5 classes; call 10 (the demo teacher) reachable outside a judge session, or a judge flag read from the request body instead of derived server-side.
+
 Also check, as **non-blocking** unless clearly violated: the simulated-data label on synthetic data; consent text present at onboarding and in the Telegram `/start` flow; `/stop` deletes the teacher's bot data.
 
 Output:

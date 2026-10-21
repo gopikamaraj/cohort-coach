@@ -14,12 +14,12 @@ Seventeen phase prompts, P00 to P16, run in order by the loop in `docs/build/STA
 | P05 | Flow engine, channel adapters, PWA shell, judge mode | P0 | Tue 20 | P01, P02 | | Real scenarios, ease of use, technical strength |
 | P06 | Practice Class UI, AI-layers overlay, staging | P0 | Wed 21 | P04, P05 | Staging live | AI in layers (visible), User testing |
 | P07 | Voice: speech service and child voices | P0 | Thu 22 | P04, P06 | | AI in layers, Real scenarios |
-| P08 | Answer-sheet capture (both channels) and data import | P0 / P1 | Fri 23 | P01, P03, P05 | | AI in layers, Guardrails, User testing |
-| P09 | Content pipeline: draft, gates, review, publish | P0 | Sat 24 | P03 | | Guardrails (human review) |
+| P08 | Answer-sheet capture (both channels), stages, roles shell, Practice Class demo modes | P0 / P1 | Fri 23 | P01, P03, P05 | | AI in layers, Guardrails, User testing |
+| P09 | Content pipeline: draft, gates, review, publish, versions, strategies | P0 | Sat 24 | P03 | | Guardrails (human review) |
 | P10 | Teacher flows on both channels: lessons, reflections | P0 | Sun 25 | P05, P08, P09 | | Real scenarios, User testing |
 | P11 | Cohort space, mentor pages, coach pages | P0 (7–11) / P1 (12–14) / P2 (15–16) | Sun 25 | P02, P07, P09, P10 | | AI in layers, G1 continuous guidance, G4 visibility |
-| P12 | Coach and officer views, funnel, roles, visit brief | P0 | Mon 26 | P02, P05, P09, P10, P11 | **Gate 2** | Technical strength, Guardrails, G4 visibility |
-| P13 | Evals, red team, cost, latency | P0 | Tue 27 | P04–P12 | | Evaluation layer, Guardrails |
+| P12 | Coach and officer views, funnel, roles, tour, content library, visit brief | P0 | Mon 26 | P02, P05, P09, P10, P11 | **Gate 2** | Technical strength, Guardrails, G4 visibility |
+| P13 | Evals (including 11), red team, cost, latency | P0 | Tue 27 | P04–P12 | | Evaluation layer, Guardrails |
 | P14 | Real-scenario hardening | P0 | Tue 27 | P05–P10 | | Real scenarios |
 | P15 | Production deploy and freeze | P0 | Wed 28 | P13, P14 | **Freeze** | Demo reliability |
 | P16 | Submission pack | P0 | Thu 29 – Fri 30 | P15 | Submit 31 Oct | All five |
@@ -441,7 +441,7 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 
 ---
 
-## P08 · Answer-sheet capture (both channels) and data import
+## P08 · Answer-sheet capture (both channels), stages, roles shell, Practice Class demo modes, and data import
 
 | Priority | Target | Depends on | Judged on |
 | --- | --- | --- | --- |
@@ -671,7 +671,7 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 
 ---
 
-## P12 · Coach and officer views, funnel, roles and visit brief — Gate 2
+## P12 · Coach and officer views, funnel, roles, guided tour, content library and visit brief — Gate 2
 
 | Priority | Target | Depends on | Gate | Judged on |
 | --- | --- | --- | --- | --- |

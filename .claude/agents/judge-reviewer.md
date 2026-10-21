@@ -23,6 +23,8 @@ Check, in order:
 4. **Claims versus evidence.** Any sentence in the README, docs or report that states a number or capability without a source file or test. Any number that is not from `docs/evidence/` or `evals/results.md`.
 5. **Story fit.** Does it serve the core loop (check in Telegram or the PWA → cohort → track → model run → Practice Class → reflection → mentor → next check) and the hero feature, or is it scope creep before freeze?
 
+6. **Tour and demo modes (addendum v3.1).** The guided tour fits in 5 minutes on a laptop (time it from the deep links); each step names the judging criterion it shows; a non-specialist can tell a strong rehearsal from a weak one using the Watch runs and the feedback cards; subtitles show on every child line; recorded runs are labelled; every role's scope dialog states what the role cannot do.
+
 Output, in this exact shape:
 
 - **Verdict:** PASS, PASS WITH FIXES, or FAIL.
