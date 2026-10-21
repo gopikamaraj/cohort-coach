@@ -54,7 +54,18 @@ If a phase runs more than a day late, cut from the top of this list, log each cu
 15. SUB-NODEC partial track content.
 16. Per-box crops in sheet reading (keep the whole-page read).
 
-Never cut: judge mode; Practice Class in text plus voice in at least one language; the SUB-SFL model run; gates and badges; review queue; coach and officer as roles; mentor item statuses, the coach approval queue, cohort status, the PII filter and the report button; the funnel with source labels; evals and `results.md`; check entry by photo with the typed fallback on both channels; the shared flow engine (no channel-only logic); the privacy rules; the README "Where AI is used".
+Added 21 Oct (cut these first, in the order listed, before items 1–16; they are the newest scope):
+
+17. Officer stage view (addendum v3.1 §F7).
+18. Stage routines in tracks (§F5); keep the stage lines and probes on the error card.
+19. Content library editing (§D5); keep it read-only.
+20. Speed controls beyond pause and step (§C).
+21. Side-by-side feedback cards for the two Watch runs (§C); show them one at a time.
+22. Try with hints (§C); keep Watch and Free.
+23. "Try to break it" chips beyond the injection line (§C).
+24. Compensation as a second strategy (§E); keep decomposition.
+
+Never cut: judge mode, with the landing page, the role dialog and the guided tour; the no-check-items validator; Practice Class in text plus voice in at least one language; the SUB-SFL model run; gates and badges; review queue; coach and officer as roles; mentor item statuses, the coach approval queue, cohort status, the PII filter and the report button; the funnel with source labels; evals and `results.md`; check entry by photo with the typed fallback on both channels; the shared flow engine (no channel-only logic); the privacy rules; the README "Where AI is used".
 
 ## Conventions for every phase
 
@@ -472,7 +483,7 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **Added 21 Oct: teaching strategies and the no-check-items validator (addendum v3.1 §E).** Extends P04 content (done), so it sits here. About 7 h; compensation is on the cut list.
 
 - **E1 (P0).** `ai/validators/check_items.py` and its CI test: no lesson, practice set, script, model run, hint option or worked example contains a Form A or Form B item (either order, either operation, plus the dictation numbers as digits and as words); derived from `docs/design/pilot_forms.golden.json` at run time; runs at the content gate and in CI over `content/` and published manifests. `mypy --strict` applies (it is in `ai/validators/`).
-- **E2 (P0).** Move lists, scenarios and rubrics for SUB-SFL and SUB-NODEC gain the approved moves `decomposition` and `compensation`, with sample lines and one example each; `order_probe` for SUB-SFL; two practice levels per track (without, then with regrouping). Seema reviews; Hindi terms are `TODO-HUMAN(Shivani)` placeholders (OD-24).
+- **E2 (P0).** Move lists, scenarios and rubrics for SUB-SFL and SUB-NODEC gain the approved moves `decomposition` and `compensation`, with sample lines and one example each; `order_probe` for SUB-SFL; two practice levels per track (without, then with regrouping). Seema reviews; Hindi terms are `TODO-HUMAN(Shivani)` placeholders (OD-23).
 - **E3 (P0).** The item generator accepts an exclusion list and never returns a check item for practice sets.
 - **Added 21 Oct: stage of breakdown (addendum v3.1 §F).** Extends P01 diagnosis, P04 simulator and P08's own error card. About 17 h; the P0 part (F-a to F-c) is about 9 h.
 
@@ -480,7 +491,12 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **F-b (P0).** Confirm step tags "Unreadable", "Two answers", "Missed the teaching on this" held with the per-sheet reads (memory, 30-minute TTL) in both channels; only class counts per (error, stage) are stored.
 - **F-c (P0).** T3 error card by stage with "most likely" wording and a one-minute probe on each stage line (`content/probes/`), the missed-teaching line separate, counts only; in both channels.
 - **F-d (P1).** Simulator: persona `stage`, `spoken` and `written` answers, the slate in the materials tray, `content/personas/mishear.yaml`, default seating 3 Core, 1 Input (test), 1 Output; rubric item "check" (part "check"); eval 2 covers the new stages.
-- **Tests first.** The F9 list in the addendum, plus: a golden transcript of the check flow through both adapters that includes a tag; no database column or log line holds a per-child stage or tag.
+- **Added 21 Oct: synthetic sheets for the stages (addendum v3.1 §G).** About 2 h.
+
+- **G1 (P0).** Regenerate the synthetic set with `SIM_STG_S01` to `S07` and an `expected_stages` field in the manifest, per `docs/build/synthetic-sheets-stage-addendum.md`; check the existing hero sheets against their expected stages. Synthetic results are a robustness check, never eval 9 accuracy.
+- **Tests first.** Each sheet's engine stage equals `expected_stages`; the regenerated README says the set is synthetic.
+
+**Tests first.** The F9 list in the addendum, plus: a golden transcript of the check flow through both adapters that includes a tag; no database column or log line holds a per-child stage or tag.
 
 **Tests first.** The validator cases in the addendum (45 − 19 fails, 63 − 28 passes, dictation words fail, structured items fail with form and item number); the generator exclusion; a CI test that every file under `content/` passes.
 

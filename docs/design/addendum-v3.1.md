@@ -267,7 +267,7 @@ The existing strategies (bundles and exchange, ask her to explain, check by addi
 - **Output stage routine** (section F) becomes "check by adding back" (the inverse operation). Children with ADD-NOCARRY check with bundles instead, because adding back does not expose a dropped carry.
 - **Order probe for SUB-SFL**: "Is 2 − 6 the same as 6 − 2?" It appears as a probe line on the SUB-SFL error card and as a Practice Class move (`order_probe`), in the move list with sample lines.
 - **Two practice levels per track**: level 1 without regrouping, level 2 with regrouping. Practice sets come from the item generator with an exclusion list (below).
-- **Terms.** Lessons use the terms teachers already know. The Hindi words for borrowing or regrouping, for decomposition and for compensation are placeholders until Shivani confirms them (OD-24): `TODO-HUMAN(Shivani): Hindi term for borrowing/regrouping`, and the same for each strategy.
+- **Terms.** Lessons use the terms teachers already know. The Hindi words for borrowing or regrouping, for decomposition and for compensation are placeholders until Shivani confirms them (OD-23): `TODO-HUMAN(Shivani): Hindi term for borrowing/regrouping`, and the same for each strategy.
 - **Provenance.** The strategies come from the team's subtraction materials. No worksheet text or item is copied; a note in `content/` records that.
 
 ### The no-check-items validator
@@ -354,7 +354,7 @@ A stage affecting 25% or more of the children checked (and at least 10 checked) 
 | Output | "Check by adding back" (subtraction); children with ADD-NOCARRY check with bundles instead |
 | Input (teaching) | A buddy catch-up the teacher sets up herself; the system never pairs children |
 
-Routines are drafted by call 5, validated by code and gated like all track content. The lesson length, the teacher's weekly time cap and the track priority rule (PV-HEARD first, else highest prevalence) are unchanged. The 25% and 60-second values are `configurable` within safe ranges (section D; OD-23).
+Routines are drafted by call 5, validated by code and gated like all track content. The lesson length, the teacher's weekly time cap and the track priority rule (PV-HEARD first, else highest prevalence) are unchanged. The 25% and 60-second values are `configurable` within safe ranges (section D; OD-22).
 
 ### F6. Simulator
 
