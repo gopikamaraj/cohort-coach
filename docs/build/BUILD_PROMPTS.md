@@ -638,6 +638,14 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **A8.** Production mode: the landing page lists only roles recorded for her pseudonymous id; role assignment by the officer records consent; a single-role person goes straight to the dashboard. No passwords or accounts.
 - **Tests first.** The officer role cannot fetch teacher-level data (extends the P12 tests); a person with one role never sees the other cards; a role not held cannot be entered by deep link (403 and a friendly message).
 
+**Added 21 Oct: guided tour (addendum v3.1 §B).** About 5 h. Priority P0: it is the judges' entry point.
+
+- **B1.** Tour shell `#/tour/<1-6>`: progress bar, step title, "What to notice" line naming the criterion, Skip and Back, a "Now you're the <role>" banner on a role switch, resume from the deep link.
+- **B2.** The six steps from the addendum table wired to existing screens: check with sample sheets (A4), cohort approval, mentor recording approval and the library, Practice Class (P08 demo modes), Advance to Term 2 with the funnel and stage mix, AI map and audit with "Try to break it".
+- **B3.** `docs/judge-test-script.md` rewritten from the tour (see the table in the doc); each step has its deep link.
+- **Tests first.** Playwright: the six steps run in order in judge mode and finish in under 5 minutes of scripted waits; Skip and Back work at every step; leaving at step 4 and opening `#/tour/4` resumes there; no step shows a percentage to a teacher or mentor view; every step shows its "simulated" label.
+- **Done when.** A non-specialist finishes the tour on a laptop in 5 minutes and can say, from the "What to notice" lines, where the guardrails are (human check).
+
 **Tests first.** Suppression (4 classes hidden, 5 shown); coach and officer roles cannot fetch teacher-level data; every funnel number carries a source label; the funnel never renders Delivered or Tried without the Changed step or "awaiting next check"; the visit brief contains no digits about a class and excludes teachers without the opt-in; nothing auto-approves after 7 days; verdict chips equal the evaluation output; teacher messages contain no "%"; Playwright runs the full 5-minute judge script.
 
 **Acceptance (Gate 2).**

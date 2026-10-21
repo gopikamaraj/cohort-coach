@@ -95,3 +95,28 @@ These reuse the P11 and P12 screens; the landing page and the dialog are the onl
 - `BUILD_PROMPTS.md` P05 step 6 (J1 judge mode) is superseded by this section and section B; the "role switcher" item there becomes the header switcher.
 - `CLAUDE.md` §3 (demo link) mentions the landing page; §6 lists `services/api/roles/`.
 - Rule 3 is untouched: the officer card says "aggregates only", and a test enforces it.
+
+---
+
+## B. Guided tour (judge mode)
+
+Six steps, about 5 minutes on a laptop. A progress bar runs along the top; each step shows a **What to notice** line that names the judging criterion. The tour switches roles as it goes, with a short banner such as "Now you're the coach". Every step has **Skip** and **Back**. The tour can be left and resumed from its deep link `#/tour/<n>`; progress is the step number in the URL, kept in `localStorage`, with no server state.
+
+| # | Step | Role | Time | What happens | What to notice (criterion) |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Check | Teacher | 45 s | "Use sample sheets" → reading → one confirm → error card with counts by stage; "simulated" label | Guardrails: she confirms the unsure reads; counts only; no child data kept |
+| 2 | Cohort | Officer | 20 s | Approve a proposed cohort | Guardrails: a human gate; nothing auto-approves |
+| 3 | Content | Coach | 30 s | Approve a mentor recording; the content library then lists the approved strategy | Guardrails and the loop: the next cohort's content comes from a teacher, approved by a person |
+| 4 | Practice Class | Teacher | 2 min | Watch two runs (experienced, struggling), then try with hints | AI use in layers: every turn shows what code decided and what the AI did |
+| 5 | Term 2 | Officer | 45 s | "Advance to Term 2" → one track works, one does not; funnel with source labels; change in the stage mix | Evaluation: honest statistics, source labels, a failed track counts against the track |
+| 6 | Under the hood | Teacher | 30 s | AI map, audit trail, "Try to break it" | AI use in layers and guardrails: ten calls, five layers, adversarial lines stopped |
+
+Total 290 s. Step 4 is the only long one; its "Watch" mode runs from recorded runs unless live runs are available (section C).
+
+Rules:
+
+- Every step works on simulated data and says so (rule 6).
+- Switching role goes through the same role config and scope dialog as the landing page, but the tour suppresses the dialog and shows the banner instead.
+- The tour uses the same screens and API as the roles; there is no separate demo UI. Steps that need Term 2 data use "Advance to Term 2", which already computes verdicts at request time.
+- Each role's "60-second walk-through" button (section A) is the tour step for that role, started from that step.
+- `docs/judge-test-script.md` is the written version of this table and is kept in step with it.
