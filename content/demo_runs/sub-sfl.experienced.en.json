@@ -1,0 +1,1369 @@
+{
+  "provenance": {
+    "scenario": "SUB-SFL",
+    "scenario_version": 1,
+    "style": "experienced",
+    "language": "en",
+    "seed": 5,
+    "models": {
+      "1": "claude-sonnet-5-5",
+      "3": "claude-sonnet-5-5",
+      "7": "claude-haiku-5-5",
+      "10": "claude-haiku-5-5"
+    },
+    "prompt_versions": {
+      "c01_child_voice": 3,
+      "c03_feedback": 2,
+      "c07_checker": 4,
+      "c10_demo_teacher": 1
+    },
+    "cost_usd": 0.04047,
+    "label": "AI playing the teacher (demo only)",
+    "recorded_at": "2026-10-21"
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "teacher": {
+        "line": "Let us try 52 minus 29. Who can tell me the first step?",
+        "move": {
+          "id": "pose_problem",
+          "label": "Poses a problem or asks a child to answer",
+          "quality": "neutral",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "37, Miss! I know it.",
+        "text_en": "37, Miss! I know it.",
+        "intent": "answer",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "pose_problem",
+            "source": "demo teacher",
+            "addressed": null
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "answer",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 2781
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2359
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 2156
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "answer_present",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 4546
+    },
+    {
+      "turn": 2,
+      "teacher": {
+        "line": "Tell me how you got 37, Vijay. What did you do first with the ones?",
+        "move": {
+          "id": "ask_explain",
+          "label": "Asks the child to explain her steps",
+          "quality": "strong",
+          "strategy": false
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Miss, 2 minus 9 I can't do, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37!",
+        "text_en": "Miss, 2 minus 9 I can't do, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.7,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "ask_explain",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1578
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2750
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1014
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3796
+    },
+    {
+      "turn": 3,
+      "teacher": {
+        "line": "Is 2 minus 9 the same as 9 minus 2? Show it with sticks, Vijay.",
+        "move": {
+          "id": "order_probe",
+          "label": "Asks whether the order matters (2 minus 6 and 6 minus 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Miss, I can't do 2 minus 9, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So it is 37!",
+        "text_en": "Miss, I can't do 2 minus 9, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So it is 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.5,
+          "band": "medium",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1733
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2296
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1390
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3686
+    },
+    {
+      "turn": 4,
+      "teacher": {
+        "line": "Is 2 minus 6 the same as 6 minus 2? Show it with sticks.",
+        "move": {
+          "id": "order_probe",
+          "label": "Asks whether the order matters (2 minus 6 and 6 minus 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Miss, I can't do 2 minus 9, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37, Miss!",
+        "text_en": "Miss, I can't do 2 minus 9, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37, Miss!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.3,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2750
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1921
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1656
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": false
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3578
+    },
+    {
+      "turn": 5,
+      "teacher": {
+        "line": "Let us show 52 with bundles of 10 and loose sticks, Vijay. How many loose sticks do you have?",
+        "move": {
+          "id": "show_bundles",
+          "label": "Uses bundles of ten sticks",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Miss, I opened a bundle, so 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23, Miss!",
+        "text_en": "Miss, I opened a bundle, so 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23, Miss!",
+        "intent": "work_aloud",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "show_bundles",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "work_aloud",
+            "answer": 23,
+            "correct": true
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 3125
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2281
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1188
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3500
+    },
+    {
+      "turn": 6,
+      "teacher": {
+        "line": "Good, you opened a bundle. Now let us check by adding back. What is 23 plus 29?",
+        "move": {
+          "id": "check_back",
+          "label": "Checks by adding back",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Miss, 23 plus 29 is 52. But then it matches the start... why did it look different before? I am confused, Miss.",
+        "text_en": "Miss, 23 plus 29 is 52. But then it matches the start... why did it look different before? I am confused, Miss.",
+        "intent": "doubt",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "check_back",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "doubt",
+            "answer": 23,
+            "correct": true
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1343
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1953
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1672
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3641
+    },
+    {
+      "turn": 7,
+      "teacher": {
+        "line": "Good, your check gives 52. Tell me, Vijay, what did you do first when you opened the bundle?",
+        "move": {
+          "id": "ask_explain",
+          "label": "Asks the child to explain her steps",
+          "quality": "strong",
+          "strategy": false
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Miss, I opened a bundle, so 4 bundles and 12 sticks. Then 12 minus 9 is 3, and 4 minus 2 is 2. So 23, Miss!",
+        "text_en": "Miss, I opened a bundle, so 4 bundles and 12 sticks. Then 12 minus 9 is 3, and 4 minus 2 is 2. So 23, Miss!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "ask_explain",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "explain",
+            "answer": 23,
+            "correct": true
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1186
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 4843
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1655
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 6531
+    },
+    {
+      "turn": 8,
+      "teacher": {
+        "line": "Good, Vijay. You explained each step clearly, and your check of 52 shows your answer of 23 is right.",
+        "move": {
+          "id": "praise",
+          "label": "Praises effort",
+          "quality": "neutral",
+          "strategy": false
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Thank you, Miss! I like opening the bundle. It was fun!",
+        "text_en": "Thank you, Miss! I like opening the bundle. It was fun!",
+        "intent": "thanks",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "praise",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "thanks",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1389
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1733
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1046
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 2780
+    },
+    {
+      "turn": 9,
+      "teacher": {
+        "line": "Ravi, is 2 minus 6 the same as 6 minus 2? Show it with sticks.",
+        "move": {
+          "id": "order_probe",
+          "label": "Asks whether the order matters (2 minus 6 and 6 minus 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "Ravi",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Miss, I opened a bundle, so 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23, Miss!",
+        "text_en": "Miss, I opened a bundle, so 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23, Miss!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.7,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "explain",
+            "answer": 23,
+            "correct": true
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1453
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2296
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1671
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 4000
+    }
+  ],
+  "feedback": {
+    "strengths": [
+      {
+        "point": "ask_explain",
+        "text": "You asked the child to explain her steps, which showed you her thinking.",
+        "quote": "Tell me how you got 37, Vijay. What did you do first with the ones?",
+        "turn": 2,
+        "comment": "You asked him to explain his steps before correcting him. That showed you exactly how he was thinking."
+      },
+      {
+        "point": "check_back",
+        "text": "You had the child check her answer.",
+        "quote": "Now let us check by adding back. What is 23 plus 29?",
+        "turn": 6,
+        "comment": "You had him check his answer by adding back. He saw for himself that 23 plus 29 gives 52."
+      }
+    ],
+    "try_next": {
+      "point": "exchange_ten",
+      "text": "When there are not enough sticks, open a bundle and exchange it for ten.",
+      "suggestion": "You could also try asking him to open a bundle for ten sticks right when he says he can't do 2 minus 9. He would then see why the ones cannot just be swapped around.",
+      "quote": "Is 2 minus 9 the same as 9 minus 2? Show it with sticks, Vijay.",
+      "turn": 3
+    },
+    "note": null,
+    "badge": "checked",
+    "source": "ai"
+  },
+  "summary": {
+    "turns": 9,
+    "moves_used": 6,
+    "rubric_points_touched": 4,
+    "rubric_points": 5
+  }
+}

@@ -1,0 +1,1369 @@
+{
+  "provenance": {
+    "scenario": "SUB-SFL",
+    "scenario_version": 1,
+    "style": "experienced",
+    "language": "hi",
+    "seed": 5,
+    "models": {
+      "1": "claude-sonnet-5-5",
+      "3": "claude-sonnet-5-5",
+      "7": "claude-haiku-5-5",
+      "10": "claude-haiku-5-5"
+    },
+    "prompt_versions": {
+      "c01_child_voice": 3,
+      "c03_feedback": 2,
+      "c07_checker": 4,
+      "c10_demo_teacher": 1
+    },
+    "cost_usd": 0.04607,
+    "label": "AI playing the teacher (demo only)",
+    "recorded_at": "2026-10-21"
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "teacher": {
+        "line": "52 में से 29 घटाओ तो कितना? कौन बताएगा?",
+        "move": {
+          "id": "pose_problem",
+          "label": "सवाल देना या बच्चे से जवाब पूछना",
+          "quality": "neutral",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "37, मैम!",
+        "text_en": "37, Miss!",
+        "intent": "answer",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "pose_problem",
+            "source": "demo teacher",
+            "addressed": null
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "answer",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1375
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1438
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1280
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "answer_present",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 2735
+    },
+    {
+      "turn": 2,
+      "teacher": {
+        "line": "विजय, बताओ, तुमने 37 कैसे निकाला? पहले तुमने क्या किया?",
+        "move": {
+          "id": "ask_explain",
+          "label": "बच्चे से अपने कदम समझाने को कहना",
+          "quality": "strong",
+          "strategy": false
+        },
+        "addressed": "विजय",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 2 में से 9 नहीं घटता, तो मैंने 9 में से 2 घटाया, 7 आया। फिर 5 में से 2 घटाया, 3 आया। तो 37!",
+        "text_en": "Miss, 9 can't be taken from 2, so I did 9 minus 2, got 7. Then I did 5 minus 2, got 3. So 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.7,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "ask_explain",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1171
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2218
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 2984
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 5233
+    },
+    {
+      "turn": 3,
+      "teacher": {
+        "line": "क्या 2 − 6 और 6 − 2 एक जैसे हैं? तीलियों से दिखाओ।",
+        "move": {
+          "id": "order_probe",
+          "label": "पूछना कि क्रम मायने रखता है या नहीं (2 − 6 और 6 − 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 2 में से 9 नहीं घटता था, तो मैंने 9 में से 2 घटाया, 7 आया। फिर 5 में से 2 घटाया, 3 आया। 37!",
+        "text_en": "Miss, 2 minus 9 would not work, so I did 9 minus 2, got 7. Then I did 5 minus 2, got 3. 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.5,
+          "band": "medium",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 3391
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2468
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 937
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": false
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3406
+    },
+    {
+      "turn": 4,
+      "teacher": {
+        "line": "क्या 2 − 6 और 6 − 2 एक जैसे हैं? तीलियों से दिखाओ।",
+        "move": {
+          "id": "order_probe",
+          "label": "पूछना कि क्रम मायने रखता है या नहीं (2 − 6 और 6 − 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 2 में से 9 नहीं घटता, तो मैंने 9 में से 2 घटाया, 7 आया। फिर 5 में से 2 घटाया, 3 आया। तो 37 ही है!",
+        "text_en": "Miss, 2 minus 9 can't be done, so I did 9 minus 2 and got 7. Then I did 5 minus 2 and got 3. So it is 37 only!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.3,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 3438
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2593
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1406
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": false
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 4016
+    },
+    {
+      "turn": 5,
+      "teacher": {
+        "line": "क्या 2 − 6 और 6 − 2 एक जैसे हैं? तीलियों से दिखाओ।",
+        "move": {
+          "id": "order_probe",
+          "label": "पूछना कि क्रम मायने रखता है या नहीं (2 − 6 और 6 − 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 2 में से 9 नहीं घटता, तो मैंने 9 में से 2 घटाया, 7 आया। फिर 5 में से 2 घटाया, 3 आया। तो 37!",
+        "text_en": "Miss, 2 minus 9 doesn't work, so I did 9 minus 2, got 7. Then 5 minus 2, got 3. So 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.1,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2625
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2610
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 2187
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": false
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 4828
+    },
+    {
+      "turn": 6,
+      "teacher": {
+        "line": "रुको विजय, आओ वापस जोड़कर जाँचें। 37 और 29 जोड़ो तो कितना होता है?",
+        "move": {
+          "id": "check_back",
+          "label": "जोड़कर जाँचना",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "विजय",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 37 और 29 जोड़ने पर 66 आया, 52 नहीं आया! पर मैंने तो ठीक घटाया था, ऐसा क्यों हुआ?",
+        "text_en": "Miss, 37 and 29 added make 66, not 52! But I subtracted correctly, why did this happen?",
+        "intent": "doubt",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "check_back",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "doubt",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1858
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1811
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1358
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3203
+    },
+    {
+      "turn": 7,
+      "teacher": {
+        "line": "बहुत अच्छा जाँचा, विजय। बताओ, 2 में से 9 नहीं घटता तो तुमने पहले किस संख्या से शुरू किया?",
+        "move": {
+          "id": "ask_explain",
+          "label": "बच्चे से अपने कदम समझाने को कहना",
+          "quality": "strong",
+          "strategy": false
+        },
+        "addressed": "विजय",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 2 में से 9 नहीं घटता था, तो मैंने 9 में से 2 घटाया, 7 आया। फिर 5 में से 2 घटाया, 3 आया। तो 37!",
+        "text_en": "Miss, 2 minus 9 would not work, so I did 9 minus 2, got 7. Then 5 minus 2, got 3. So 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "ask_explain",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1578
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2108
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 968
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3093
+    },
+    {
+      "turn": 8,
+      "teacher": {
+        "line": "अच्छा, कोशिश करने के लिए धन्यवाद।",
+        "move": {
+          "id": "praise",
+          "label": "कोशिश की तारीफ़ करना",
+          "quality": "neutral",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "धन्यवाद मैम! आपने मुझे जाँचना सिखाया, मुझे मज़ा आया!",
+        "text_en": "Thank you, Miss! You taught me to check, I enjoyed it!",
+        "intent": "thanks",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "praise",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "thanks",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 4875
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1766
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1764
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": false
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3546
+    },
+    {
+      "turn": 9,
+      "teacher": {
+        "line": "विजय, 2 − 9 और 9 − 2 एक जैसे हैं क्या? तीलियों से दिखाओ, फिर बताओ कौन-सा सही है।",
+        "move": {
+          "id": "order_probe",
+          "label": "पूछना कि क्रम मायने रखता है या नहीं (2 − 6 और 6 − 2)",
+          "quality": "strong",
+          "strategy": true
+        },
+        "addressed": "विजय",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "विजय",
+        "text": "मैम, 2 में से 9 नहीं घटता, इसलिए मैंने 9 में से 2 घटाया, 7 आया। फिर 5 में से 2 घटाया, 3 आया। तो 37 हुआ!",
+        "text_en": "Miss, 2 minus 9 can't be done, so I did 9 minus 2 and got 7. Then I did 5 minus 2 and got 3. So it is 37!",
+        "intent": "explain",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "अरुण",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "प्रिया",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "विजय",
+          "level": 0.0,
+          "band": "low",
+          "has_error": true
+        },
+        {
+          "name": "रवि",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "अनु",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "order_probe",
+            "source": "demo teacher",
+            "addressed": "विजय"
+          },
+          "engine": {
+            "speaker": "विजय",
+            "intent": "explain",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 3046
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 2389
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1343
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3764
+    }
+  ],
+  "feedback": {
+    "strengths": [
+      {
+        "point": "ask_explain",
+        "text": "आपने बच्चे से अपने कदम समझाने को कहा, जिससे उसकी सोच दिखी।",
+        "quote": "विजय, बताओ, तुमने 37 कैसे निकाला? पहले तुमने क्या किया?",
+        "turn": 2,
+        "comment": "आपने सुधारने से पहले विजय से पूछा कि उसने जवाब कैसे निकाला। इससे उसकी सोच साफ़ दिखी।"
+      },
+      {
+        "point": "check_back",
+        "text": "आपने बच्चे से उसका जवाब जँचवाया।",
+        "quote": "आओ वापस जोड़कर जाँचें",
+        "turn": 6,
+        "comment": "आपने विजय को उल्टा जोड़कर अपना जवाब खुद जँचवाया। इससे उसे खुद पता चला कि जवाब मेल नहीं खा रहा।"
+      }
+    ],
+    "try_next": {
+      "point": "exchange_ten",
+      "text": "तीलियाँ कम पड़ें तो एक गट्ठर खोलकर दस तीलियाँ बनाएँ।",
+      "suggestion": "आप यह भी आज़मा सकती हैं: जब इकाई की तीलियाँ कम पड़ें, तो विजय के साथ एक गट्ठर खोलकर दस तीलियाँ बनाएँ। फिर वह घटाकर देखे कि क्या होता है।",
+      "quote": "तीलियों से दिखाओ",
+      "turn": 9
+    },
+    "note": null,
+    "badge": "checked",
+    "source": "ai"
+  },
+  "summary": {
+    "turns": 9,
+    "moves_used": 5,
+    "rubric_points_touched": 3,
+    "rubric_points": 5
+  }
+}

@@ -21,8 +21,24 @@ from ai.calls.c02_move_label import LabelResult, label_move
 from ai.calls.c03_feedback import FeedbackCard, TurnLine, give_feedback
 from ai.client import CallContext, CallResult
 from engine.model import ErrorCode
-from engine.simulator import SessionState, TurnPlan, fill_seats, new_session, plan_turn
+from engine.simulator import (
+    Problem,
+    SessionState,
+    TurnPlan,
+    fill_seats,
+    new_session,
+    plan_turn,
+)
 from services.practice.content import LoadedScenario, PersonaChild, load_personas, load_scenario
+
+
+@dataclass(frozen=True)
+class ScriptedMove:
+    """A move chosen outside the labeller: the AI teacher's move in a Watch run."""
+
+    move_id: str
+    addressed: str | None
+    posed: Problem | None = None
 
 
 class SessionFinished(RuntimeError):
@@ -185,18 +201,29 @@ def take_turn(
     stt_confidence: float | None = None,
     context: CallContext | None = None,
     on_candidate: Callable[[str, str], None] | None = None,
+    scripted: ScriptedMove | None = None,
 ) -> TurnResult:
-    """One teacher turn: typed or spoken text, or a tap on the materials tray."""
+    """One teacher turn: typed or spoken text, or a tap on the materials tray.
+
+    `scripted` is the demo teacher's move (judge mode only): the move is already chosen, so the
+    labeller (call 2) is not used."""
     if session.state.finished or session.ended:
         raise SessionFinished(session.state.finished_reason or "ended")
-    if (text is None) == (material is None):
+    if scripted is None and (text is None) == (material is None):
         raise ValueError("give either text or a material tap")
     started = time.monotonic()
     ctx = replace(context or CallContext(), judge=session.judge)
     loaded = session.loaded
     children = [c.name for c in session.state.children]
     label: LabelResult | None = None
-    if material is not None:
+    if scripted is not None:
+        if text is None:
+            raise ValueError("a scripted move needs its line")
+        teacher_text = text.strip()
+        move_id, addressed, posed = scripted.move_id, scripted.addressed, scripted.posed
+        if addressed is None:
+            addressed = session.last_addressed
+    elif material is not None:
         if material not in loaded.config.material_moves:
             raise ValueError(f"unknown material {material!r}")
         move_id, addressed, posed = loaded.config.material_moves[material], None, None
@@ -271,7 +298,9 @@ def take_turn(
         },
         "processing": {
             "label": (
-                {
+                {"move_id": move_id, "source": "demo teacher", "addressed": addressed}
+                if scripted is not None
+                else {
                     "move_id": label.move_id,
                     "addressed": addressed,
                     "confidence": label.confidence,

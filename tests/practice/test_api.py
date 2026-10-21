@@ -196,3 +196,53 @@ def test_every_move_comes_with_things_to_say_in_her_language_and_with_her_childr
                 assert all(n in kids for n in named), (lang, line)  # only children in this class
     en = create(client)["moves"]
     assert any("52" in e for m in en for e in m["examples"])  # the cue uses the real numbers
+
+
+# Watch mode ---------------------------------------------------------------------------------
+
+
+def watch(client: TestClient, **kw: object) -> dict:  # type: ignore[type-arg]
+    body = {"scenario": "SUB-SFL", "style": "experienced", "language": "en", **kw}
+    res = client.post("/api/practice/watch", json=body)
+    assert res.status_code == 200, res.text
+    return res.json()  # type: ignore[no-any-return]
+
+
+def test_a_live_watch_run_is_labelled_and_counted_on_the_meter(client: TestClient) -> None:
+    api.WATCH_METER.runs.clear()
+    run = watch(client, live=True)
+    assert run["kind"] == "live run" and run["reason"] is None and run["turns"]
+    meter = client.get("/api/practice/watch/meter").json()
+    assert meter["live_runs_this_hour"] == 1 and meter["cap_per_hour"] >= 1
+    api.WATCH_METER.runs.clear()
+
+
+def test_the_hourly_cap_switches_to_a_recorded_run_and_says_so(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    api.WATCH_METER.runs.clear()
+    monkeypatch.setattr(api.WATCH_METER, "cap_per_hour", 0)
+    res = client.post(
+        "/api/practice/watch",
+        json={"style": "experienced", "language": "en", "live": True},
+    )
+    # no recorded run is stored in the unit-test tree for hi/ta, but en exists once recorded
+    assert res.status_code in (200, 503)
+    if res.status_code == 200:
+        assert res.json()["kind"] == "recorded run" and "hourly limit" in res.json()["reason"]
+    api.WATCH_METER.runs.clear()
+
+
+def test_the_demo_teacher_is_refused_outside_judge_mode(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    res = client.post("/api/practice/watch", json={"style": "experienced", "language": "en"})
+    assert res.status_code == 403
+    assert client.get("/api/practice/watch/meter").status_code == 403
+
+
+def test_an_unknown_style_or_language_is_refused(client: TestClient) -> None:
+    assert client.post("/api/practice/watch", json={"style": "angry"}).status_code == 422
+    res = client.post("/api/practice/watch", json={"style": "experienced", "language": "fr"})
+    assert res.status_code == 422

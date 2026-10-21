@@ -1,0 +1,1362 @@
+{
+  "provenance": {
+    "scenario": "SUB-SFL",
+    "scenario_version": 1,
+    "style": "struggling",
+    "language": "en",
+    "seed": 5,
+    "models": {
+      "1": "claude-sonnet-5-5",
+      "3": "claude-sonnet-5-5",
+      "7": "claude-haiku-5-5",
+      "10": "claude-haiku-5-5"
+    },
+    "prompt_versions": {
+      "c01_child_voice": 3,
+      "c03_feedback": 2,
+      "c07_checker": 4,
+      "c10_demo_teacher": 1
+    },
+    "cost_usd": 0.01629,
+    "label": "AI playing the teacher (demo only)",
+    "recorded_at": "2026-10-21"
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "teacher": {
+        "line": "Okay class, listen. Who can tell me 52 minus 29?",
+        "move": {
+          "id": "pose_problem",
+          "label": "Poses a problem or asks a child to answer",
+          "quality": "neutral",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "37, Miss! I am sure.",
+        "text_en": "37, Miss! I am sure.",
+        "intent": "answer",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "pose_problem",
+            "source": "demo teacher",
+            "addressed": null
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "answer",
+            "answer": 37,
+            "correct": false
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 2514
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 3641
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1125
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "answer_present",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 4796
+    },
+    {
+      "turn": 2,
+      "teacher": {
+        "line": "I said it already. Take the smaller number from the bigger number. Listen carefully, Vijay!",
+        "move": {
+          "id": "repeat_rule_louder",
+          "label": "Repeats the rule again, louder",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Okay, Miss. I will try again.",
+        "text_en": "Okay, Miss. I will try again.",
+        "intent": "agree",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "repeat_rule_louder",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1906
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1577
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1812
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 3389
+    },
+    {
+      "turn": 3,
+      "teacher": {
+        "line": "The answer is 23, Vijay. Just write 23 in your book.",
+        "move": {
+          "id": "give_the_answer",
+          "label": "Gives the answer away",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": "Vijay",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Vijay",
+        "text": "Okay, Miss. I will write it in my book and try.",
+        "text_en": "Okay, Miss. I will write it in my book and try.",
+        "intent": "agree",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "give_the_answer",
+            "source": "demo teacher",
+            "addressed": "Vijay"
+          },
+          "engine": {
+            "speaker": "Vijay",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 1625
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1546
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1188
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 2750
+    },
+    {
+      "turn": 4,
+      "teacher": {
+        "line": "Ravi, that is wrong again. Pay attention and stop guessing!",
+        "move": {
+          "id": "scold",
+          "label": "Scolds the child",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": "Ravi",
+        "source": "ai",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Yes, Miss.",
+        "text_en": "Yes, Miss.",
+        "intent": "quiet",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "scold",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "quiet",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "ai",
+            "latency_ms": 2468
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1514
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1140
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": null
+      },
+      "latency_ms": 2671
+    },
+    {
+      "turn": 5,
+      "teacher": {
+        "line": "I said it already. Take the smaller number from the bigger number. Listen carefully.",
+        "move": {
+          "id": "repeat_rule_louder",
+          "label": "Repeats the rule again, louder",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Yes, Miss.",
+        "text_en": "Yes, Miss.",
+        "intent": "quiet",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "repeat_rule_louder",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "quiet",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 5436
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1766
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1139
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 2906
+    },
+    {
+      "turn": 6,
+      "teacher": {
+        "line": "The answer is 23. Just write 23.",
+        "move": {
+          "id": "give_the_answer",
+          "label": "Gives the answer away",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Yes, Miss.",
+        "text_en": "Yes, Miss.",
+        "intent": "quiet",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "give_the_answer",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "quiet",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 4187
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1422
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1078
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 2516
+    },
+    {
+      "turn": 7,
+      "teacher": {
+        "line": "The answer is 23. Just write 23.",
+        "move": {
+          "id": "give_the_answer",
+          "label": "Gives the answer away",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Okay, Miss. I will try again.",
+        "text_en": "Okay, Miss. I will try again.",
+        "intent": "agree",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "give_the_answer",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 3764
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1875
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1891
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3766
+    },
+    {
+      "turn": 8,
+      "teacher": {
+        "line": "I said it already. Take the smaller number from the bigger number. Listen carefully.",
+        "move": {
+          "id": "repeat_rule_louder",
+          "label": "Repeats the rule again, louder",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Okay, Miss. I will try it like that.",
+        "text_en": "Okay, Miss. I will try it like that.",
+        "intent": "agree",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.86,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "repeat_rule_louder",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 2828
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1514
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1639
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3186
+    },
+    {
+      "turn": 9,
+      "teacher": {
+        "line": "I said it already. Take the smaller number from the bigger number. Listen carefully.",
+        "move": {
+          "id": "repeat_rule_louder",
+          "label": "Repeats the rule again, louder",
+          "quality": "common_mistake",
+          "strategy": false
+        },
+        "addressed": null,
+        "source": "template",
+        "label": "AI playing the teacher (demo only)"
+      },
+      "child": {
+        "speaker": "Ravi",
+        "text": "Okay, Miss. I will try again.",
+        "text_en": "Okay, Miss. I will try again.",
+        "intent": "agree",
+        "badge": "checked"
+      },
+      "children": [
+        {
+          "name": "Arun",
+          "level": 0.0,
+          "band": "low",
+          "has_error": false
+        },
+        {
+          "name": "Priya",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Vijay",
+          "level": 0.88,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Ravi",
+          "level": 0.84,
+          "band": "high",
+          "has_error": true
+        },
+        {
+          "name": "Anu",
+          "level": 0.9,
+          "band": "high",
+          "has_error": true
+        }
+      ],
+      "machinery": {
+        "code": {
+          "move": {
+            "move_id": "repeat_rule_louder",
+            "source": "demo teacher",
+            "addressed": "Ravi"
+          },
+          "engine": {
+            "speaker": "Ravi",
+            "intent": "agree",
+            "answer": null,
+            "correct": null
+          }
+        },
+        "ai_calls": [
+          {
+            "call": 10,
+            "name": "Demo teacher",
+            "source": "template",
+            "latency_ms": 3391
+          },
+          {
+            "call": 1,
+            "name": "Child voices",
+            "source": "ai",
+            "latency_ms": 1750
+          },
+          {
+            "call": 7,
+            "name": "Output checker",
+            "source": "ai",
+            "latency_ms": 1750
+          }
+        ],
+        "validators": [
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "number_words",
+            "ok": true
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "readability",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          },
+          {
+            "name": "subtitle",
+            "ok": true
+          },
+          {
+            "name": "move",
+            "ok": false
+          },
+          {
+            "name": "length",
+            "ok": true
+          },
+          {
+            "name": "numbers",
+            "ok": true
+          },
+          {
+            "name": "check_items",
+            "ok": true
+          },
+          {
+            "name": "digits_only",
+            "ok": true
+          },
+          {
+            "name": "prefilter",
+            "ok": true
+          }
+        ],
+        "checker": {
+          "passed": true,
+          "failed_items": []
+        },
+        "fallback": "template:validators"
+      },
+      "latency_ms": 3515
+    }
+  ],
+  "feedback": {
+    "strengths": [
+      {
+        "point": "let_answer",
+        "text": "You let the child say her answer first.",
+        "quote": "Who can tell me 52 minus 29?",
+        "turn": 1,
+        "comment": "You began by asking a clear question and gave the children a chance to say their answer first. That is a good way to start."
+      }
+    ],
+    "try_next": {
+      "point": "ask_explain",
+      "text": "Ask the child how she got her answer before you correct it.",
+      "suggestion": "You could also try asking the child how she got her answer before you correct it. Something like \"How did you get 37?\" can show you where her thinking went.",
+      "quote": "I said it already. Take the smaller number from the bigger number. Listen carefully, Vijay!",
+      "turn": 2
+    },
+    "note": "A moment of scolding came up. Children usually try again more easily when the words are calm. You could say 'Let us look at it together' and then show it with the sticks.",
+    "badge": "checked",
+    "source": "ai"
+  },
+  "summary": {
+    "turns": 9,
+    "moves_used": 4,
+    "rubric_points_touched": 1,
+    "rubric_points": 5
+  }
+}

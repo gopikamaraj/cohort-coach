@@ -8,16 +8,19 @@ metadata-only audit rows written by the AI calls.
 from __future__ import annotations
 
 import base64
+import os
 import time
+from collections import deque
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import asdict, replace
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from pydantic import BaseModel, Field
 
 from ai import config
 from ai.client import BudgetExceeded, CallContext
+from ai.config import ai_mode
 from engine.model import ErrorCode
 from services.api.roles import judge_session, require
 from services.practice.content import LANGS, load_personas, load_scenario
@@ -29,6 +32,13 @@ from services.practice.session import (
     take_turn,
 )
 from services.practice.stub_client import StubClient
+from services.practice.watch import (
+    LiveMeter,
+    WatchFallback,
+    load_recorded,
+    run_watch,
+    tag,
+)
 from services.speech.sarvam import SpeechError
 from services.speech.service import SpeechService, default_service
 from services.speech.voices import voice_for
@@ -286,3 +296,58 @@ def post_end(session_id: str, ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
         ],
         "explanation": card.gate.explanation if card.gate else "",
     }
+
+
+# Watch mode (judge mode only) ---------------------------------------------------------------------
+
+
+class WatchRequest(BaseModel):
+    scenario: str = "SUB-SFL"
+    style: Literal["experienced", "struggling"]
+    language: str = "en"
+    live: bool = False  # a recorded run is the default; live runs are capped per hour
+
+
+WATCH_METER = LiveMeter(cap_per_hour=int(os.environ.get("WATCH_LIVE_PER_HOUR") or 6), runs=deque())
+
+
+@router.post("/watch")
+def post_watch(body: WatchRequest, ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
+    """An AI teacher runs the rehearsal. Judge mode only: a real teacher hears the model run."""
+    if not judge_session():
+        raise HTTPException(403, "The demo teacher is available in the demo only.")
+    if body.language not in LANGS:
+        raise HTTPException(422, f"language must be one of {', '.join(LANGS)}")
+    try:
+        load_scenario(body.scenario)
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(422, "Unknown scenario.") from exc
+    reason: str | None = None
+    live_possible = (ctx.mode or ai_mode()) in ("live", "stub")
+    if body.live and not live_possible:
+        reason = "live runs are off in this deployment"
+    elif body.live and not WATCH_METER.allowed():
+        reason = "the hourly limit of live runs is reached"
+    elif body.live:
+        try:
+            run = run_watch(
+                scenario=body.scenario, style=body.style, language=body.language, context=ctx
+            )
+            WATCH_METER.record(float(run["provenance"]["cost_usd"]))
+            return tag(run, kind="live run")
+        except WatchFallback as exc:
+            reason = f"the live run stopped: {exc}"
+        except BudgetExceeded:
+            reason = "practice is paused for today"
+    rec = load_recorded(body.scenario, body.style, body.language)
+    if rec is None:
+        raise HTTPException(503, "There is no recorded run for this choice yet.")
+    return tag(rec, kind="recorded run", reason=reason)
+
+
+@router.get("/watch/meter")
+def get_watch_meter() -> dict[str, Any]:
+    """Live runs and their cost this hour, added up from the calls' own costs."""
+    if not judge_session():
+        raise HTTPException(403, "The demo teacher is available in the demo only.")
+    return WATCH_METER.snapshot()

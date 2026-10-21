@@ -201,7 +201,13 @@ def demo_teacher_turn(
             "style": sd.id,
             "style_description": sd.description,
             "approved_moves": [
-                {"id": m, "description": by_id[m].description["en"]} for m in sd.moves if m in by_id
+                {
+                    "id": m,
+                    "description": by_id[m].description["en"],
+                    "sample": (by_id[m].sample_lines.get(language) or [""])[0],
+                }
+                for m in sd.moves
+                if m in by_id
             ],
             "turn": turn,
             "next_problem": {

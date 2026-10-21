@@ -47,6 +47,8 @@ class _Messages:
             )
         elif name == "ChildLine":
             out = self._child(facts)
+        elif name == "DemoTeacherChoice":
+            out = self._demo(kwargs["output_format"], facts)
         elif name == "Feedback":
             out = self._feedback(facts, tags.get("transcript", ""))
         else:
@@ -74,6 +76,17 @@ class _Messages:
         }
         said = lines.get(intent, "Miss, I did not understand.")
         return ChildLine(text=said, english=said)
+
+    @staticmethod
+    def _demo(model: Any, facts: dict[str, Any]) -> Any:
+        """The style's script, move by move, with each move's sample line."""
+        script = facts.get("script_if_unsure") or ["pose_problem"]
+        mid = script[min(int(facts.get("turn", 1)) - 1, len(script) - 1)]
+        sample = next((m["sample"] for m in facts.get("approved_moves", []) if m["id"] == mid), "")
+        kids = list(facts.get("children", []))
+        return model(
+            move_id=mid, addressed_child=kids[1] if len(kids) > 1 else "class", line=sample
+        )
 
     @staticmethod
     def _label(model: Any, facts: dict[str, Any], line: str) -> Any:
