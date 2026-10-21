@@ -516,6 +516,13 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 9. Content: draft SUB-SFL v1 fully (6 + 1) in hi and en (ta if time), SUB-NODEC v1 partly (2 lessons). Prove the pipeline end to end on staging before Seema's review.
 10. Model runs: run the P04 renderer on the approved SUB-SFL model-lesson script (hi, en). The frozen transcript becomes a review item (reviewer, then the mentor when it is built from her card). On approval, the child lines are voiced with the five child voices and the teacher lines with an adult voice, stitched, normalised and published as OGG/Opus with a "simulated" caption and the badge; the track manifest lists it. A new render needs a new approved script version.
 
+**Added 21 Oct: content versions and the two keys (addendum v3.1 §D).** About 4 h.
+
+- **D1.** Content status and versions for scenarios, strategies and tracks: draft → in review → approved → active → retired; every edit makes a new version; the old version stays in use until the new one is approved and active.
+- **D2.** Two keys: the coach's approval is gate 3 (the review queue); the programme officer's activation switches content on for the block; neither alone publishes; each writes an audit row (role, pseudonymous id, action, version).
+- **D3.** A `configurable` marker with a safe minimum and maximum for the few thresholds that may be changed; a refusal path for anything outside the range.
+- **Tests first.** Coach-only and officer-only attempts leave content inactive; an edit makes a new version; an out-of-range threshold is refused; the audit row has both keys.
+
 **Tests first.** Batch request builder (recorded); slot filler; the arithmetic validator flags an untagged "52 − 29 = 37" and accepts a tagged child answer; review state machine (draft → checked → in review → approved or rejected → published, with the mentor branch); the reason enum is enforced; a published file stays within the size budget; badge rules.
 
 **Acceptance.**
@@ -658,6 +665,12 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **B3.** `docs/judge-test-script.md` rewritten from the tour (see the table in the doc); each step has its deep link.
 - **Tests first.** Playwright: the six steps run in order in judge mode and finish in under 5 minutes of scripted waits; Skip and Back work at every step; leaving at step 4 and opening `#/tour/4` resumes there; no step shows a percentage to a teacher or mentor view; every step shows its "simulated" label.
 - **Done when.** A non-specialist finishes the tour on a laptop in 5 minutes and can say, from the "What to notice" lines, where the guardrails are (human check).
+
+**Added 21 Oct: content library screens (addendum v3.1 §D).** About 8 h; editing is on the cut list, so read-only first (about 4 h).
+
+- **D4 (P1).** The library at `#/role/coach/library` and `#/role/officer/library`: scenario page (all fields in the addendum), strategy library, read-only view of what is not configurable with its version, usage as aggregate counts.
+- **D5 (P2).** Editing the configurable items (strategies and order, scenario text, seating mix, stage routines on or off, practice levels, marked thresholds) through the P09 versions and the two keys. Topic packs are listed with their status; no pack authoring here.
+- **Tests first.** Read-only items have no write route; usage below 5 classes is hidden; a coach cannot activate and an officer cannot approve.
 
 **Tests first.** Suppression (4 classes hidden, 5 shown); coach and officer roles cannot fetch teacher-level data; every funnel number carries a source label; the funnel never renders Delivered or Tried without the Changed step or "awaiting next check"; the visit brief contains no digits about a class and excludes teachers without the opt-in; nothing auto-approves after 7 days; verdict chips equal the evaluation output; teacher messages contain no "%"; Playwright runs the full 5-minute judge script.
 

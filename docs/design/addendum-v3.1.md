@@ -200,3 +200,51 @@ Call 10 is added to `ai/registry.py` (so the README "Where AI is used", the AI m
 ### Eval 11: demo teacher
 
 20 runs per style on the SUB-SFL scenario. Bars: **100%** approved move ids; **0** numbers outside the allowed set; the experienced runs score higher than the struggling runs on the scenario rubric in **at least 18 of 20 pairs**. The score is the count of rubric points covered, computed by code from the labelled moves. It is internal to this eval and is never shown to a teacher (rule 3: no score for a teacher). A recorded subset joins CI; the full run is live and prints its cost first.
+
+---
+
+## D. Content library (coach and officer, web app)
+
+One place where the coach and the officer see, and within limits change, the content a block uses. It sits at `#/role/coach/library` and `#/role/officer/library`.
+
+### What is configurable here, and what is not
+
+| Configurable here (data, versioned) | Not configurable here (code and files, changed by review) |
+| --- | --- |
+| Which strategies are approved per error, and their order | Error functions and the item generator |
+| Scenario descriptions: goal, grade, languages, notes for teachers | Scoring, the two-item rule, signature and stage rules |
+| Persona seating mix (including the stage mix, section F) | Simulator behaviour and move effects |
+| Stage routines on or off | Validators, prompts and guardrails |
+| Practice levels per track | Eligibility, verdict rules and every number users see |
+| Thresholds, only those marked `configurable` in code with a minimum and maximum | Anything that computes a count, a percentage or a verdict |
+
+The library shows the right-hand column read-only, each with its version (code version or content file version), so a judge sees the boundary. Thresholds marked `configurable` (for example the stage-routine threshold of 25% with at least 10 children checked, or the Practice Class turn cap within 20 to 40) carry their safe range in code; a value outside it is refused. Eligibility (25% and 10 children) and the verdict rules are not configurable.
+
+### Scenario page
+
+Name, error, grade, languages, goal, personas and stages, approved moves with one example each, materials, rubric items, model-run status, validator results (including the no-check-items validator, section E), version history, status, and usage as aggregate counts (sessions this term, suppressed below 5 classes).
+
+Status: **draft → in review → approved → active → retired**.
+
+### Strategy library
+
+Each strategy has a description, a worked example (never a check item), the errors it fits, and its approval status. A strategy is approved per error (decomposition fits SUB-SFL and SUB-NODEC; "check by adding back" fits subtraction; "check with bundles" fits ADD-NOCARRY).
+
+### Two keys
+
+1. The **coach** (the expert) approves content: gate 3, using the existing review queue.
+2. The **programme officer** then switches it on for the block.
+
+Neither key alone publishes. Every change creates a new **track version**, and results stay reported per version. The audit trail records who did what and when (role, pseudonymous id, action, version).
+
+### New topics and subjects
+
+Not created here. The library lists topic packs and their status (draft, in review, approved). Authoring a new pack stays the parked workflow in `docs/build/PARKING.md` (2026-10-19, "Generic Practice Class: topic packs").
+
+### Tests (first)
+
+- a configurable value outside its safe range is refused; a non-configurable item has no write route;
+- coach approval without officer activation leaves the content inactive, and the reverse is refused;
+- an edit creates a new version and leaves the old one in use until the new one is approved and active (same rule as mentor items);
+- the audit row records both keys;
+- usage counts below 5 classes are hidden.
