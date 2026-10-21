@@ -285,7 +285,7 @@ Where it runs:
 2. **CI**: over every file under `content/` (scenarios, move lists, strategies, tracks, model runs, hints, worked examples) and over published manifests.
 3. **Item generator**: practice sets are generated with the forbidden pairs as an exclusion list.
 
-The forbidden list is derived from the golden file at run time, so it never drifts; a test asserts the list has 18 computation items (nine per form) and four dictation numbers before it is trusted.
+The forbidden list is derived from the golden file at run time, so it never drifts; a test asserts the list has 16 computation items (items 3 to 10 on each of the two forms) and four dictation numbers before it is trusted.
 
 ### Tests (first)
 
@@ -293,3 +293,95 @@ The forbidden list is derived from the golden file at run time, so it never drif
 - a structured item `{a: 74, op: "-", b: 36}` fails, with the form and item number in the message;
 - the generator never returns a practice item whose pair is on the list;
 - the validator runs on hint options, worked examples and model-run scripts.
+
+---
+
+## F. Stage of breakdown (student diagnosis from answer sheets)
+
+The error cards today say which wrong method a child used. This adds, in teacher language, where the breakdown most likely happened. Final answers cannot prove a cause, so every stage line says "most likely", and no line states a cause as fact.
+
+### F1. The four stages
+
+| Stage | What it most likely means (teacher language) | One-minute probe (content, owned by Seema) |
+| --- | --- | --- |
+| Input (teaching) | May not have received the idea: away, not following, or the language of instruction is hard | Ask her to show a very easy subtraction with bundles from the start, in the language she knows best |
+| Input (test) | Heard or read the question differently from how it was meant | Read the question aloud and ask her to say it back in her own words |
+| Core | The idea or the method is off | Ask her to show the same question with bundles and say each step; for SUB-SFL also ask the order probe |
+| Output | Knew it but wrote it down differently | Ask her to say the answer aloud, then write it, and compare |
+
+Probes are data in `content/probes/<stage>.v1.yaml` (per language, no numbers about the class, and no check items). **No stage label is ever shown to a child.**
+
+### F2. Signatures
+
+Forms A and B. Item 6 is the anchor: it is excluded from stage rules and only noted.
+
+| Code | Pattern | Stage | Items | Rule |
+| --- | --- | --- | --- | --- |
+| PV-HEARD | writes the number as it is said | Core | 1–2 | both items |
+| PV-REVERSE | tens and ones swapped | Input (test) if confined to items 1–2; Output if computed answers are also reversed | 1–2 | both items |
+| ADD-NOCARRY, ADD-WHOLE-ONES (untracked), SUB-SFL, SUB-NODEC | existing | Core | existing | existing |
+| CORE-OFF1 | correct ±1 | Core (fact slip) | 3–5, 7–10 | ≥ 2 items |
+| IN-OP | the other operation's answer | Input (test) | 3–5, 7–10 | ≥ 2 items |
+| IN-OPND | one or both operands reversed, valid result only | Input (test) | 3–5, 7–10 | ≥ 2 items |
+| IN-NEAR | dictation off by ±1 in exactly one digit | Input (test) | 1–2 | both items |
+| OUT-REV | correct answer with its digits reversed | Output | 3–5, 7–10 | ≥ 2 items |
+| OUT-REC | teacher-tagged "unreadable" or "two answers" | Output | any | ≥ 2, class level only |
+| NO-METHOD | wrong answers matching no signature (not blanks): ≥ 3 of items 7–10, or all of 3–5 | Input (teaching), possible | 3–5 or 7–10 | as stated; confirmed by the teacher's tag |
+
+Further rules:
+
+- **Blank** on 3 or more of items 7–10 = "not attempted" (its own line, no stage).
+- **Valid result only** (IN-OPND): a reversed-operand subtraction that goes negative is not a signature answer.
+- **Signature answers are generated from each form's items**, by pure functions in `engine/`, never hard-coded. A unit test and eval 1 assert that, on every item of both forms (item 6 excluded), the signature answer sets are disjoint from each other and from the correct answer. The one designed exception is PV-HEARD and PV-REVERSE sharing the "both heard and reversed" answers (`CLAUDE.md` §5, for example 3064 for 346); the test asserts that is the only overlap.
+- A child can show more than one signature across items, so counts per (error, stage) overlap; the card says "a child can appear on more than one line".
+- NO-METHOD stays "possible" until the teacher adds the tag "Missed the teaching on this".
+
+### F3. Confirm-step tags
+
+Beside the existing confirm step the teacher can tag a sheet: **Unreadable**, **Two answers**, **Missed the teaching on this** (she knows from her register). Tags live with the per-sheet reads: in memory on the server with the 30-minute TTL, keyed by sequence number, or on her device. Only **class counts per (error, stage)** are stored, and they are suppressed below 5 classes when shown to anyone other than the teacher of that class. No per-child stage and no tag is ever stored.
+
+### F4. Error card (T3)
+
+Lines grouped by stage, counts only ("6 of 28 children"), each with its one-minute probe. Children tagged "missed the teaching" are shown on their own line so they do not inflate Core counts. The verdict still counts everyone checked and shows the missed-teaching count beside it. Teacher-facing numbers are counts, never percentages (rule 5).
+
+### F5. Track content
+
+A stage affecting 25% or more of the children checked (and at least 10 checked) adds a routine of 60 seconds or less to each lesson:
+
+| Stage | Routine |
+| --- | --- |
+| Input (test) | "Say it back": the child says the question in her own words before answering |
+| Output | "Check by adding back" (subtraction); children with ADD-NOCARRY check with bundles instead |
+| Input (teaching) | A buddy catch-up the teacher sets up herself; the system never pairs children |
+
+Routines are drafted by call 5, validated by code and gated like all track content. The lesson length, the teacher's weekly time cap and the track priority rule (PV-HEARD first, else highest prevalence) are unchanged. The 25% and 60-second values are `configurable` within safe ranges (section D; OD-23).
+
+### F6. Simulator
+
+- Each persona has a `stage`: `input-teaching`, `input-test`, `core` or `output`.
+- The engine returns `spoken` and `written` answers separately. The materials tray gains a **slate** that shows what the child wrote.
+- An **Output** child says the right number and writes it reversed (OUT-REV from the bug functions).
+- An **Input (test)** child mishears using `content/personas/mishear.yaml` (data, owned by Seema), or reads the sign as the other operation (IN-OP).
+- An **Input (teaching)** child has no method yet and benefits most from setup with materials.
+- Default seating: 3 Core, 1 Input (test), 1 Output; adjustable in the content library (section D).
+- Every wrong number still comes from an engine function, so eval 2 (fidelity, 100%) covers the new stages.
+- New rubric item, part "check": the teacher has the child say or read the answer aloud, or check by adding back, before concluding.
+- Move effects for the new stages are tuning parameters in scenario files, as before.
+
+### F7. Officer view
+
+Stage mix per error, and the change by stage next term, **counts only**, labelled "directional". No per-stage significance test unless n is adequate. Suppressed below 5 classes. Never shown at teacher level.
+
+### F8. Changes to `CLAUDE.md`
+
+§4 (rules 2 and 3), §5 (a stages bullet), §7 (stage rules are code; routines are drafted by call 5) and §14 now say: no stage shown to a child, no causal claims, no per-child stage on the server.
+
+### F9. Tests (first)
+
+- Signatures: generated from the forms; disjoint on both forms, with the one designed overlap; the ±1, other-operation, reversed-operand, near-dictation and reversed-answer functions property-tested;
+- stage assignment for each row of the synthetic sheet table (section G), including S07 (Output and Core) and the hero sheets;
+- the "not attempted" blank rule, and the NO-METHOD rule with and without the teacher's tag;
+- tags are never stored: a test that no column or log line holds a per-child stage or tag;
+- the error card shows counts only, a probe on every stage line, and the missed-teaching line separately;
+- the stage routine appears at 25% with 10 checked and not at 24% or with 9 checked;
+- simulator: an Output child's `written` is the reverse of `spoken`; an Input (test) child's wrong number is a mishear or IN-OP; `spoken` and `written` both come from the engine.

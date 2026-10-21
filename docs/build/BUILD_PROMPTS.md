@@ -474,7 +474,15 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **E1 (P0).** `ai/validators/check_items.py` and its CI test: no lesson, practice set, script, model run, hint option or worked example contains a Form A or Form B item (either order, either operation, plus the dictation numbers as digits and as words); derived from `docs/design/pilot_forms.golden.json` at run time; runs at the content gate and in CI over `content/` and published manifests. `mypy --strict` applies (it is in `ai/validators/`).
 - **E2 (P0).** Move lists, scenarios and rubrics for SUB-SFL and SUB-NODEC gain the approved moves `decomposition` and `compensation`, with sample lines and one example each; `order_probe` for SUB-SFL; two practice levels per track (without, then with regrouping). Seema reviews; Hindi terms are `TODO-HUMAN(Shivani)` placeholders (OD-24).
 - **E3 (P0).** The item generator accepts an exclusion list and never returns a check item for practice sets.
-- **Tests first.** The validator cases in the addendum (45 − 19 fails, 63 − 28 passes, dictation words fail, structured items fail with form and item number); the generator exclusion; a CI test that every file under `content/` passes.
+- **Added 21 Oct: stage of breakdown (addendum v3.1 §F).** Extends P01 diagnosis, P04 simulator and P08's own error card. About 17 h; the P0 part (F-a to F-c) is about 9 h.
+
+- **F-a (P0).** `engine/stages.py`: signature functions generated from each form's items (CORE-OFF1, IN-OP, IN-OPND, IN-NEAR, OUT-REV, NO-METHOD, OUT-REC, not attempted), the stage rules and the PV-REVERSE rule; counts per (error, stage) overlapping; `mypy --strict` clean. Extend eval 1 with the disjointness check (one designed overlap: PV-HEARD and PV-REVERSE).
+- **F-b (P0).** Confirm step tags "Unreadable", "Two answers", "Missed the teaching on this" held with the per-sheet reads (memory, 30-minute TTL) in both channels; only class counts per (error, stage) are stored.
+- **F-c (P0).** T3 error card by stage with "most likely" wording and a one-minute probe on each stage line (`content/probes/`), the missed-teaching line separate, counts only; in both channels.
+- **F-d (P1).** Simulator: persona `stage`, `spoken` and `written` answers, the slate in the materials tray, `content/personas/mishear.yaml`, default seating 3 Core, 1 Input (test), 1 Output; rubric item "check" (part "check"); eval 2 covers the new stages.
+- **Tests first.** The F9 list in the addendum, plus: a golden transcript of the check flow through both adapters that includes a tag; no database column or log line holds a per-child stage or tag.
+
+**Tests first.** The validator cases in the addendum (45 − 19 fails, 63 − 28 passes, dictation words fail, structured items fail with form and item number); the generator exclusion; a CI test that every file under `content/` passes.
 
 **Tests first.** Call 10 validators reject an unapproved id, a number outside the allowed set, and an answer leak by the experienced style; the template line is used on failure; call 10 returns 403 outside a judge session; the recorded run is labelled and carries provenance; the fallback triggers at 8 s with a fake clock; the live cap blocks the next run; call 1 v2 returns two lines whose numbers are equal; hint options always include one of each quality and none contains a check item; no demo mode needs the microphone.
 - **Done when.** A judge watches the experienced and the struggling run side by side and can tell which is stronger from the feedback cards and the move tags (human check).
@@ -532,7 +540,12 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 
 - **E4.** The track template and call 5 prompt use the approved strategies per error (decomposition, compensation, bundles, explain, add back) from the strategy library; the order probe appears as a probe line in the SUB-SFL lessons; practice levels 1 and 2 appear in the lessons' "try tomorrow" step.
 - **E5.** The no-check-items validator runs at the content gate (gate 1) before pre-filter and call 7; a hit blocks the item and names the form and item.
-- **Tests first.** A draft containing 45 − 19 is blocked before it reaches the review queue.
+- **Added 21 Oct: stage routines (addendum v3.1 §F5).** About 3 h; on the cut list.
+
+- **F-e (P1).** Stage routines in track content: at 25% or more of children checked (with at least 10 checked) a stage adds a routine of 60 seconds or less to each lesson ("say it back"; "check by adding back" or bundles for ADD-NOCARRY; a buddy catch-up the teacher sets up). Drafted by call 5, validated and gated; lesson length, time caps and the track priority rule unchanged. The 25% and 60 s values are `configurable` within safe ranges.
+- **Tests first.** The routine appears at 25% with 10 checked, not at 24% or with 9; no routine pairs children by system.
+
+**Tests first.** A draft containing 45 − 19 is blocked before it reaches the review queue.
 
 **Tests first.** Coach-only and officer-only attempts leave content inactive; an edit makes a new version; an out-of-range threshold is refused; the audit row has both keys.
 
@@ -684,6 +697,11 @@ Never cut: judge mode; Practice Class in text plus voice in at least one languag
 - **D4 (P1).** The library at `#/role/coach/library` and `#/role/officer/library`: scenario page (all fields in the addendum), strategy library, read-only view of what is not configurable with its version, usage as aggregate counts.
 - **D5 (P2).** Editing the configurable items (strategies and order, scenario text, seating mix, stage routines on or off, practice levels, marked thresholds) through the P09 versions and the two keys. Topic packs are listed with their status; no pack authoring here.
 - **Tests first.** Read-only items have no write route; usage below 5 classes is hidden; a coach cannot activate and an officer cannot approve.
+
+**Added 21 Oct: officer stage view (addendum v3.1 §F7).** About 3 h; on the cut list.
+
+- **F-f (P2).** Officer view: stage mix per error and change by stage next term, counts only, labelled "directional", suppressed below 5 classes; no per-stage significance test unless n is adequate.
+- **Tests first.** Fewer than 5 classes shows "fewer than 5 classes"; the view has no teacher-level route.
 
 **Tests first.** Suppression (4 classes hidden, 5 shown); coach and officer roles cannot fetch teacher-level data; every funnel number carries a source label; the funnel never renders Delivered or Tried without the Changed step or "awaiting next check"; the visit brief contains no digits about a class and excludes teachers without the opt-in; nothing auto-approves after 7 days; verdict chips equal the evaluation output; teacher messages contain no "%"; Playwright runs the full 5-minute judge script.
 
