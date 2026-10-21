@@ -130,11 +130,16 @@ for (const size of SIZES) {
   });
 }
 
-test("on a wide screen the app is a centred column, not a phone frame", async ({ page }) => {
+test("on a wide screen teacher screens sit in a phone-sized column and coach screens use the width", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/#/home");
   const box = (await page.locator(".frame").boundingBox())!;
-  expect(box.width).toBeGreaterThan(700);
-  expect(box.width).toBeLessThanOrEqual(1000);
+  expect(box.width).toBeGreaterThan(300);
+  expect(box.width).toBeLessThanOrEqual(460);
   expect(Math.abs(box.x + box.width / 2 - 640)).toBeLessThan(2);
+  await page.evaluate(() => localStorage.setItem("cc.role", "coach"));
+  await page.goto("/#/coach");
+  await page.reload();
+  const wide = (await page.locator(".frame").boundingBox())!;
+  expect(wide.width).toBeGreaterThan(1000);
 });

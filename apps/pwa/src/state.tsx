@@ -10,8 +10,8 @@ import { flushAllowed } from "./lib/sendnow";
 import { requestPersistence } from "./lib/storage";
 import { isOnline, setForcedOffline, useForcedOffline, useOnline } from "./lib/net";
 
-export type Role = "teacher" | "coach" | "mentor" | "admin" | "judge";
-export const ROLES: readonly Role[] = ["judge", "teacher", "coach", "mentor", "admin"];
+export type Role = "teacher" | "coach" | "mentor" | "officer" | "admin" | "judge";
+export const ROLES: readonly Role[] = ["judge", "teacher", "mentor", "coach", "officer", "admin"];
 
 interface AppState {
   lang: Lang;
@@ -47,7 +47,7 @@ function stored<T>(key: string, ok: (v: unknown) => v is T, fallback: T): T {
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => stored("cc.lang", isLang, "en"));
   const [role, setRoleState] = useState<Role>(() =>
-    stored("cc.role", (v): v is Role => (ROLES as readonly string[]).includes(v as string), "judge"),
+    stored("cc.role", (v): v is Role => (ROLES as readonly string[]).includes(v as string), "teacher"),
   );
   const [term, setTerm] = useState(1);
   const [klass, setKlass] = useState<ClassRow | null>(null);

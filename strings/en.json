@@ -535,5 +535,19 @@
   "roles.cannot.coach_no_numbers": "See a number about one teacher's class",
   "roles.cannot.officer_aggregates": "See a teacher's class: counts only, and nothing under 5 classes",
   "roles.cannot.officer_no_approval": "Approve content: the coach does that",
-  "roles.soon": "Arrives soon"
+  "roles.soon": "Arrives soon",
+  "landing.title": "Who are you today?",
+  "landing.intro": "Pick a role to see what it can and cannot do. Everything here is simulated data.",
+  "landing.tour": "Guided tour (5 min)",
+  "landing.tour_hint": "Start here if you're judging",
+  "dlg.can": "You can",
+  "dlg.cannot": "You can't",
+  "dlg.data": "Data you'll see",
+  "dlg.also_on": "Also on",
+  "dlg.weekly": "Weekly time",
+  "dlg.weekly_none": "One weekly batch; no minute cap set yet",
+  "dlg.minutes": "At most {n} minutes a week",
+  "dlg.enter": "Enter dashboard",
+  "dlg.walk": "60-second walk-through",
+  "dlg.back": "Back"
 }

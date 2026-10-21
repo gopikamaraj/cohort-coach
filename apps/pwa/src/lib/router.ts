@@ -2,13 +2,13 @@
 // server rewrite, so a static host and the offline cache both serve every screen.
 import { useSyncExternalStore } from "react";
 
-export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow";
-export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow"];
+export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer";
+export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer"];
 
 function current(): Route {
   const raw = window.location.hash.replace(/^#/, "").split("?")[0] ?? "";
   const path = raw;
-  return (ROUTES as readonly string[]).includes(path) ? (path as Route) : "/judge";
+  return (ROUTES as readonly string[]).includes(path) ? (path as Route) : "/roles";
 }
 
 function subscribe(listener: () => void): () => void {
@@ -17,7 +17,7 @@ function subscribe(listener: () => void): () => void {
 }
 
 export function useRoute(): Route {
-  return useSyncExternalStore(subscribe, current, () => "/judge" as Route);
+  return useSyncExternalStore(subscribe, current, () => "/roles" as Route);
 }
 
 /** The ?name=value part of the hash, for deep links such as #/practice?seed=5. */

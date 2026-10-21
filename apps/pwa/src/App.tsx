@@ -14,8 +14,9 @@ import { ToastProvider } from "./components/toast";
 import Admin from "./screens/Admin";
 import PrivacyNotice from "./screens/PrivacyNotice";
 import Profile from "./screens/Profile";
-import { Coach, Mentor } from "./screens/RoleScreens";
+import { Coach, Mentor, Officer } from "./screens/RoleScreens";
 import Flow from "./screens/Flow";
+import Landing from "./screens/Landing";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
 
@@ -24,12 +25,13 @@ const ROLE_HOME: Record<Role, Route> = {
   judge: "/judge",
   mentor: "/mentor",
   coach: "/coach",
+  officer: "/officer",
   admin: "/admin",
 };
 
 const ICONS: Record<string, string> = {
   "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home",
 };  // fmt: skip
 
 function Shell() {
@@ -48,12 +50,14 @@ function Shell() {
     teacher: [...teacherTabs, mine],
     mentor: [{ to: "/mentor", label: tr("role.mentor") }, ...teacherTabs, mine],
     coach: [{ to: "/coach", label: tr("role.coach") }, mine],
+    officer: [{ to: "/officer", label: tr("role.officer") }, mine],
     admin: [{ to: "/admin", label: tr("role.admin") }, mine],
     judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
-  const tabs = byRole[role];
+  const tabs = route === "/roles" ? [] : byRole[role];
+  const wide = role === "coach" || role === "officer" || role === "admin";
   return (
-    <div className="stage">
+    <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
       <div className="frame">
         <div className="strip">
           <label>
@@ -64,7 +68,7 @@ function Shell() {
               onChange={(e) => {
                 const next = e.target.value as Role;
                 setRole(next);
-                go(ROLE_HOME[next]);
+                go(next === "judge" ? "/roles" : ROLE_HOME[next]);
               }}
             >
               {ROLES.map((r) => (
@@ -111,6 +115,8 @@ function Shell() {
           {route === "/coach" ? <Coach /> : null}
           {route === "/mentor" ? <Mentor /> : null}
           {route === "/flow" ? <Flow /> : null}
+          {route === "/roles" ? <Landing /> : null}
+          {route === "/officer" ? <Officer /> : null}
         </main>
         <nav className="navbar" aria-label={tr("common.menu")}>
           {tabs.map((tab) => (

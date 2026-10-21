@@ -847,3 +847,17 @@ h2 .icon {
     bottom: 96px;
   }
 }
+
+/* Teacher and mentor screens are phone-first, so a wide screen shows a phone-sized column;
+   coach and officer screens use the full width. */
+@media (min-width: 768px) {
+  .stage-narrow .frame {
+    width: min(100%, 440px);
+  }
+  .stage-wide .frame {
+    width: min(100%, 1280px);
+  }
+}
+.tile-start {
+  border-color: var(--pen);
+}

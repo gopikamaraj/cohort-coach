@@ -86,10 +86,12 @@ test("a rehearsal of 7 turns with a material tap ends in two strengths with her 
   );
   expect(stored.turns).toHaveLength(7);
   expect(stored.ended).toBe(true);
-  for (const r of requests) {
+  for (const r of requests.filter((x) => !x.url().endsWith("/api/roles"))) {
     expect(r.method()).toBe("POST");
     expect(r.url()).toMatch(/\/api\/practice\/sessions(\/[^/]+\/(turns|end))?$/);
   }
+  // the only other call is the server's answer to "is this the judge demo?" (no teacher data)
+  for (const r of requests.filter((x) => x.url().endsWith("/api/roles"))) expect(r.method()).toBe("GET");
   expect(turns).toHaveLength(7);
 });
 

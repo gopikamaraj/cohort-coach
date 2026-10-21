@@ -133,7 +133,7 @@ test("export then restore brings the work back, and a passphrase-sealed file nee
   // wipe the phone, then restore from the sealed file
   page.once("dialog", (d) => void d.accept());
   await page.getByTestId("erase-all").click();
-  await expect(page.getByTestId("toast").first()).toContainText("erased");
+  await expect(page.getByTestId("toast").filter({ hasText: "erased" })).toBeVisible();
   await page.getByTestId("backup-pass").fill("wrong");
   await page.getByTestId("backup-file").setInputFiles(sealed);
   await expect(page.getByTestId("toast").last()).toContainText("passphrase");

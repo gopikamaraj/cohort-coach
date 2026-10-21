@@ -27,6 +27,7 @@ import {
   type TurnResponse,
 } from "../lib/practice";
 import { useQuery } from "../lib/router";
+import { useJudge } from "../lib/roles";
 import {
   canRecord,
   MAX_RECORD_MS,
@@ -61,6 +62,7 @@ interface Sample {
 
 export default function Practice() {
   const { tr, lang, role, klass, profile, online } = useApp();
+  const judgeMode = useJudge();
   const query = useQuery();
   const [phase, setPhase] = useState<Phase>("intro");
   const [session, setSession] = useState<CreatedSession | null>(null);
@@ -135,7 +137,7 @@ export default function Practice() {
       const created = await createSession({
         scenario: scenarioFor(profile?.track ?? null),
         language: lang,
-        judge: role === "judge",
+        judge: judgeMode,
         ...(profile ? { counts: profile.counts, checked: profile.childrenChecked } : {}),
         ...(seed !== undefined ? { seed } : urlSeed ? { seed: Number(urlSeed) } : {}),
       });
@@ -489,7 +491,7 @@ export default function Practice() {
       <p className="muted" data-testid="turn-counter">
         {tr("practice.turn", { n: turns.length, cap })}
       </p>
-      {role === "judge" ? (
+      {judgeMode ? (
         <button type="button" className="btn btn-secondary" onClick={toggleLayers} aria-pressed={showLayers} data-testid="layers-toggle">
           {showLayers ? tr("layers.hide") : tr("layers.show")}
         </button>
@@ -508,7 +510,7 @@ export default function Practice() {
               )}
             </p>
             {t.slow ? <p className="muted" role="status">{tr("practice.slow")}</p> : null}
-            {role === "judge" && showLayers ? <LayersPanel layers={t.layers} /> : null}
+            {judgeMode && showLayers ? <LayersPanel layers={t.layers} /> : null}
           </div>
         ))}
         {busy ? <p className="muted" role="status">{tr("practice.sending")}</p> : null}
