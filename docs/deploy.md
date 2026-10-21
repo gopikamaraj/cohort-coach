@@ -19,6 +19,7 @@ Set these on the API host (never in git, never in the PWA build). `.env.example`
 | --- | --- |
 | `ANTHROPIC_API_KEY` | your key |
 | `AI_MODE` | `live` |
+| `JUDGE_MODE` | `1` on the public demo only (every role, the demo teacher, sample sheets, the judge routes). Leave it unset anywhere real teachers are stored: it fails closed |
 | `AI_BUDGET_USD_TOTAL`, `AI_BUDGET_USD_DAILY`, `AI_BUDGET_USD_HARD` | caps for non-judge traffic and the hard ceiling (defaults 350, 40, 500) |
 | `DATABASE_URL` | the managed Postgres URL |
 | `PWA_ORIGIN` | the PWA's https origin, for example `https://cohort-coach.pages.dev` (no trailing path). The API answers browsers from this origin only |

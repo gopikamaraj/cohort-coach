@@ -59,6 +59,7 @@ def cmd_dev(args: list[str]) -> int:
     api = subprocess.Popen(
         [venv_python(), "-m", "uvicorn", "services.api.main:app", "--reload", "--port", "8000"],
         cwd=ROOT,
+        env={**os.environ, "JUDGE_MODE": os.environ.get("JUDGE_MODE", "1")},  # local dev is a demo
     )
     pwa = subprocess.Popen([npm(), "run", "dev"], cwd=PWA)
     try:

@@ -17,3 +17,17 @@ describe("stagesFor", () => {
     expect(Object.keys(stagesFor("A", [sfl], new Set())!).sort()).toEqual(["by_signature", "by_stage", "checked", "missed_teaching", "not_attempted"]);
   });
 });
+
+describe("what is queued to send", () => {
+  it("never carries the stage counts or the tags: only the class counts leave the phone", async () => {
+    const { profilePayload } = await import("./sync");
+    const row = {
+      id: "c:1", classId: "c-1", term: 1, formKey: "A", childrenChecked: 3, counts: { "SUB-SFL": 2 },
+      eligible: [], track: null, anchorWrongCount: 0, untracked: {}, simulated: true, createdAt: 1,
+      stages: stagesFor("A", [sfl, sfl, clean], new Set([2]))!,
+    };
+    const payload = profilePayload(row);
+    expect(Object.keys(payload).sort()).toEqual(["anchor_wrong_count", "children_checked", "counts", "form", "simulated", "term", "untracked"]);
+    expect(JSON.stringify(payload)).not.toContain("missed");
+  });
+});

@@ -70,3 +70,10 @@ def _no_network(monkeypatch: pytest.MonkeyPatch) -> None:
         real_connect(self, address)
 
     monkeypatch.setattr(socket.socket, "connect", guarded)
+
+
+@pytest.fixture(autouse=True)
+def _judge_mode_on_for_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The suite runs as the demo deployment (the server default is off); tests that check the
+    production behaviour set JUDGE_MODE=0 themselves."""
+    monkeypatch.setenv("JUDGE_MODE", "1")

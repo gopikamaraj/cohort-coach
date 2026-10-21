@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from services.api.db import ChannelLink, Consent, FlowState, LinkCode, ProfileSync, Teacher
 from services.api.flows import facts
 from services.api.flows.steps import Answer, Flow, Step
+from services.api.roles import judge_session
 
 CODE_TTL = timedelta(minutes=15)
 CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no 0/O/1/I
@@ -65,6 +66,7 @@ class FlowEngine:
     # ---- identity -------------------------------------------------------------------------
 
     def teacher_for(self, channel: str, external_id: str, *, judge: bool = False) -> Teacher:
+        judge = judge and judge_session()  # a request can ask; only the deployment decides
         link = self.db.get(ChannelLink, (channel, external_id))
         if link is not None:
             teacher = self.db.get(Teacher, link.teacher_id)

@@ -23,7 +23,7 @@ DEFAULT_MODELS: dict[str, str] = {
 
 def judge_mode() -> bool:
     """True when this deployment is the judge-mode demo. Decided by the server, never a request."""
-    return os.environ.get("JUDGE_MODE", "1") == "1"
+    return os.environ.get("JUDGE_MODE", "0") == "1"  # off unless the demo deployment sets it
 
 
 def model_for(env_var: str) -> str:

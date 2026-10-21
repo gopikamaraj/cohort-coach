@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
+import pytest
 from sqlalchemy.orm import Session
 
 from services.api.db import ChannelLink, LinkCode, Teacher
@@ -85,3 +86,13 @@ def test_delete_also_removes_her_consent_history_and_stop_asks_first(db: Session
     assert db.query(Teacher).count() == 1  # asking deletes nothing
     eng.answer(t, "confirm_delete", "yes")
     assert db.query(Consent).filter_by(subject_id=DEVICE).count() == 0
+
+
+def test_a_judge_flag_in_the_request_does_nothing_unless_the_deployment_is_the_demo(
+    db: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    eng = FlowEngine(db)
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    assert eng.teacher_for("telegram", "1", judge=True).judge is False
+    monkeypatch.setenv("JUDGE_MODE", "1")
+    assert eng.teacher_for("telegram", "2", judge=True).judge is True
