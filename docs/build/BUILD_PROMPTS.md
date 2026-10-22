@@ -247,6 +247,12 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 9. `python tasks.py budget` from `ai_calls`.
 10. Read-only judge endpoints: `GET /api/judge/ai-map` (the registry) and `GET /api/judge/audit?limit=50` (metadata only, never teacher text).
 
+**Added 22 Oct: proof script and AI_USAGE.md (AI-GAPS).**
+
+- **P03-A.** `scripts/ai_proof.py` runs one cheap live check per capability and writes `docs/evidence/ai_usage_proof.json` (date, model id, result per check): `caching` (two identical-prefix calls, the second shows `cache_read_input_tokens > 0`), `structured_output` (calls 2, 7 and 8 parse into their Pydantic models with no retry), `citations` (a call-4-shaped request returns citations that resolve to existing sentence ids, and the API refuses citations together with structured output), `batches` (a 2-request batch: id and final status), `image_input` (call 8 on one synthetic sheet, digits match the manifest truth). Each check reports PASS, FAIL or SKIPPED (no key, no sample sheets, batch not finished) and never fakes a pass. It prints a cost estimate (about USD 0.10) and asks first. **Built and run 22 Oct.**
+- **P03-B.** `AI_USAGE.md` at the repo root, with section 4 generated from `ai/registry.py` by `scripts/gen_ai_usage.py`. **Built 22 Oct.**
+- **P03-C.** `tests/test_ai_usage_doc.py`: every call id in the registry is in the doc with a fallback; the registry section is current; every file path in the doc exists; a Verified row needs PASS in the proof file; a Built row names a file. **Built 22 Oct.**
+
 **Tests first.** Recorded mode returns parsed objects; schema violation → one retry → fallback; the budget guard blocks non-judge calls past the cap and honours the judge allowance; audit rows have every field and no raw teacher text in metadata mode; unit tests for each validator (digits in three scripts, number words, punctuation-insensitive quotes, seeded profanity in three scripts and romanised); badge logic across gate outcomes; explanation lines render with counts in all three languages.
 
 **Acceptance.**
@@ -255,6 +261,7 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 - [ ] A dummy call in recorded mode passes every gate and writes a complete audit row.
 - [ ] `pricing.yaml` carries its source URL and date; `DECISIONS.md` holds the verified API facts.
 - [ ] `python tasks.py check` passes with the network disabled.
+- [ ] `scripts/ai_proof.py` has been run and `docs/evidence/ai_usage_proof.json` shows PASS for caching, structured output, citations, batches and image input, or each SKIPPED says why; `AI_USAGE.md` exists and `tests/test_ai_usage_doc.py` passes.
 
 **Evidence for judges.** Registry dump; validator list; red-team seed count.
 
@@ -559,7 +566,15 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 - **Added 21 Oct: stage routines (addendum v3.1 §F5).** About 3 h; on the cut list.
 
 - **F-e (P1).** Stage routines in track content: at 25% or more of children checked (with at least 10 checked) a stage adds a routine of 60 seconds or less to each lesson ("say it back"; "check by adding back" or bundles for ADD-NOCARRY; a buddy catch-up the teacher sets up). Drafted by call 5, validated and gated; lesson length, time caps and the track priority rule unchanged. The 25% and 60 s values are `configurable` within safe ranges.
-- **Tests first.** The routine appears at 25% with 10 checked, not at 24% or with 9; no routine pairs children by system.
+- **Added 22 Oct: citations on call 5 (AI-GAPS; spec in `DECISIONS.md` 22 Oct).** Two passes, because the API refuses citations together with structured output.
+
+- **C5-1.** `scripts/build_evidence_docs.py`: builds six custom-content documents (BaSE, FLN, AIC, NITI, IDR, APU) from `docs/design/evidence-digest.md`, one text block per digest line and source, page marker kept in the text, plus a code table `(document, block index) → (DOC, PDF page)`. IDR and APU rows are flagged opinion in the table.
+- **C5-2.** Pass 1 stays the structured-output draft with no documents. Pass 2 (`MODEL_DRAFT`, citations on, `cache_control` on each document, no `output_config.format`) writes one "Why this move" line per strategy; run in the batch when the batch accepts it (documented only in a general sentence), else synchronously.
+- **C5-3.** Validator: a "Why" line without a valid citation is dropped and the draft goes to review without it; a line whose citations are all IDR or APU is labelled opinion and never shown as evidence of effect. The UI (review queue and the judge-mode Evidence panel) shows DOC plus PDF page from the code table, never from model text.
+- **C5-4.** Update the call 5 registry entry and `AI_USAGE.md` (status Specified to Built to Verified as the proof file allows). No new call number.
+- **Tests first.** A recorded pass-2 response with one cited and one uncited line drops the uncited one; a citation pointing outside the table is rejected; the page text shown equals the table, not the model's words; an IDR-only line is labelled opinion.
+
+**Tests first.** The routine appears at 25% with 10 checked, not at 24% or with 9; no routine pairs children by system.
 
 **Tests first.** A draft containing 45 − 19 is blocked before it reaches the review queue.
 
@@ -657,6 +672,14 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 
 - **A5.** The `/mentor` and `/coach` pages from steps 10 and 11 open as the Mentor and Coach dashboards behind the landing page and its dialog; their `can` and `cannot` ids are enforced in the cohort, item and moderation routes with `require()`.
 - **A6.** Mentor sees only cohorts they mentor; coach acts only on assigned cohorts (each with a denial test).
+
+**Added 22 Oct: citations on call 4 (AI-GAPS; spec in `DECISIONS.md` 22 Oct).** Replaces "every step cites a sentence id" in step 2 with the Citations API plus code.
+
+- **C4-1.** Pass A: the mentor's corrected transcript as one custom-content document, one text block per sentence (block index = sentence id), `citations: {enabled: true}`, `cache_control` on the document, no `output_config.format`. Fixed line format: `STEP:`, `MATERIAL:`, `PHRASE:`, `TIME:`.
+- **C4-2.** Code rebuilds each line from the text blocks and their `content_block_location` citations (end index exclusive), converts to sentence ids, and fills the Pydantic card. A line with no citation, a cited id that does not exist, or a `PHRASE:` that is not a verbatim substring of its cited text is rejected and logged with a validator code, never shown. The old validators and call 7 still run.
+- **C4-3.** Update the call 4 registry entry and `AI_USAGE.md`. The prompt `ai/prompts/c04_method_capture.v1.md` becomes v2 (line format, no JSON).
+- **Tests first.** A recorded response whose step has no citation is rejected and logged, not shown; a citation to block 99 is rejected; a phrase edited by one word is rejected; block indexes map to the right sentence ids; the card schema validates.
+- **Acceptance.** A card step with no valid citation is rejected and logged, not shown (test and audit row).
 
 **Tests first.** Citation validation; verbatim phrases; the lookup query; PII stripping; digest counts computed by code; consent gating of the mentor's name; cohort and mentor-item transition tests (illegal transitions rejected); a coach can act only on assigned cohorts; a mentor sees only her own cohorts and never teacher-level data; an item is `in_use` only after approval and a track publish; editing an `in_use` item creates a new version and the old stays until the new is approved; a PII filter golden set (child names and roll numbers blocked, ordinary text passes); a flagged post is invisible to others; report works; hide and restore are audited; Telegram and PWA golden transcripts match for the thread flow; the retention job deletes; the time budget counts moderation; the cohort close rules; handles and phone numbers never appear in any API response; a PII golden set of descriptive identifiers (relationship phrases, number phrases, names in three scripts) as well as names and roll numbers; display names are unique, never free-typed, and reserved names cannot be taken; the thread stays closed below 5 members; no coach or mentor response contains a teacher id, school, class or a per-teacher figure; "Posts and replies" counts teacher posts only and is suppressed under 5; notification payloads contain no post text; a post is held when the filter cannot run; the retention caps (30, 90, 7 days) delete; no thread text reaches the Claude client; leaving erases a teacher's posts.
 
@@ -868,11 +891,14 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 
 **Roadmap content** for `docs/roadmap.md`: a one-block pilot with a DIET from January 2027, then a district; literacy tracks for Hindi and Tamil letter and vowel-sign errors; a WhatsApp channel; lesson videos as a templated slideshow synced to the same script and Sarvam audio (no video model); IVR for teachers without smartphones; a new-teacher induction track on the same cohorts (AIC 74; NITI 147, 148). Integration: item-level data from state assessments where it exists (no separate check), UDISE+ school codes, track hours counted toward the NEP 2020 goal of 50 hours of CPD a year, content hosted on DIKSHA, cluster resource persons using the optional visit brief (not as facilitators: many posts are vacant or overloaded, FLN 59, 110; NITI 145, 147). Later, gated on data volume: vector search over method cards once there are enough of them, and a knowledge graph of approach × analogy × child profile × region × outcome. Include cost at scale from the measured cost per teacher.
 
+**Added 22 Oct: AI_USAGE.md in the submission checklist.** `AI_USAGE.md` is linked from the README's "Where AI is used"; `python scripts/ai_proof.py` has been run on the final build and `docs/evidence/ai_usage_proof.json` is current (the date is within 24 hours of submission); `python scripts/gen_ai_usage.py --check` and `tests/test_ai_usage_doc.py` pass; no deck, video or README sentence claims a capability the doc marks Specified; every Verified row has PASS in the proof file. The judge-reviewer spot-checks three AI_USAGE.md claims against the code before sign-off.
+
 **Tests.** In the existing docs and claims test style (written when P16 is built): nothing under `docs/roadmap-assets/` is imported by `apps/pwa` or `services/api`; the CI bundle budget still passes and no file under `apps/pwa` or `services/api` references `docs/roadmap-assets` (grep); every asset under `docs/roadmap-assets/` has a row in `LICENSE-NOTES.md` (plan type and date); no file under `docs/` or the README says "reviewed by" or "expert" about a material without a reviewer name and date on the same line or in `LICENSE-NOTES.md` (grep over `docs/` and `README.md`).
 
 **Acceptance.**
 
 - [ ] The checklist is complete with evidence, except human-owned items, each with an owner.
+- [ ] `AI_USAGE.md` is current, linked from the README, and no claim in it is above its status (see the added 22 Oct block).
 - [ ] The roadmap says generated materials are authoring-time only and reviewed before use.
 - [ ] No sample asset appears without a `LICENSE-NOTES.md` row.
 - [ ] No claim of expert review unless a reviewer name and date are recorded.

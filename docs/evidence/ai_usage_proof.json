@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-10-22 11:11 UTC",
+  "script": "scripts/ai_proof.py",
+  "note": "Synthetic inputs only. PASS, FAIL or SKIPPED as measured; not hand-edited.",
+  "checks": {
+    "caching": {
+      "status": "PASS",
+      "detail": "second call read the cached system prompt",
+      "model": "claude-haiku-5-5",
+      "first": {
+        "cache_write": 2114,
+        "cache_read": 0
+      },
+      "second": {
+        "cache_write": 0,
+        "cache_read": 2114
+      }
+    },
+    "structured_output": {
+      "status": "PASS",
+      "detail": "calls 2, 7 and 8 parsed into their models with no retry",
+      "call_2": {
+        "status": "PASS",
+        "detail": "MoveLabelChoice",
+        "model": "claude-haiku-5-5",
+        "retries": 0,
+        "fallback": null
+      },
+      "call_7": {
+        "status": "PASS",
+        "detail": "Verdict",
+        "model": "claude-haiku-5-5",
+        "retries": 0,
+        "fallback": null
+      },
+      "call_8": {
+        "status": "PASS",
+        "detail": "SheetRead",
+        "model": "claude-haiku-5-5",
+        "retries": 0,
+        "fallback": null
+      }
+    },
+    "citations": {
+      "status": "PASS",
+      "detail": "4 distinct sentence ids cited; all resolve",
+      "model": "claude-sonnet-5-5",
+      "sentence_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "structured_output_with_citations_refused": true
+    },
+    "batches": {
+      "status": "PASS",
+      "detail": "2-request batch ended",
+      "batch_id": "msgbatch_0171RyKeRr11LuTmnNEZfmHj",
+      "processing_status": "ended",
+      "succeeded": 2,
+      "errored": 0,
+      "model": "claude-haiku-5-5"
+    },
+    "image_input": {
+      "status": "PASS",
+      "detail": "10 of 10 boxes read with confidence; 0 of them differ from the truth",
+      "sheet": "SIM_COV_H06.jpg",
+      "model": "claude-haiku-5-5",
+      "flagged_for_teacher": 0
+    }
+  }
+}

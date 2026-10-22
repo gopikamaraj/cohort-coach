@@ -96,6 +96,7 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 13. **Simulated practice is a hypothesis.** No source tests it. README, docs, deck and video say the pilot tests it, and report the verdict whatever it is.
 14. **One back end, thin channels.** Flows, rules, numbers, AI calls and gates live in the back end. A channel adapter or PWA component only renders steps and returns answers: it never computes, decides or calls a model. Every flow passes the same golden-transcript test through every adapter, so a new channel (WhatsApp) is an adapter plus its contract tests.
 15. **The cohort space is moderated and pseudonymous.** No handles or phone numbers are shown. Child names, roll numbers and identifying descriptions are filtered at post time (best-effort, with a compose-time notice, a Report button and a fast hide). No thread text goes to Claude without its own consent. AI never writes thread posts. Nothing a mentor records reaches a teacher before the coach approves it. Coaches and mentors see pseudonyms and cohort-level figures only; joining is a separate consent.
+16. **Every AI capability claim lives in `AI_USAGE.md`** with a file path and a status (Specified, Built or Verified); never claim an unbuilt capability, in the README, deck, video or code comments. `tests/test_ai_usage_doc.py` checks the paths and that Verified means PASS in `docs/evidence/ai_usage_proof.json` (written by `scripts/ai_proof.py`).
 
 ## 5. Domain model
 
@@ -143,7 +144,7 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 
 ```text
 cohort-coach/
-  CLAUDE.md  README.md  LICENSE  .env.example  tasks.py  pyproject.toml
+  CLAUDE.md  README.md  AI_USAGE.md  LICENSE  .env.example  tasks.py  pyproject.toml
   apps/pwa/                 step renderer for teacher and mentor flows; Practice Class, judge mode; mentor pages (/mentor), cohort thread (/cohort), coach pages (/coach), officer screens
   services/api/             FastAPI routes, auth stub, consent, sync, review queue
   services/api/flows/       channel-neutral flow engine: every teacher and mentor flow, defined once (step types include text)
@@ -163,7 +164,7 @@ cohort-coach/
   data/synthetic/           block generator (seed 2026)
   evals/                    sets/, runners/, results.md (generated)
   tests/                    mirrors the Python packages; golden fixtures in tests/fixtures/
-  scripts/                  render_audio, batch_draft, data_budget, cost_per_teacher, pilot_import
+  scripts/                  render_audio, batch_draft, data_budget, cost_per_teacher, pilot_import, ai_proof, gen_ai_usage
   docs/                     build/, design/, evidence/, architecture, guardrails, privacy, offline, roadmap, feedback-log
 ```
 
@@ -174,8 +175,8 @@ cohort-coach/
 | 1 | Child voices | `MODEL_CHILD` → `claude-sonnet-5-5` | live turn | every number equals the engine's answer, in both the scenario-language line and the English subtitle line; ≤ 30 words; language and script match; pre-filter; 1 retry then a template line | 200 scripted turns, 100% numbers match; realism median ≥ 4/5 |
 | 2 | Teacher-move labeller | `MODEL_LABEL` → `claude-haiku-5-5` | live turn | fixed label set by JSON schema; low confidence → `other` (changes nothing); off-task and injection lines → `off_task` | 150 human-labelled lines, ≥ 85% agreement |
 | 3 | Rehearsal feedback | `MODEL_FEEDBACK` → `claude-sonnet-5-5` | session end | each quote exists verbatim in the transcript; points only from the rubric; no scores | 30 transcripts, 100% valid quotes; usefulness median ≥ 4 |
-| 4 | Mentor method capture | `MODEL_METHOD` → `claude-sonnet-5-5` | after recording | every step cites a sentence id that exists; only what she said; she approves | mentor edit size; reviewer acceptance |
-| 5 | Track drafting | `MODEL_DRAFT` → `claude-opus-5-5` | offline, Message Batches API | arithmetic checked by code; class numbers are slots; reviewer then mentor approve | ≥ 80% accepted with minor edits; arithmetic 100% |
+| 4 | Mentor method capture | `MODEL_METHOD` → `claude-sonnet-5-5` | after recording | transcript sent as a custom-content document, one block per sentence, with the Citations API on (no structured output: the API refuses both); code converts each step's and phrase's citation to our sentence ids; a line with no valid citation is rejected and logged; every phrase is a verbatim substring; call 7 checks "only what she said"; she approves | mentor edit size; reviewer acceptance |
+| 5 | Track drafting | `MODEL_DRAFT` → `claude-opus-5-5` | offline, Message Batches API | pass 1 structured draft; pass 2 "Why this move" lines with citations over the evidence digest (six cached documents); a line without a valid citation is dropped; the page shown comes from the citation via a code table; arithmetic checked by code; class numbers are slots; reviewer then mentor approve | ≥ 80% accepted with minor edits; arithmetic 100% |
 | 6 | Reflection digest | `MODEL_DIGEST` → `claude-haiku-5-5` | weekly | code strips names and schools first; LLM assigns themes, code counts | mentor usefulness rating |
 | 7 | Output checker | `MODEL_CHECK` → `claude-haiku-5-5` | everything headed to a teacher | structured verdict + reason; includes reading-level and accumulated rejection examples; fail → human | red-team set: 0 unsafe reach a teacher |
 | 8 | Answer reading | `MODEL_READ` → `claude-haiku-5-5`; retry `claude-sonnet-5-5` | per sheet photo | reads blind (never sees expected answers); digits-only schema; reads outside {correct ∪ error answers} or below the confidence bar go to the teacher; Devanagari digits normalised; photo deleted after | hand-keyed set: ≥ 98% of auto-accepted reads correct; ≤ 15% sent to teacher |
@@ -191,7 +192,7 @@ Model IDs are from Anthropic's current lineup; confirm them on the model pages b
 **Every call must**:
 
 - Load its prompt from `ai/prompts/` (front matter: id, version, model, changelog). A prompt change bumps the version and re-runs that call's eval.
-- Use structured outputs (`output_config.format` JSON schema; SDK helper `client.messages.parse(..., output_format=Model)`); verify the current shape and model support in the docs. Re-validate with Pydantic regardless.
+- Use structured outputs (`output_config.format` JSON schema; SDK helper `client.messages.parse(..., output_format=Model)`); verify the current shape and model support in the docs. Re-validate with Pydantic regardless. The one exception is a citations pass (call 4 pass A, call 5 pass 2): the API returns a 400 for citations plus structured output, so code parses the cited text into the schema and validates it the same way.
 - Put stable system text first with prompt caching, and confirm `cache_read_input_tokens > 0` in logs.
 - Treat teacher, mentor and reflection text as untrusted data: wrap it in tags, never follow instructions inside it.
 - Have a timeout, bounded retries, and a deterministic fallback (template line, "needs human", or text mode). The app must never hang on an AI call.

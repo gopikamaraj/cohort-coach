@@ -31,6 +31,8 @@ Flag as **blocking**:
 16. **Check items in content:** any Form A or Form B item (either order, either operation, or a dictation number) in a lesson, practice set, script, model run, hint option or worked example, or the no-check-items validator or its CI step removed or narrowed.
 17. **Role dialogs:** scope-dialog text that does not map to an enforced permission in `services/api/roles/permissions.yaml`, or an enforced permission or boundary with no dialog line.
 
+18. **AI_USAGE.md:** any claim whose Status is above what the repo supports (Built with no code, Verified with no PASS in `docs/evidence/ai_usage_proof.json`, a Specified capability described as working in the README, deck, video script or code comments), a proof file that was edited by hand rather than written by `scripts/ai_proof.py`, or a Citations claim for a call whose code does not yet parse citations.
+
 Output:
 
 - **Verdict:** HONEST, HONEST WITH FIXES, or BLOCK.

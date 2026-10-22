@@ -74,6 +74,15 @@ Spec: `docs/design/addendum-v3.1.md`; synthetic sheets: `docs/build/synthetic-sh
 
 **Calendar risk.** The addendum adds about 89 h (about 52 h for the P0 parts alone) to a build that already had little slack: P05 closed 🟡 on 20 Oct, P06 and P07 are 🟡, and P08 to P16 are untouched with 10 days left. P08 as written is a two-day phase. Cut items 17 to 24 first (BUILD_PROMPTS cut list); if P08 is not finished by Sat 24 Oct, move Watch's polish (C6 to C8) and F-d to after P12 and keep A1–A4, C1–C5, E1–E3, F-a–F-c and G1.
 
+## AI gaps (22 Oct, `docs/build/reports/AI-GAPS.md`)
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Citations on call 4 (method card) | Specified | Two passes (the API refuses citations with structured output). Tasks C4-1 to C4-3 in P11. API-level check PASS in the proof file |
+| Citations on call 5 ("Why this move") | Specified | Evidence digest as six cached documents; tasks C5-1 to C5-4 in P09 |
+| `scripts/ai_proof.py` | ✅ Built and run 22 Oct | Five checks, all PASS in `docs/evidence/ai_usage_proof.json`; re-run before submission |
+| `AI_USAGE.md` and its doc test | ✅ Built | `scripts/gen_ai_usage.py` regenerates section 4; `tests/test_ai_usage_doc.py` keeps statuses honest |
+
 ## Open decisions from kit v3 (defaults apply; see DECISIONS.md)
 
 | ID | Question | Default | Needed by | Owner |

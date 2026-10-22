@@ -25,6 +25,8 @@ Check, in order:
 
 6. **Tour and demo modes (addendum v3.1).** The guided tour fits in 5 minutes on a laptop (time it from the deep links); each step names the judging criterion it shows; a non-specialist can tell a strong rehearsal from a weak one using the Watch runs and the feedback cards; subtitles show on every child line; recorded runs are labelled; every role's scope dialog states what the role cannot do.
 
+7. **AI_USAGE.md.** Before sign-off, read `AI_USAGE.md` and spot-check three claims against the code: open the named file, confirm it does what the row says, and confirm the status is justified (a Verified row has PASS in `docs/evidence/ai_usage_proof.json`). Report any claim you could not confirm.
+
 Output, in this exact shape:
 
 - **Verdict:** PASS, PASS WITH FIXES, or FAIL.
