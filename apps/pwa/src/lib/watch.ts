@@ -15,6 +15,9 @@ export interface ChildMeter {
   level: number;
   band: "high" | "medium" | "low";
   has_error: boolean;
+  persona?: string | null;
+  speaking?: boolean;
+  expression?: string;
 }
 export interface Machinery {
   code: { move: { move_id: string; source?: string }; engine: Record<string, unknown> };

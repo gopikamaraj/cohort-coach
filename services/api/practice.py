@@ -23,12 +23,14 @@ from ai.client import BudgetExceeded, CallContext
 from ai.config import ai_mode
 from engine.model import ErrorCode
 from services.api.roles import judge_session, require
+from services.api.sprite_media import tray_items
 from services.practice.content import LANGS, load_personas, load_scenario
 from services.practice.hints import hints
 from services.practice.session import (
     PracticeSession,
     SessionFinished,
     end_session,
+    seating,
     start_session,
     take_turn,
 )
@@ -137,8 +139,11 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
         "seed": session.seed,  # lets her retry with the same children
         "language": session.language,
         "judge": session.judge,
-        "children": [{"name": c.name, "shy": c.shy} for c in session.state.children],
+        # who is sitting where. Not who has the error: the first faces are all calm (the shy
+        # child looks shy), and the confusion meter appears only after a turn.
+        "children": seating(session),
         "materials": loaded.scenario.materials,
+        "material_items": tray_items(loaded.scenario.materials),
         "turn_cap": loaded.config.max_turns,
         # what she is practising: the rubric's "try next" lines, in her language (content, not AI)
         "goal": {

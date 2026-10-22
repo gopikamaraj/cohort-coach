@@ -320,7 +320,7 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 
 | Priority | Target | Depends on | Judged on |
 | --- | --- | --- | --- |
-| P0 | Tue 20 Oct | P01, P02 | Real scenarios; ease of use; technical strength (one back end, many channels); the demo link |
+| P0 | Tue 20 Oct | P01, P02, P17 (scene steps) | Real scenarios; ease of use; technical strength (one back end, many channels); the demo link |
 
 **Goal.** One back end, thin channels. Build the channel-neutral flow engine that every teacher and mentor flow runs on; two adapters that render its steps (Telegram and the PWA); a WhatsApp stub that passes the same contract; and the PWA shell with judge mode. From here on, a flow is written once and works on both channels.
 
@@ -376,7 +376,7 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 
 | Priority | Target | Depends on | Gate | Judged on |
 | --- | --- | --- | --- | --- |
-| P0 | Wed 21 Oct | P04, P05 | Staging live | AI use in layers (visible); Guardrails (visible); User testing |
+| P0 | Wed 21 Oct | P04, P05, P17 (faces, tray) | Staging live | AI use in layers (visible); Guardrails (visible); User testing |
 
 **Goal.** Teachers can rehearse in text on a phone; judges can switch on an overlay that shows each turn's five layers; a staging URL exists for test round 3.
 
@@ -949,6 +949,36 @@ Also: forty-three → 403; 47 + 25 → 62; 52 − 29 → 37 (SFL), 33 (NODEC); 5
 | Sarvam | STT model versions and the 30 s limit; streaming; TTS models, voices, pitch; cloning access; pronunciation dictionaries; pricing | docs.sarvam.ai (llms-full.txt; MCP server) |
 | Telegram | Voice note format and size; inline keyboards; webhook secret token; photo sizes offered for download; whether bots can delete incoming messages in private chats, and any time limit; deep-link payload limits | core.telegram.org/bots/api |
 | Hosting | Always-on plan; cold-start behaviour; storage public-read options | the chosen providers' docs |
+
+## P17 · Sprite system: SVG items, mats, avatars and topic packs
+
+| Priority | Target | Depends on | Judged on |
+| --- | --- | --- | --- |
+| P0 | Built ahead on 22 Oct; used by P05 (scene steps) and P06 (Practice Class faces and tray) | P03 | Real scenarios (small, offline pictures); Guardrails (grammar, gates); AI use in layers (call 11, authoring only) |
+
+**Goal.** Every picture in the Practice Class and in flows is drawn by code from data, with exact counts, on a phone and as a PNG for Telegram, and a new topic is a new pack of JSON with no renderer change.
+
+**Read first.** `docs/design/sprite-system.md` (the spec); `CLAUDE.md` rules 14 and 17; `docs/build/DECISIONS.md` (22 Oct, Sprite system); `docs/build/PARKING.md` (generic Practice Class: topic packs).
+
+**Build.**
+
+1. Grammar: shape whitelist, attribute whitelist, fixed viewBox per category, palette slots only, size budgets (item 2 KB, avatar 12 KB, mat 6 KB), no text, no script, no external reference, no animation elements. `services/api/sprites/grammar.py`.
+2. Layouts (pure functions, integer maths): row, grid_array, ten_frame, bundle_group, place_value_mat, number_line, bar_model, cross_out, scatter, two_groups; each returns SVG and `{item_id, count_drawn}`.
+3. Avatars and expressions: parts composition, persona records with seeds, seven expressions with open and closed mouth frames, one code table from child state to expression.
+4. Packs: `place-value-add-sub` (nine items, two mats, add and subtract templates); a second pack added as JSON only. Two keys: coach approves, officer enables; every change is a new version.
+5. Call 11 (offline): drafts an item spec by structured output; code gates, call 7 on the words, coach, officer. A rejected draft returns the failing rule and is never shown.
+6. Channels: the web app draws inline SVG with the TypeScript renderer (byte-identical to Python, proved by a golden fixture); Telegram gets a PNG via `resvg-py`; WhatsApp is text until the Cloud API sender exists. A flow step carries a scene reference, not an image.
+7. Practice Class: seat faces, the materials tray and the judge machinery panel use the same renderer; the server chooses each child's expression from the table.
+8. `scripts/sprite_contact_sheet.py` writes `docs/evidence/sprites/contact-sheet.png`.
+
+**Tests first.** Count exactness for 0 to 100; bundles of exactly ten; place-value mat 0 to 99; cross_out n of N; one grammar test per forbidden element and attribute; budgets; no text nodes; palette slots only; contrast and a colour-vision simulation; determinism by seed; the expression table has no gaps; Python and TypeScript output identical; a PNG for every item and expression; the no-check-items validator blocks a template holding a Form A or B pair; a new pack needs no renderer change (hash test).
+
+**Acceptance.**
+
+- [x] All tests above pass (`tests/sprites/`, `apps/pwa/src/sprites/golden.test.ts`).
+- [x] Contact sheet generated with zero validator failures.
+- [ ] Coach approval and officer enablement of `place-value-add-sub` (TODO-HUMAN Seema); until then it is enabled for the build and the demo only.
+- [ ] A live run of call 11 (paid; prints a cost estimate first) and its eval row.
 
 ## Appendix C · Templates
 

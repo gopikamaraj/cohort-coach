@@ -4,40 +4,24 @@
 import type { ReactNode } from "react";
 import type { FeedbackCard, Layers, PracticeChild } from "../lib/practice";
 import { useApp } from "../state";
+import { avatarSvg, personaLook, seatRow } from "../sprites";
+import { loadItem, palette } from "../sprites/data";
+import { compileItem } from "../sprites/grammar";
 
-// Five figures that differ by hair and shirt only; nothing says who they "are".
-const SHIRTS = ["#1b4f9c", "#1d6b4f", "#9a6700", "#6b3fa0", "#a33b2e"];
-
-function Figure({ index, speaking }: { index: number; speaking: boolean }) {
-  const hair = index % 5;
-  return (
-    <svg viewBox="0 0 64 72" width="56" height="63" aria-hidden="true" className={speaking ? "figure figure-on" : "figure"}>
-      <rect x="14" y="40" width="36" height="30" rx="4" fill={SHIRTS[index % SHIRTS.length]} />
-      <circle cx="32" cy="26" r="15" fill="#e6c3a0" stroke="#14201f" strokeWidth="1.5" />
-      {hair === 0 ? <path d="M17 24c0-12 30-12 30 0c-6-5-24-5-30 0z" fill="#14201f" /> : null}
-      {hair === 1 ? <path d="M17 26l4-16l6 9l5-12l5 12l6-9l4 16c-8-6-22-6-30 0z" fill="#14201f" /> : null}
-      {hair === 2 ? (
-        <>
-          <path d="M17 25c0-13 30-13 30 0c-8-6-22-6-30 0z" fill="#14201f" />
-          <circle cx="32" cy="8" r="6" fill="#14201f" />
-        </>
-      ) : null}
-      {hair === 3 ? <path d="M17 28c-2-18 28-20 30-4c-8-6-18-4-24 0c-2 2-4 4-6 4z" fill="#14201f" /> : null}
-      {hair === 4 ? <path d="M17 22c4-10 26-10 30 0l-3 4c-7-5-17-5-24 0z" fill="#14201f" /> : null}
-      <circle cx="26" cy="27" r="1.8" fill="#14201f" />
-      <circle cx="38" cy="27" r="1.8" fill="#14201f" />
-      <path d={speaking ? "M26 34q6 6 12 0z" : "M27 34q5 3 10 0"} fill={speaking ? "#14201f" : "none"} stroke="#14201f" strokeWidth="1.5" />
-    </svg>
-  );
+/** A child's face: drawn from her persona and the expression the server chose for this turn. */
+function Face({ persona, expression, speaking }: { persona: string | null; expression: string; speaking: boolean }) {
+  if (!persona) return null;
+  const svg = avatarSvg(personaLook(persona).look, expression, "closed");
+  return <div className={speaking ? "sprite figure sprite-speaking" : "sprite figure"} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 
-export function ChildrenRow({ children, speaker }: { children: PracticeChild[]; speaker: string | null }) {
+export function ChildrenRow({ children, speaker, faces }: { children: PracticeChild[]; speaker: string | null; faces: Record<string, string> }) {
   const { tr } = useApp();
   return (
     <ul className="kids" aria-label={tr("practice.children")}>
       {children.map((c, i) => (
         <li key={c.name} className={speaker === c.name ? "kid kid-on" : "kid"} data-testid={`kid-${i}`} aria-current={speaker === c.name ? "true" : undefined}>
-          <Figure index={i} speaking={speaker === c.name} />
+          <Face persona={c.persona} expression={faces[c.name] ?? c.expression} speaking={speaker === c.name} />
           <span className="kid-name">{c.name}</span>
           {c.shy ? <span className="kid-shy">{tr("practice.shy")}</span> : null}
         </li>
@@ -46,44 +30,54 @@ export function ChildrenRow({ children, speaker }: { children: PracticeChild[]; 
   );
 }
 
-/** Pictures for the materials tray. They are SVG and drawn here: no image files. */
-function MaterialArt({ kind }: { kind: string }) {
-  if (kind === "bundles") {
-    return (
-      <svg viewBox="0 0 48 32" width="48" height="32" aria-hidden="true">
-        {Array.from({ length: 10 }, (_, i) => (
-          <rect key={i} x={4 + i * 4} y="4" width="3" height="24" fill="#e8b93c" stroke="#14201f" strokeWidth="0.8" />
-        ))}
-        <rect x="2" y="13" width="44" height="6" fill="#fbfcfd" stroke="#14201f" strokeWidth="1" />
-      </svg>
-    );
-  }
-  if (kind === "sticks") {
-    return (
-      <svg viewBox="0 0 48 32" width="48" height="32" aria-hidden="true">
-        <rect x="6" y="8" width="3" height="20" fill="#e8b93c" stroke="#14201f" strokeWidth="0.8" transform="rotate(-12 7 18)" />
-        <rect x="18" y="6" width="3" height="20" fill="#e8b93c" stroke="#14201f" strokeWidth="0.8" />
-        <rect x="30" y="8" width="3" height="20" fill="#e8b93c" stroke="#14201f" strokeWidth="0.8" transform="rotate(14 31 18)" />
-      </svg>
-    );
-  }
+/** The five children's seats on one strip (Watch and the AI-layers views). */
+export function SeatStrip({ children }: { children: { persona?: string | null; expression?: string; speaking?: boolean }[] }) {
+  const { tr } = useApp();
+  const seats = children.flatMap((c) => (c.persona ? [{ look: personaLook(c.persona).look, expression: c.expression ?? "neutral", speaking: Boolean(c.speaking) }] : []));
+  if (seats.length === 0) return null;
+  return <div className="sprite seatstrip" role="img" aria-label={tr("sprite.scene.seat_row")} dangerouslySetInnerHTML={{ __html: seatRow(seats) }} />;
+}
+
+/** The sprite spec of one child, as JSON: what the page drew and why (judge mode). */
+export function SpriteSpec({ child }: { child: { persona?: string | null; expression?: string; speaking?: boolean } | undefined }) {
+  const { tr } = useApp();
+  if (!child?.persona) return null;
+  const { seed, look } = personaLook(child.persona);
+  const spec = { persona: child.persona, seed, look, expression: child.expression, mouth: child.speaking ? "open" : "closed", table: "services/api/sprites/expression.py" };
   return (
-    <svg viewBox="0 0 48 32" width="48" height="32" aria-hidden="true">
-      <rect x="4" y="4" width="40" height="24" fill="#fbfcfd" stroke="#14201f" strokeWidth="1" />
-      <line x1="24" y1="4" x2="24" y2="28" stroke="#14201f" strokeWidth="1" />
-      <line x1="4" y1="12" x2="44" y2="12" stroke="#14201f" strokeWidth="1" />
-    </svg>
+    <div data-testid="sprite-spec">
+      <h4>{tr("sprite.spec_title")}</h4>
+      <pre className="spec">{JSON.stringify(spec, null, 1)}</pre>
+    </div>
   );
 }
 
-export function Materials({ items, disabled, onTap }: { items: string[]; disabled: boolean; onTap: (material: string) => void }) {
+/** One item on its own, 24 by 24, in the default palette. */
+function itemIcon(id: string): string {
+  const inner = compileItem(loadItem(id), palette("default"));
+  return inner.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" role="img" ');
+}
+
+/** Tray pictures are sprite items drawn here from the enabled pack: no image files. */
+function MaterialArt({ item }: { item: string | undefined }) {
+  if (!item) return null;
+  let svg: string;
+  try {
+    svg = itemIcon(item);
+  } catch {
+    return null;
+  }
+  return <div className="sprite tool-art" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+}
+
+export function Materials({ items, itemFor, disabled, onTap }: { items: string[]; itemFor: Record<string, string>; disabled: boolean; onTap: (material: string) => void }) {
   const { tr } = useApp();
   const names: Record<string, string> = { bundles: tr("practice.bundles"), sticks: tr("practice.sticks"), chart: tr("practice.chart") };
   return (
     <div className="tray" role="group" aria-label={tr("practice.materials")}>
       {items.map((m) => (
         <button key={m} type="button" className="tool" disabled={disabled} onClick={() => onTap(m)} data-testid={`tap-${m}`}>
-          <MaterialArt kind={m} />
+          <MaterialArt item={itemFor[m]} />
           <span>{names[m] ?? m}</span>
         </button>
       ))}

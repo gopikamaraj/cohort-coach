@@ -34,3 +34,19 @@ def resolve(ref: SceneRef) -> Scene:
 
 def scene_png(ref: SceneRef, width: int = 480) -> bytes:
     return svg_to_png(resolve(ref).svg, width=width)
+
+
+TRAY_PACK = "place-value-add-sub"
+
+
+def tray_items(materials: list[str]) -> dict[str, str]:
+    """Which sprite item draws each Practice Class tray material. Only from an enabled pack, and
+    only an item that pack lists; anything else is left out and the tray shows its word alone."""
+    try:
+        pack = load_pack(TRAY_PACK)
+    except FileNotFoundError:
+        return {}
+    if pack.get("status") != "enabled":
+        return {}
+    tray = pack.get("tray", {})
+    return {m: tray[m] for m in materials if tray.get(m) in pack.get("items", [])}

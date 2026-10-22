@@ -97,6 +97,7 @@ Deliverables, due **1 Nov 2026, 11:59 pm** (we submit 31 Oct):
 14. **One back end, thin channels.** Flows, rules, numbers, AI calls and gates live in the back end. A channel adapter or PWA component only renders steps and returns answers: it never computes, decides or calls a model. Every flow passes the same golden-transcript test through every adapter, so a new channel (WhatsApp) is an adapter plus its contract tests.
 15. **The cohort space is moderated and pseudonymous.** No handles or phone numbers are shown. Child names, roll numbers and identifying descriptions are filtered at post time (best-effort, with a compose-time notice, a Report button and a fast hide). No thread text goes to Claude without its own consent. AI never writes thread posts. Nothing a mentor records reaches a teacher before the coach approves it. Coaches and mentors see pseudonyms and cohort-level figures only; joining is a separate consent.
 16. **Every AI capability claim lives in `AI_USAGE.md`** with a file path and a status (Specified, Built or Verified); never claim an unbuilt capability, in the README, deck, video or code comments. `tests/test_ai_usage_doc.py` checks the paths and that Verified means PASS in `docs/evidence/ai_usage_proof.json` (written by `scripts/ai_proof.py`).
+17. **Sprites are code-rendered from data; counts come from layout functions; no AI at runtime.** Every picture (items, mats, avatars, expressions) is SVG made by the renderer in `services/api/sprites/` (and its byte-identical TypeScript port in `apps/pwa/src/sprites/`) from JSON specs in `content/sprites/`. How many units a picture shows is decided by a layout function and reported as `count_drawn`; the AI never draws, counts or picks an expression. Call 11 drafts item specs offline only; a draft passes code gates, call 7 and a coach, and a pack reaches teachers only when a programme officer enables it. Grammar, renderer, layouts, validators and the state-to-expression table are code, never configuration. Spec: `docs/design/sprite-system.md`.
 
 ## 5. Domain model
 
@@ -150,16 +151,18 @@ cohort-coach/
   services/api/flows/       channel-neutral flow engine: every teacher and mentor flow, defined once (step types include text)
   services/api/roles/       permissions.yaml: the one role-permission config the server enforces and the landing-page dialogs display
   services/api/cohorts/     cohort lifecycle, membership, mentor items, the cohort thread, moderation, retention
+  services/api/sprites/     sprite renderer: grammar, layouts, avatars, expression table, packs, PNG (apps/pwa/src/sprites/ is its TypeScript port)
   services/api/channels/    thin adapters: telegram/, pwa/, whatsapp/ (stub); render steps, parse answers, no logic
   strings/                  en/hi/ta copy shared by every channel
   services/speech/          Sarvam client: STT, TTS, voice clones, fallbacks
   engine/                   bugs.py items.py diagnosis.py grouping.py mentors.py evaluation.py simulator.py
-  ai/registry.py            single source of truth for the 10 calls (feeds README and judge mode)
+  ai/registry.py            single source of truth for the calls (feeds README and judge mode)
   ai/client.py              model routing, caching, structured output, retries, budget, audit
   ai/prompts/               c01_child_voice.v1.md … c09_reflection_pointer.v1.md
   ai/calls/                 one module per call
   ai/validators/            numbers, quotes, length, language, prefilter, readability, arithmetic, pii
   ai/guard/                 gates, badges, explanations
+  content/sprites/          items, packs, palettes, avatar parts, expressions, personas (data, not code)
   content/                  scenarios/, rubrics/, movelists/, personas/, tracks/, model_runs/, templates/, rejections/
   data/synthetic/           block generator (seed 2026)
   evals/                    sets/, runners/, results.md (generated)
@@ -182,6 +185,7 @@ cohort-coach/
 | 8 | Answer reading | `MODEL_READ` → `claude-haiku-5-5`; retry `claude-sonnet-5-5` | per sheet photo | reads blind (never sees expected answers); digits-only schema; reads outside {correct ∪ error answers} or below the confidence bar go to the teacher; Devanagari digits normalised; photo deleted after | hand-keyed set: ≥ 98% of auto-accepted reads correct; ≤ 15% sent to teacher |
 | 9 | Reflection pointer | `MODEL_POINTER` → `claude-haiku-5-5` | after a voice reflection | names stripped before the call; output = one step id from the approved track and method cards plus a ≤ 25-word link quoting her words verbatim; code renders the step text; no numbers, no judgement, no score; pre-filter and call 7; on any failure nothing new is sent | 40 reflections incl. 10 red-team: 100% valid step ids and verbatim quotes; 0 unsafe |
 | 10 | Demo teacher (judge mode only) | `MODEL_DEMO_TEACHER` → `claude-haiku-5-5` | live Watch run in judge mode | move id must be on the approved list; line ≤ 25 words; every number from the scenario's allowed set; no answer leak beyond the style; failure → the move's template line; labelled "AI playing the teacher (demo only)"; refused outside a judge session | 20 runs per style: 100% approved ids; 0 numbers outside the set; experienced beats struggling on the rubric in ≥ 18 of 20 pairs |
+| 11 | Sprite item author (offline only) | `MODEL_SPRITE` → `claude-sonnet-5-5` | authoring time, never at run time | schema; shape and attribute whitelist; integers; palette slots only; size budget; no text; renders at counts 1 and 5 in every palette and as PNG; pre-filter and no-check-item checks; call 7 on the words; rejected drafts return the failing rule and are never shown | pending: no live run yet; every draft passes all code gates before a coach sees it |
 
 Stage signatures, stage rules and the no-check-items validator are code (`engine/`, `ai/validators/`), not AI calls; call 5 only drafts the routines, and call 8 still reads digits only.
 
@@ -303,3 +307,4 @@ Stop and ask a human when: a secret or account is needed; a gate needs a real ph
 - Show a stage label to a child, state a stage as a cause rather than "most likely", or store a per-child stage or tag on the server.
 - Hard-code signature answers, or let any lesson, practice set, hint or worked example contain a Form A or Form B item.
 - Offer call 10 (the demo teacher) outside judge mode, or present a recorded run as live.
+- Generate, fetch or edit art at run time, hard-code a unit count in a picture, let an AI choose an expression, or put grammar, layout or validator rules in a dashboard.

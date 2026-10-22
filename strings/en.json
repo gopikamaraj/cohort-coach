@@ -685,5 +685,6 @@
   "sprite.tpl.sub_balls": "There are {a} balls. {b} of them roll away. How many balls are left?",
   "sprite.tpl.sub_mangoes": "There are {a} mangoes. {b} of them are eaten. How many mangoes are left?",
   "sprite.tpl.sub_pencils": "There are {a} pencils. {b} of them are lost. How many pencils are left?",
-  "sprite.tpl.share_chapati": "A bar is cut into {a} equal pieces and {b} more pieces. Show the parts."
+  "sprite.tpl.share_chapati": "A bar is cut into {a} equal pieces and {b} more pieces. Show the parts.",
+  "sprite.spec_title": "What the page drew (the sprite spec)"
 }

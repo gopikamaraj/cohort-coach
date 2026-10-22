@@ -31,6 +31,19 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P14 | Real-scenario hardening | P0 | Tue 27 | ⬜ | | | | |
 | P15 | Production deploy and freeze | P0 | Wed 28 | ⬜ | | | | Freeze |
 | P16 | Submission pack | P0 | Thu 29 – Fri 30 | ⬜ | | | | |
+| P17 | Sprite system (SVG items, mats, avatars, topic packs, call 11) | P0 | built ahead 22 Oct | 🟡 | 2026-10-22 | 2026-10-22 | [report](reports/SPRITES.md) | Built and tested; coach approval and officer enablement of the shipped pack, a live run of call 11 and a real-phone look are open |
+
+## Sprite system (P17) components
+
+| Component | Status | Evidence |
+| --- | --- | --- |
+| Grammar and renderer (Python, TypeScript) | ✅ built | `tests/sprites/test_grammar.py`; `apps/pwa/src/sprites/golden.test.ts` (114 parity cases) |
+| Layouts (ten, counts 0 to 100) | ✅ built | `tests/sprites/test_layouts.py` |
+| Avatars and expressions (code table) | ✅ built | `tests/sprites/test_avatar.py`; `tests/practice/test_faces.py` |
+| Packs (`place-value-add-sub`, `fractions-demo` as JSON only) | 🟡 built; approval pending | `tests/sprites/test_packs.py`, `test_extensibility.py` |
+| Authoring call 11 | 🟡 built, no live run | `tests/sprites/test_authoring.py` |
+| PNG path (`resvg-py`) and channels | ✅ built | `tests/sprites/test_channels.py` |
+| Contact sheet | ✅ generated | `docs/evidence/sprites/contact-sheet.png`, `.json` |
 
 ## Gates
 

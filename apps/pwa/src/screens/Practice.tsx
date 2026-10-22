@@ -2,7 +2,7 @@
 // text; a private feedback card follows. The transcript is kept on this phone only. Judges can
 // turn on a panel that shows the five AI layers of each turn.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChildrenRow, FeedbackView, LayersPanel, Materials } from "../components/practice";
+import { ChildrenRow, FeedbackView, LayersPanel, Materials, SpriteSpec } from "../components/practice";
 import { CuePanel, ImpactPicker, PracticeTabs, ReviewTab, type PracticeTab } from "../components/review";
 import { LANG_NAMES, type Lang } from "../i18n";
 import { Icon } from "../components/icons";
@@ -76,6 +76,7 @@ export default function Practice() {
   const [session, setSession] = useState<CreatedSession | null>(null);
   const [turns, setTurns] = useState<TurnView[]>([]);
   const [speaker, setSpeaker] = useState<string | null>(null);
+  const [faces, setFaces] = useState<Record<string, string>>({});
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
@@ -152,6 +153,7 @@ export default function Practice() {
         ...(seed !== undefined ? { seed } : urlSeed ? { seed: Number(urlSeed) } : {}),
       });
       setSession(created);
+      setFaces({});
       setVoiceFails(0);
       setVoiceOn(voiceDefault(created.voice.available, canRecord(), slowLink(), localStorage.getItem(VOICE_PREF_KEY)));
       rowId.current = await startTranscript(created.session_id, klass?.id ?? "none", scenarioFor(profile?.track ?? null), undefined, {
@@ -168,6 +170,7 @@ export default function Practice() {
     const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
     setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [] }]);
     setSpeaker(r.speaker);
+    setFaces(Object.fromEntries((r.children ?? []).map((c) => [c.name, c.expression])));
     if (r.turn === 1) setGoalOpen(false);
     const moveId = r.layers.processing.label.move_id;
     const move = session?.moves.find((m) => m.id === moveId)?.label;
@@ -510,7 +513,7 @@ export default function Practice() {
           </ul>
         </details>
       ) : null}
-      {session ? <ChildrenRow children={session.children} speaker={speaker} /> : null}
+      {session ? <ChildrenRow children={session.children} speaker={speaker} faces={faces} /> : null}
       <p className="muted" data-testid="turn-counter">
         {tr("practice.turn", { n: turns.length, cap })}
       </p>
@@ -551,14 +554,19 @@ export default function Practice() {
               </p>
             ) : null}
             {judgeMode && t.meters.length > 0 ? <Meters children={t.meters} /> : null}
-            {judgeMode && showLayers ? <LayersPanel layers={t.layers} /> : null}
+            {judgeMode && showLayers ? (
+              <>
+                <LayersPanel layers={t.layers} />
+                <SpriteSpec child={t.meters.find((c) => c.speaking)} />
+              </>
+            ) : null}
           </div>
         ))}
         {busy ? <p className="muted" role="status">{tr("practice.sending")}</p> : null}
       </div>
       {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
       {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
-      {session ? <Materials items={session.materials} disabled={busy || over !== null} onTap={tap} /> : null}
+      {session ? <Materials items={session.materials} itemFor={session.material_items} disabled={busy || over !== null} onTap={tap} /> : null}
       {session ? (
         <>
           <button type="button" className="btn btn-secondary btn-with-icon" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">

@@ -12,7 +12,7 @@ from __future__ import annotations
 import random
 import time
 import uuid
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any
 
@@ -30,6 +30,7 @@ from engine.simulator import (
     plan_turn,
 )
 from services.practice.content import LoadedScenario, PersonaChild, load_personas, load_scenario
+from services.practice.faces import face
 
 
 @dataclass(frozen=True)
@@ -99,6 +100,56 @@ class TurnResult:
 def confusion_band(strength: float) -> str:
     """A word for how strongly a child still holds the mistake. Computed by code from the engine."""
     return "high" if strength >= 0.66 else "medium" if strength >= 0.33 else "low"
+
+
+def children_view(
+    session: PracticeSession, kids: Sequence[Any], plan: TurnPlan | None = None
+) -> list[dict[str, Any]]:
+    """The five children as the screen needs them: the confusion meter, who they are (a sprite
+    persona id) and the expression their faces show. All of it is computed here, by code."""
+    out = []
+    for c in kids:
+        persona = session.personas.get(c.name)
+        speaking = plan is not None and c.name == plan.speaker
+        out.append(
+            {
+                "name": c.name,
+                "level": round(c.strength, 2),
+                "band": confusion_band(c.strength),
+                "has_error": c.error is not None,
+                "persona": persona.id if persona else None,
+                "speaking": speaking,
+                "expression": face(
+                    speaking=speaking,
+                    intent=plan.intent if plan else "",
+                    correct=plan.correct if plan else None,
+                    engagement=c.engagement,
+                    strength=c.strength,
+                    quiet=c.quiet_turns > 0,
+                    shy=c.shy,
+                ),
+            }
+        )
+    return out
+
+
+def seating(session: PracticeSession) -> list[dict[str, Any]]:
+    """The children as she first sees them. Nothing here says who holds the error."""
+    out = []
+    for c in session.state.children:
+        persona = session.personas.get(c.name)
+        out.append(
+            {
+                "name": c.name,
+                "shy": c.shy,
+                "persona": persona.id if persona else None,
+                "expression": face(
+                    speaking=False, intent="", correct=None, engagement=0.5, strength=0.0,
+                    quiet=False, shy=c.shy,
+                ),
+            }
+        )  # fmt: skip
+    return out
 
 
 def _move_tag(session: PracticeSession, move_id: str) -> dict[str, Any]:
@@ -364,15 +415,7 @@ def take_turn(
         written=plan.written,
         answer=plan.answer,
         move=_move_tag(session, move_id),
-        children=[
-            {
-                "name": c.name,
-                "level": round(c.strength, 2),
-                "band": confusion_band(c.strength),
-                "has_error": c.error is not None,
-            }
-            for c in new_state.children
-        ],  # fmt: skip
+        children=children_view(session, new_state.children, plan),
     )
 
 

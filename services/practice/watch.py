@@ -23,6 +23,7 @@ from ai.prompt_loader import load_prompt
 from ai.registry import get_call
 from engine.simulator import Problem
 from services.practice.content import CONTENT, LoadedScenario
+from services.practice.faces import with_faces_recorded
 from services.practice.session import (
     PracticeSession,
     ScriptedMove,
@@ -244,7 +245,7 @@ def load_recorded(
     if not p.exists():
         return None
     data: dict[str, Any] = json.loads(p.read_text(encoding="utf-8"))
-    return data
+    return with_faces_recorded(data)  # older recordings get their faces from the recorded facts
 
 
 def tag(run: dict[str, Any], *, kind: str, reason: str | None = None) -> dict[str, Any]:

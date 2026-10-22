@@ -34,6 +34,7 @@ AI does language: vision, simulation, labelling, feedback, drafting, checking. C
 | Untrusted-text tagging | Teacher, mentor and reflection text is wrapped as data and never obeyed | all | `ai/client.py` | Built | `tests/ai/test_client.py` |
 | Speech in and out (not Claude) | Teachers speak; Sarvam turns speech to text and back, Claude works on text | none | `services/speech/stt.py`, `services/speech/tts.py` | Built | `docs/speech.md` |
 | Claude Code with subagents, used to build | Three read-only reviewers audit every phase for integrity, privacy and judge fit | none | `.claude/agents/integrity-auditor.md`, `.claude/agents/privacy-guardian.md`, `.claude/agents/judge-reviewer.md` | Built | `docs/build/reports/P08-addendum-v3.1.md` |
+| Offline picture-item authoring (call 11) | Drafts the JSON spec of one new counted object for a topic pack; code draws it, counts it and checks it | 11 | `ai/calls/c11_sprite_author.py`, `services/api/sprite_gates.py`, `ai/prompts/c11_sprite_author.v1.md` | Built | `tests/sprites/test_authoring.py` (every gate has a failing case; no live run yet) |
 | Meshy MCP (authoring time only) | Would make classroom materials for future topic packs, reviewed before use | none | `docs/build/PARKING.md` | Specified | none: parked, not built, never runs in the product |
 
 ## 4. Call registry
@@ -61,7 +62,7 @@ Generated from `ai/registry.py` by `scripts/gen_ai_usage.py`. Do not edit betwee
 - It never computes a number that is displayed (call 8 transcribes digits and call 1 repeats the engine's number; both are re-checked by code).
 - It never authors cohort posts.
 - It never pairs children.
-- It never runs 3D or image generation at runtime.
+- It never generates art at run time: every picture is drawn by code from data. Call 11 drafts picture items offline only, and nothing it drafts reaches a teacher before the code gates, call 7, a coach and a programme officer.
 - It never sees child names: names are stripped before any call, and answer sheets carry none.
 
 ## 6. Guardrail layers

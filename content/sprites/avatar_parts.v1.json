@@ -124,36 +124,6 @@
  },
  "accessories": {
   "none": [],
-  "glasses": [
-   {
-    "shape": "circle",
-    "cx": 26,
-    "cy": 27,
-    "r": 5,
-    "fill": "none",
-    "stroke": "ink",
-    "stroke_width": 1
-   },
-   {
-    "shape": "circle",
-    "cx": 38,
-    "cy": 27,
-    "r": 5,
-    "fill": "none",
-    "stroke": "ink",
-    "stroke_width": 1
-   },
-   {
-    "shape": "line",
-    "x1": 31,
-    "y1": 27,
-    "x2": 33,
-    "y2": 27,
-    "fill": "none",
-    "stroke": "ink",
-    "stroke_width": 1
-   }
-  ],
   "bag": [
    {
     "shape": "rect",
@@ -173,22 +143,6 @@
     "x2": 44,
     "y2": 46,
     "fill": "none",
-    "stroke": "ink",
-    "stroke_width": 1
-   }
-  ],
-  "ribbon": [
-   {
-    "shape": "polygon",
-    "points": "24,6 32,11 24,16",
-    "fill": "accent",
-    "stroke": "ink",
-    "stroke_width": 1
-   },
-   {
-    "shape": "polygon",
-    "points": "40,6 32,11 40,16",
-    "fill": "accent",
     "stroke": "ink",
     "stroke_width": 1
    }

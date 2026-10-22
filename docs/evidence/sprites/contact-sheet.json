@@ -1,0 +1,53 @@
+{
+ "generated": "2026-10-22",
+ "source": "scripts/sprite_contact_sheet.py",
+ "enabled_packs": [
+  "place-value-add-sub"
+ ],
+ "not_enabled": {
+  "fractions-demo": "draft"
+ },
+ "items": [
+  "ball",
+  "book",
+  "bundle_of_ten",
+  "chapati",
+  "counter",
+  "mango",
+  "marble",
+  "pencil",
+  "stick",
+  "ten_frame"
+ ],
+ "counts": [
+  1,
+  5,
+  10,
+  23,
+  45
+ ],
+ "personas": [
+  "meena",
+  "anu",
+  "divya",
+  "nila",
+  "asha",
+  "priya",
+  "ravi",
+  "karthik",
+  "arun",
+  "vijay",
+  "mani",
+  "sunil"
+ ],
+ "expressions": [
+  "neutral",
+  "thinking",
+  "confused",
+  "got_it",
+  "wrong_answer",
+  "shy",
+  "distracted"
+ ],
+ "validator_failures": []
+}

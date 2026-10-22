@@ -10,6 +10,7 @@ import { fetchMeter, fetchRun, nextPlayback, TURN_MS, type Meter, type Playback,
 import { useJudge } from "../lib/roles";
 import { useApp } from "../state";
 import { Meters } from "../components/meters";
+import { SeatStrip, SpriteSpec } from "../components/practice";
 
 const STYLES: Style[] = ["experienced", "struggling"];
 
@@ -36,6 +37,7 @@ function Machinery({ turn }: { turn: WatchTurn }) {
         {m.checker ? `  ${m.checker.passed ? "✓" : "✗"} checker` : ""}
       </p>
       {m.fallback ? <p className="muted">{tr("watch.fallback", { why: m.fallback })}</p> : null}
+      <SpriteSpec child={turn.children.find((c) => c.speaking)} />
     </div>
   );
 }
@@ -71,6 +73,7 @@ function TurnCard({ turn, machinery }: { turn: WatchTurn; machinery: boolean }) 
           </p>
         </>
       ) : null}
+      <SeatStrip children={turn.children} />
       <Meters children={turn.children} />
       {machinery ? <Machinery turn={turn} /> : null}
     </article>

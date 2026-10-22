@@ -986,3 +986,23 @@ h2 .icon {
     animation: none;
   }
 }
+
+/* Sprites in the Practice Class: faces, the seat strip, tray pictures, the spec box. */
+.figure {
+  width: 56px;
+}
+.seatstrip {
+  max-width: 360px;
+  margin: var(--s1) 0;
+}
+.tool-art {
+  width: 32px;
+  height: 32px;
+}
+.spec {
+  max-height: 240px;
+  overflow: auto;
+  font-size: 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

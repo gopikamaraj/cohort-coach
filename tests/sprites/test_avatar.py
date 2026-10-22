@@ -68,13 +68,13 @@ def test_a_persona_record_may_override_the_look_but_keeps_its_seed(
 
     base = persona_look("meena")
     rec = dict(avatar.personas()["meena"])
-    rec["look"] = {"accessory": "glasses", "skin": 5}
+    rec["look"] = {"accessory": "bag", "skin": 5}
     original = dict(avatar.personas())
     monkeypatch.setattr(avatar, "personas", lambda: {**original, "meena": rec})
     over = avatar.persona_look("meena")
     assert (
         over["seed"] == base["seed"]
-        and over["look"]["accessory"] == "glasses"
+        and over["look"]["accessory"] == "bag"
         and over["look"]["skin"] == 5
     )
     assert {k: v for k, v in over["look"].items() if k not in ("accessory", "skin")} == {

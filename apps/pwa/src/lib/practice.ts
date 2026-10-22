@@ -6,6 +6,9 @@ import { db, type CohortDb } from "./db";
 export interface PracticeChild {
   name: string;
   shy: boolean;
+  /** The sprite persona (who she looks like) and the face she shows now, both chosen by the server. */
+  persona: string | null;
+  expression: string;
 }
 
 export interface PracticeMove {
@@ -21,6 +24,8 @@ export interface CreatedSession {
   judge: boolean;
   children: PracticeChild[];
   materials: string[];
+  /** Which sprite item draws each tray material (from the enabled topic pack). */
+  material_items: Record<string, string>;
   turn_cap: number;
   goal: { error: string; tips: string[] };
   voice: { available: boolean; mode: string };
@@ -79,7 +84,15 @@ export interface TurnResponse {
   written?: number | null;
   answer?: number | null;
   move?: { id: string; label: string; quality: string; strategy: boolean };
-  children?: { name: string; level: number; band: "high" | "medium" | "low"; has_error: boolean }[];
+  children?: {
+    name: string;
+    level: number;
+    band: "high" | "medium" | "low";
+    has_error: boolean;
+    persona: string | null;
+    speaking: boolean;
+    expression: string;
+  }[];
 }
 
 export interface FeedbackCard {

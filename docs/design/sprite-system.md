@@ -64,7 +64,7 @@ Each takes an item spec, a count, a palette and a seed and returns the SVG and a
 
 ## Avatars and expressions
 
-An avatar is a composition: body, skin tone, hair style, hair colour, outfit (two cloth colours), accessory (none, glasses, bag, ribbon). The look is derived from a seed (`look_from_seed`), and a persona record may override any field. The same seed gives the same SVG hash. Names come from the approved persona pool, never the roster; styles are named `hair_a` to `hair_f`, not by gender; no caste, religion or disability marker, no likeness of a real child.
+An avatar is a composition: body, skin tone, hair style, hair colour, outfit (two cloth colours), accessory (none or bag; glasses and ribbon were removed on 22 Oct after the privacy review, because they can read as disability and gender markers). The look is derived from a seed (`look_from_seed`), and a persona record may override any field. The same seed gives the same SVG hash. Names come from the approved persona pool, never the roster; styles are named `hair_a` to `hair_f`, not by gender; no caste, religion or disability marker, no likeness of a real child.
 
 Expressions are face-part sets in the registry: `neutral`, `thinking`, `confused`, `got_it`, `wrong_answer`, `shy`, `distracted`. Each has a closed and an open mouth frame; the avatar SVG holds both and the page's CSS toggles them while audio plays. **Code maps child state to an expression in one table** (`services/api/sprites/expression.py`); AI never chooses one. A new expression is one JSON entry that reuses existing face parts.
 

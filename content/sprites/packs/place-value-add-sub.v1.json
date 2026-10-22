@@ -86,5 +86,10 @@
  "i18n_keys": [
   "sprite.tpl.add_balls"
  ],
- "review": "TODO-HUMAN(Seema): coach approval and officer enablement. Enabled for the build and the demo only."
+ "review": "TODO-HUMAN(Seema): coach approval and officer enablement. Enabled for the build and the demo only.",
+ "tray": {
+  "bundles": "bundle_of_ten",
+  "sticks": "stick",
+  "chart": "ten_frame"
+ }
 }
