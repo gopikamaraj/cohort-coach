@@ -915,3 +915,45 @@ h2 .icon {
   color: #f4f1e8;
   display: inline-block;
 }
+
+/* Landing page: equal role cards in a grid that follows the width (one column on a phone). */
+.role-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s3);
+  margin: var(--s4) 0;
+}
+.role-cards .tile {
+  width: 100%;
+  min-height: 150px;
+  font: inherit;
+  cursor: pointer;
+}
+.role-cards .tile > span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+.role-cards .tile .role-name {
+  font-size: 1.15rem;
+}
+.role-cards .tile .role-line {
+  font-size: 1rem;
+}
+.role-cards .tile-start {
+  background: var(--surface);
+}
+@media (min-width: 640px) {
+  .role-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .role-cards .tile-start {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1100px) {
+  .role-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

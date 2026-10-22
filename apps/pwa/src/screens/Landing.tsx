@@ -102,24 +102,21 @@ export default function Landing() {
       {cfg ? (
         <Dialog cfg={cfg} onEnter={() => enter(cfg.id)} onWalk={() => { markDialogSeen(cfg.id); setRole(cfg.id as Role); window.location.hash = `/tour/${WALK_START[cfg.id]}`; }} onBack={() => setOpen(null)} />
       ) : (
-        <div className="cards" data-testid="role-cards">
+        <div className="role-cards" data-testid="role-cards">
           <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
             <Icon name="judge" size={28} />
             <span>
-              <strong>{tr("landing.tour")}</strong>
-              <br />
-              <span className="muted">{tr("landing.tour_hint")}</span>
+              <strong className="role-name">{tr("landing.tour")}</strong>
+              <span className="muted role-line">{tr("landing.tour_hint")}</span>
             </span>
           </a>
           {data?.roles.map((r) => (
             <button key={r.id} type="button" className="tile" onClick={() => choose(r.id)} data-testid={`card-${r.id}`}>
               <Icon name={ICON[r.id]} size={28} />
               <span>
-                <strong>{tr(`role.${r.id}` as Key)}</strong>
-                <br />
-                <span className="muted">{tr(r.holders as Key)}</span>
-                <br />
-                {tr(r.card as Key)}
+                <strong className="role-name">{tr(`role.${r.id}` as Key)}</strong>
+                <span className="muted role-line">{tr(r.holders as Key)}</span>
+                <span className="role-line">{tr(r.card as Key)}</span>
               </span>
             </button>
           ))}

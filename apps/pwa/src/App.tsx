@@ -57,7 +57,7 @@ function Shell() {
     judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
   const tabs = route === "/roles" || route === "/tour" ? [] : byRole[role];
-  const wide = role === "coach" || role === "officer" || role === "admin";
+  const wide = route === "/roles" || route === "/tour" || route === "/watch" || role === "coach" || role === "officer" || role === "admin";
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
       <div className="frame">
