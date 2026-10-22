@@ -156,7 +156,7 @@ test("a class's own counts seat the children, and a slow reply is explained", as
   await page.getByTestId("say").fill("Who can tell me 52 minus 29?");
   await page.getByTestId("send").click();
   await expect(page.getByTestId("reply-1")).toBeVisible();
-  await expect(page.getByText("The connection is slow, so a simple reply was used.")).toBeVisible();
+  await expect(page.getByText("The AI model is not switched on here, so a simple reply was used.")).toBeVisible();
 });
 
 test("when practice is paused the teacher can watch a recorded sample", async ({ page }) => {

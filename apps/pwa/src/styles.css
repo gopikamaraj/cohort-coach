@@ -64,14 +64,18 @@ ul.cards {
   outline-offset: 2px;
 }
 
-/* The phone: full screen on a phone, a framed 360 px column on a desktop. */
+/* The phone: the frame is exactly the screen tall; the top strip and the bottom bar stay in place
+   and only the content (main) scrolls. dvh follows the phone's address bar; vh is the fallback. */
 .stage {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
 }
 .frame {
+  position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   background: var(--paper);
   background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(157, 180, 210, 0.35) 31px, rgba(157, 180, 210, 0.35) 32px);
 }
@@ -85,7 +89,8 @@ ul.cards {
   }
   .frame {
     width: min(100%, 820px);
-    min-height: calc(100vh - 48px);
+    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
     border: 1px solid var(--rule);
     border-radius: 12px;
     overflow: hidden;
@@ -189,7 +194,10 @@ ol.prog {
 }
 main {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: var(--s4);
   background: rgba(251, 252, 253, 0.9);
 }
@@ -1005,4 +1013,64 @@ h2 .icon {
   font-size: 16px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* Bottom bar: four tabs and More; the sheet holds the rest. */
+.navbar {
+  flex: none;
+}
+.navtab {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 var(--s1);
+  background: none;
+  border: 0;
+  border-top: 4px solid transparent;
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+.navtab span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.more-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgba(20, 32, 31, 0.35);
+  border: 0;
+  padding: 0;
+}
+.more-sheet {
+  position: absolute;
+  z-index: 21;
+  left: 0;
+  right: 0;
+  bottom: 60px;
+  margin: 0;
+  padding: var(--s2);
+  list-style: none;
+  background: var(--paper);
+  border-top: 2px solid var(--pen);
+  max-height: 60%;
+  overflow-y: auto;
+}
+.more-link {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 56px;
+  padding: 0 var(--s3);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+.more-on {
+  color: var(--pen);
+  font-weight: 700;
+}
+.navtab.navtab-on {
+  border-top-color: var(--pen);
 }

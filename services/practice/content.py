@@ -53,6 +53,8 @@ class MoveDef(BaseModel):
     quality: Literal["strong", "common_mistake", "neutral"] = "neutral"
     strategy: bool = False
     sample_lines: dict[str, list[str]] = Field(default_factory=dict)
+    # Hint order: this move makes sense only once at least one of these moves has been used.
+    after: list[str] = Field(default_factory=list)
 
     @field_validator("behaviour")
     @classmethod

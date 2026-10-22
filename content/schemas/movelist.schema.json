@@ -13,6 +13,13 @@
     },
     "MoveDef": {
       "properties": {
+        "after": {
+          "items": {
+            "type": "string"
+          },
+          "title": "After",
+          "type": "array"
+        },
         "behaviour": {
           "title": "Behaviour",
           "type": "string"

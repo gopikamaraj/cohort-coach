@@ -19,6 +19,7 @@ import Flow from "./screens/Flow";
 import Landing from "./screens/Landing";
 import Watch from "./screens/Watch";
 import Tour from "./screens/Tour";
+import { useEffect, useState } from "react";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
 
@@ -57,6 +58,18 @@ function Shell() {
     judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
   const tabs = route === "/roles" || route === "/tour" ? [] : byRole[role];
+  // A phone fits four tabs and a More button; the rest sit in a sheet, so nothing hides off-screen.
+  const [more, setMore] = useState(false);
+  useEffect(() => setMore(false), [route, role]);
+  useEffect(() => {
+    if (!more) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMore(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [more]);
+  const bar = tabs.length > 5 ? tabs.slice(0, 4) : tabs;
+  const rest = tabs.length > 5 ? tabs.slice(4) : [];
+  const restOn = rest.some((tab) => tab.to === route);
   const wide = route === "/roles" || route === "/tour" || route === "/watch" || role === "coach" || role === "officer" || role === "admin";
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
@@ -122,13 +135,34 @@ function Shell() {
           {route === "/tour" ? <Tour /> : null}
           {route === "/officer" ? <Officer /> : null}
         </main>
+        {more ? (
+          <>
+            <button type="button" className="more-backdrop" aria-label={tr("common.close")} onClick={() => setMore(false)} />
+            <ul className="more-sheet" id="more-sheet" data-testid="more-sheet">
+              {rest.map((tab) => (
+                <li key={tab.to}>
+                  <a href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "more-link more-on" : "more-link"}>
+                    <Icon name={ICONS[tab.to] ?? "info"} />
+                    <span>{tab.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
         <nav className="navbar" aria-label={tr("common.menu")}>
-          {tabs.map((tab) => (
+          {bar.map((tab) => (
             <a key={tab.to} href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "navtab navtab-on" : "navtab"}>
               <Icon name={ICONS[tab.to] ?? "info"} />
               <span>{tab.label}</span>
             </a>
           ))}
+          {rest.length > 0 ? (
+            <button type="button" className={restOn || more ? "navtab navtab-on" : "navtab"} aria-expanded={more} aria-controls="more-sheet" data-testid="nav-more" onClick={() => setMore((v) => !v)}>
+              <Icon name="more" />
+              <span>{tr("nav.more")}</span>
+            </button>
+          ) : null}
         </nav>
       </div>
     </div>

@@ -74,6 +74,7 @@ export function Materials({ items, itemFor, disabled, onTap }: { items: string[]
   const { tr } = useApp();
   const names: Record<string, string> = { bundles: tr("practice.bundles"), sticks: tr("practice.sticks"), chart: tr("practice.chart") };
   return (
+    <>
     <div className="tray" role="group" aria-label={tr("practice.materials")}>
       {items.map((m) => (
         <button key={m} type="button" className="tool" disabled={disabled} onClick={() => onTap(m)} data-testid={`tap-${m}`}>
@@ -82,6 +83,8 @@ export function Materials({ items, itemFor, disabled, onTap }: { items: string[]
         </button>
       ))}
     </div>
+    <p className="muted" data-testid="tray-help">{tr("practice.tray_help")}</p>
+    </>
   );
 }
 

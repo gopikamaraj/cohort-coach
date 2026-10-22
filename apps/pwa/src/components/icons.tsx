@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 
 const PATHS: Record<string, ReactNode> = {
+  more: <path d="M5 12h.01M12 12h.01M19 12h.01" strokeWidth="3" />,
   home: <path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />,
   check: (
     <>

@@ -71,3 +71,45 @@ def test_no_hint_line_in_any_language_contains_a_check_item(error: str, lang: st
     for m in s.loaded.movelist.moves:
         for line in m.sample_lines.get(lang, []):
             assert check_items(line) == [], (error, lang, m.id, line)
+
+
+def ids(h: list[dict[str, str]]) -> set[str]:
+    return {x["move"] for x in h}
+
+
+def test_exchanging_a_bundle_is_offered_only_after_bundles_were_shown(ctx: CallContext) -> None:
+    s = start_session("SUB-SFL", "en", seed=5)
+    take_turn(s, text=hints(s)[0]["line"], context=ctx)  # pose the problem
+    assert "exchange_ten" not in ids(hints(s)) and "check_back" not in ids(hints(s))
+    take_turn(s, material="bundles", context=ctx)
+    assert "exchange_ten" in ids(hints(s)) or "check_back" in ids(hints(s))
+
+
+def test_a_rule_repeated_louder_follows_the_rule_and_scolding_comes_last(
+    ctx: CallContext,
+) -> None:
+    s = start_session("SUB-SFL", "en", seed=5)
+    take_turn(s, text=hints(s)[0]["line"], context=ctx)
+    mistakes = []
+    for _ in range(4):
+        h = hints(s)
+        m = next(x for x in h if quality_of(s, x["move"]) == "common_mistake")
+        mistakes.append(m["move"])
+        take_turn(s, text=m["line"], context=ctx)
+    assert mistakes[0] != "repeat_rule_louder"  # "I said it already" needs the rule told first
+    assert "scold" not in mistakes[:2]  # scolding is the last resort
+    assert all(a != b for a, b in zip(mistakes, mistakes[1:], strict=False)), mistakes
+
+
+def test_a_different_problem_drops_lines_that_carry_the_example_numbers(
+    ctx: CallContext,
+) -> None:
+    from engine.simulator import Problem
+
+    s = start_session("SUB-SFL", "en", seed=5)
+    take_turn(s, text=hints(s)[0]["line"], context=ctx)
+    other = next(p for p in s.loaded.config.problems if (p.a, p.b) != (52, 29))
+    s.state = type(s.state)(
+        **{**s.state.__dict__, "problem": Problem(other.kind, other.a, other.b)}
+    )
+    assert all(not any(c.isdigit() for c in x["line"]) for x in hints(s))

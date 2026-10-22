@@ -199,3 +199,16 @@ export async function appendTurn(
 export async function finishTranscript(rowId: number, card: FeedbackCard, store: CohortDb = db): Promise<void> {
   await store.transcripts.update(rowId, { ended: true, card, endedAt: Date.now() });
 }
+
+/** The server says why it used a template line ("template:api_error" and the like). Only an
+ *  interrupted call is a slow connection; the others are said as what they are. */
+export function simpleReplyReason(
+  fallback: string | null,
+  source: string,
+): "practice.slow" | "practice.held" | "practice.model_off" | null {
+  if (!fallback && source !== "template") return null;
+  const reason = (fallback ?? "").split(":")[1] ?? "";
+  if (reason === "api_error") return "practice.slow";
+  if (reason === "no_recording") return "practice.model_off";
+  return "practice.held";
+}

@@ -104,6 +104,7 @@ moves:
   quiet: false
   quality: strong
   strategy: true
+  after: [show_bundles]
   sample_lines:
     en:
     - You only have 2 loose sticks. Open one bundle and exchange it for ten sticks.
@@ -133,6 +134,7 @@ moves:
   quiet: false
   quality: strong
   strategy: true
+  after: [show_bundles, exchange_ten]
   sample_lines:
     en:
     - Let us check by adding back. What is 23 plus 29?
@@ -249,6 +251,7 @@ moves:
   quiet: false
   quality: strong
   strategy: true
+  after: [ask_explain, show_bundles]
   label:
     en: Subtracts the tens, then the ones, bridging through a ten
     hi: पहले दहाइयाँ, फिर इकाइयाँ घटाना, दस के पुल से
@@ -278,6 +281,7 @@ moves:
   quiet: false
   quality: strong
   strategy: true
+  after: [ask_explain, show_bundles]
   label:
     en: Subtracts a nearby ten, then adjusts
     hi: पास का दस घटाकर फिर सुधारना
@@ -307,6 +311,7 @@ moves:
   quiet: false
   quality: common_mistake
   strategy: false
+  after: [tell_rule]
   label:
     en: Repeats the rule again, louder
     hi: नियम को और ज़ोर से दोहराना

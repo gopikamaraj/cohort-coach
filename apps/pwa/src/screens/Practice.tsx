@@ -20,6 +20,7 @@ import {
   PracticeError,
   postTurn,
   scenarioFor,
+  simpleReplyReason,
   startTranscript,
   type CreatedSession,
   type FeedbackCard,
@@ -55,7 +56,8 @@ interface TurnView {
   child: string;
   speaker: string | null;
   badge: string;
-  slow: boolean;
+  /** Why a simple reply was used, if one was: the key of the message to show. */
+  why: "practice.slow" | "practice.held" | "practice.model_off" | null;
   layers: Layers;
   textEn: string;
   written: number | null;
@@ -167,8 +169,8 @@ export default function Practice() {
   };
 
   const applyTurn = async (r: TurnResponse, shown: string) => {
-    const slow = Boolean(r.layers.guardrails.fallback_used) || r.layers.output.source === "template";
-    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, slow, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [] }]);
+    const why = simpleReplyReason(r.layers.guardrails.fallback_used, r.layers.output.source);
+    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, why, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [] }]);
     setSpeaker(r.speaker);
     setFaces(Object.fromEntries((r.children ?? []).map((c) => [c.name, c.expression])));
     if (r.turn === 1) setGoalOpen(false);
@@ -535,7 +537,7 @@ export default function Practice() {
                 <em>{tr("practice.silent")}</em>
               )}
             </p>
-            {t.slow ? <p className="muted" role="status">{tr("practice.slow")}</p> : null}
+            {t.why ? <p className="muted" role="status">{tr(t.why)}</p> : null}
             {t.child && t.written !== null ? (
               <p className="slate" data-testid={`slate-${t.n}`}>
                 {tr("practice.slate", { who: t.speaker ?? "", n: t.written })}

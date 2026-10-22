@@ -686,5 +686,9 @@
   "sprite.tpl.sub_mangoes": "There are {a} mangoes. {b} of them are eaten. How many mangoes are left?",
   "sprite.tpl.sub_pencils": "There are {a} pencils. {b} of them are lost. How many pencils are left?",
   "sprite.tpl.share_chapati": "A bar is cut into {a} equal pieces and {b} more pieces. Show the parts.",
-  "sprite.spec_title": "What the page drew (the sprite spec)"
+  "sprite.spec_title": "What the page drew (the sprite spec)",
+  "practice.held": "A check held back the first reply, so a simple reply was used.",
+  "practice.model_off": "The AI model is not switched on here, so a simple reply was used.",
+  "practice.tray_help": "Tap a tool to show it to the children, as if you held it up. Bundles of ten and loose sticks show the number as tens and ones, and help a child see how to open a ten; that lowers how strongly the children hold the mistake. The place-value chart is for reference only: it does not change what the children do yet.",
+  "nav.more": "More"
 }
