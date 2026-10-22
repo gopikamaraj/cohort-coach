@@ -1,0 +1,34 @@
+{
+ "id": "fractions-demo",
+ "version": 1,
+ "subject": "numeracy",
+ "status": "draft",
+ "items": [
+  "chapati"
+ ],
+ "mats": [
+  "bar_model"
+ ],
+ "layouts": [
+  "bar_model",
+  "row"
+ ],
+ "expressions": [
+  "neutral",
+  "thinking",
+  "got_it"
+ ],
+ "templates": [
+  {
+   "id": "share_chapati",
+   "operation": "parts",
+   "item": "chapati",
+   "layout": "bar_model",
+   "text_key": "sprite.tpl.share_chapati"
+  }
+ ],
+ "i18n_keys": [
+  "sprite.tpl.share_chapati"
+ ],
+ "review": "Draft: proves a new pack needs JSON only. Not approved, not enabled."
+}

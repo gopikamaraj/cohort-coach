@@ -1,0 +1,59 @@
+{
+ "id": "chapati",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "circle",
+   "cx": 12,
+   "cy": 12,
+   "r": 10,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "circle",
+   "cx": 8,
+   "cy": 9,
+   "r": 1,
+   "fill": "item_b"
+  },
+  {
+   "shape": "circle",
+   "cx": 15,
+   "cy": 8,
+   "r": 1,
+   "fill": "item_b"
+  },
+  {
+   "shape": "circle",
+   "cx": 14,
+   "cy": 15,
+   "r": 1,
+   "fill": "item_b"
+  },
+  {
+   "shape": "circle",
+   "cx": 8,
+   "cy": 15,
+   "r": 1,
+   "fill": "item_b"
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.chapati"
+ },
+ "topics": [
+  "fractions"
+ ]
+}
