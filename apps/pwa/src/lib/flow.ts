@@ -15,6 +15,17 @@ export interface FlowMessage {
   url: string | null;
   url_label: string | null;
   audio: string | null;
+  /** A sprite scene by reference; the app draws it itself, so it also works offline. */
+  scene: SceneRef | null;
+  alt: string | null;
+}
+export interface SceneRef {
+  pack: string;
+  layout: string;
+  item: string | null;
+  args: Record<string, number | number[]>;
+  seed: number;
+  palette: string;
 }
 export interface FlowTurn {
   lang: "en" | "hi" | "ta";

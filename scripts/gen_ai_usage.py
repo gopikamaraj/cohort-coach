@@ -30,6 +30,7 @@ FALLBACKS: dict[int, str] = {
     7: "fail goes to a human; nothing is released",
     8: "the teacher types the answers",
     10: "the move's own template line",
+    11: "no draft: nothing is shown; the author is told which rule failed",
 }
 
 

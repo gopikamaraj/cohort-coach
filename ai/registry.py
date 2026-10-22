@@ -1,4 +1,4 @@
-"""The single source of truth for the 8 Claude calls.
+"""The single source of truth for the Claude calls.
 
 The README "Where AI is used" section (`python tasks.py readme`), the judge-mode AI-layers overlay
 and `GET /api/judge/ai-map` all read this file. Each entry says what happens in the five layers:
@@ -242,6 +242,40 @@ CALLS: tuple[CallSpec, ...] = (
         output="A teacher line labelled 'AI playing the teacher (demo only)'; never shown to a real teacher, who hears the reviewed model run.",
         metadata_only=True,
         live_turn=True,
+    ),
+    CallSpec(
+        id=11,
+        key="c11_sprite_author",
+        name="Sprite item author (offline)",
+        purpose="Draft the JSON spec of one new sprite item (a counted object) for a topic pack, at authoring time only.",
+        model_env="MODEL_SPRITE",
+        when="offline authoring",
+        output_model=schemas.SpriteItemDraft,
+        input_fields=("brief", "existing_item_ids"),
+        validators=(
+            "id not taken",
+            "grammar whitelist",
+            "size budget",
+            "no text",
+            "palette slots only",
+            "contact tile renders",
+            "prefilter",
+            "no check item",
+        ),
+        gates=(
+            "code validators",
+            "pre-filter",
+            "call 7 (words)",
+            "coach approval",
+            "officer enablement",
+        ),
+        eval_id="eval_sprite_author",
+        eval_bar="pending: no live run yet; every draft must pass all code gates before a coach sees it",
+        input="A short brief for one object (for example 'a mango') and the ids of the items that exist.",
+        processing="Claude drafts one item as a list of whitelisted shapes with integer numbers and palette-slot colours, plus a short English alt text.",
+        guardrails="Schema; shape and attribute whitelist; integer numbers; palette slots only (no hex); size budget; no text; the item must render at counts 1 and 5 in every palette and as a PNG; pre-filter and no-check-item checks on the words; call 7 on the words; a rejected draft returns the failing rule to the author and is never shown; then a coach approves and a programme officer enables.",
+        evaluation="Pending a live run. Until then the gates are proven by tests: each rule has a failing case.",
+        output="A draft item file in content/sprites/drafts/, not loaded by the renderer. It reaches a teacher only inside an enabled pack version. No art is generated at run time.",
     ),
 )
 

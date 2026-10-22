@@ -10,6 +10,8 @@ from services.api.channels.base import Message
 
 def to_text(m: Message) -> str:
     lines = [m.text]
+    if m.alt:  # the picture goes as a PNG once the Cloud API sender exists
+        lines.append(f"[{m.alt}]")
     if m.url:
         lines.append(f"{m.url_label}: {m.url}")
     lines += [f"{i}. {b.label}" for i, b in enumerate(m.buttons, 1)]

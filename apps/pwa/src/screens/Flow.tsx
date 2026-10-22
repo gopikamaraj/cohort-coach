@@ -1,5 +1,6 @@
 // The step-by-step screen: renders the steps the server sends (message, choice, link) and posts
 // answers back. Every word and number comes from the server, the same as in the Telegram bot.
+import { SceneView } from "../components/SceneView";
 import { useCallback, useEffect, useState } from "react";
 import { useApp } from "../state";
 import { consentFromServer, currentTurn, sendAnswer, type FlowTurn } from "../lib/flow";
@@ -53,6 +54,7 @@ export default function Flow() {
       {!turn && !failed ? <p className="muted">{tr("flow.loading")}</p> : null}
       {turn?.messages.map((m, i) => (
         <div key={`${m.step_id}-${i}`} className="panel" data-testid={`flow-${m.step_id}`}>
+          {m.scene ? <SceneView scene={m.scene} label={m.alt ?? ""} /> : null}
           <p style={{ whiteSpace: "pre-line" }}>{m.text}</p>
           {m.url ? (
             <a className="btn btn-secondary" href={m.url} data-testid="flow-link">

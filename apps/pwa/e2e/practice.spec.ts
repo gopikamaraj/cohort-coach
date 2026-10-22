@@ -184,10 +184,10 @@ test("offline, practice says so and sends nothing; everything else still opens",
   await expect(page.getByTestId("form-A")).toBeVisible();
 });
 
-test("the AI map shows 9 calls by 5 layers and the audit trail shows metadata only", async ({ page }) => {
+test("the AI map shows 10 calls by 5 layers and the audit trail shows metadata only", async ({ page }) => {
   await rehearse(page, []);
   await page.goto("/#/aimap");
-  await expect(page.getByTestId("ai-map").locator("tbody tr")).toHaveCount(9); // calls 1 to 8 and 10 (call 9 arrives in P10)
+  await expect(page.getByTestId("ai-map").locator("tbody tr")).toHaveCount(10); // calls 1 to 8, 10 and 11 (call 9 arrives in P10)
   await expect(page.getByTestId("ai-map").locator("thead th")).toHaveCount(6);
   await page.goto("/#/audit");
   await expect(page.getByTestId("audit-table")).toBeVisible();

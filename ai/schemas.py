@@ -113,3 +113,44 @@ class SheetRead(BaseModel):
 
     reads: list[str]
     confidences: list[float]
+
+
+SpriteSlot = Literal[
+    "skin", "hair", "cloth_a", "cloth_b", "accent", "item_a", "item_b", "mat", "ink", "none"
+]
+
+
+class SpritePart(BaseModel):
+    """One shape of an item. Integers only; colours are palette slot names, never hex."""
+
+    shape: Literal["circle", "ellipse", "rect", "line", "polyline", "polygon", "path"]
+    cx: int | None = None
+    cy: int | None = None
+    r: int | None = None
+    rx: int | None = None
+    ry: int | None = None
+    x: int | None = None
+    y: int | None = None
+    width: int | None = None
+    height: int | None = None
+    x1: int | None = None
+    y1: int | None = None
+    x2: int | None = None
+    y2: int | None = None
+    points: str | None = Field(default=None, max_length=200)
+    d: str | None = Field(default=None, max_length=400)
+    fill: SpriteSlot | None = None
+    stroke: SpriteSlot | None = None
+    stroke_width: int | None = None
+    transform: str | None = Field(default=None, max_length=80)
+
+
+class SpriteItemDraft(BaseModel):
+    """Call 11 (offline authoring): a draft item spec. Never shown to a teacher before the gates,
+    a coach and an officer."""
+
+    id: str = Field(max_length=32)
+    alt_en: str = Field(max_length=60)
+    topics: list[str] = Field(max_length=6)
+    parts: list[SpritePart] = Field(max_length=14)
+    note: str = Field(default="", max_length=200)

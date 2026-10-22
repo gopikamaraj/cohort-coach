@@ -15,6 +15,7 @@ DEFAULT_MODELS: dict[str, str] = {
     "MODEL_DIGEST": "claude-haiku-5-5",
     "MODEL_POINTER": "claude-haiku-5-5",  # call 9 (reflection pointer), built in P10
     "MODEL_DEMO_TEACHER": "claude-haiku-5-5",  # call 10, judge mode only
+    "MODEL_SPRITE": "claude-sonnet-5-5",  # call 11 (sprite item authoring), offline only
     "MODEL_CHECK": "claude-haiku-5-5",
     "MODEL_READ": "claude-haiku-5-5",
     "MODEL_READ_RETRY": "claude-sonnet-5-5",
@@ -54,6 +55,7 @@ POLICIES: dict[str, CallPolicy] = {
     "c07_checker": CallPolicy(12, 1, "low", 800, thinking="off"),
     "c08_answer_reading": CallPolicy(timeout_s=20, max_retries=1, effort="low", max_tokens=600),
     "c10_demo_teacher": CallPolicy(10, 1, "low", 400, thinking="off"),
+    "c11_sprite_author": CallPolicy(timeout_s=60, max_retries=2, effort="medium", max_tokens=2500),
 }
 
 

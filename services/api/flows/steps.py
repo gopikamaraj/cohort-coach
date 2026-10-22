@@ -27,6 +27,19 @@ class LinkSpec(BaseModel):
     url: str | None = None
 
 
+class SceneRef(BaseModel):
+    """A picture by reference: the pack it comes from, the layout and its numbers. Every channel
+    draws it from the same data (the web app in the browser, the bot as a PNG), so the count in the
+    picture is the count the flow chose."""
+
+    pack: str
+    layout: str
+    item: str | None = None
+    args: dict[str, int | list[int]] = Field(default_factory=dict)
+    seed: int = 0
+    palette: str = "default"
+
+
 class Line(BaseModel):
     copy: str
     params: dict[str, str | int] = Field(default_factory=dict)
@@ -45,6 +58,7 @@ class Step(BaseModel):
     explanation_copy: str | None = None
     simulated: bool = False
     expects: dict[str, int] = Field(default_factory=dict)  # photo_batch / number_grid: sizes
+    scene: SceneRef | None = None  # a sprite scene shown with the text
 
     def option_ids(self) -> list[str]:
         return [o.id for o in self.options]
@@ -60,6 +74,8 @@ class Step(BaseModel):
             keys.add(self.badge)
         if self.explanation_copy:
             keys.add(self.explanation_copy)
+        if self.scene:
+            keys.add(f"sprite.scene.{self.scene.layout}")
         return keys
 
 

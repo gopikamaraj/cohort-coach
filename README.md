@@ -27,6 +27,7 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 | 7 | Output checker | `claude-haiku-5-5` | everything headed to a teacher |
 | 8 | Answer reading | `claude-haiku-5-5` | per sheet photo |
 | 10 | Demo teacher (judge mode only) | `claude-haiku-5-5` | live Watch run in judge mode |
+| 11 | Sprite item author (offline) | `claude-sonnet-5-5` | offline authoring |
 
 **Call 1: Child voices.** Say one short line as a simulated Grade 3 child in the Practice Class.
 
@@ -99,6 +100,14 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 - *guardrails*: The move id must be on the approved list for the style; every number must come from the scenario's allowed set; no answer leak beyond the style; no check item; on any failure the move's template line is used. The server refuses the call outside a judge session.
 - *evaluation*: 20 runs per style: approved ids 100%, numbers in the allowed set, and the experienced runs cover more rubric points than the struggling runs in at least 18 of 20 pairs (rubric coverage is internal to the eval, never shown to a teacher).
 - *output*: A teacher line labelled 'AI playing the teacher (demo only)'; never shown to a real teacher, who hears the reviewed model run.
+
+**Call 11: Sprite item author (offline).** Draft the JSON spec of one new sprite item (a counted object) for a topic pack, at authoring time only.
+
+- *input*: A short brief for one object (for example 'a mango') and the ids of the items that exist.
+- *processing*: Claude drafts one item as a list of whitelisted shapes with integer numbers and palette-slot colours, plus a short English alt text.
+- *guardrails*: Schema; shape and attribute whitelist; integer numbers; palette slots only (no hex); size budget; no text; the item must render at counts 1 and 5 in every palette and as a PNG; pre-filter and no-check-item checks on the words; call 7 on the words; a rejected draft returns the failing rule to the author and is never shown; then a coach approves and a programme officer enables.
+- *evaluation*: Pending a live run. Until then the gates are proven by tests: each rule has a failing case.
+- *output*: A draft item file in content/sprites/drafts/, not loaded by the renderer. It reaches a teacher only inside an enabled pack version. No art is generated at run time.
 
 Gates: code validators → rule-based pre-filter → output checker (call 7) → human approval (track content, method cards) → teacher flag. Badges: *Checked ✓* after the first two automatic gates, *Checked ✓ · Reviewed ✓* after a human approves too. Details: [docs/guardrails.md](docs/guardrails.md), [docs/architecture.md](docs/architecture.md). Live map: `GET /api/judge/ai-map`; audit trail: `GET /api/judge/audit`.
 <!-- AI-USED:END -->

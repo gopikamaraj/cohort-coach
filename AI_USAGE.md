@@ -52,6 +52,7 @@ Generated from `ai/registry.py` by `scripts/gen_ai_usage.py`. Do not edit betwee
 | 7 | Check anything headed to a teacher against the rubric and return a structured verdict. | `claude-haiku-5-5` | Candidate text, audience, language, target error, and what code already checked. | `Verdict` | gate 2 | fail goes to a human; nothing is released |
 | 8 | Read the digits a child wrote on an answer-sheet photo, blind. | `claude-haiku-5-5` | One sheet photo (base64 JPEG). It carries no name or roll number. The model is never told the expected answers. | `SheetRead` | read outside expected answers goes to the teacher | the teacher types the answers |
 | 10 | Play the teacher in a Practice Class Watch run, in an experienced or a struggling style, so a visitor can compare. | `claude-haiku-5-5` | The scenario, the approved move list, the style, the transcript so far and the engine's state of the five simulated children. | `DemoTeacherTurn` | code validators; pre-filter; judge session only | the move's own template line |
+| 11 | Draft the JSON spec of one new sprite item (a counted object) for a topic pack, at authoring time only. | `claude-sonnet-5-5` | A short brief for one object (for example 'a mango') and the ids of the items that exist. | `SpriteItemDraft` | code validators; pre-filter; call 7 (words); coach approval; officer enablement | no draft: nothing is shown; the author is told which rule failed |
 <!-- REGISTRY:END -->
 
 ## 5. What AI does not do
