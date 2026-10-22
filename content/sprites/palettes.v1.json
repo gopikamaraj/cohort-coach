@@ -1,0 +1,83 @@
+{
+ "version": 1,
+ "slots": [
+  "skin",
+  "hair",
+  "cloth_a",
+  "cloth_b",
+  "accent",
+  "item_a",
+  "item_b",
+  "mat",
+  "ink"
+ ],
+ "palettes": {
+  "default": {
+   "skin": "#e0ac80",
+   "hair": "#1b1b1b",
+   "cloth_a": "#1b4f9c",
+   "cloth_b": "#f6f1e3",
+   "accent": "#a33b2e",
+   "item_a": "#9c3d1a",
+   "item_b": "#1d5fa3",
+   "mat": "#f6f1e3",
+   "ink": "#1f2a2a"
+  },
+  "warm": {
+   "skin": "#e0ac80",
+   "hair": "#1b1b1b",
+   "cloth_a": "#9a6700",
+   "cloth_b": "#fff4dc",
+   "accent": "#a33b2e",
+   "item_a": "#8f3300",
+   "item_b": "#1c4f8c",
+   "mat": "#fff4dc",
+   "ink": "#2a1c10"
+  },
+  "cool": {
+   "skin": "#e0ac80",
+   "hair": "#1b1b1b",
+   "cloth_a": "#2a6f7f",
+   "cloth_b": "#eef4f7",
+   "accent": "#a33b2e",
+   "item_a": "#7a2d6b",
+   "item_b": "#0f5c3c",
+   "mat": "#eef4f7",
+   "ink": "#16232b"
+  },
+  "high_contrast": {
+   "skin": "#e0ac80",
+   "hair": "#000000",
+   "cloth_a": "#0b3d91",
+   "cloth_b": "#ffffff",
+   "accent": "#b00020",
+   "item_a": "#7a1f00",
+   "item_b": "#003a8c",
+   "mat": "#ffffff",
+   "ink": "#000000"
+  }
+ },
+ "skin_tones": [
+  "#f1c9a5",
+  "#e0ac80",
+  "#c68a5e",
+  "#a6693f",
+  "#7b4a2a",
+  "#5a3520"
+ ],
+ "hair_colours": [
+  "#1b1b1b",
+  "#2f1d10",
+  "#4a2c17",
+  "#6b4423",
+  "#101a2b"
+ ],
+ "cloth_colours": [
+  "#1b4f9c",
+  "#1d6b4f",
+  "#9a6700",
+  "#6b3fa0",
+  "#a33b2e",
+  "#2a6f7f"
+ ]
+}

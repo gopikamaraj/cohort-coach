@@ -1,0 +1,197 @@
+{
+ "version": 1,
+ "viewBox": [
+  0,
+  0,
+  64,
+  72
+ ],
+ "bodies": {
+  "body_a": [
+   {
+    "shape": "rect",
+    "x": 14,
+    "y": 40,
+    "width": 36,
+    "height": 30,
+    "rx": 4,
+    "fill": "cloth_a"
+   }
+  ],
+  "body_b": [
+   {
+    "shape": "path",
+    "d": "M12 70 L16 42 L48 42 L52 70 Z",
+    "fill": "cloth_a"
+   }
+  ]
+ },
+ "outfits": {
+  "outfit_a": [],
+  "outfit_b": [
+   {
+    "shape": "rect",
+    "x": 14,
+    "y": 54,
+    "width": 36,
+    "height": 5,
+    "fill": "cloth_b"
+   }
+  ],
+  "outfit_c": [
+   {
+    "shape": "polygon",
+    "points": "26,40 32,49 38,40",
+    "fill": "cloth_b",
+    "stroke": "ink",
+    "stroke_width": 1
+   }
+  ],
+  "outfit_d": [
+   {
+    "shape": "rect",
+    "x": 22,
+    "y": 56,
+    "width": 10,
+    "height": 8,
+    "fill": "cloth_b",
+    "stroke": "ink",
+    "stroke_width": 1
+   }
+  ]
+ },
+ "head": [
+  {
+   "shape": "circle",
+   "cx": 32,
+   "cy": 26,
+   "r": 15,
+   "fill": "skin",
+   "stroke": "ink",
+   "stroke_width": 1
+  }
+ ],
+ "hair_styles": {
+  "hair_a": [
+   {
+    "shape": "path",
+    "d": "M17 24c0-12 30-12 30 0c-6-5-24-5-30 0z",
+    "fill": "hair"
+   }
+  ],
+  "hair_b": [
+   {
+    "shape": "path",
+    "d": "M17 26l4-16l6 9l5-12l5 12l6-9l4 16c-8-6-22-6-30 0z",
+    "fill": "hair"
+   }
+  ],
+  "hair_c": [
+   {
+    "shape": "path",
+    "d": "M17 25c0-13 30-13 30 0c-8-6-22-6-30 0z",
+    "fill": "hair"
+   },
+   {
+    "shape": "circle",
+    "cx": 32,
+    "cy": 8,
+    "r": 6,
+    "fill": "hair"
+   }
+  ],
+  "hair_d": [
+   {
+    "shape": "path",
+    "d": "M17 28c-2-18 28-20 30-4c-8-6-18-4-24 0c-2 2-4 4-6 4z",
+    "fill": "hair"
+   }
+  ],
+  "hair_e": [
+   {
+    "shape": "path",
+    "d": "M17 22c4-10 26-10 30 0l-3 4c-7-5-17-5-24 0z",
+    "fill": "hair"
+   }
+  ],
+  "hair_f": [
+   {
+    "shape": "path",
+    "d": "M15 34C12 10 52 10 49 34L45 26C38 20 26 20 19 26Z",
+    "fill": "hair"
+   }
+  ]
+ },
+ "accessories": {
+  "none": [],
+  "glasses": [
+   {
+    "shape": "circle",
+    "cx": 26,
+    "cy": 27,
+    "r": 5,
+    "fill": "none",
+    "stroke": "ink",
+    "stroke_width": 1
+   },
+   {
+    "shape": "circle",
+    "cx": 38,
+    "cy": 27,
+    "r": 5,
+    "fill": "none",
+    "stroke": "ink",
+    "stroke_width": 1
+   },
+   {
+    "shape": "line",
+    "x1": 31,
+    "y1": 27,
+    "x2": 33,
+    "y2": 27,
+    "fill": "none",
+    "stroke": "ink",
+    "stroke_width": 1
+   }
+  ],
+  "bag": [
+   {
+    "shape": "rect",
+    "x": 44,
+    "y": 46,
+    "width": 10,
+    "height": 16,
+    "rx": 2,
+    "fill": "accent",
+    "stroke": "ink",
+    "stroke_width": 1
+   },
+   {
+    "shape": "line",
+    "x1": 46,
+    "y1": 42,
+    "x2": 44,
+    "y2": 46,
+    "fill": "none",
+    "stroke": "ink",
+    "stroke_width": 1
+   }
+  ],
+  "ribbon": [
+   {
+    "shape": "polygon",
+    "points": "24,6 32,11 24,16",
+    "fill": "accent",
+    "stroke": "ink",
+    "stroke_width": 1
+   },
+   {
+    "shape": "polygon",
+    "points": "40,6 32,11 40,16",
+    "fill": "accent",
+    "stroke": "ink",
+    "stroke_width": 1
+   }
+  ]
+ }
+}

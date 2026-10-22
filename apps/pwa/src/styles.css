@@ -957,3 +957,32 @@ h2 .icon {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* Sprites: scenes and seats scale to their box; the mouth toggles while audio plays. */
+.sprite svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sprite-speaking .mouth-closed {
+  opacity: 0;
+}
+.sprite-speaking .mouth-open {
+  opacity: 1;
+}
+.sprite-speaking .seat .mouth-open {
+  animation: sprite-talk 0.4s steps(2, jump-none) infinite;
+}
+@keyframes sprite-talk {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sprite-speaking .seat .mouth-open {
+    animation: none;
+  }
+}

@@ -1,0 +1,39 @@
+{
+ "id": "marble",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "circle",
+   "cx": 12,
+   "cy": 12,
+   "r": 10,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "path",
+   "d": "M7 12 C9 6 15 6 17 12 C15 17 9 17 7 12",
+   "fill": "none",
+   "stroke": "item_b",
+   "stroke_width": 2
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.marble"
+ },
+ "topics": [
+  "place-value",
+  "word-problem"
+ ]
+}

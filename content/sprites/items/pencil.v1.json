@@ -1,0 +1,47 @@
+{
+ "id": "pencil",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "polygon",
+   "points": "5,19 17,3 21,6 9,22",
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "polygon",
+   "points": "5,19 9,22 3,23",
+   "fill": "item_b",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 15,
+   "y1": 5,
+   "x2": 19,
+   "y2": 8,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.pencil"
+ },
+ "topics": [
+  "place-value",
+  "word-problem"
+ ]
+}

@@ -1,0 +1,65 @@
+{
+ "version": 1,
+ "personas": [
+  {
+   "id": "meena",
+   "seed": 1000,
+   "look": "auto"
+  },
+  {
+   "id": "anu",
+   "seed": 1037,
+   "look": "auto"
+  },
+  {
+   "id": "divya",
+   "seed": 1074,
+   "look": "auto"
+  },
+  {
+   "id": "nila",
+   "seed": 1111,
+   "look": "auto"
+  },
+  {
+   "id": "asha",
+   "seed": 1148,
+   "look": "auto"
+  },
+  {
+   "id": "priya",
+   "seed": 1185,
+   "look": "auto"
+  },
+  {
+   "id": "ravi",
+   "seed": 1222,
+   "look": "auto"
+  },
+  {
+   "id": "karthik",
+   "seed": 1259,
+   "look": "auto"
+  },
+  {
+   "id": "arun",
+   "seed": 1296,
+   "look": "auto"
+  },
+  {
+   "id": "vijay",
+   "seed": 1333,
+   "look": "auto"
+  },
+  {
+   "id": "mani",
+   "seed": 1370,
+   "look": "auto"
+  },
+  {
+   "id": "sunil",
+   "seed": 1407,
+   "look": "auto"
+  }
+ ]
+}

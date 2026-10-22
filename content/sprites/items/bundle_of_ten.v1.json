@@ -1,0 +1,134 @@
+{
+ "id": "bundle_of_ten",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "rect",
+   "x": 2,
+   "y": 3,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 6,
+   "y": 3,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 10,
+   "y": 3,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 14,
+   "y": 3,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 18,
+   "y": 3,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 2,
+   "y": 12,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 6,
+   "y": 12,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 10,
+   "y": 12,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 14,
+   "y": 12,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 18,
+   "y": 12,
+   "width": 3,
+   "height": 8,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 1,
+   "y": 10,
+   "width": 22,
+   "height": 4,
+   "fill": "item_b",
+   "stroke": "ink",
+   "stroke_width": 1
+  }
+ ],
+ "count": {
+  "mode": "bundle",
+  "n": 10
+ },
+ "alt": {
+  "key": "sprite.item.bundle_of_ten"
+ },
+ "topics": [
+  "place-value",
+  "word-problem"
+ ]
+}

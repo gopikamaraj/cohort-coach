@@ -1,0 +1,90 @@
+{
+ "id": "place-value-add-sub",
+ "version": 1,
+ "subject": "numeracy",
+ "status": "enabled",
+ "items": [
+  "stick",
+  "bundle_of_ten",
+  "counter",
+  "ball",
+  "mango",
+  "pencil",
+  "marble",
+  "book",
+  "ten_frame"
+ ],
+ "mats": [
+  "place_value_mat",
+  "number_line"
+ ],
+ "layouts": [
+  "row",
+  "grid_array",
+  "ten_frame",
+  "bundle_group",
+  "place_value_mat",
+  "number_line",
+  "bar_model",
+  "cross_out",
+  "scatter",
+  "two_groups"
+ ],
+ "expressions": [
+  "neutral",
+  "thinking",
+  "confused",
+  "got_it",
+  "wrong_answer",
+  "shy",
+  "distracted"
+ ],
+ "templates": [
+  {
+   "id": "add_balls",
+   "operation": "add",
+   "item": "ball",
+   "layout": "two_groups",
+   "text_key": "sprite.tpl.add_balls"
+  },
+  {
+   "id": "add_mangoes",
+   "operation": "add",
+   "item": "mango",
+   "layout": "two_groups",
+   "text_key": "sprite.tpl.add_mangoes"
+  },
+  {
+   "id": "add_pencils",
+   "operation": "add",
+   "item": "pencil",
+   "layout": "two_groups",
+   "text_key": "sprite.tpl.add_pencils"
+  },
+  {
+   "id": "sub_balls",
+   "operation": "sub",
+   "item": "ball",
+   "layout": "cross_out",
+   "text_key": "sprite.tpl.sub_balls"
+  },
+  {
+   "id": "sub_mangoes",
+   "operation": "sub",
+   "item": "mango",
+   "layout": "cross_out",
+   "text_key": "sprite.tpl.sub_mangoes"
+  },
+  {
+   "id": "sub_pencils",
+   "operation": "sub",
+   "item": "pencil",
+   "layout": "cross_out",
+   "text_key": "sprite.tpl.sub_pencils"
+  }
+ ],
+ "i18n_keys": [
+  "sprite.tpl.add_balls"
+ ],
+ "review": "TODO-HUMAN(Seema): coach approval and officer enablement. Enabled for the build and the demo only."
+}

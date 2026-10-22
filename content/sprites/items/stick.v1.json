@@ -1,0 +1,43 @@
+{
+ "id": "stick",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "rect",
+   "x": 9,
+   "y": 2,
+   "width": 6,
+   "height": 20,
+   "rx": 1,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 9,
+   "y": 2,
+   "width": 6,
+   "height": 5,
+   "rx": 1,
+   "fill": "item_b"
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.stick"
+ },
+ "topics": [
+  "place-value",
+  "word-problem"
+ ]
+}

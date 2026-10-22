@@ -1,0 +1,54 @@
+{
+ "id": "book",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "rect",
+   "x": 4,
+   "y": 3,
+   "width": 16,
+   "height": 18,
+   "rx": 1,
+   "fill": "item_a",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 8,
+   "y1": 3,
+   "x2": 8,
+   "y2": 21,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "rect",
+   "x": 11,
+   "y": 7,
+   "width": 6,
+   "height": 3,
+   "fill": "item_b",
+   "stroke": "ink",
+   "stroke_width": 1
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.book"
+ },
+ "topics": [
+  "place-value",
+  "word-problem"
+ ]
+}

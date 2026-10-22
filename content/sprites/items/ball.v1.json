@@ -1,0 +1,65 @@
+{
+ "id": "ball",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "circle",
+   "cx": 12,
+   "cy": 12,
+   "r": 10,
+   "fill": "grad:shine",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "path",
+   "d": "M4 8 C9 12 9 16 4 16",
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "path",
+   "d": "M20 8 C15 12 15 16 20 16",
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.ball"
+ },
+ "topics": [
+  "place-value",
+  "word-problem"
+ ],
+ "defs": [
+  {
+   "type": "radialGradient",
+   "id": "shine",
+   "cx": 9,
+   "cy": 8,
+   "r": 14,
+   "stops": [
+    {
+     "offset": 0,
+     "color": "item_b"
+    },
+    {
+     "offset": 100,
+     "color": "item_a"
+    }
+   ]
+  }
+ ]
+}

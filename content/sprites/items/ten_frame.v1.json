@@ -1,0 +1,89 @@
+{
+ "id": "ten_frame",
+ "version": 1,
+ "category": "item",
+ "viewBox": [
+  0,
+  0,
+  24,
+  24
+ ],
+ "parts": [
+  {
+   "shape": "rect",
+   "x": 2,
+   "y": 6,
+   "width": 20,
+   "height": 12,
+   "fill": "mat",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 6,
+   "y1": 6,
+   "x2": 6,
+   "y2": 18,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 10,
+   "y1": 6,
+   "x2": 10,
+   "y2": 18,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 14,
+   "y1": 6,
+   "x2": 14,
+   "y2": 18,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 18,
+   "y1": 6,
+   "x2": 18,
+   "y2": 18,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "line",
+   "x1": 2,
+   "y1": 12,
+   "x2": 22,
+   "y2": 12,
+   "fill": "none",
+   "stroke": "ink",
+   "stroke_width": 1
+  },
+  {
+   "shape": "circle",
+   "cx": 4,
+   "cy": 9,
+   "r": 1,
+   "fill": "item_a"
+  }
+ ],
+ "count": {
+  "mode": "single"
+ },
+ "alt": {
+  "key": "sprite.item.ten_frame"
+ },
+ "topics": [
+  "place-value"
+ ]
+}

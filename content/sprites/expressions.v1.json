@@ -1,0 +1,286 @@
+{
+ "version": 1,
+ "parts": {
+  "eyes": {
+   "dots": [
+    {
+     "shape": "circle",
+     "cx": 26,
+     "cy": 27,
+     "r": 2,
+     "fill": "ink"
+    },
+    {
+     "shape": "circle",
+     "cx": 38,
+     "cy": 27,
+     "r": 2,
+     "fill": "ink"
+    }
+   ],
+   "wide": [
+    {
+     "shape": "circle",
+     "cx": 26,
+     "cy": 27,
+     "r": 3,
+     "fill": "ink"
+    },
+    {
+     "shape": "circle",
+     "cx": 38,
+     "cy": 27,
+     "r": 3,
+     "fill": "ink"
+    }
+   ],
+   "closed": [
+    {
+     "shape": "line",
+     "x1": 23,
+     "y1": 27,
+     "x2": 29,
+     "y2": 27,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    },
+    {
+     "shape": "line",
+     "x1": 35,
+     "y1": 27,
+     "x2": 41,
+     "y2": 27,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ],
+   "side": [
+    {
+     "shape": "circle",
+     "cx": 28,
+     "cy": 27,
+     "r": 2,
+     "fill": "ink"
+    },
+    {
+     "shape": "circle",
+     "cx": 40,
+     "cy": 27,
+     "r": 2,
+     "fill": "ink"
+    }
+   ],
+   "happy": [
+    {
+     "shape": "path",
+     "d": "M23 28 Q26 24 29 28",
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 2
+    },
+    {
+     "shape": "path",
+     "d": "M35 28 Q38 24 41 28",
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 2
+    }
+   ]
+  },
+  "brows": {
+   "none": [],
+   "flat": [
+    {
+     "shape": "line",
+     "x1": 23,
+     "y1": 21,
+     "x2": 29,
+     "y2": 21,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    },
+    {
+     "shape": "line",
+     "x1": 35,
+     "y1": 21,
+     "x2": 41,
+     "y2": 21,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ],
+   "raised": [
+    {
+     "shape": "line",
+     "x1": 23,
+     "y1": 19,
+     "x2": 29,
+     "y2": 19,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    },
+    {
+     "shape": "line",
+     "x1": 35,
+     "y1": 19,
+     "x2": 41,
+     "y2": 19,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ],
+   "worried": [
+    {
+     "shape": "line",
+     "x1": 23,
+     "y1": 23,
+     "x2": 29,
+     "y2": 20,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    },
+    {
+     "shape": "line",
+     "x1": 35,
+     "y1": 20,
+     "x2": 41,
+     "y2": 23,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ]
+  },
+  "mouth_closed": {
+   "line": [
+    {
+     "shape": "line",
+     "x1": 27,
+     "y1": 34,
+     "x2": 37,
+     "y2": 34,
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ],
+   "smile": [
+    {
+     "shape": "path",
+     "d": "M26 33 Q32 39 38 33",
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ],
+   "frown": [
+    {
+     "shape": "path",
+     "d": "M26 36 Q32 31 38 36",
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ],
+   "small": [
+    {
+     "shape": "circle",
+     "cx": 32,
+     "cy": 35,
+     "r": 1,
+     "fill": "ink"
+    }
+   ],
+   "wavy": [
+    {
+     "shape": "path",
+     "d": "M26 34 Q29 31 32 34 Q35 37 38 34",
+     "fill": "none",
+     "stroke": "ink",
+     "stroke_width": 1
+    }
+   ]
+  },
+  "mouth_open": {
+   "o": [
+    {
+     "shape": "ellipse",
+     "cx": 32,
+     "cy": 35,
+     "rx": 3,
+     "ry": 4,
+     "fill": "ink"
+    }
+   ],
+   "wide": [
+    {
+     "shape": "path",
+     "d": "M26 33 Q32 42 38 33 Z",
+     "fill": "ink"
+    }
+   ],
+   "flat_open": [
+    {
+     "shape": "rect",
+     "x": 28,
+     "y": 32,
+     "width": 8,
+     "height": 5,
+     "rx": 2,
+     "fill": "ink"
+    }
+   ]
+  }
+ },
+ "expressions": {
+  "neutral": {
+   "eyes": "dots",
+   "brows": "none",
+   "mouth_closed": "line",
+   "mouth_open": "o"
+  },
+  "thinking": {
+   "eyes": "side",
+   "brows": "flat",
+   "mouth_closed": "small",
+   "mouth_open": "o"
+  },
+  "confused": {
+   "eyes": "wide",
+   "brows": "worried",
+   "mouth_closed": "wavy",
+   "mouth_open": "flat_open"
+  },
+  "got_it": {
+   "eyes": "happy",
+   "brows": "raised",
+   "mouth_closed": "smile",
+   "mouth_open": "wide"
+  },
+  "wrong_answer": {
+   "eyes": "dots",
+   "brows": "worried",
+   "mouth_closed": "frown",
+   "mouth_open": "flat_open"
+  },
+  "shy": {
+   "eyes": "closed",
+   "brows": "none",
+   "mouth_closed": "small",
+   "mouth_open": "o"
+  },
+  "distracted": {
+   "eyes": "side",
+   "brows": "none",
+   "mouth_closed": "line",
+   "mouth_open": "flat_open"
+  }
+ }
+}

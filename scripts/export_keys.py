@@ -20,6 +20,7 @@ from engine.export_keys import (  # noqa: E402
     render,
 )
 from engine.forms import PILOT_FORMS  # noqa: E402
+from services.api.sprites.golden import golden  # noqa: E402
 
 TARGETS = {
     ROOT / "apps/pwa/src/generated/answer_keys.json": lambda: render(
@@ -27,6 +28,7 @@ TARGETS = {
     ),
     ROOT / "tests/fixtures/diagnosis_cases.json": lambda: render(build_diagnosis_cases()),
     ROOT / "tests/fixtures/stage_cases.json": lambda: render(build_stage_cases()),
+    ROOT / "tests/fixtures/sprite_golden.json": lambda: render(golden()),
 }
 
 
