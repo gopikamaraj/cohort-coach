@@ -322,6 +322,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | --- | --- | --- | --- |
 | P0 | Tue 20 Oct | P01, P02, P17 (scene steps) | Real scenarios; ease of use; technical strength (one back end, many channels); the demo link |
 
+**Design reference.** Screens T1, X1, X6, X15, X16, X17, X18, X19, X28, J1 (shell, onboarding, profile, chat steps): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
+
 **Goal.** One back end, thin channels. Build the channel-neutral flow engine that every teacher and mentor flow runs on; two adapters that render its steps (Telegram and the PWA); a WhatsApp stub that passes the same contract; and the PWA shell with judge mode. From here on, a flow is written once and works on both channels.
 
 **Read first.** `DECISIONS.md` (2026-10-19 · Two channels, one back end); design §Screens by role and its design rules, reading T1–T4, T6 and M1–M2 as flows; design §Low connectivity; `CLAUDE.md` §4 (rules 2, 5, 6, 14), §6, §9, §11 (UI).
@@ -378,6 +380,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | --- | --- | --- | --- | --- |
 | P0 | Wed 21 Oct | P04, P05, P17 (faces, tray) | Staging live | AI use in layers (visible); Guardrails (visible); User testing |
 
+**Design reference.** Screens T5, X5, X9, X10, X27 (Practice Class, AI layers, feedback and review, materials tray): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
+
 **Goal.** Teachers can rehearse in text on a phone; judges can switch on an overlay that shows each turn's five layers; a staging URL exists for test round 3.
 
 **Read first.** Design §Practice Class (What the teacher sees and hears); design §Submission kit (video 1:20–2:05); `CLAUDE.md` §7 (badges).
@@ -413,6 +417,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | Priority | Target | Depends on | Judged on |
 | --- | --- | --- | --- |
 | P0 (hero) | Thu 22 Oct | P04, P06 | AI use in layers; Real scenarios |
+
+**Design reference.** Screens T5 (the mic panel and typed fallback): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
 
 **Goal.** The Practice Class works by voice in Hindi, Tamil and English with five distinct child voices, fast enough for live turns, falling back to text automatically.
 
@@ -453,6 +459,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | Priority | Target | Depends on | Judged on |
 | --- | --- | --- | --- |
 | P0 photo read · P1 importers | Fri 23 Oct | P01, P03, P05 | AI use (vision); Guardrails (blind read, confirm); Real scenarios (offline queues in both channels); User testing (real pilot data) |
+
+**Design reference.** Screens T2, X7, T3, X8, X3, X4 (check entry, photo capture, error cards and stage lines, demo modes): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
 
 **Goal.** One check flow, two channels. The teacher sends sheet photos in roll order through the bot or the PWA; both queue them if she is offline. Claude reads each box blind; code accepts only plausible, confident reads and the flow asks her to confirm the rest; photos are deleted; only class counts are stored; her error cards (T3) follow in the same channel. Plus importers for a state past-exam CSV and the pilot's hand-keyed CSV.
 
@@ -535,6 +543,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | --- | --- | --- | --- |
 | P0 | Sat 24 Oct | P03 (P11 method cards optional) | Guardrails (human review, rejection loop); AI use |
 
+**Design reference.** Screens P3 (review queue and the two keys): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
+
 **Goal.** Opus drafts a track (6 voice-lesson scripts and a model-lesson script) from the error definition, templates and up to 3 approved method cards; code fills class-number slots and checks arithmetic; pre-filter and call 7 check; reviewers edit, approve or reject with a structured reason in P3; approved lessons render to OGG/Opus with a badge; rejections feed call 7.
 
 **Read first.** Design call 5; design §Guardrails and privacy; screen P3; design §Making this stand out (rejection feedback); design §Team tasks (Seema reviews); `CLAUDE.md` §7.
@@ -603,6 +613,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | --- | --- | --- | --- |
 | P0 | Sun 25 Oct | P05, P08, P09 | Real scenarios (voice notes on cheap phones); User testing (taps, reflections); the demo (judges join) |
 
+**Design reference.** Screens T4, X11, X12, T6, X14 (track, lessons, replies, next term, programme): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
+
 **Goal.** Everything a teacher does after the check runs as flows on both channels: her track (T4), lessons with the badge line, the model run, the Practice Class link, two taps after each lesson, an optional voice reflection that gets one approved next step back, and her next-term result (T6). Her time stays within the cap.
 
 **Read first.** `DECISIONS.md` (2026-10-19 entries); design §Decisions (Channel); design §Low connectivity (Voice lessons); screens T4 and T6; `CLAUDE.md` §4 (rules 11, 12, 14), §7 (call 9), §8 (Telegram), §13.
@@ -641,6 +653,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | Priority | Target | Depends on | Judged on |
 | --- | --- | --- | --- |
 | P0 (steps 7–11) · P1 (12–14) · P2 (15–16) | Sun 25 Oct | P02, P07, P09, P10 | AI use (calls 4 and 6); the reinforcing loop in the story; G1 continuous guidance; G4 visibility |
+
+**Design reference.** Screens M1, M2, X20, X21, X22, X13 (mentor pages, coach pages, cohort chat): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
 
 **Goal.** Teachers in a cohort get a small, moderated, pseudonymous space to talk, and mentors and coaches get pages that show where each recording, post and cohort stands. A mentor's recording reaches teachers only after a coach approves it. The mentor loop (steps 1–6): a mentor records her method by voice, Claude turns it into a cited method card she approves, and that card informs the next track draft; mentors are found by an exact query; the weekly digest is a stretch goal.
 
@@ -699,6 +713,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | Priority | Target | Depends on | Gate | Judged on |
 | --- | --- | --- | --- | --- |
 | P0 | Mon 26 Oct | P02, P05, P09, P10, P11 | Gate 2 | Technical strength (honest statistics); Guardrails (aggregates only); G4 visibility; the demo story |
+
+**Design reference.** Screens P1, P2, P4, X1, X2, X23, X24, X25, X26 (officer views, landing page, tour, content library, roles, visit brief): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
 
 **Goal.** Coaches and officers each work from one weekly batch. Officers see the error map, cohorts, a funnel from delivery to change with every number labelled by source, and track results with honest uncertainty. CRCs can get an optional visit brief. Judges can advance to Term 2 and watch one track work and one fail, computed live.
 
@@ -868,6 +884,8 @@ Never cut: judge mode, with the landing page, the role dialog and the guided tou
 | Priority | Target | Depends on | Judged on |
 | --- | --- | --- | --- |
 | P0 | Thu 29 – Fri 30 Oct | P15 | All five judged areas |
+
+**Design reference.** Screens R1, R2, R3, R4 (roadmap cards): prompts in `docs/design/stitch/prompts/`, theme `docs/design/stitch/DESIGN.md`, exports in `docs/design/stitch/exports/<ID>/` (CLAUDE.md rule 18).
 
 **Goal.** Everything a judge opens tells the same true story, with every number traceable.
 

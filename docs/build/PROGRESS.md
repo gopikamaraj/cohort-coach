@@ -45,6 +45,17 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | PNG path (`resvg-py`) and channels | ✅ built | `tests/sprites/test_channels.py` |
 | Contact sheet | ✅ generated | `docs/evidence/sprites/contact-sheet.png`, `.json` |
 
+## Design: Stitch prompts (23 Oct, `docs/build/reports/STITCH-PROMPTS.md`)
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| Theme and shared header | ✅ written | `docs/design/stitch/DESIGN.md`, `_header.md` |
+| Inventory (45 screens: 13 design-doc, 28 added, 4 roadmap) | ✅ written | `docs/design/stitch/INVENTORY.md` |
+| One prompt per screen | ✅ written, checker passes | `docs/design/stitch/prompts/`, `python scripts/check_stitch_prompts.py` |
+| Telegram message mockups | ✅ written; hi and ta labels need Shivani | `docs/design/stitch/TELEGRAM-MESSAGES.md` |
+| Generated in Stitch, exported, reviewed | ⬜ not started (Gopi, designer) | tracking table in `docs/design/stitch/README.md` |
+| UI rebuilt from the exports | ⬜ not started | CLAUDE.md rule 18 |
+
 ## Gates
 
 | Gate | Due | Status | Evidence |
