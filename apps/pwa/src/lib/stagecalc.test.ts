@@ -5,6 +5,7 @@ import { normalizeAnswer } from "./diagnosis";
 
 interface Tags {
   missed?: boolean;
+  missed_concepts?: string[];
   unreadable?: number;
   two_answers?: number;
 }
@@ -18,7 +19,7 @@ interface ChildCase {
 interface ClassCase {
   name: string;
   children: { form: string; raw: string[]; tags: Tags }[];
-  expected: { checked: number; missed_teaching: number; not_attempted: number; by_signature: [string, string, number][]; by_stage: [string, number][] };
+  expected: { checked: number; missed_teaching: number; missed_by_concept: Record<string, number>; not_attempted: number; by_signature: [string, string, number][]; by_stage: [string, number][] };
 }
 const cases = JSON.parse(readFileSync(new URL("../../../../tests/fixtures/stage_cases.json", import.meta.url), "utf-8")) as {
   children: ChildCase[];
@@ -45,6 +46,7 @@ describe("parity with the Python engine on the stage cases", () => {
       expect(counts.checked, k.name).toBe(k.expected.checked);
       expect(counts.missed_teaching, k.name).toBe(k.expected.missed_teaching);
       expect(counts.not_attempted, k.name).toBe(k.expected.not_attempted);
+      expect(counts.missed_by_concept, k.name).toEqual(k.expected.missed_by_concept);
       expect(counts.by_signature.map((s) => [s.code, s.stage, s.n]).sort(), k.name).toEqual([...k.expected.by_signature].sort());
       expect(counts.by_stage.map((s) => [s.stage, s.n]).sort(), k.name).toEqual([...k.expected.by_stage].sort());
     }

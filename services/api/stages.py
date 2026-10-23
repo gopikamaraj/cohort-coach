@@ -34,7 +34,10 @@ PROBE_KEY = {
 
 class ChildIn(BaseModel):
     answers: list[int | Literal["blank", "unreadable"]]
-    missed_teaching: bool = False
+    missed_teaching: bool = False  # the whole sheet
+    missed_concepts: list[Literal["place_value", "addition", "subtraction"]] = Field(
+        default_factory=list
+    )
     unreadable: int = Field(default=0, ge=0, le=10)
     two_answers: int = Field(default=0, ge=0, le=10)
 
@@ -70,6 +73,7 @@ def post_stages(body: StagesIn) -> dict[str, Any]:
                 form,
                 readings,
                 missed_teaching=child.missed_teaching,
+                missed_concepts=child.missed_concepts,
                 unreadable=unreadable,
                 two_answers=child.two_answers,
             )
@@ -80,6 +84,7 @@ def post_stages(body: StagesIn) -> dict[str, Any]:
     return {
         "checked": counts.checked,
         "missed_teaching": counts.missed_teaching,
+        "missed_by_concept": counts.missed_by_concept,
         "not_attempted": counts.not_attempted,
         "by_signature": [
             {"code": code, "stage": stage.value, "n": n} for (code, stage), n in by_signature

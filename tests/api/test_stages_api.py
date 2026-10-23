@@ -61,6 +61,7 @@ def test_the_response_holds_no_per_child_data() -> None:
         "checked",
         "missed_teaching",
         "not_attempted",
+        "missed_by_concept",
         "by_signature",
         "by_stage",
         "probes",

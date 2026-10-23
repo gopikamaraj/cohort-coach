@@ -690,5 +690,22 @@
   "practice.held": "A check held back the first reply, so a simple reply was used.",
   "practice.model_off": "The AI model is not switched on here, so a simple reply was used.",
   "practice.tray_help": "Tap a tool to show it to the children, as if you held it up. Bundles of ten and loose sticks show the number as tens and ones, and help a child see how to open a ten; that lowers how strongly the children hold the mistake. The place-value chart is for reference only: it does not change what the children do yet.",
-  "nav.more": "More"
+  "nav.more": "More",
+  "check.pick": "Choose a child's sheet",
+  "check.child_option": "Child {n} · {state}",
+  "check.state_entered": "entered",
+  "check.state_empty": "not entered",
+  "check.state_absent": "absent",
+  "check.absent": "Absent today: skip this roll number",
+  "check.absent_note": "Skipped. The roll number is kept, so the next papers stay in register order, and this child is not counted.",
+  "check.absent_confirm": "This sheet has answers. Mark the child absent and clear them?",
+  "check.absent_count": "{n} absent",
+  "check.mark_blank": "Mark question {n} as left blank",
+  "check.mark_unreadable": "Mark question {n} as can't read",
+  "check.missed_title": "Missed the teaching (from my register)",
+  "check.missed_on": "Missed the teaching on {concept} (questions {qs})",
+  "concept.place_value": "place value",
+  "concept.addition": "addition with carrying",
+  "concept.subtraction": "subtraction with borrowing",
+  "stage.missed_on": "{n} children missed the teaching on {concept}. Their answers there are not counted above."
 }

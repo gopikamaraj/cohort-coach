@@ -32,7 +32,17 @@ export function StageLines({ stages }: { stages: StageCounts }) {
           </p>
         </div>
       ))}
-      {stages.missed_teaching > 0 ? <p data-testid="stage-missed">{tr("stage.missed", { n: stages.missed_teaching })}</p> : null}
+      {stages.missed_by_concept
+        ? Object.entries(stages.missed_by_concept)
+            .filter(([, n]) => n > 0)
+            .map(([concept, n]) => (
+              <p key={concept} data-testid={`stage-missed-${concept}`}>
+                {tr("stage.missed_on", { n, concept: tr(`concept.${concept}` as Key) })}
+              </p>
+            ))
+        : stages.missed_teaching > 0
+          ? <p data-testid="stage-missed">{tr("stage.missed", { n: stages.missed_teaching })}</p>
+          : null}
       {stages.not_attempted > 0 ? <p>{tr("stage.blank", { n: stages.not_attempted })}</p> : null}
     </section>
   );

@@ -48,23 +48,22 @@ test("a photo fills the boxes, marks the unsure ones, and she corrects and moves
   await page.getByTestId("photo-input").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: PNG });
 
   await expect(page.getByTestId("photo-note")).toContainText("Filled in from the photo");
-  await expect(page.getByTestId("box-1")).toContainText("346");
-  await expect(page.getByTestId("box-3")).toContainText("75");
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
+  await expect(page.getByTestId("input-3")).toHaveValue("75");
   await expect(page.getByTestId("box-4")).toHaveAttribute("data-check", "true");
   await expect(page.getByTestId("box-6")).toHaveAttribute("data-check", "true");
   await expect(page.getByTestId("box-1")).not.toHaveAttribute("data-check", "true");
-  await expect(page.getByTestId("box-5")).toContainText("blank");
-  await expect(page.getByTestId("box-4")).toHaveAttribute("aria-pressed", "true"); // the first box to check is selected
+  await expect(page.getByTestId("input-5")).toHaveAttribute("data-state", "blank");
+  await expect(page.getByTestId("box-4")).toHaveClass(/box-on/); // the first box to check is selected
 
   // she fixes box 4: it is no longer marked
-  await page.getByRole("button", { name: "5", exact: true }).click();
-  await page.getByRole("button", { name: "8", exact: true }).click();
-  await expect(page.getByTestId("box-4")).toContainText("58");
+  await page.getByTestId("input-4").fill("58");
+  await expect(page.getByTestId("input-4")).toHaveValue("58");
   await expect(page.getByTestId("box-4")).not.toHaveAttribute("data-check", "true");
 
   await page.getByTestId("next-child").click();
   await expect(page.getByTestId("child-title")).toContainText("2");
-  await expect(page.getByTestId("box-1")).not.toContainText("346");
+  await expect(page.getByTestId("input-1")).toHaveValue("");
 
   // what went to the server: the form id and an image, nothing else, and a JPEG (shrunk)
   expect(sent?.form).toBe("A");
@@ -106,8 +105,8 @@ test("when reading fails she is told to type, and her typing still works", async
   await begin(page);
   await page.getByTestId("photo-input").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: PNG });
   await expect(page.getByTestId("photo-note")).toContainText("Type the answers");
-  await page.getByRole("button", { name: "3", exact: true }).click();
-  await expect(page.getByTestId("box-1")).toContainText("3");
+  await page.getByTestId("input-1").fill("3");
+  await expect(page.getByTestId("input-1")).toHaveValue("3");
 });
 
 test("offline, the photo is not sent and she is told to type", async ({ page, context }) => {
@@ -138,14 +137,14 @@ test("it only asks before replacing when the child already has digits written", 
   await begin(page);
   const photo = { name: "sheet.png", mimeType: "image/png", buffer: PNG };
   await page.getByTestId("photo-input").setInputFiles(photo); // nothing written yet
-  await expect(page.getByTestId("box-1")).toContainText("blank");
+  await expect(page.getByTestId("input-1")).toHaveAttribute("data-state", "blank");
   expect(asked).toHaveLength(0);
   await page.getByTestId("photo-input").setInputFiles(photo); // only blank marks so far: still nothing to lose
   await expect(page.getByTestId("photo-note")).toBeVisible();
   expect(asked).toHaveLength(0);
   reply = CELLS;
   await page.getByTestId("photo-input").setInputFiles(photo);
-  await expect(page.getByTestId("box-1")).toContainText("346");
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
   await page.getByTestId("photo-input").setInputFiles(photo); // now digits are there: she is asked
   await expect.poll(() => asked.length).toBe(1);
   expect(asked[0]).toContain("Replace them");

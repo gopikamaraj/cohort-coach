@@ -1,4 +1,4 @@
-// Small shared pieces: the simulated banner, the status line, tally bundles and the keypad.
+// Small shared pieces: the simulated banner, the status line, and tally bundles.
 import type { ReactNode } from "react";
 import { useApp } from "../state";
 
@@ -69,42 +69,5 @@ export function Sticks({ count, total, label }: { count: number; total: number; 
     <svg className="sticks" width={x} height={h} viewBox={`0 0 ${x} ${h}`} role="img" aria-label={label}>
       {marks}
     </svg>
-  );
-}
-
-interface KeypadProps {
-  onDigit: (d: string) => void;
-  onBack: () => void;
-  onBlank: () => void;
-  onUnreadable: () => void;
-  onNextQuestion: () => void;
-}
-
-/** Our own keypad: the phone's keyboard changes script mid-entry. Every key is at least 56 px. */
-export function Keypad({ onDigit, onBack, onBlank, onUnreadable, onNextQuestion }: KeypadProps) {
-  const { tr } = useApp();
-  return (
-    <div className="keypad" role="group" aria-label={tr("nav.check")}>
-      {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((d) => (
-        <button key={d} type="button" className="key" onClick={() => onDigit(d)}>
-          {d}
-        </button>
-      ))}
-      <button type="button" className="key key-small" onClick={onBlank}>
-        {tr("check.blank")}
-      </button>
-      <button type="button" className="key" onClick={() => onDigit("0")}>
-        0
-      </button>
-      <button type="button" className="key key-small" onClick={onBack}>
-        {tr("check.backspace")}
-      </button>
-      <button type="button" className="key key-wide key-small" onClick={onUnreadable}>
-        {tr("check.unreadable")}
-      </button>
-      <button type="button" className="key key-small" onClick={onNextQuestion}>
-        {tr("common.next")}
-      </button>
-    </div>
   );
 }

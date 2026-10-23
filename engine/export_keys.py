@@ -29,7 +29,7 @@ from engine.diagnosis import (
 from engine.forms import PILOT_FORMS
 from engine.model import ChildDiagnosis, ClassProfile, ErrorCode, Form, Reading
 from engine.normalize import normalize_answer
-from engine.stages import class_counts, classify_child, signature_answers, stage_rules
+from engine.stages import CONCEPTS, class_counts, classify_child, signature_answers, stage_rules
 
 KEYS_VERSION = 1
 CASES_SEED = 2026
@@ -228,6 +228,36 @@ _STAGE_NAMED: list[tuple[str, str, list[str], dict[str, Any]]] = [
     ("no_method", "A", "346,728,85,74,82,35,5,6,7,54".split(","), {}),
     ("no_method_3_to_5", "A", "346,728,1,2,3,35,38,26,43,54".split(","), {}),
     ("missed_teaching_tag", "A", "346,728,85,74,82,35,5,6,7,54".split(","), {"missed": True}),
+    (
+        "missed_subtraction_only",
+        "A",
+        "364,782,58,47,28,35,42,34,57,66".split(","),
+        {"missed_concepts": ["subtraction"]},
+    ),
+    (
+        "missed_place_value_only",
+        "A",
+        "364,782,58,47,28,35,42,34,57,66".split(","),
+        {"missed_concepts": ["place_value"]},
+    ),
+    (
+        "missed_addition_across",
+        "A",
+        "346,728,9,74,82,35,110,26,43,54".split(","),
+        {"missed_concepts": ["addition"]},
+    ),
+    (
+        "missed_both_across",
+        "A",
+        "346,728,9,74,82,35,110,26,43,54".split(","),
+        {"missed_concepts": ["addition", "subtraction"]},
+    ),
+    (
+        "missed_no_method_subtraction",
+        "A",
+        "346,728,85,74,82,35,5,6,7,54".split(","),
+        {"missed_concepts": ["subtraction"]},
+    ),
     ("two_tagged_boxes", "A", _A_CORRECT, {"unreadable": 1, "two_answers": 1}),
     ("form_b_in_op", "B", "264,853,17,14,72,45,48,36,53,64".split(","), {}),
 ]
@@ -243,6 +273,8 @@ def _expected_stage(r: Any) -> dict[str, Any]:
         "no_method_possible": r.no_method_possible,
         "no_method_confirmed": r.no_method_confirmed,
         "missed_teaching": r.missed_teaching,
+        "missed_concepts": sorted(r.missed_concepts),
+        "excluded": sorted(r.excluded),
     }
 
 
@@ -251,6 +283,7 @@ def _stage_result(form_key: str, raw: list[str], tags: dict[str, Any]) -> Any:
         PILOT_FORMS[form_key],
         _readings(raw),
         missed_teaching=bool(tags.get("missed")),
+        missed_concepts=tags.get("missed_concepts", ()),
         unreadable=int(tags.get("unreadable", 0)),
         two_answers=int(tags.get("two_answers", 0)),
     )
@@ -261,6 +294,7 @@ def _expected_counts(results: list[Any]) -> dict[str, Any]:
     return {
         "checked": c.checked,
         "missed_teaching": c.missed_teaching,
+        "missed_by_concept": c.missed_by_concept,
         "not_attempted": c.not_attempted,
         "by_signature": sorted([code, s.value, n] for (code, s), n in c.by_signature.items()),
         "by_stage": sorted([s.value, n] for s, n in c.by_stage.items()),
@@ -279,7 +313,11 @@ def build_stage_cases() -> dict[str, Any]:
                 "name": f"random_{i:03d}",
                 "form": form_key,
                 "raw": _random_child_on(PILOT_FORMS[form_key], rng),
-                "tags": {"missed": rng.random() < 0.1, "unreadable": rng.choice([0, 0, 0, 1, 2])},
+                "tags": {
+                    "missed": rng.random() < 0.05,
+                    "missed_concepts": [c for c in CONCEPTS if rng.random() < 0.15],
+                    "unreadable": rng.choice([0, 0, 0, 1, 2]),
+                },
             }
         )
     for c in children:

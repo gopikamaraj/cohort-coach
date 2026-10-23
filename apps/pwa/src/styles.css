@@ -101,9 +101,6 @@ ul.cards {
   .boxes {
     grid-template-columns: repeat(5, 1fr);
   }
-  .keypad {
-    max-width: 440px;
-  }
 }
 @media (min-width: 1200px) {
   :root {
@@ -303,14 +300,67 @@ ol.steps li {
 }
 .box {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--s1);
   min-height: 48px;
-  padding: var(--s1) var(--s3);
+  padding: var(--s2) var(--s3);
   font: inherit;
   background: var(--paper);
   border: 1px solid var(--rule);
   border-radius: 2px;
+}
+.box:focus-within {
+  border: 2px solid var(--pen);
+}
+.box-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--s2);
+  font: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+}
+.box-input::placeholder {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.box-input[data-state] {
+  border-style: dashed;
+}
+.box-marks {
+  display: flex;
+  gap: var(--s1);
+}
+.mark {
+  flex: 1;
+  min-height: 48px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.mark-on {
+  color: #fff;
+  background: var(--pen);
+  border-color: var(--pen);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  margin: var(--s2) 0;
+}
+.field select {
+  min-height: 48px;
+  font: inherit;
+  font-size: 16px;
 }
 .box-on {
   border: 2px solid var(--pen);
@@ -322,29 +372,6 @@ ol.steps li {
 .box-v {
   font-weight: 700;
 }
-.keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--s2);
-  margin: var(--s3) 0;
-}
-.key {
-  min-height: 56px;
-  font: inherit;
-  font-size: 22px;
-  font-weight: 700;
-  background: var(--paper);
-  color: var(--ink);
-  border: 1px solid var(--ink);
-  border-radius: 2px;
-}
-.key-small {
-  font-size: 16px;
-}
-.key-wide {
-  grid-column: span 2;
-}
-
 .card {
   margin: 0 0 var(--s4);
   padding: var(--s3) var(--s4);

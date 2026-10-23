@@ -194,6 +194,67 @@ def test_counts_hold_no_per_child_data() -> None:
         "checked",
         "missed_teaching",
         "not_attempted",
+        "missed_by_concept",
         "by_signature",
         "by_stage",
     }
+
+
+# per-concept "missed the teaching" ----------------------------------------------------------------
+
+S07 = "364,782,58,47,28,35,42,34,57,66"  # place value reversed (items 1-2), subtraction SFL (7-10)
+
+
+def counted(r: StageResult) -> set[str]:
+    return {code for code, _ in class_counts([r]).by_signature}
+
+
+def test_tagging_one_concept_leaves_out_only_what_rests_on_it() -> None:
+    assert {"PV-REVERSE", "SUB-SFL"} <= counted(run(S07))
+    sub = run(S07, missed_concepts=["subtraction"])
+    assert "SUB-SFL" in sub.excluded and "SUB-SFL" not in counted(sub)
+    assert "PV-REVERSE" in counted(sub)  # place value was not tagged
+    pv = run(S07, missed_concepts=["place_value"])
+    assert "PV-REVERSE" not in counted(pv) and "SUB-SFL" in counted(pv)
+
+
+def test_a_signature_resting_on_two_concepts_needs_both_tagged() -> None:
+    across = "346,728,9,74,82,35,110,26,43,54"  # the other operation, on item 3 and on item 7
+    assert "IN-OP" in counted(run(across))
+    assert "IN-OP" in counted(run(across, missed_concepts=["addition"]))  # item 7 still stands
+    assert "IN-OP" not in counted(run(across, missed_concepts=["addition", "subtraction"]))
+
+
+def test_the_whole_sheet_tag_equals_every_concept_tagged() -> None:
+    whole = run(S07, missed_teaching=True)
+    every = run(S07, missed_concepts=["place_value", "addition", "subtraction"])
+    assert whole == every and counted(whole) == set()
+    assert class_counts([whole]).missed_by_concept == {
+        "place_value": 1,
+        "addition": 1,
+        "subtraction": 1,
+    }
+
+
+def test_no_method_is_confirmed_only_when_the_concept_it_rests_on_is_tagged() -> None:
+    nm = "346,728,85,74,82,35,5,6,7,54"
+    assert not run(nm, missed_concepts=["addition"]).no_method_confirmed
+    assert run(nm, missed_concepts=["subtraction"]).no_method_confirmed
+
+
+def test_class_counts_report_each_concept_once_per_child() -> None:
+    results = [
+        run(S07, missed_concepts=["subtraction"]),
+        run(S07, missed_concepts=["subtraction", "place_value"]),
+        run(S07),
+    ]
+    c = class_counts(results)
+    assert c.missed_by_concept == {"place_value": 1, "addition": 0, "subtraction": 2}
+    assert c.missed_teaching == 2 and c.checked == 3
+    sfl = {n for (code, _), n in c.by_signature.items() if code == "SUB-SFL"}
+    assert sfl == {1}  # only the child who did not tag subtraction
+
+
+def test_an_unknown_concept_is_refused() -> None:
+    with pytest.raises(ValueError):
+        run(S07, missed_concepts=["fractions"])

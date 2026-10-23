@@ -23,7 +23,9 @@ export interface CheckRow {
   children: string[][];
   updatedAt: number;
   viaPhoto?: number[]; // which children were filled from a photo (the photo itself is never kept)
-  missed?: number[]; // children she tagged "missed the teaching on this" (stays on this phone)
+  missed?: number[]; // older whole-sheet tag: children she tagged "missed the teaching" (stays on this phone)
+  missedConcepts?: Record<number, string[]>; // per child, the concepts she tagged "missed the teaching on this"
+  absent?: number[]; // roll numbers she skipped because the child was away
 }
 
 /** The class-level result: how many children showed each error. No child appears here. */

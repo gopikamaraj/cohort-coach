@@ -4,6 +4,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -40,6 +42,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -76,6 +80,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -112,6 +118,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -148,6 +156,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -184,6 +194,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -220,6 +232,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -267,6 +281,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -303,6 +319,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -345,6 +363,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -381,6 +401,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -408,6 +430,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": true,
@@ -444,6 +468,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": true,
@@ -480,6 +506,14 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [
+          "NO-METHOD"
+        ],
+        "missed_concepts": [
+          "addition",
+          "place_value",
+          "subtraction"
+        ],
         "missed_teaching": true,
         "no_method_confirmed": true,
         "no_method_possible": true,
@@ -518,6 +552,260 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [
+          "SUB-SFL"
+        ],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REV",
+            "Output"
+          ],
+          [
+            "PV-REVERSE",
+            "Output"
+          ],
+          [
+            "SUB-SFL",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "OUT-REV",
+          "PV-REVERSE",
+          "SUB-SFL"
+        ],
+        "stages": [
+          "Core",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "missed_subtraction_only",
+      "raw": [
+        "364",
+        "782",
+        "58",
+        "47",
+        "28",
+        "35",
+        "42",
+        "34",
+        "57",
+        "66"
+      ],
+      "tags": {
+        "missed_concepts": [
+          "subtraction"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [
+          "PV-REVERSE"
+        ],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REV",
+            "Output"
+          ],
+          [
+            "PV-REVERSE",
+            "Output"
+          ],
+          [
+            "SUB-SFL",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "OUT-REV",
+          "PV-REVERSE",
+          "SUB-SFL"
+        ],
+        "stages": [
+          "Core",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "missed_place_value_only",
+      "raw": [
+        "364",
+        "782",
+        "58",
+        "47",
+        "28",
+        "35",
+        "42",
+        "34",
+        "57",
+        "66"
+      ],
+      "tags": {
+        "missed_concepts": [
+          "place_value"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OP",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OP"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "A",
+      "name": "missed_addition_across",
+      "raw": [
+        "346",
+        "728",
+        "9",
+        "74",
+        "82",
+        "35",
+        "110",
+        "26",
+        "43",
+        "54"
+      ],
+      "tags": {
+        "missed_concepts": [
+          "addition"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [
+          "IN-OP"
+        ],
+        "missed_concepts": [
+          "addition",
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OP",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OP"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "A",
+      "name": "missed_both_across",
+      "raw": [
+        "346",
+        "728",
+        "9",
+        "74",
+        "82",
+        "35",
+        "110",
+        "26",
+        "43",
+        "54"
+      ],
+      "tags": {
+        "missed_concepts": [
+          "addition",
+          "subtraction"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [
+          "NO-METHOD"
+        ],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": true,
+        "no_method_possible": true,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "NO-METHOD",
+            "Input (teaching)"
+          ]
+        ],
+        "signatures": [
+          "NO-METHOD"
+        ],
+        "stages": [
+          "Input (teaching)"
+        ]
+      },
+      "form": "A",
+      "name": "missed_no_method_subtraction",
+      "raw": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "5",
+        "6",
+        "7",
+        "54"
+      ],
+      "tags": {
+        "missed_concepts": [
+          "subtraction"
+        ]
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -557,6 +845,8 @@
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -593,7 +883,9 @@
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -616,13 +908,16 @@
         "65"
       ],
       "tags": {
-        "missed": true,
+        "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -647,24 +942,33 @@
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
+        "anchor_wrong": true,
+        "excluded": [
+          "OUT-REV"
+        ],
+        "missed_concepts": [
+          "addition",
+          "place_value",
+          "subtraction"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "OUT-REC",
+            "OUT-REV",
             "Output"
           ]
         ],
         "signatures": [
-          "OUT-REC"
+          "OUT-REV"
         ],
         "stages": [
           "Output"
@@ -673,105 +977,124 @@
       "form": "A",
       "name": "random_002",
       "raw": [
-        "",
-        "728",
-        "715",
-        "74",
+        "3064",
         "x",
-        "35",
-        "38",
-        "26",
+        "85",
+        "74",
+        "82",
+        "81",
+        "627",
+        "64",
         "34",
-        "627"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_003",
-      "raw": [
-        "200604",
-        "853",
-        "75",
-        "84",
-        "612",
-        "551",
-        "48",
-        "46",
-        "53",
-        "46"
+        "45"
       ],
       "tags": {
         "missed": true,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "IN-OPND",
-            "Input (test)"
-          ],
-          [
-            "PV-HEARD",
+            "CORE-OFF1",
             "Core"
           ],
           [
-            "PV-REVERSE",
-            "Input (test)"
+            "OUT-REC",
+            "Output"
           ]
         ],
         "signatures": [
-          "IN-OPND",
-          "PV-HEARD",
-          "PV-REVERSE"
+          "CORE-OFF1",
+          "OUT-REC"
         ],
         "stages": [
           "Core",
-          "Input (test)"
+          "Output"
         ]
       },
-      "form": "A",
-      "name": "random_004",
+      "form": "B",
+      "name": "random_003",
       "raw": [
-        "3064",
-        "700802",
-        "130",
-        "146",
-        "82",
-        "493",
-        "267",
-        "3 4",
-        "42",
-        "54"
+        "263",
+        "80035",
+        "65",
+        "84",
+        "73",
+        "514",
+        "48",
+        "35",
+        "390",
+        "122"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [],
+        "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ],
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1",
+          "OUT-REC"
+        ],
+        "stages": [
+          "Core",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_004",
+      "raw": [
+        "446",
+        "728",
+        "84",
+        "74",
+        "82",
+        "143",
+        "42",
+        "139",
+        "3 4",
+        "53"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -783,56 +1106,31 @@
       "form": "A",
       "name": "random_005",
       "raw": [
-        "346",
-        "728",
-        "75",
-        "146",
-        "139",
-        "3 4",
-        "39",
-        "?",
-        "3 4",
-        "66"
+        "",
+        "476",
+        "85",
+        "298",
+        "",
+        "35",
+        "37",
+        "26",
+        "",
+        "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_006",
-      "raw": [
-        "476",
-        "853",
-        "298",
-        "",
-        "72",
-        "211",
-        "48",
-        "",
-        "53",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -849,29 +1147,69 @@
           "Output"
         ]
       },
-      "form": "A",
-      "name": "random_007",
+      "form": "B",
+      "name": "random_006",
       "raw": [
-        "346",
-        "728",
-        "85",
-        "18",
+        "264",
+        "853",
+        "75",
+        "74",
         "72",
-        "35",
-        "37",
-        "26",
+        "218",
+        "48",
         "",
-        "9"
+        "35",
+        "76"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
         "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_007",
+      "raw": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "x",
+        "",
+        "38",
+        "",
+        "187",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -882,104 +1220,127 @@
       "form": "A",
       "name": "random_008",
       "raw": [
-        "x",
-        "",
-        "939",
+        "346",
+        "7028",
+        "85",
         "74",
-        "81",
+        "82",
+        "802",
+        "132",
         "35",
-        "83",
-        "x",
-        "",
-        "54"
+        "43",
+        "655"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-NEAR",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-NEAR"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_009",
+      "raw": [
+        "364",
+        "843",
+        "75",
+        "3 4",
+        "72",
+        "70",
+        "48",
+        "36",
+        "35",
+        "396"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ],
           [
             "OUT-REC",
             "Output"
           ]
         ],
         "signatures": [
+          "CORE-OFF1",
           "OUT-REC"
         ],
         "stages": [
-          "Output"
-        ]
-      },
-      "form": "B",
-      "name": "random_009",
-      "raw": [
-        "264",
-        "80035",
-        "75",
-        "97",
-        "72",
-        "45",
-        "48",
-        "36",
-        "53",
-        "46"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
+          "Core",
           "Output"
         ]
       },
       "form": "A",
       "name": "random_010",
       "raw": [
-        "346",
-        "728",
+        "30064",
+        "828",
         "85",
-        "655",
-        "28",
-        "",
-        "37",
+        "74",
+        "83",
+        "35",
+        "39",
         "26",
-        "121",
-        "?"
+        "43",
+        "66"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
         "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -990,55 +1351,85 @@
       "form": "A",
       "name": "random_011",
       "raw": [
-        "345",
-        "728",
-        "85",
-        "18",
-        "396",
-        "582",
-        "38",
-        "774",
+        "527",
+        "98",
+        "75",
+        "74",
+        "82",
+        "733",
+        "39",
+        "62",
         "43",
         "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_012",
-      "raw": [
-        "364",
-        "853",
-        "75",
-        "85",
-        "72",
-        "302",
-        "48",
-        "36",
-        "89",
-        ""
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 0
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [
+          "CORE-OFF1",
+          "OUT-REC"
+        ],
+        "missed_concepts": [
+          "addition",
+          "place_value",
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ],
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1",
+          "OUT-REC"
+        ],
+        "stages": [
+          "Core",
+          "Output"
+        ]
+      },
+      "form": "B",
+      "name": "random_012",
+      "raw": [
+        "200406",
+        "853",
+        "",
+        "84",
+        "209",
+        "x",
+        "58",
+        "37",
+        "54",
+        "10"
+      ],
+      "tags": {
+        "missed": true,
+        "missed_concepts": [],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -1050,26 +1441,31 @@
       "form": "A",
       "name": "random_013",
       "raw": [
-        "575",
-        "527",
-        "98",
+        "346",
+        "988",
+        "58",
         "64",
         "82",
-        "35",
-        "83",
-        "34",
-        "121",
+        "815",
+        "38",
+        "x",
+        "43",
         "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 1
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -1080,25 +1476,72 @@
       "form": "A",
       "name": "random_014",
       "raw": [
-        "346",
-        "728",
-        "85",
-        "146",
-        "82",
+        "48",
         "",
-        "38",
-        "209",
-        "x",
-        "53"
+        "",
+        "74",
+        "91",
+        "913",
+        "",
+        "513",
+        "42",
+        "101"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-NEAR",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-NEAR"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_015",
+      "raw": [
+        "263",
+        "852",
+        "75",
+        "84",
+        "27",
+        "169",
+        "708",
+        "92",
+        "449",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -1116,475 +1559,110 @@
           "Output"
         ]
       },
-      "form": "B",
-      "name": "random_015",
-      "raw": [
-        "20046",
-        "843",
-        "75",
-        "",
-        "135",
-        "45",
-        "118",
-        "988",
-        "35",
-        "46"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
       "form": "A",
       "name": "random_016",
       "raw": [
-        "3064",
-        "728",
-        "85",
-        "74",
-        "118",
-        "35",
         "",
+        "700208",
+        "58",
         "x",
+        "472",
+        "701",
         "48",
-        ""
+        "941",
+        "3 4",
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "SUB-NODEC",
-            "Core"
+            "OUT-REC",
+            "Output"
           ]
         ],
         "signatures": [
-          "SUB-NODEC"
+          "OUT-REC"
         ],
         "stages": [
-          "Core"
+          "Output"
         ]
       },
       "form": "A",
       "name": "random_017",
       "raw": [
-        "345",
+        "346",
         "3 4",
-        "9",
-        "513",
-        "72",
-        "101",
-        "48",
-        "27",
-        "53",
-        "9"
+        "85",
+        "74",
+        "409",
+        "3 4",
+        "38",
+        "35",
+        "",
+        "x"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
       },
       "form": "B",
       "name": "random_018",
       "raw": [
         "264",
-        "853",
-        "17",
-        "169",
-        "708",
-        "835",
-        "449",
-        "36",
-        "53",
-        "63"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_019",
-      "raw": [
-        "300406",
-        "729",
-        "x",
-        "472",
-        "701",
-        "540",
-        "941",
-        "3 4",
-        "43",
-        "108"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_020",
-      "raw": [
-        "30064",
-        "728",
-        "3 4",
-        "74",
-        "82",
-        "409",
-        "3 4",
-        "26",
-        "53",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_021",
-      "raw": [
-        "200604",
-        "853",
-        "17",
-        "838",
-        "63",
-        "529",
-        "48",
-        "36",
-        "67",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_022",
-      "raw": [
-        "30046",
-        "728",
-        "278",
-        "74",
-        "712",
-        "35",
-        "202",
-        "26",
-        "43",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_023",
-      "raw": [
-        "346",
-        "70028",
-        "x",
-        "128",
-        "3 4",
-        "35",
-        "38",
-        "26",
-        "121",
-        "x"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_024",
-      "raw": [
-        "264",
-        "853",
-        "75",
+        "953",
+        "615",
         "84",
-        "71",
-        "104",
-        "48",
-        "611",
-        "x",
-        "34"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_025",
-      "raw": [
-        "3 4",
-        "728",
-        "86",
-        "74",
-        "3 4",
-        "856",
-        "11",
+        "72",
+        "566",
         "",
-        "43",
-        ""
+        "36",
+        "53",
+        "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_026",
-      "raw": [
-        "30064",
-        "728",
-        "3 4",
-        "3 4",
-        "",
-        "",
-        "38",
-        "26",
-        "53",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_027",
-      "raw": [
-        "499",
-        "",
-        "75",
-        "x",
-        "72",
-        "45",
-        "47",
-        "3 4",
-        "89",
-        "1"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_028",
-      "raw": [
-        "346",
-        "728",
-        "541",
-        "74",
-        "127",
-        "",
-        "",
-        "682",
-        "x",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_029",
-      "raw": [
-        "3064",
-        "728",
-        "59",
-        "74",
-        "82",
-        "901",
-        "38",
-        "869",
-        "43",
-        "66"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -1602,29 +1680,152 @@
           "Core"
         ]
       },
-      "form": "B",
-      "name": "random_030",
+      "form": "A",
+      "name": "random_019",
       "raw": [
-        "264",
-        "853",
+        "346",
+        "728",
+        "202",
         "74",
-        "814",
-        "72",
-        "517",
-        "49",
-        "36",
-        "299",
-        "64"
+        "82",
+        "35",
+        "39",
+        "26",
+        "44",
+        "x"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "addition",
+          "place_value"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "A",
+      "name": "random_020",
+      "raw": [
+        "3064",
+        "728",
+        "647",
+        "x",
+        "82",
+        "180",
+        "38",
+        "26",
+        "42",
+        "53"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "place_value",
+          "addition"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_021",
+      "raw": [
+        "264",
+        "853",
+        "17",
+        "3 4",
+        "72",
+        "315",
+        "48",
+        "3 4",
+        "63",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_022",
+      "raw": [
+        "30064",
+        "728",
+        "3 4",
+        "3 4",
+        "",
+        "",
+        "38",
+        "26",
+        "53",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -1642,28 +1843,35 @@
         ]
       },
       "form": "A",
-      "name": "random_031",
+      "name": "random_023",
       "raw": [
-        "320",
-        "632",
+        "246",
+        "728",
         "85",
         "74",
-        "712",
-        "847",
-        "",
-        "62",
-        "43",
-        "64"
+        "82",
+        "35",
+        "48",
+        "26",
+        "34",
+        "108"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
         "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -1686,67 +1894,385 @@
           "Output"
         ]
       },
-      "form": "A",
-      "name": "random_032",
+      "form": "B",
+      "name": "random_024",
       "raw": [
-        "346",
-        "727",
-        "85",
-        "75",
-        "?",
-        "35",
-        "578",
-        "25",
+        "264",
+        "800503",
         "",
-        "662"
+        "",
+        "682",
+        "x",
+        "",
+        "37",
+        "54",
+        "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
         "unreadable": 2
       }
     },
     {
       "expected": {
-        "anchor_wrong": true,
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [
-          [
-            "SUB-NODEC",
-            "Core"
-          ]
-        ],
-        "signatures": [
-          "SUB-NODEC"
-        ],
-        "stages": [
-          "Core"
-        ]
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
       },
-      "form": "B",
-      "name": "random_033",
+      "form": "A",
+      "name": "random_025",
       "raw": [
-        "416",
-        "853",
-        "75",
-        "82",
-        "71",
-        "794",
+        "",
         "?",
-        "46",
-        "63",
-        "46"
+        "112",
+        "74",
+        "82",
+        "35",
+        "37",
+        "814",
+        "43",
+        "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [
+          "IN-OPND"
+        ],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "A",
+      "name": "random_026",
+      "raw": [
+        "300604",
+        "728",
+        "112",
+        "146",
+        "712",
+        "847",
+        "",
+        "62",
+        "43",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_027",
+      "raw": [
+        "264",
+        "8035",
+        "?",
+        "84",
+        "578",
+        "36",
+        "",
+        "662",
+        "53",
+        ""
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "A",
+      "name": "random_028",
+      "raw": [
+        "346",
+        "313",
+        "84",
+        "128",
+        "72",
+        "35",
+        "38",
+        "26",
+        "44",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REC"
+        ],
+        "stages": [
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_029",
+      "raw": [
+        "928",
+        "728",
+        "85",
+        "75",
+        "",
+        "81",
+        "405",
+        "35",
+        "43",
+        "564"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_030",
+      "raw": [
+        "264",
+        "863",
+        "3 4",
+        "129",
+        "72",
+        "313",
+        "52",
+        "465",
+        "53",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "A",
+      "name": "random_031",
+      "raw": [
+        "346",
+        "70082",
+        "85",
+        "?",
+        "83",
+        "55",
+        "39",
+        "26",
+        "57",
+        "53"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_032",
+      "raw": [
+        "242",
+        "?",
+        "85",
+        "74",
+        "82",
+        "267",
+        "83",
+        "26",
+        "43",
+        "634"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_033",
+      "raw": [
+        "264",
+        "8035",
+        "156",
+        "290",
+        "?",
+        "859",
+        "48",
+        "36",
+        "53",
+        "1"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -1757,231 +2283,6 @@
       },
       "form": "A",
       "name": "random_034",
-      "raw": [
-        "346",
-        "",
-        "x",
-        "74",
-        "82",
-        "364",
-        "38",
-        "26",
-        "43",
-        "45"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_035",
-      "raw": [
-        "3064",
-        "",
-        "81",
-        "405",
-        "118",
-        "35",
-        "564",
-        "372",
-        "43",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_036",
-      "raw": [
-        "264",
-        "853",
-        "138",
-        "84",
-        "71",
-        "785",
-        "318",
-        "465",
-        "53",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "CORE-OFF1",
-            "Core"
-          ],
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "CORE-OFF1",
-          "OUT-REC"
-        ],
-        "stages": [
-          "Core",
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_037",
-      "raw": [
-        "?",
-        "782",
-        "85",
-        "128",
-        "82",
-        "?",
-        "39",
-        "25",
-        "44",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_038",
-      "raw": [
-        "3064",
-        "728",
-        "85",
-        "73",
-        "28",
-        "242",
-        "?",
-        "26",
-        "43",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_039",
-      "raw": [
-        "2046",
-        "853",
-        "75",
-        "83",
-        "72",
-        "45",
-        "48",
-        "18",
-        "53",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_040",
-      "raw": [
-        "346",
-        "7082",
-        "?",
-        "859",
-        "82",
-        "35",
-        "38",
-        "25",
-        "623",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_041",
       "raw": [
         "30064",
         "x",
@@ -1996,12 +2297,184 @@
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_035",
+      "raw": [
+        "346",
+        "",
+        "85",
+        "75",
+        "528",
+        "35",
+        "38",
+        "26",
+        "",
+        ""
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ],
+          [
+            "PV-HEARD",
+            "Core"
+          ],
+          [
+            "PV-REVERSE",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1",
+          "PV-HEARD",
+          "PV-REVERSE"
+        ],
+        "stages": [
+          "Core",
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_036",
+      "raw": [
+        "200406",
+        "800305",
+        "76",
+        "102",
+        "71",
+        "45",
+        "49",
+        "36",
+        "52",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REC"
+        ],
+        "stages": [
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_037",
+      "raw": [
+        "346",
+        "728",
+        "784",
+        "349",
+        "",
+        "40",
+        "38",
+        "",
+        "42",
+        "329"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_038",
+      "raw": [
+        "346",
+        "x",
+        "428",
+        "74",
+        "82",
+        "",
+        "38",
+        "26",
+        "43",
+        ""
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -2011,106 +2484,224 @@
         "stages": []
       },
       "form": "B",
-      "name": "random_042",
+      "name": "random_039",
       "raw": [
-        "264",
-        "80035",
-        "75",
-        "84",
-        "62",
-        "265",
-        "528",
-        "36",
-        "53",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "CORE-OFF1",
-            "Core"
-          ]
-        ],
-        "signatures": [
-          "CORE-OFF1"
-        ],
-        "stages": [
-          "Core"
-        ]
-      },
-      "form": "A",
-      "name": "random_043",
-      "raw": [
-        "346",
-        "628",
-        "85",
-        "?",
-        "127",
-        "730",
+        "164",
         "",
-        "34",
-        "44",
-        "53"
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "CORE-OFF1",
-            "Core"
-          ]
-        ],
-        "signatures": [
-          "CORE-OFF1"
-        ],
-        "stages": [
-          "Core"
-        ]
-      },
-      "form": "A",
-      "name": "random_044",
-      "raw": [
-        "446",
-        "728",
+        "93",
         "84",
-        "74",
-        "82",
-        "433",
-        "42",
-        "26",
-        "42",
-        "54"
+        "72",
+        "793",
+        "911",
+        "36",
+        "35",
+        "804"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_040",
+      "raw": [
+        "346",
+        "7082",
+        "85",
+        "308",
+        "",
+        "928",
+        "11",
+        "x",
+        "43",
+        "691"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_041",
+      "raw": [
+        "346",
+        "7082",
+        "157",
+        "74",
+        "81",
+        "35",
+        "38",
+        "26",
+        "43",
+        "291"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_042",
+      "raw": [
+        "",
+        "80035",
+        "75",
+        "129",
+        "126",
+        "746",
+        "744",
+        "36",
+        "89",
+        "74"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_043",
+      "raw": [
+        "346",
+        "728",
+        "157",
+        "74",
+        "82",
+        "996",
+        "226",
+        "64",
+        "43",
+        "?"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REC"
+        ],
+        "stages": [
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_044",
+      "raw": [
+        "346",
+        "794",
+        "85",
+        "18",
+        "82",
+        "8",
+        "499",
+        "26",
+        "34",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -2121,297 +2712,34 @@
       "form": "B",
       "name": "random_045",
       "raw": [
-        "264",
-        "",
-        "65",
-        "329",
-        "",
-        "379",
-        "48",
-        "63",
-        "52",
-        "x"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_046",
-      "raw": [
-        "346",
-        "728",
-        "",
-        "74",
-        "82",
-        "35",
-        "",
-        "26",
-        "42",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_047",
-      "raw": [
-        "246",
-        "",
-        "112",
-        "74",
-        "82",
-        "793",
-        "911",
-        "26",
-        "34",
-        "804"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_048",
-      "raw": [
-        "x",
-        "853",
-        "75",
-        "85",
-        "72",
-        "308",
-        "",
-        "44",
-        "53",
-        "x"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_049",
-      "raw": [
-        "356",
-        "728",
-        "112",
-        "",
-        "82",
-        "269",
-        "42",
-        "26",
-        "42",
-        "54"
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_050",
-      "raw": [
-        "347",
-        "728",
-        "3 4",
-        "92",
-        "916",
-        "238",
-        "38",
-        "238",
-        "53",
-        "66"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_051",
-      "raw": [
-        "264",
-        "853",
-        "615",
-        "84",
-        "x",
-        "",
-        "48",
-        "36",
-        "52",
-        "122"
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_052",
-      "raw": [
-        "346",
-        "700208",
-        "85",
-        "74",
-        "82",
         "?",
-        "39",
-        "62",
-        "340",
-        "928"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_053",
-      "raw": [
-        "336",
-        "728",
-        "9",
-        "499",
-        "82",
-        "46",
-        "38",
-        "26",
-        "42",
-        "415"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_054",
-      "raw": [
-        "274",
-        "853",
+        "863",
         "75",
+        "84",
         "139",
         "",
         "958",
         "?",
-        "36",
         "53",
-        ""
+        "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
         "missed_teaching": true,
-        "no_method_confirmed": true,
+        "no_method_confirmed": false,
         "no_method_possible": true,
         "not_attempted": false,
         "signature_stages": [
@@ -2428,105 +2756,32 @@
         ]
       },
       "form": "A",
-      "name": "random_055",
+      "name": "random_046",
       "raw": [
-        "364",
-        "728",
-        "",
-        "",
-        "82",
-        "35",
+        "3046",
+        "738",
         "3 4",
         "40",
         "80",
-        "x"
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_056",
-      "raw": [
-        "",
-        "669",
-        "85",
-        "74",
-        "82",
-        "654",
-        "37",
-        "",
         "x",
+        "38",
+        "872",
+        "43",
         "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 2
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "SUB-NODEC",
-            "Core"
-          ]
-        ],
-        "signatures": [
-          "SUB-NODEC"
-        ],
-        "stages": [
-          "Core"
-        ]
-      },
-      "form": "B",
-      "name": "random_057",
-      "raw": [
-        "265",
-        "800503",
-        "93",
-        "84",
-        "72",
-        "876",
-        "58",
-        "46",
-        "",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -2536,105 +2791,539 @@
         "stages": []
       },
       "form": "A",
-      "name": "random_058",
+      "name": "random_047",
       "raw": [
-        "30064",
-        "3 4",
-        "",
-        "146",
-        "4",
-        "35",
-        "38",
-        "26",
+        "3064",
+        "728",
+        "621",
+        "614",
+        "82",
+        "991",
         "42",
-        "64"
+        "26",
+        "34",
+        "876"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": true,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "NO-METHOD",
+            "Input (teaching)"
+          ]
+        ],
+        "signatures": [
+          "NO-METHOD"
+        ],
+        "stages": [
+          "Input (teaching)"
+        ]
+      },
+      "form": "B",
+      "name": "random_048",
+      "raw": [
+        "",
+        "3 4",
+        "766",
+        "403",
+        "3 4",
+        "",
+        "118",
+        "4",
+        "53",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_049",
+      "raw": [
+        "",
+        "70028",
+        "85",
+        "",
+        "x",
+        "?",
+        "x",
+        "36",
+        "43",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_050",
+      "raw": [
+        "x",
+        "728",
+        "411",
+        "74",
+        "82",
+        "35",
+        "886",
+        "26",
+        "870",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "CORE-OFF1",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "B",
+      "name": "random_051",
+      "raw": [
+        "20064",
+        "853",
+        "143",
+        "84",
+        "73",
+        "45",
+        "48",
+        "46",
+        "52",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
+            "CORE-OFF1",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "A",
+      "name": "random_052",
+      "raw": [
+        "346",
+        "728",
+        "130",
+        "47",
+        "82",
+        "803",
+        "37",
+        "34",
+        "43",
+        "55"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_053",
+      "raw": [
+        "346",
+        "700802",
+        "85",
+        "74",
+        "",
+        "35",
+        "110",
+        "26",
+        "x",
+        "858"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_054",
+      "raw": [
+        "264",
+        "?",
+        "75",
+        "129",
+        "72",
+        "180",
+        "3",
+        "36",
+        "53",
+        "76"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_055",
+      "raw": [
+        "346",
+        "97",
+        "112",
+        "18",
+        "439",
+        "x",
+        "38",
+        "26",
+        "43",
+        "825"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-NEAR",
+            "Input (test)"
+          ],
+          [
             "OUT-REC",
             "Output"
           ]
         ],
         "signatures": [
+          "IN-NEAR",
           "OUT-REC"
+        ],
+        "stages": [
+          "Input (test)",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_056",
+      "raw": [
+        "336",
+        "628",
+        "9",
+        "29",
+        "82",
+        "913",
+        "38",
+        "",
+        "",
+        "9"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_057",
+      "raw": [
+        "274",
+        "853",
+        "75",
+        "796",
+        "71",
+        "336",
+        "48",
+        "63",
+        "89",
+        ""
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REV",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REV"
         ],
         "stages": [
           "Output"
         ]
       },
       "form": "A",
-      "name": "random_059",
+      "name": "random_058",
       "raw": [
-        "30046",
+        "346",
         "728",
-        "",
-        "x",
-        "?",
-        "x",
-        "48",
-        "26",
-        "43",
-        "55"
+        "85",
+        "3 4",
+        "28",
+        "208",
+        "38",
+        "507",
+        "34",
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 2
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
       },
-      "form": "B",
-      "name": "random_060",
+      "form": "A",
+      "name": "random_059",
       "raw": [
-        "2046",
-        "x",
+        "",
+        "729",
         "75",
-        "411",
-        "72",
-        "45",
-        "48",
-        "886",
-        "53",
-        "870"
+        "74",
+        "712",
+        "407",
+        "38",
+        "62",
+        "57",
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 2
+        "missed_concepts": [],
+        "unreadable": 1
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_060",
+      "raw": [
+        "285",
+        "334",
+        "75",
+        "",
+        "328",
+        "159",
+        "48",
+        "63",
+        "53",
+        "1"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -2655,116 +3344,158 @@
       "form": "A",
       "name": "random_061",
       "raw": [
-        "300604",
-        "750",
-        "416",
-        "64",
-        "",
+        "346",
+        "x",
+        "85",
+        "74",
+        "82",
+        "456",
+        "493",
         "35",
-        "38",
-        "34",
-        "43",
+        "121",
         "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
+        "signature_stages": [
+          [
+            "SUB-NODEC",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "SUB-NODEC"
+        ],
+        "stages": [
+          "Core"
+        ]
       },
       "form": "A",
       "name": "random_062",
       "raw": [
-        "356",
+        "364",
         "728",
-        "85",
-        "74",
+        "x",
+        "260",
+        "82",
+        "117",
+        "48",
         "?",
-        "801",
-        "3 4",
-        "26",
-        "43",
-        "?"
+        "53",
+        "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
+        "signature_stages": [
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REC"
+        ],
+        "stages": [
+          "Output"
+        ]
       },
       "form": "B",
       "name": "random_063",
       "raw": [
-        "264",
-        "803",
-        "65",
-        "102",
-        "72",
-        "923",
-        "48",
+        "x",
         "",
-        "",
-        "63"
+        "76",
+        "801",
+        "3 4",
+        "772",
+        "?",
+        "933",
+        "89",
+        "64"
       ],
       "tags": {
-        "missed": true,
-        "unreadable": 1
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
       }
     },
     {
       "expected": {
-        "anchor_wrong": true,
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
       },
       "form": "A",
       "name": "random_064",
       "raw": [
-        "297",
-        "700208",
         "",
-        "74",
-        "83",
-        "921",
-        "38",
-        "34",
-        "43",
-        "54"
+        "728",
+        "85",
+        "92",
+        "?",
+        "",
+        "11",
+        "?",
+        "158",
+        "108"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition",
+          "subtraction"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -2775,25 +3506,73 @@
       "form": "A",
       "name": "random_065",
       "raw": [
-        "216",
-        "729",
-        "85",
-        "128",
+        "574",
+        "738",
+        "157",
+        "",
         "82",
-        "180",
-        "48",
+        "357",
         "38",
-        "43",
-        "54"
+        "26",
+        "57",
+        ""
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [
+          "addition",
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REC"
+        ],
+        "stages": [
+          "Output"
+        ]
+      },
+      "form": "B",
+      "name": "random_066",
+      "raw": [
+        "264",
+        "853",
+        "75",
+        "83",
+        "72",
+        "45",
+        "201",
+        "36",
+        "53",
+        "475"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -2802,67 +3581,203 @@
         "signatures": [],
         "stages": []
       },
-      "form": "B",
-      "name": "random_066",
+      "form": "A",
+      "name": "random_067",
       "raw": [
-        "425",
-        "835",
-        "76",
-        "84",
-        "97",
-        "384",
-        "3",
-        "439",
+        "346",
+        "700208",
+        "58",
+        "74",
+        "82",
+        "698",
+        "38",
+        "64",
         "x",
-        "64"
+        "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_068",
+      "raw": [
+        "346",
+        "x",
+        "85",
+        "74",
+        "91",
+        "35",
+        "38",
+        "909",
+        "43",
+        "45"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
         "anchor_wrong": true,
+        "excluded": [
+          "IN-OP"
+        ],
+        "missed_concepts": [
+          "subtraction"
+        ],
         "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "OUT-REC",
+            "IN-OP",
+            "Input (test)"
+          ],
+          [
+            "OUT-REV",
             "Output"
           ]
         ],
         "signatures": [
-          "OUT-REC"
+          "IN-OP",
+          "OUT-REV"
         ],
         "stages": [
+          "Input (test)",
           "Output"
         ]
       },
-      "form": "A",
-      "name": "random_067",
+      "form": "B",
+      "name": "random_069",
       "raw": [
-        "345",
-        "76",
         "",
+        "",
+        "138",
+        "48",
+        "27",
+        "54",
+        "118",
+        "36",
+        "89",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_070",
+      "raw": [
+        "446",
+        "",
+        "3 4",
         "74",
-        "346",
-        "798",
+        "82",
+        "440",
         "38",
-        "26",
+        "34",
         "43",
         "54"
       ],
       "tags": {
-        "missed": true,
-        "unreadable": 2
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [
+          "IN-OPND"
+        ],
+        "missed_concepts": [
+          "addition",
+          "place_value",
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "A",
+      "name": "random_071",
+      "raw": [
+        "346",
+        "728",
+        "",
+        "92",
+        "127",
+        "35",
+        "38",
+        "34",
+        "43",
+        "?"
+      ],
+      "tags": {
+        "missed": true,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -2880,28 +3795,380 @@
           "Output"
         ]
       },
-      "form": "A",
-      "name": "random_068",
+      "form": "B",
+      "name": "random_072",
       "raw": [
-        "346",
-        "728",
-        "85",
-        "74",
         "",
-        "",
-        "11",
-        "26",
-        "34",
-        "54"
+        "853",
+        "75",
+        "?",
+        "72",
+        "45",
+        "48",
+        "36",
+        "54",
+        "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 2
       }
     },
     {
       "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_073",
+      "raw": [
+        "926",
+        "828",
+        "833",
+        "?",
+        "36",
+        "35",
+        "38",
+        "25",
+        "43",
+        "9"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_074",
+      "raw": [
+        "346",
+        "628",
+        "85",
+        "146",
+        "x",
+        "576",
+        "38",
+        "26",
+        "53",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "PV-HEARD",
+            "Core"
+          ],
+          [
+            "PV-REVERSE",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "PV-HEARD",
+          "PV-REVERSE"
+        ],
+        "stages": [
+          "Core",
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_075",
+      "raw": [
+        "20046",
+        "80035",
+        "",
+        "84",
+        "72",
+        "?",
+        "",
+        "36",
+        "53",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "A",
+      "name": "random_076",
+      "raw": [
+        "346",
+        "70082",
+        "112",
+        "128",
+        "141",
+        "",
+        "861",
+        "26",
+        "43",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_077",
+      "raw": [
+        "970",
+        "728",
+        "203",
+        "64",
+        "36",
+        "35",
+        "38",
+        "24",
+        "43",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [
+          "ADD-NOCARRY"
+        ],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "ADD-NOCARRY",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "ADD-NOCARRY"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "B",
+      "name": "random_078",
+      "raw": [
+        "691",
+        "853",
+        "65",
+        "83",
+        "62",
+        "89",
+        "48",
+        "36",
+        "53",
+        "?"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": true,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "NO-METHOD",
+            "Input (teaching)"
+          ],
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "NO-METHOD",
+          "OUT-REC"
+        ],
+        "stages": [
+          "Input (teaching)",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_079",
+      "raw": [
+        "",
+        "728",
+        "85",
+        "74",
+        "82",
+        "677",
+        "38",
+        "214",
+        "983",
+        "126"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [
+          "IN-NEAR"
+        ],
+        "missed_concepts": [
+          "place_value",
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-NEAR",
+            "Input (test)"
+          ],
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "IN-NEAR",
+          "OUT-REC"
+        ],
+        "stages": [
+          "Input (test)",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_080",
+      "raw": [
+        "345",
+        "729",
+        "85",
+        "",
+        "82",
+        "35",
+        "",
+        "281",
+        "611",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "place_value",
+          "subtraction"
+        ],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -2911,28 +4178,281 @@
         "stages": []
       },
       "form": "B",
-      "name": "random_069",
+      "name": "random_081",
       "raw": [
-        "274",
+        "264",
         "853",
         "75",
-        "796",
-        "71",
-        "336",
+        "147",
+        "612",
+        "45",
         "48",
-        "63",
-        "89",
+        "36",
+        "53",
+        "893"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_082",
+      "raw": [
+        "x",
+        "728",
+        "",
+        "74",
+        "36",
+        "142",
+        "83",
+        "312",
+        "43",
+        "375"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_083",
+      "raw": [
+        "346",
+        "871",
+        "130",
+        "258",
+        "72",
+        "3 4",
+        "38",
+        "37",
+        "691",
+        "108"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_084",
+      "raw": [
+        "192",
+        "853",
+        "75",
+        "220",
+        "",
+        "657",
+        "118",
+        "36",
+        "35",
         ""
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "A",
+      "name": "random_085",
+      "raw": [
+        "346",
+        "7082",
+        "86",
+        "74",
+        "91",
+        "35",
+        "98",
+        "",
+        "",
+        "9"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_086",
+      "raw": [
+        "346",
+        "718",
+        "",
+        "?",
+        "82",
+        "35",
+        "48",
+        "",
+        "43",
+        ""
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
         "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_087",
+      "raw": [
+        "264",
+        "853",
+        "138",
+        "84",
+        "72",
+        "45",
+        "49",
+        "44",
+        "53",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 1
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_088",
+      "raw": [
+        "346",
+        "728",
+        "86",
+        "74",
+        "712",
+        "3 4",
+        "",
+        "36",
+        "43",
+        "66"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -2950,642 +4470,32 @@
         ]
       },
       "form": "A",
-      "name": "random_070",
+      "name": "random_089",
       "raw": [
-        "",
+        "?",
         "728",
-        "",
-        "74",
+        "862",
+        "73",
         "82",
         "35",
-        "3 4",
-        "25",
-        "42",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_071",
-      "raw": [
-        "345",
-        "728",
-        "440",
-        "18",
-        "82",
-        "35",
-        "38",
-        "26",
-        "43",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_072",
-      "raw": [
-        "264",
-        "80053",
-        "75",
-        "714",
-        "63",
-        "45",
-        "48",
-        "35",
-        "63",
-        "285"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_073",
-      "raw": [
-        "346",
-        "",
-        "328",
-        "159",
-        "82",
-        "711",
-        "38",
-        "36",
-        "22",
-        "466"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_074",
-      "raw": [
-        "346",
-        "?",
-        "",
-        "74",
-        "82",
-        "35",
-        "38",
-        "35",
-        "493",
-        "55"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "B",
-      "name": "random_075",
-      "raw": [
-        "883",
-        "",
-        "286",
-        "529",
-        "62",
-        "45",
-        "x",
-        "260",
-        "53",
-        "117"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_076",
-      "raw": [
-        "?",
-        "700208",
-        "85",
-        "74",
-        "706",
-        "",
-        "38",
-        "34",
-        "x",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_077",
-      "raw": [
-        "801",
-        "3 4",
-        "9",
-        "933",
-        "72",
-        "335",
-        "37",
-        "26",
-        "921",
-        "x"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "B",
-      "name": "random_078",
-      "raw": [
-        "20046",
-        "?",
-        "",
-        "14",
-        "?",
-        "158",
-        "47",
-        "3 4",
-        "67",
-        "1"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_079",
-      "raw": [
-        "157",
-        "700802",
-        "",
-        "74",
-        "91",
-        "35",
-        "38",
-        "64",
-        "34",
-        "445"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_080",
-      "raw": [
-        "345",
-        "728",
-        "85",
-        "74",
-        "81",
-        "35",
-        "38",
-        "201",
-        "43",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_081",
-      "raw": [
-        "452",
-        "970",
-        "75",
-        "48",
-        "126",
-        "114",
-        "48",
-        "36",
-        "698",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_082",
-      "raw": [
-        "346",
-        "777",
-        "157",
-        "?",
-        "82",
-        "x",
-        "38",
-        "26",
-        "121",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_083",
-      "raw": [
-        "909",
-        "728",
-        "84",
-        "74",
-        "82",
-        "233",
-        "38",
-        "",
+        "353",
+        "133",
         "57",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "IN-NEAR",
-            "Input (test)"
-          ]
-        ],
-        "signatures": [
-          "IN-NEAR"
-        ],
-        "stages": [
-          "Input (test)"
-        ]
-      },
-      "form": "B",
-      "name": "random_084",
-      "raw": [
-        "254",
-        "753",
-        "54",
-        "147",
-        "72",
-        "670",
-        "48",
-        "36",
-        "63",
-        "76"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_085",
-      "raw": [
-        "",
-        "3 4",
-        "85",
-        "74",
-        "118",
-        "35",
-        "39",
-        "26",
-        "43",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_086",
-      "raw": [
-        "346",
-        "406",
-        "85",
-        "74",
-        "",
-        "348",
-        "83",
-        "36",
-        "43",
         "53"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_087",
-      "raw": [
-        "264",
-        "853",
-        "75",
-        "",
-        "897",
-        "92",
-        "48",
-        "?",
-        "53",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_088",
-      "raw": [
-        "336",
-        "728",
-        "85",
-        "74",
-        "82",
-        "3 4",
-        "48",
-        "",
-        "42",
-        "833"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_089",
-      "raw": [
-        "347",
-        "728",
-        "85",
-        "18",
-        "82",
-        "120",
-        "39",
-        "26",
-        "462",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -3598,70 +4508,67 @@
       "name": "random_090",
       "raw": [
         "264",
-        "800503",
-        "x",
-        "576",
-        "72",
+        "892",
+        "75",
+        "14",
+        "637",
         "45",
-        "118",
-        "36",
-        "588",
+        "84",
+        "35",
+        "x",
         "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ],
-          [
-            "PV-HEARD",
-            "Core"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC",
-          "PV-HEARD"
-        ],
-        "stages": [
-          "Core",
-          "Output"
-        ]
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
       },
       "form": "A",
       "name": "random_091",
       "raw": [
-        "30064",
-        "70028",
-        "",
+        "346",
+        "70082",
+        "85",
         "74",
-        "82",
-        "?",
-        "",
+        "118",
+        "35",
+        "38",
         "26",
-        "43",
-        "54"
+        "?",
+        "66"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 2
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -3672,135 +4579,80 @@
       "form": "A",
       "name": "random_092",
       "raw": [
-        "30064",
-        "728",
-        "85",
+        "x",
         "",
+        "804",
+        "?",
         "82",
-        "",
-        "",
-        "62",
-        "",
-        "141"
+        "149",
+        "38",
+        "34",
+        "43",
+        "45"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
         "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": true,
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "OUT-REC",
-            "Output"
+            "CORE-OFF1",
+            "Core"
           ]
         ],
         "signatures": [
-          "OUT-REC"
+          "CORE-OFF1"
         ],
         "stages": [
-          "Output"
+          "Core"
         ]
       },
       "form": "B",
       "name": "random_093",
       "raw": [
-        "732",
+        "263",
         "853",
-        "75",
-        "84",
-        "281",
-        "790",
+        "156",
+        "83",
+        "72",
+        "45",
         "48",
-        "?",
-        "35",
-        "64"
+        "36",
+        "52",
+        "602"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_094",
-      "raw": [
-        "524",
-        "728",
-        "85",
-        "74",
-        "24",
-        "35",
-        "38",
-        "34",
-        "43",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_095",
-      "raw": [
-        "?",
-        "782",
-        "84",
-        "64",
-        "89",
-        "35",
-        "38",
-        "26",
-        "?",
-        "?"
-      ],
-      "tags": {
-        "missed": true,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
+        "excluded": [
+          "NO-METHOD"
+        ],
+        "missed_concepts": [
+          "addition",
+          "place_value",
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": true,
         "no_method_possible": true,
         "not_attempted": false,
         "signature_stages": [
@@ -3816,29 +4668,109 @@
           "Input (teaching)"
         ]
       },
-      "form": "B",
-      "name": "random_096",
+      "form": "A",
+      "name": "random_094",
+      "raw": [
+        "347",
+        "728",
+        "3 4",
+        "712",
+        "538",
+        "711",
+        "117",
+        "208",
+        "43",
+        "9"
+      ],
+      "tags": {
+        "missed": true,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_095",
       "raw": [
         "",
-        "853",
-        "75",
-        "84",
-        "72",
-        "677",
-        "48",
-        "214",
-        "983",
-        "126"
+        "728",
+        "447",
+        "712",
+        "82",
+        "35",
+        "x",
+        "",
+        "34",
+        "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_096",
+      "raw": [
+        "264",
+        "",
+        "156",
+        "84",
+        "72",
+        "?",
+        "30",
+        "44",
+        "52",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -3849,55 +4781,76 @@
       "form": "A",
       "name": "random_097",
       "raw": [
-        "336",
-        "728",
-        "75",
-        "74",
-        "82",
-        "35",
-        "",
-        "26",
-        "43",
-        ""
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_098",
-      "raw": [
-        "611",
+        "346",
         "728",
         "85",
         "74",
-        "",
-        "35",
-        "48",
+        "82",
+        "?",
+        "38",
         "26",
         "43",
-        "54"
+        "9"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
         "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "OUT-REC"
+        ],
+        "stages": [
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_098",
+      "raw": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "628",
+        "38",
+        "26",
+        "?",
+        "53"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -3909,26 +4862,31 @@
       "form": "B",
       "name": "random_099",
       "raw": [
-        "2064",
-        "853",
-        "138",
-        "84",
-        "893",
-        "574",
-        "47",
-        "803",
-        "53",
-        "46"
+        "",
+        "",
+        "615",
+        "48",
+        "72",
+        "?",
+        "",
+        "36",
+        "3 4",
+        "64"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -3939,25 +4897,30 @@
       "form": "A",
       "name": "random_100",
       "raw": [
-        "346",
-        "727",
-        "142",
-        "75",
-        "82",
-        "375",
-        "42",
-        "26",
+        "617",
+        "804",
+        "85",
+        "74",
+        "632",
+        "149",
+        "38",
+        "27",
         "43",
-        "45"
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -3969,25 +4932,28 @@
       "form": "A",
       "name": "random_101",
       "raw": [
-        "",
-        "3 4",
-        "716",
+        "?",
+        "652",
+        "766",
         "74",
-        "72",
-        "3 4",
+        "82",
+        "346",
         "38",
-        "37",
-        "691",
-        "108"
+        "34",
+        "?",
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [],
+        "unreadable": 1
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -3999,25 +4965,146 @@
       "form": "B",
       "name": "random_102",
       "raw": [
-        "263",
-        "192",
-        "75",
-        "84",
-        "220",
-        "",
-        "58",
-        "",
+        "2046",
+        "953",
+        "502",
+        "14",
+        "72",
+        "45",
+        "48",
+        "46",
         "53",
-        "1"
+        "10"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_103",
+      "raw": [
+        "346",
+        "782",
+        "715",
+        "992",
+        "3 4",
+        "35",
+        "110",
+        "26",
+        "x",
+        "53"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [
+          "SUB-NODEC"
+        ],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "SUB-NODEC",
+            "Core"
+          ]
+        ],
+        "signatures": [
+          "SUB-NODEC"
+        ],
+        "stages": [
+          "Core"
+        ]
+      },
+      "form": "A",
+      "name": "random_104",
+      "raw": [
+        "47",
+        "70028",
+        "85",
+        "74",
+        "118",
+        "",
+        "39",
+        "36",
+        "3 4",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "B",
+      "name": "random_105",
+      "raw": [
+        "274",
+        "",
+        "76",
+        "",
+        "383",
+        "x",
+        "421",
+        "36",
+        "53",
+        "64"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -4036,172 +5123,81 @@
         ]
       },
       "form": "A",
-      "name": "random_103",
+      "name": "random_106",
       "raw": [
-        "608",
-        "628",
         "?",
-        "75",
-        "83",
+        "70082",
+        "85",
+        "74",
+        "459",
         "35",
-        "83",
+        "38",
         "26",
-        "?",
-        ""
+        "44",
+        "53"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "A",
-      "name": "random_104",
-      "raw": [
-        "346",
-        "277",
-        "",
-        "148",
-        "82",
-        "628",
-        "567",
-        "26",
-        "830",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_105",
-      "raw": [
-        "263",
-        "853",
-        "",
-        "?",
-        "72",
-        "45",
-        "48",
-        "36",
-        "53",
-        "10"
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "OUT-REC",
-            "Output"
-          ]
-        ],
-        "signatures": [
-          "OUT-REC"
-        ],
-        "stages": [
-          "Output"
-        ]
-      },
-      "form": "A",
-      "name": "random_106",
-      "raw": [
-        "30064",
-        "728",
-        "?",
-        "487",
-        "x",
-        "270",
-        "42",
-        "26",
-        "43",
-        "54"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 2
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "ADD-WHOLE-ONES",
-            "Core"
+            "IN-OPND",
+            "Input (test)"
           ],
           [
-            "OUT-REC",
-            "Output"
+            "SUB-SFL",
+            "Core"
           ]
         ],
         "signatures": [
-          "ADD-WHOLE-ONES",
-          "OUT-REC"
+          "IN-OPND",
+          "SUB-SFL"
         ],
         "stages": [
           "Core",
-          "Output"
+          "Input (test)"
         ]
       },
       "form": "A",
       "name": "random_107",
       "raw": [
-        "3 4",
         "",
+        "728",
         "715",
-        "74",
-        "712",
-        "209",
-        "38",
-        "26",
-        "43",
-        "54"
+        "18",
+        "91",
+        "",
+        "11",
+        "27",
+        "57",
+        "66"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 2
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "place_value"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -4212,65 +5208,75 @@
       "form": "B",
       "name": "random_108",
       "raw": [
-        "969",
-        "8",
-        "75",
-        "809",
+        "264",
+        "340",
+        "17",
+        "84",
         "72",
-        "543",
-        "586",
-        "37",
-        "53",
-        "46"
+        "45",
+        "48",
+        "36",
+        "63",
+        "745"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [
+          "place_value"
+        ],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
-        "missed_teaching": true,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "OUT-REV",
-            "Output"
+            "CORE-OFF1",
+            "Core"
           ]
         ],
         "signatures": [
-          "OUT-REV"
+          "CORE-OFF1"
         ],
         "stages": [
-          "Output"
+          "Core"
         ]
       },
       "form": "A",
       "name": "random_109",
       "raw": [
         "346",
-        "892",
+        "728",
         "85",
-        "18",
-        "637",
+        "74",
+        "x",
         "35",
-        "83",
-        "62",
-        "43",
-        "9"
+        "11",
+        "25",
+        "1",
+        "55"
       ],
       "tags": {
-        "missed": true,
-        "unreadable": 1
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -4281,95 +5287,75 @@
       "form": "A",
       "name": "random_110",
       "raw": [
-        "297",
-        "348",
-        "?",
-        "74",
-        "385",
-        "846",
-        "42",
+        "346",
+        "728",
+        "",
+        "92",
+        "28",
+        "861",
+        "38",
         "26",
-        "43",
+        "888",
         "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [],
-        "signatures": [],
-        "stages": []
-      },
-      "form": "B",
-      "name": "random_111",
-      "raw": [
-        "274",
-        "80035",
-        "75",
-        "84",
-        "62",
-        "45",
-        "359",
-        "36",
-        "617",
-        "64"
-      ],
-      "tags": {
-        "missed": false,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": false,
-        "missed_teaching": true,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "IN-OP",
-            "Input (test)"
-          ]
+        "missed_concepts": [
+          "subtraction"
         ],
-        "signatures": [
-          "IN-OP"
-        ],
-        "stages": [
-          "Input (test)"
-        ]
-      },
-      "form": "A",
-      "name": "random_112",
-      "raw": [
-        "",
-        "728",
-        "604",
-        "3 4",
-        "82",
-        "?",
-        "38",
-        "64",
-        "121",
-        "?"
-      ],
-      "tags": {
-        "missed": true,
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "IN-OPND",
+            "Input (test)"
+          ]
+        ],
+        "signatures": [
+          "IN-OPND"
+        ],
+        "stages": [
+          "Input (test)"
+        ]
+      },
+      "form": "B",
+      "name": "random_111",
+      "raw": [
+        "",
+        "",
+        "156",
+        "x",
+        "966",
+        "20",
+        "30",
+        "35",
+        "53",
+        "?"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -4378,39 +5364,94 @@
         "stages": []
       },
       "form": "A",
-      "name": "random_113",
+      "name": "random_112",
       "raw": [
-        "346",
+        "496",
         "728",
-        "75",
-        "602",
-        "82",
-        "610",
-        "48",
-        "444",
-        "42",
-        "479"
+        "3 4",
+        "74",
+        "?",
+        "35",
+        "38",
+        "36",
+        "43",
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [
+          "addition"
+        ],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
         "signature_stages": [
           [
-            "PV-HEARD",
+            "CORE-OFF1",
+            "Core"
+          ],
+          [
+            "OUT-REC",
+            "Output"
+          ]
+        ],
+        "signatures": [
+          "CORE-OFF1",
+          "OUT-REC"
+        ],
+        "stages": [
+          "Core",
+          "Output"
+        ]
+      },
+      "form": "A",
+      "name": "random_113",
+      "raw": [
+        "346",
+        "728",
+        "86",
+        "75",
+        "82",
+        "",
+        "38",
+        "62",
+        "121",
+        "174"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 2
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "addition"
+        ],
+        "missed_teaching": true,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [
+          [
+            "SUB-NODEC",
             "Core"
           ]
         ],
         "signatures": [
-          "PV-HEARD"
+          "SUB-NODEC"
         ],
         "stages": [
           "Core"
@@ -4420,24 +5461,31 @@
       "name": "random_114",
       "raw": [
         "200604",
-        "80035",
-        "615",
-        "84",
+        "480",
+        "93",
+        "135",
         "72",
-        "45",
-        "30",
-        "36",
-        "282",
-        "65"
+        "139",
+        "48",
+        "46",
+        "63",
+        "64"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "addition"
+        ],
         "unreadable": 0
       }
     },
     {
       "expected": {
-        "anchor_wrong": false,
+        "anchor_wrong": true,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
         "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -4449,70 +5497,63 @@
       "form": "A",
       "name": "random_115",
       "raw": [
-        "300406",
-        "712",
-        "85",
-        "74",
-        "x",
+        "346",
+        "628",
         "",
-        "11",
+        "",
+        "28",
+        "3 4",
+        "38",
         "26",
-        "34",
-        "x"
-      ],
-      "tags": {
-        "missed": true,
-        "unreadable": 0
-      }
-    },
-    {
-      "expected": {
-        "anchor_wrong": true,
-        "missed_teaching": false,
-        "no_method_confirmed": false,
-        "no_method_possible": false,
-        "not_attempted": false,
-        "signature_stages": [
-          [
-            "CORE-OFF1",
-            "Core"
-          ],
-          [
-            "IN-OP",
-            "Input (test)"
-          ]
-        ],
-        "signatures": [
-          "CORE-OFF1",
-          "IN-OP"
-        ],
-        "stages": [
-          "Core",
-          "Input (test)"
-        ]
-      },
-      "form": "A",
-      "name": "random_116",
-      "raw": [
-        "300604",
-        "728",
-        "85",
-        "?",
-        "36",
-        "939",
-        "110",
-        "26",
-        "44",
-        "53"
+        "43",
+        "54"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [
+          "subtraction"
+        ],
         "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
+        "missed_teaching": false,
+        "no_method_confirmed": false,
+        "no_method_possible": false,
+        "not_attempted": false,
+        "signature_stages": [],
+        "signatures": [],
+        "stages": []
+      },
+      "form": "A",
+      "name": "random_116",
+      "raw": [
+        "347",
+        "875",
+        "85",
+        "74",
+        "",
+        "35",
+        "38",
+        "26",
+        "42",
+        "54"
+      ],
+      "tags": {
+        "missed": false,
+        "missed_concepts": [],
+        "unreadable": 0
+      }
+    },
+    {
+      "expected": {
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -4524,26 +5565,31 @@
       "form": "B",
       "name": "random_117",
       "raw": [
-        "264",
+        "20046",
         "853",
         "75",
         "84",
-        "72",
-        "?",
-        "48",
+        "36",
+        "x",
+        "84",
         "36",
         "53",
         "1"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 1
+        "missed_concepts": [],
+        "unreadable": 0
       }
     },
     {
       "expected": {
         "anchor_wrong": true,
-        "missed_teaching": false,
+        "excluded": [],
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "missed_teaching": true,
         "no_method_confirmed": false,
         "no_method_possible": false,
         "not_attempted": false,
@@ -4554,25 +5600,30 @@
       "form": "A",
       "name": "random_118",
       "raw": [
-        "346",
-        "830",
-        "112",
-        "",
+        "3 4",
+        "727",
+        "85",
+        "74",
         "82",
-        "205",
-        "48",
+        "284",
+        "38",
         "26",
         "43",
-        "?"
+        "54"
       ],
       "tags": {
         "missed": false,
-        "unreadable": 0
+        "missed_concepts": [
+          "subtraction"
+        ],
+        "unreadable": 1
       }
     },
     {
       "expected": {
-        "anchor_wrong": true,
+        "anchor_wrong": false,
+        "excluded": [],
+        "missed_concepts": [],
         "missed_teaching": false,
         "no_method_confirmed": false,
         "no_method_possible": false,
@@ -4584,19 +5635,20 @@
       "form": "A",
       "name": "random_119",
       "raw": [
-        "96",
-        "700208",
-        "3 4",
-        "",
-        "",
-        "970",
-        "3 4",
-        "25",
-        "43",
-        "?"
+        "346",
+        "?",
+        "300",
+        "74",
+        "368",
+        "35",
+        "42",
+        "26",
+        "651",
+        "108"
       ],
       "tags": {
         "missed": false,
+        "missed_concepts": [],
         "unreadable": 0
       }
     }
@@ -4636,6 +5688,11 @@
           ]
         ],
         "checked": 1,
+        "missed_by_concept": {
+          "addition": 0,
+          "place_value": 0,
+          "subtraction": 0
+        },
         "missed_teaching": 0,
         "not_attempted": 0
       },
@@ -4830,6 +5887,11 @@
           ]
         ],
         "checked": 8,
+        "missed_by_concept": {
+          "addition": 0,
+          "place_value": 0,
+          "subtraction": 0
+        },
         "missed_teaching": 0,
         "not_attempted": 0
       },
@@ -5066,6 +6128,107 @@
         {
           "form": "A",
           "raw": [
+            "364",
+            "782",
+            "58",
+            "47",
+            "28",
+            "35",
+            "42",
+            "34",
+            "57",
+            "66"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "subtraction"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "364",
+            "782",
+            "58",
+            "47",
+            "28",
+            "35",
+            "42",
+            "34",
+            "57",
+            "66"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "place_value"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "346",
+            "728",
+            "9",
+            "74",
+            "82",
+            "35",
+            "110",
+            "26",
+            "43",
+            "54"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "addition"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "346",
+            "728",
+            "9",
+            "74",
+            "82",
+            "35",
+            "110",
+            "26",
+            "43",
+            "54"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "addition",
+              "subtraction"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "346",
+            "728",
+            "85",
+            "74",
+            "82",
+            "35",
+            "5",
+            "6",
+            "7",
+            "54"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "subtraction"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
             "346",
             "728",
             "85",
@@ -5080,44 +6243,6 @@
           "tags": {
             "two_answers": 1,
             "unreadable": 1
-          }
-        },
-        {
-          "form": "A",
-          "raw": [
-            "3046",
-            "728",
-            "",
-            "965",
-            "82",
-            "168",
-            "",
-            "62",
-            "629",
-            "789"
-          ],
-          "tags": {
-            "missed": false,
-            "unreadable": 0
-          }
-        },
-        {
-          "form": "A",
-          "raw": [
-            "",
-            "728",
-            "715",
-            "74",
-            "x",
-            "35",
-            "38",
-            "26",
-            "34",
-            "627"
-          ],
-          "tags": {
-            "missed": false,
-            "unreadable": 2
           }
         }
       ],
@@ -5141,7 +6266,7 @@
           [
             "IN-OP",
             "Input (test)",
-            2
+            3
           ],
           [
             "IN-OPND",
@@ -5156,12 +6281,12 @@
           [
             "OUT-REC",
             "Output",
-            2
+            1
           ],
           [
             "OUT-REV",
             "Output",
-            2
+            4
           ],
           [
             "PV-HEARD",
@@ -5176,18 +6301,18 @@
           [
             "PV-REVERSE",
             "Output",
-            1
+            2
           ],
           [
             "SUB-SFL",
             "Core",
-            1
+            2
           ]
         ],
         "by_stage": [
           [
             "Core",
-            4
+            5
           ],
           [
             "Input (teaching)",
@@ -5195,15 +6320,20 @@
           ],
           [
             "Input (test)",
-            6
+            7
           ],
           [
             "Output",
-            4
+            5
           ]
         ],
-        "checked": 17,
-        "missed_teaching": 1,
+        "checked": 20,
+        "missed_by_concept": {
+          "addition": 3,
+          "place_value": 2,
+          "subtraction": 4
+        },
+        "missed_teaching": 6,
         "not_attempted": 1
       },
       "name": "class_of_20"
@@ -5439,6 +6569,107 @@
         {
           "form": "A",
           "raw": [
+            "364",
+            "782",
+            "58",
+            "47",
+            "28",
+            "35",
+            "42",
+            "34",
+            "57",
+            "66"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "subtraction"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "364",
+            "782",
+            "58",
+            "47",
+            "28",
+            "35",
+            "42",
+            "34",
+            "57",
+            "66"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "place_value"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "346",
+            "728",
+            "9",
+            "74",
+            "82",
+            "35",
+            "110",
+            "26",
+            "43",
+            "54"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "addition"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "346",
+            "728",
+            "9",
+            "74",
+            "82",
+            "35",
+            "110",
+            "26",
+            "43",
+            "54"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "addition",
+              "subtraction"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "346",
+            "728",
+            "85",
+            "74",
+            "82",
+            "35",
+            "5",
+            "6",
+            "7",
+            "54"
+          ],
+          "tags": {
+            "missed_concepts": [
+              "subtraction"
+            ]
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
             "346",
             "728",
             "85",
@@ -5471,63 +6702,67 @@
           ],
           "tags": {
             "missed": false,
+            "missed_concepts": [],
             "unreadable": 0
-          }
-        },
-        {
-          "form": "A",
-          "raw": [
-            "",
-            "728",
-            "715",
-            "74",
-            "x",
-            "35",
-            "38",
-            "26",
-            "34",
-            "627"
-          ],
-          "tags": {
-            "missed": false,
-            "unreadable": 2
           }
         },
         {
           "form": "A",
           "raw": [
             "3064",
-            "700802",
-            "130",
-            "146",
+            "x",
+            "85",
+            "74",
             "82",
-            "493",
-            "267",
-            "3 4",
-            "42",
-            "54"
+            "81",
+            "627",
+            "64",
+            "34",
+            "45"
           ],
           "tags": {
-            "missed": false,
+            "missed": true,
+            "missed_concepts": [],
             "unreadable": 0
           }
         },
         {
           "form": "A",
           "raw": [
-            "346",
+            "446",
             "728",
-            "75",
-            "146",
+            "84",
+            "74",
+            "82",
+            "143",
+            "42",
             "139",
             "3 4",
-            "39",
-            "?",
-            "3 4",
-            "66"
+            "53"
           ],
           "tags": {
             "missed": false,
+            "missed_concepts": [],
+            "unreadable": 2
+          }
+        },
+        {
+          "form": "A",
+          "raw": [
+            "",
+            "476",
+            "85",
+            "298",
+            "",
+            "35",
+            "37",
+            "26",
+            "",
+            "54"
+          ],
+          "tags": {
+            "missed": false,
+            "missed_concepts": [],
             "unreadable": 0
           }
         },
@@ -5537,35 +6772,17 @@
             "346",
             "728",
             "85",
-            "18",
-            "72",
-            "35",
-            "37",
-            "26",
-            "",
-            "9"
-          ],
-          "tags": {
-            "missed": false,
-            "unreadable": 2
-          }
-        },
-        {
-          "form": "A",
-          "raw": [
-            "x",
-            "",
-            "939",
             "74",
-            "81",
-            "35",
-            "83",
             "x",
             "",
+            "38",
+            "",
+            "187",
             "54"
           ],
           "tags": {
             "missed": false,
+            "missed_concepts": [],
             "unreadable": 0
           }
         },
@@ -5573,57 +6790,22 @@
           "form": "A",
           "raw": [
             "346",
-            "728",
+            "7028",
             "85",
-            "655",
-            "28",
-            "",
-            "37",
-            "26",
-            "121",
-            "?"
-          ],
-          "tags": {
-            "missed": false,
-            "unreadable": 2
-          }
-        },
-        {
-          "form": "A",
-          "raw": [
-            "345",
-            "728",
-            "85",
-            "18",
-            "396",
-            "582",
-            "38",
-            "774",
-            "43",
-            "54"
-          ],
-          "tags": {
-            "missed": false,
-            "unreadable": 0
-          }
-        },
-        {
-          "form": "A",
-          "raw": [
-            "575",
-            "527",
-            "98",
-            "64",
+            "74",
             "82",
+            "802",
+            "132",
             "35",
-            "83",
-            "34",
-            "121",
-            "54"
+            "43",
+            "655"
           ],
           "tags": {
             "missed": false,
-            "unreadable": 1
+            "missed_concepts": [
+              "place_value"
+            ],
+            "unreadable": 0
           }
         }
       ],
@@ -5637,7 +6819,7 @@
           [
             "CORE-OFF1",
             "Core",
-            1
+            2
           ],
           [
             "IN-NEAR",
@@ -5647,12 +6829,12 @@
           [
             "IN-OP",
             "Input (test)",
-            2
+            3
           ],
           [
             "IN-OPND",
             "Input (test)",
-            2
+            1
           ],
           [
             "NO-METHOD",
@@ -5662,38 +6844,38 @@
           [
             "OUT-REC",
             "Output",
-            4
+            2
           ],
           [
             "OUT-REV",
             "Output",
-            2
+            4
           ],
           [
             "PV-HEARD",
             "Core",
-            2
+            1
           ],
           [
             "PV-REVERSE",
             "Input (test)",
-            3
+            2
           ],
           [
             "PV-REVERSE",
             "Output",
-            1
+            2
           ],
           [
             "SUB-SFL",
             "Core",
-            1
+            2
           ]
         ],
         "by_stage": [
           [
             "Core",
-            5
+            6
           ],
           [
             "Input (teaching)",
@@ -5708,8 +6890,13 @@
             6
           ]
         ],
-        "checked": 24,
-        "missed_teaching": 1,
+        "checked": 26,
+        "missed_by_concept": {
+          "addition": 4,
+          "place_value": 4,
+          "subtraction": 5
+        },
+        "missed_teaching": 8,
         "not_attempted": 1
       },
       "name": "class_of_30"

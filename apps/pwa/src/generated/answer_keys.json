@@ -1,5 +1,5 @@
 {
-  "content_hash": "086f0972f790b918cac1ed5a9267296e14b307be84e3f7bd74117f06511e12dc",
+  "content_hash": "fc2a2e030545c7b8b49bf4279f8a4aeb0584e7524369785d1a0f8e33c5ab068f",
   "error_order": [
     "PV-HEARD",
     "PV-REVERSE",
@@ -873,6 +873,23 @@
         5
       ],
       "anchor": 6,
+      "concepts": {
+        "addition": [
+          3,
+          4,
+          5
+        ],
+        "place_value": [
+          1,
+          2
+        ],
+        "subtraction": [
+          7,
+          8,
+          9,
+          10
+        ]
+      },
       "min_hits": 2,
       "no_method_items_7_10": 3,
       "pv_reverse": {

@@ -6,12 +6,19 @@ import { classCounts, classifyChild, type StageCounts } from "./stagecalc";
 
 export type { StageCounts } from "./stagecalc";
 
-/** The class's stage counts. `missed` is the set of child positions she tagged "missed the teaching". */
-export function stagesFor(formKey: string, rows: string[][], missed: ReadonlySet<number>): StageCounts | null {
+/** The class's stage counts. `missed` says, per child position, which concepts she tagged "missed
+ *  the teaching on this"; a plain set of positions is the older whole-sheet tag. */
+export function stagesFor(
+  formKey: string,
+  rows: string[][],
+  missed: ReadonlySet<number> | ReadonlyMap<number, ReadonlySet<string>>,
+): StageCounts | null {
+  const tagsOf = (i: number) =>
+    missed instanceof Map ? { missed_concepts: [...(missed.get(i) ?? [])] } : { missed: (missed as ReadonlySet<number>).has(i) };
   const results = rows
     .map((row, i) => ({ row, i }))
     .filter(({ row }) => !isEmptyRow(row))
-    .map(({ row, i }) => classifyChild(formKey, readRow(row), { missed: missed.has(i) }));
+    .map(({ row, i }) => classifyChild(formKey, readRow(row), tagsOf(i)));
   return results.length === 0 ? null : classCounts(results);
 }
 

@@ -15,7 +15,7 @@ test("sample sheets run a check, mark the unsure boxes, and the error card says 
   await page.getByTestId("use-sample").click();
   await expect(page.getByTestId("photo-note")).toContainText("recorded reads of made-up sheets");
   await expect(page.locator("[data-check='true']").first()).toBeVisible();
-  await page.getByTestId("missed-teaching").check();
+  await page.getByTestId("missed-subtraction").check();
   await page.getByTestId("finish").click();
   await expect(page).toHaveURL(/#\/cards/);
   const stages = page.getByTestId("stage-lines");
@@ -25,7 +25,7 @@ test("sample sheets run a check, mark the unsure boxes, and the error card says 
   await expect(page.getByTestId("probe-Core")).toContainText("One-minute check");
   await expect(page.getByTestId("stage-Output")).toBeVisible();
   await expect(page.getByTestId("stage-Input (test)")).toBeVisible();
-  await expect(page.getByTestId("stage-missed")).toContainText("1 children missed the teaching");
+  await expect(page.getByTestId("stage-missed-subtraction")).toContainText("1 children missed the teaching on subtraction with borrowing");
   await expect(stages).not.toContainText("%"); // counts, never percentages
 });
 

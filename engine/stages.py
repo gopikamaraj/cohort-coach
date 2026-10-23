@@ -8,7 +8,7 @@ reduces a class to counts per (signature, stage). Pure: no I/O, no randomness.
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
@@ -34,6 +34,13 @@ NO_METHOD_ITEMS_7_10 = 3
 ANCHOR = 6
 _ADD_ITEMS = (3, 4, 5)
 _SUB_ITEMS = (7, 8, 9, 10)
+# The concepts a worksheet covers, by item. A teacher can tag "missed the teaching" on any of them;
+# the anchor (item 6) is not part of any.
+CONCEPTS: dict[str, tuple[int, ...]] = {
+    "place_value": (1, 2),
+    "addition": _ADD_ITEMS,
+    "subtraction": _SUB_ITEMS,
+}
 
 _STAGE_OF: dict[str, Stage] = {
     "PV-HEARD": Stage.CORE,
@@ -59,6 +66,7 @@ def stage_rules() -> dict[str, object]:
         "anchor": ANCHOR,
         "add_items": list(_ADD_ITEMS),
         "sub_items": list(_SUB_ITEMS),
+        "concepts": {name: list(items) for name, items in CONCEPTS.items()},
         "stage_of": {code: stage.value for code, stage in _STAGE_OF.items()},
         "pv_reverse": {"with_out_rev": Stage.OUTPUT.value, "otherwise": Stage.INPUT_TEST.value},
     }
@@ -157,7 +165,11 @@ class StageResult:
     anchor_wrong: bool
     no_method_possible: bool
     no_method_confirmed: bool
-    missed_teaching: bool
+    missed_teaching: bool  # she tagged at least one concept
+    missed_concepts: frozenset[str] = frozenset()
+    # signatures left out of the class counts because every item they rest on is in a concept she
+    # tagged (a signature with no items, OUT-REC, is left out only when every concept is tagged)
+    excluded: frozenset[str] = frozenset()
 
 
 def classify_child(
@@ -165,13 +177,22 @@ def classify_child(
     readings: Sequence[Reading],
     *,
     missed_teaching: bool = False,
+    missed_concepts: Iterable[str] = (),
     unreadable: int = 0,
     two_answers: int = 0,
 ) -> StageResult:
-    """One child's stages from ten readings and the teacher's tags. Held in memory only."""
+    """One child's stages from ten readings and the teacher's tags. Held in memory only.
+
+    `missed_teaching=True` is the whole-sheet tag: every concept. `missed_concepts` names only some.
+    """
     if len(readings) != len(form.items):
         raise ValueError(f"expected {len(form.items)} answers, got {len(readings)}")
+    missed = frozenset(CONCEPTS) if missed_teaching else frozenset(missed_concepts)
+    unknown = missed - set(CONCEPTS)
+    if unknown:
+        raise ValueError(f"unknown concept(s): {sorted(unknown)}")
     hits: Counter[str] = Counter()
+    support: dict[str, set[int]] = {}
     unmatched: dict[int, bool] = {}
     blanks_7_10 = 0
     anchor_wrong = False
@@ -188,14 +209,25 @@ def classify_child(
         sigs = signature_answers(item)
         matched = [code for code, answers in sigs.items() if reading in answers]
         hits.update(matched)
+        for code in matched:
+            support.setdefault(code, set()).add(item.n)
         unmatched[item.n] = not matched
     sigs_found = {code for code, n in hits.items() if n >= MIN_HITS}
     wrong_7_10 = sum(1 for n in _SUB_ITEMS if unmatched.get(n))
     all_3_5 = all(unmatched.get(n) for n in _ADD_ITEMS)
     if wrong_7_10 >= NO_METHOD_ITEMS_7_10 or all_3_5:
         sigs_found.add("NO-METHOD")
+        support["NO-METHOD"] = {n for n, gone in unmatched.items() if gone}
     if unreadable + two_answers >= MIN_HITS:
         sigs_found.add("OUT-REC")
+    missed_items = {n for name in missed for n in CONCEPTS[name]}
+    all_missed = missed == frozenset(CONCEPTS)
+    excluded = frozenset(
+        code
+        for code in sigs_found
+        if (support.get(code) and support[code] <= missed_items)
+        or (all_missed and code == "OUT-REC")
+    )
     pairs: set[tuple[str, Stage]] = set()
     for code in sigs_found:
         if code == "PV-REVERSE":
@@ -210,8 +242,10 @@ def classify_child(
         not_attempted=blanks_7_10 >= NO_METHOD_ITEMS_7_10,
         anchor_wrong=anchor_wrong,
         no_method_possible="NO-METHOD" in sigs_found,
-        no_method_confirmed="NO-METHOD" in sigs_found and missed_teaching,
-        missed_teaching=missed_teaching,
+        no_method_confirmed="NO-METHOD" in sigs_found and "NO-METHOD" in excluded,
+        missed_teaching=bool(missed),
+        missed_concepts=missed,
+        excluded=excluded,
     )
 
 
@@ -220,26 +254,30 @@ class ClassStageCounts:
     """The only thing stored about stages: counts for the class, never a child."""
 
     checked: int
-    missed_teaching: int
+    missed_teaching: int  # children with at least one concept tagged
     not_attempted: int
+    missed_by_concept: dict[str, int]
     by_signature: dict[tuple[str, Stage], int]
     by_stage: dict[Stage, int]
 
 
 def class_counts(results: Sequence[StageResult]) -> ClassStageCounts:
-    """Counts per (signature, stage). Children tagged "missed the teaching" are counted on their
-    own line and left out of the stage counts, so they do not inflate Core."""
+    """Counts per (signature, stage). What a child missed the teaching on is counted on its own
+    lines (once per concept) and left out of the stage counts, so it does not inflate Core; what
+    she did not miss still counts."""
     by_sig: Counter[tuple[str, Stage]] = Counter()
     by_stage: Counter[Stage] = Counter()
+    by_concept: Counter[str] = Counter()
     for r in results:
-        if r.missed_teaching:
-            continue
-        by_sig.update(r.signature_stages)
-        by_stage.update(r.stages)
+        by_concept.update(r.missed_concepts)
+        kept = {(code, stage) for code, stage in r.signature_stages if code not in r.excluded}
+        by_sig.update(kept)
+        by_stage.update({stage for _, stage in kept})
     return ClassStageCounts(
         checked=len(results),
         missed_teaching=sum(1 for r in results if r.missed_teaching),
         not_attempted=sum(1 for r in results if r.not_attempted),
+        missed_by_concept={name: by_concept.get(name, 0) for name in CONCEPTS},
         by_signature=dict(by_sig),
         by_stage=dict(by_stage),
     )

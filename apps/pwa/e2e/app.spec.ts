@@ -22,8 +22,7 @@ function tenChildren(): string[][] {
 }
 
 async function typeAnswer(page: Page, q: number, value: string) {
-  await page.getByTestId(`box-${q + 1}`).click();
-  for (const ch of value) await page.getByRole("button", { name: ch, exact: true }).click();
+  await page.getByTestId(`input-${q + 1}`).fill(value);
 }
 
 async function enterCheck(page: Page, rows: string[][]) {
@@ -56,7 +55,7 @@ test("judge mode loads a simulated class: Home, then cards with counts, never a 
   expect(await page.locator("body").innerText()).not.toMatch(/%/);
 });
 
-test("a teacher enters a 10-child check with the keypad and gets counts on the phone", async ({ page }) => {
+test("a teacher enters a 10-child check with the phone's number keyboard and gets counts on the phone", async ({ page }) => {
   const requests: Request[] = [];
   page.on("request", (r) => {
     if (r.url().includes("/api/")) requests.push(r);
@@ -87,11 +86,11 @@ test("the answers are autosaved on the phone and come back after a reload", asyn
   await page.goto("/#/check");
   await page.getByTestId("form-A").click();
   await typeAnswer(page, 0, "346");
-  await expect(page.getByTestId("box-1")).toContainText("346");
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
   await expect(page.getByTestId("check-count")).toContainText("Saved on this phone");
   await page.reload();
   await page.goto("/#/check");
-  await expect(page.getByTestId("box-1")).toContainText("346");
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
 });
 
 test("languages switch at runtime and the page language follows", async ({ page }) => {
