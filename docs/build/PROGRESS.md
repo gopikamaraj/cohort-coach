@@ -32,6 +32,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P15 | Production deploy and freeze | P0 | Wed 28 | ⬜ | | | | Freeze |
 | P16 | Submission pack | P0 | Thu 29 – Fri 30 | ⬜ | | | | |
 | P17 | Sprite system (SVG items, mats, avatars, topic packs, call 11) | P0 | built ahead 22 Oct | 🟡 | 2026-10-22 | 2026-10-22 | [report](reports/SPRITES.md) | Built and tested; coach approval and officer enablement of the shipped pack, a live run of call 11 and a real-phone look are open |
+| PILOT | Pilot mode: sign-in, Upload sheets, Intervention audio (`PILOT_MODE=1`) | P0 (pilot) | 23 Oct | 🟡 | 2026-10-23 | 2026-10-23 | [report](reports/PILOT-MODE.md) | Built and tested with stub speech, stub models and in-memory stores: 90 Python tests in tests/pilot, 19 vitest tests in src/pilot, 9 Playwright tests in e2e/pilot.spec.ts. Not run against a real S3 bucket, a real Sarvam key (rejected 22 Oct) or a real phone; Hindi and Tamil wording, name-on-sheet policy, consent wording and retention period need Shivani and Seema. No review page for unsure reads (two pages only). Template drafter in place of call 5 |
 
 ## Sprite system (P17) components
 
@@ -83,6 +84,14 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Seema | One-minute probes per stage (`strings/*.json`, `stage.probe.*`), sample lines per move (including common mistakes), the new strategy lines and practice levels | P08 | no | content/ |
 | Shivani | Hindi terms for borrowing or regrouping and the two strategies; whether the textbook teaches them; the PV-REVERSE stage rule (OD-21, OD-23, OD-24) | P08 | yes (English placeholders) | content/ |
 | Gopi | Hourly cap for live demo runs (OD-19) once the cost per Watch run is measured | P08 | no | DECISIONS.md |
+
+## Pilot mode (23 Oct, `docs/build/reports/PILOT-MODE.md`)
+
+| Owner | Needed from them | Blocking |
+| --- | --- | --- |
+| Gopi | Create the private sheets bucket (SSE on, public access blocked, CORS allowing PUT from the PWA origin with the `Content-Type` and `x-amz-server-side-encryption` headers) and a bucket-scoped key; set `PILOT_MODE`, `PILOT_ACCOUNTS`, `PILOT_TOKEN_SECRET`, `S3_SHEETS_*`; fix the Sarvam key; try Share on a real Android phone | yes, for a live pilot |
+| Shivani | Read the Hindi and Tamil pilot strings (`pilot.*` in `strings/`), the Hindi and Tamil lesson glue in `content/pilot/lessons.v1.yaml` and the share message; listen to the seven narrator voices | no (drafts in place) |
+| Seema | Name-on-sheet policy, consent wording and the consent reference format, the retention period (default 90 days), the lesson order and wording per error | no (defaults in place) |
 
 ## Added 21 Oct (addendum v3.1): where the tasks went
 

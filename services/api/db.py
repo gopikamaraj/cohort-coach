@@ -19,6 +19,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Text,
     UniqueConstraint,
     create_engine,
 )
@@ -312,3 +313,110 @@ class FlowState(Base):
     step_id: Mapped[str] = mapped_column(String(30))
     data: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class PilotSheet(Base):
+    """One stored pre-test answer-sheet photo (pilot mode). The image sits in the private sheets
+    bucket; this row holds where, who sent it and under which school consent. No child name or
+    free-text name field exists here: sheets carry roll numbers only, and the roll number is in the
+    image, not in this table."""
+
+    __tablename__ = "pilot_sheet"
+    __table_args__ = (UniqueConstraint("school_code", "sha256"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    school_code: Mapped[str] = mapped_column(String(24), index=True)
+    class_code: Mapped[str] = mapped_column(String(24))
+    teacher_ref: Mapped[str] = mapped_column(String(24))
+    test_phase: Mapped[str] = mapped_column(String(8), default="pre")
+    object_key: Mapped[str] = mapped_column(String(120), unique=True)
+    sha256: Mapped[str] = mapped_column(String(64))
+    bytes: Mapped[int] = mapped_column(Integer)
+    mime: Mapped[str] = mapped_column(String(40))
+    consent_ref: Mapped[str] = mapped_column(String(60))
+    uploaded_by: Mapped[str] = mapped_column(String(40))
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    # pending (URL issued) | stored | read | needs_look | failed
+    status: Mapped[str] = mapped_column(String(12), default="pending", index=True)
+    note: Mapped[str | None] = mapped_column(String(20))  # why a sheet needs a second look
+
+
+class PilotClassCount(Base):
+    """What the read sheets of one pilot class add up to: counts only, never a child's answers."""
+
+    __tablename__ = "pilot_class_count"
+    __table_args__ = (UniqueConstraint("school_code", "class_code"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    school_code: Mapped[str] = mapped_column(String(24), index=True)
+    class_code: Mapped[str] = mapped_column(String(24))
+    teacher_ref: Mapped[str] = mapped_column(String(24))
+    children_checked: Mapped[int] = mapped_column(Integer, default=0)
+    counts: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    anchor_wrong_count: Mapped[int] = mapped_column(Integer, default=0)
+    untracked: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+
+class PilotConfig(Base):
+    """Settings the coordinator edits in the app (audio_count, retention_days)."""
+
+    __tablename__ = "pilot_config"
+
+    key: Mapped[str] = mapped_column(String(30), primary_key=True)
+    value: Mapped[Any] = mapped_column(JSON)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    updated_by: Mapped[str] = mapped_column(String(40), default="system")
+
+
+class PilotAudio(Base):
+    """One intervention audio card: a slot in one language, one version of it. Older versions
+    stay; a card past a lowered audio count is shown inactive and never deleted."""
+
+    __tablename__ = "pilot_audio"
+    __table_args__ = (UniqueConstraint("slot", "language", "version"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    slot: Mapped[int] = mapped_column(Integer, index=True)
+    language: Mapped[str] = mapped_column(String(4))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    title: Mapped[str] = mapped_column(String(120))
+    script: Mapped[str] = mapped_column(Text)
+    track: Mapped[str | None] = mapped_column(String(16))
+    voice: Mapped[str] = mapped_column(String(20))
+    # draft | needs_review | approved | audio_ready | failed
+    status: Mapped[str] = mapped_column(String(14), default="draft", index=True)
+    note: Mapped[str | None] = mapped_column(String(60))  # why it failed, or the checker was down
+    review_item_id: Mapped[str | None] = mapped_column(ForeignKey("review_items.item_id"))
+    object_key: Mapped[str | None] = mapped_column(String(120))
+    bytes: Mapped[int] = mapped_column(Integer, default=0)
+    duration_s: Mapped[float] = mapped_column(Float, default=0.0)
+    counts_hash: Mapped[str] = mapped_column(String(16), default="")
+    created_by: Mapped[str] = mapped_column(String(40), default="system")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    approved_by: Mapped[str | None] = mapped_column(String(40))
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class PilotShare(Base):
+    """A manual record: the coordinator says she sent this file to this teacher. Not delivery."""
+
+    __tablename__ = "pilot_share"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    audio_id: Mapped[str] = mapped_column(ForeignKey("pilot_audio.id"), index=True)
+    teacher_ref: Mapped[str] = mapped_column(String(24))
+    shared_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    shared_by: Mapped[str] = mapped_column(String(40))
+
+
+class PilotAudit(Base):
+    """Who did what in pilot mode. Ids and counts only; never a child, a name or a script."""
+
+    __tablename__ = "pilot_audit"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    actor: Mapped[str] = mapped_column(String(40))
+    action: Mapped[str] = mapped_column(String(40), index=True)
+    target: Mapped[str] = mapped_column(String(60), default="")
+    detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)

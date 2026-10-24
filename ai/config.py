@@ -27,6 +27,17 @@ def judge_mode() -> bool:
     return os.environ.get("JUDGE_MODE", "0") == "1"  # off unless the demo deployment sets it
 
 
+def pilot_mode() -> bool:
+    """True when this deployment is the pilot: sign-in, sheet upload and intervention audio only.
+    Decided by the server's environment, never by a request."""
+    return os.environ.get("PILOT_MODE", "0") == "1"
+
+
+def pilot_audio_max() -> int:
+    """The most audio files the coordinator may ask for (PILOT_AUDIO_MAX, default 10)."""
+    return max(1, int(os.environ.get("PILOT_AUDIO_MAX") or 10))
+
+
 def model_for(env_var: str) -> str:
     return os.environ.get(env_var) or DEFAULT_MODELS[env_var]
 

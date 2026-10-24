@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import socket
 from collections.abc import Callable
 from pathlib import Path
@@ -18,6 +19,10 @@ from ai.client import CallInput, input_hash
 from ai.prompt_loader import load_prompt
 from ai.registry import get_call
 from services.api.db import Base, make_engine
+
+# A developer's .env may switch pilot mode on; the suite always starts from the normal app (the
+# pilot tests turn it on themselves). Set before any test module imports services.api.main.
+os.environ["PILOT_MODE"] = "0"
 
 # Property tests check logic, not speed: a loaded CI or laptop must not fail them on timing.
 settings.register_profile("default", deadline=None)

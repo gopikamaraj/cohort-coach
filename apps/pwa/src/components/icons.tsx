@@ -123,6 +123,10 @@ const PATHS: Record<string, ReactNode> = {
   chat: <path d="M4 5h16v11H9l-5 4z" />,
   star: <path d="M12 3.5l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.2 6-.9z" />,
   plus: <path d="M12 5v14M5 12h14" />,
+  minus: <path d="M5 12h14" />,
+  play: <path d="M8 5v14l11-7z" />,
+  pause: <path d="M8 5v14M16 5v14" strokeWidth="3" />,
+  refresh: <path d="M20 5v5h-5M4 19v-5h5M5.5 9A7 7 0 0118 7.5L20 10M18.5 15A7 7 0 016 16.5L4 14" />,
   edit: <path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4" />,
   globe: (
     <>

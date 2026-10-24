@@ -1,0 +1,16 @@
+# Narrator voices the coordinator can pick for the pilot audio (Sarvam Bulbul v3 speakers).
+# Speaker names are the ones already used in content/voices/children.v1.yaml plus the default
+# teacher voice; they are NOT verified live (the Sarvam key was rejected on 2026-10-22).
+# TODO-HUMAN(Shivani, Seema): listen to each in hi, ta and en and keep only the ones that sound
+# like a calm colleague. Never a real person's voice. The label is the speaker's stock name.
+version: 1
+default: ritu
+pace: 1.0
+voices:
+  - {id: ritu, label: Ritu, kind: female}
+  - {id: priya, label: Priya, kind: female}
+  - {id: kavya, label: Kavya, kind: female}
+  - {id: shreya, label: Shreya, kind: female}
+  - {id: rahul, label: Rahul, kind: male}
+  - {id: rohan, label: Rohan, kind: male}
+  - {id: aditya, label: Aditya, kind: male}

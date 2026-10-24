@@ -131,3 +131,64 @@ def tone(seconds: float, hz: float, rate: int = 24000) -> bytes:
     """A sine tone as WAV, for the stub voice and for tests."""
     t = np.arange(int(seconds * rate)) / rate
     return _wav_bytes((0.3 * 32767 * np.sin(2 * np.pi * hz * t)).astype(np.int16), rate)
+
+
+PCM_RATE = 24000
+
+
+def to_pcm(audio: bytes) -> bytes:
+    """Any audio -> raw 16-bit mono PCM at 24 kHz."""
+    return _run(
+        ["-i", "pipe:0", "-ac", "1", "-ar", str(PCM_RATE), "-f", "s16le", "pipe:1"], audio, 60.0
+    )
+
+
+def join_to_file(
+    clips: list[bytes], *, fmt: str = "m4a", kbps: int = 32, gap_s: float = 0.6
+) -> tuple[bytes, float]:
+    """Join speech clips with a short pause into one WhatsApp-friendly mono file.
+
+    `fmt` is "m4a" (AAC) or "mp3". Returns (file bytes, seconds). 32 kbps mono keeps a 3 minute
+    note near 0.7 MB, well under WhatsApp's 16 MB media limit.
+    """
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    if fmt not in ("m4a", "mp3"):
+        raise ValueError("fmt must be m4a or mp3")
+    silence = b"\x00\x00" * int(gap_s * PCM_RATE)
+    pcm = silence.join(to_pcm(c) for c in clips)
+    seconds = len(pcm) / 2 / PCM_RATE
+    codec = ["-c:a", "aac", "-movflags", "+faststart"] if fmt == "m4a" else ["-c:a", "libmp3lame"]
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / f"lesson.{fmt}"
+        done = subprocess.run(
+            [
+                ffmpeg(),
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-f",
+                "s16le",
+                "-ar",
+                str(PCM_RATE),
+                "-ac",
+                "1",
+                "-i",
+                "pipe:0",
+                *codec,
+                "-b:a",
+                f"{kbps}k",
+                "-ac",
+                "1",
+                str(out),
+            ],
+            input=pcm,
+            capture_output=True,
+            timeout=120,
+            check=False,
+        )
+        if done.returncode != 0 or not out.exists():
+            raise SpeechError("bad_request", 0, "ffmpeg_failed")
+        return out.read_bytes(), seconds

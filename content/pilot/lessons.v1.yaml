@@ -1,0 +1,85 @@
+# Pilot intervention audio: how a lesson script is put together (data, owned by Seema).
+# First draft by the build. Every line goes through the gates and a coach before it is voiced.
+# TODO-HUMAN(Seema, Shivani): read all three languages aloud; the Hindi and Tamil glue below is a
+# first draft and needs native review. Move names and descriptions come from content/movelists/.
+version: 1
+
+# Which of the approved moves each tracked error's lessons teach, in order. Lesson 1 is always
+# "what to look for"; lesson 2 onward takes one move each and starts again from the top if the
+# coordinator asks for more lessons than there are moves.
+track_moves:
+  PV-HEARD: [show_chart, show_bundles, ask_explain, check_back]
+  ADD-NOCARRY: [show_bundles, regroup_ten, check_back, ask_explain]
+  SUB-SFL: [show_bundles, exchange_ten, check_back, decomposition, compensation]
+  SUB-NODEC: [show_bundles, exchange_ten, check_back, decomposition, compensation]
+
+# The question from the move list that lesson 1 tells the teacher to ask. Never a check item.
+ask_move: ask_explain
+
+# Worked examples for lesson 1 and for the move lessons (round 1, 2, 3). Every wrong answer is
+# computed by the engine, never written here. None of these pairs is an item of Form A or Form B
+# (tests/pilot/test_lessons.py proves it with the check-items validator).
+examples:
+  PV-HEARD: [[43], [57], [82]]
+  ADD-NOCARRY: [[47, 25], [35, 27], [64, 29]]
+  SUB-SFL: [[52, 29], [84, 57], [76, 48]]
+  SUB-NODEC: [[52, 29], [84, 57], [76, 48]]
+
+glue:
+  en:
+    title_spot: "Lesson {slot}: What to look for"
+    title_move: "Lesson {slot}: {move_label}"
+    spot_intro: >-
+      Lesson {slot} of {total}. This is a short lesson for you, the teacher.
+      In the classes we checked, {n_showing} of {n_checked} children made the same mistake again and again.
+      The mistake is {error_name}.
+    example:
+      PV-HEARD: "Here is what it looks like. You say {a}. A child with this mistake writes {wrong}. The right answer is {correct}."
+      ADD-NOCARRY: "Here is what it looks like. Take {a} plus {b}. A child with this mistake writes {wrong}. The right answer is {correct}."
+      SUB-SFL: "Here is what it looks like. Take {a} minus {b}. A child with this mistake writes {wrong}. The right answer is {correct}."
+      SUB-NODEC: "Here is what it looks like. Take {a} minus {b}. A child with this mistake writes {wrong}. The right answer is {correct}."
+    spot_ask: "Next time you see it, do not tell the rule. Ask the child one question: {ask_line}"
+    spot_listen: "Then listen. How the child explains tells you what to teach."
+    move_intro: "Lesson {slot} of {total}. Today's move is this: {move_label}."
+    move_how: "In one line: {move_description}"
+    move_sound: "In class it can sound like this. {move_example}"
+    move_try: "Try it with one child who made this mistake. Use the same materials each time."
+    closing: "Tomorrow, try this with three children. Then tell us how it went. Thank you."
+  hi:
+    title_spot: "पाठ {slot}: क्या देखना है"
+    title_move: "पाठ {slot}: {move_label}"
+    spot_intro: >-
+      पाठ {slot}, कुल {total} में से। यह आपके लिए एक छोटा पाठ है।
+      जिन कक्षाओं की हमने जाँच की, उनमें {n_checked} में से {n_showing} बच्चों ने एक ही ग़लती बार-बार की।
+      ग़लती यह है: {error_name}।
+    example:
+      PV-HEARD: "यह ऐसी दिखती है। आप बोलते हैं {a}। इस ग़लती वाला बच्चा लिखता है {wrong}। सही उत्तर है {correct}।"
+      ADD-NOCARRY: "यह ऐसी दिखती है। {a} जोड़ {b} लीजिए। इस ग़लती वाला बच्चा लिखता है {wrong}। सही उत्तर है {correct}।"
+      SUB-SFL: "यह ऐसी दिखती है। {a} में से {b} घटाइए। इस ग़लती वाला बच्चा लिखता है {wrong}। सही उत्तर है {correct}।"
+      SUB-NODEC: "यह ऐसी दिखती है। {a} में से {b} घटाइए। इस ग़लती वाला बच्चा लिखता है {wrong}। सही उत्तर है {correct}।"
+    spot_ask: "अगली बार जब यह ग़लती दिखे, तो नियम न बताइए। बच्चे से एक सवाल पूछिए: {ask_line}"
+    spot_listen: "फिर ध्यान से सुनिए। बच्चा जैसे समझाता है, उससे पता चलता है कि क्या सिखाना है।"
+    move_intro: "पाठ {slot}, कुल {total} में से। आज की तकनीक यह है: {move_label}।"
+    move_how: "एक पंक्ति में: {move_description}"
+    move_sound: "कक्षा में यह कुछ ऐसा सुनाई दे सकता है। {move_example}"
+    move_try: "जिस बच्चे ने यह ग़लती की, उसके साथ इसे आज़माइए। हर बार वही सामग्री इस्तेमाल कीजिए।"
+    closing: "कल तीन बच्चों के साथ इसे आज़माइए। फिर हमें बताइए कि कैसा रहा। धन्यवाद।"
+  ta:
+    title_spot: "பாடம் {slot}: எதைக் கவனிக்க வேண்டும்"
+    title_move: "பாடம் {slot}: {move_label}"
+    spot_intro: >-
+      பாடம் {slot}, மொத்தம் {total} பாடங்களில். இது ஆசிரியரான உங்களுக்கான ஒரு சிறிய பாடம்.
+      நாங்கள் சோதித்த வகுப்புகளில், {n_checked} குழந்தைகளில் {n_showing} பேர் ஒரே தவறை மீண்டும் மீண்டும் செய்தார்கள்.
+      அந்தத் தவறு: {error_name}.
+    example:
+      PV-HEARD: "இது இப்படி இருக்கும். நீங்கள் {a} என்று சொல்கிறீர்கள். இந்தத் தவறு செய்யும் குழந்தை {wrong} என்று எழுதும். சரியான பதில் {correct}."
+      ADD-NOCARRY: "இது இப்படி இருக்கும். {a} கூட்டல் {b} எடுத்துக்கொள்ளுங்கள். இந்தத் தவறு செய்யும் குழந்தை {wrong} என்று எழுதும். சரியான பதில் {correct}."
+      SUB-SFL: "இது இப்படி இருக்கும். {a} கழித்தல் {b} எடுத்துக்கொள்ளுங்கள். இந்தத் தவறு செய்யும் குழந்தை {wrong} என்று எழுதும். சரியான பதில் {correct}."
+      SUB-NODEC: "இது இப்படி இருக்கும். {a} கழித்தல் {b} எடுத்துக்கொள்ளுங்கள். இந்தத் தவறு செய்யும் குழந்தை {wrong} என்று எழுதும். சரியான பதில் {correct}."
+    spot_ask: "அடுத்த முறை இதைப் பார்த்தால், விதியைச் சொல்ல வேண்டாம். குழந்தையிடம் ஒரு கேள்வி கேளுங்கள்: {ask_line}"
+    spot_listen: "பிறகு கவனமாகக் கேளுங்கள். குழந்தை எப்படி விளக்குகிறது என்பதிலிருந்து எதைக் கற்பிக்க வேண்டும் என்று தெரியும்."
+    move_intro: "பாடம் {slot}, மொத்தம் {total} பாடங்களில். இன்றைய முறை இது: {move_label}."
+    move_how: "ஒரு வரியில்: {move_description}"
+    move_sound: "வகுப்பில் இது இப்படி ஒலிக்கலாம். {move_example}"
+    move_try: "இந்தத் தவறு செய்த ஒரு குழந்தையுடன் இதை முயற்சி செய்யுங்கள். ஒவ்வொரு முறையும் ஒரே பொருட்களைப் பயன்படுத்துங்கள்."
+    closing: "நாளை மூன்று குழந்தைகளுடன் இதை முயற்சி செய்யுங்கள். பிறகு எப்படி இருந்தது என்று எங்களுக்குச் சொல்லுங்கள். நன்றி."

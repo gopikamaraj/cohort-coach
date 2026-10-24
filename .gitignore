@@ -23,3 +23,6 @@ e2e-api.log
 
 # synthetic handwritten-sheet test set: generated, large, not committed
 data/synthetic_sheets/
+
+# pilot mode: local dev store for sheets and audio (never commit)
+.pilot-local/
