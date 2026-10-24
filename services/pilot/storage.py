@@ -16,6 +16,7 @@ import os
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import timedelta
 from functools import cache
 from pathlib import Path
 from typing import Any, Protocol
@@ -114,6 +115,128 @@ class S3BlobStore:
 
     def delete(self, key: str) -> None:
         self.client.delete_object(Bucket=self.bucket, Key=key)
+
+
+class GcsBlobStore:
+    """Google Cloud Storage (a Firebase Storage bucket is a GCS bucket, so this covers both).
+
+    Signed URLs are V4 and short-lived. GCS encrypts every object at rest by default, so no
+    encryption header is needed. Keep the bucket private: uniform bucket-level access on and
+    "public access prevention" enforced.
+
+    Three ways to authenticate (`from_env`), in this order:
+      1. a service-account key (GCS_CREDENTIALS_JSON or GOOGLE_APPLICATION_CREDENTIALS): URLs are
+         signed locally with its private key;
+      2. no key, because the organisation forbids creating one: Application Default Credentials.
+         On Cloud Run, Compute Engine and the like that is the attached service account, read from
+         the metadata server; on a laptop it is `gcloud auth application-default login`;
+      3. in case 2 URLs cannot be signed locally, so they are signed by the IAM Credentials API on
+         behalf of a service account (`signer`): the attached one on GCP, or
+         GCS_SIGNER_SERVICE_ACCOUNT
+         on a laptop. The caller needs "Service Account Token Creator" on that account.
+    """
+
+    def __init__(
+        self, bucket: str, client: Any, *, credentials: Any = None, signer: str | None = None
+    ) -> None:
+        self.name = bucket
+        self.bucket = client.bucket(bucket)
+        self._credentials = credentials  # set only when URLs are signed through IAM (no key)
+        self._signer = signer
+
+    @classmethod
+    def from_env(cls, prefix: str) -> GcsBlobStore:
+        """`prefix` is GCS_SHEETS or GCS_AUDIO."""
+        import google.auth
+        from google.cloud import storage
+        from google.oauth2 import service_account
+
+        bucket = os.environ.get(f"{prefix}_BUCKET", "")
+        if not bucket:
+            raise StorageNotConfigured(f"{prefix}_BUCKET is not set")
+        raw = os.environ.get("GCS_CREDENTIALS_JSON", "").strip()
+        path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "").strip()
+        if raw or path:
+            creds = (
+                service_account.Credentials.from_service_account_info(json.loads(raw))
+                if raw
+                else service_account.Credentials.from_service_account_file(path)
+            )
+            return cls(bucket, storage.Client(credentials=creds, project=creds.project_id))
+        try:
+            adc, project = google.auth.default(
+                scopes=["https://www.googleapis.com/auth/cloud-platform"]
+            )
+        except google.auth.exceptions.DefaultCredentialsError as exc:
+            raise StorageNotConfigured(
+                "no Google credentials: on GCP attach a service account to the service; on a "
+                "laptop run `gcloud auth application-default login` (a key file is not needed)"
+            ) from exc
+        signer = os.environ.get("GCS_SIGNER_SERVICE_ACCOUNT", "").strip() or getattr(
+            adc, "service_account_email", None
+        )
+        if not signer or signer == "default":
+            # on Compute Engine the email is filled in after the first refresh
+            try:
+                from google.auth.transport.requests import Request
+
+                adc.refresh(Request())
+            except Exception:  # no metadata server here: fall through to the plain message
+                pass
+            signer = os.environ.get("GCS_SIGNER_SERVICE_ACCOUNT", "").strip() or getattr(
+                adc, "service_account_email", None
+            )
+        if not signer or signer == "default":
+            raise StorageNotConfigured(
+                "set GCS_SIGNER_SERVICE_ACCOUNT to the service account that signs URLs "
+                "(you need Service Account Token Creator on it)"
+            )
+        client = storage.Client(credentials=adc, project=project or os.environ.get("GCP_PROJECT"))
+        return cls(bucket, client, credentials=adc, signer=signer)
+
+    def _signing(self) -> dict[str, Any]:
+        """Extra arguments for generate_signed_url: none with a key; with ADC the signer's email and
+        a fresh access token, so Google's IAM service signs the URL."""
+        if self._credentials is None:
+            return {}
+        if not self._credentials.valid:
+            from google.auth.transport.requests import Request
+
+            self._credentials.refresh(Request())
+        return {"service_account_email": self._signer, "access_token": self._credentials.token}
+
+    def presign_put(self, key: str, content_type: str, expires: int = 300) -> SignedUpload:
+        url = self.bucket.blob(key).generate_signed_url(
+            version="v4",
+            expiration=timedelta(seconds=expires),
+            method="PUT",
+            content_type=content_type,
+            **self._signing(),
+        )
+        return SignedUpload(url, {"Content-Type": content_type}, expires)
+
+    def presign_get(self, key: str, expires: int = 120, filename: str | None = None) -> str:
+        extra: dict[str, Any] = self._signing()
+        if filename:
+            extra["response_disposition"] = f'attachment; filename="{filename}"'
+        return str(
+            self.bucket.blob(key).generate_signed_url(
+                version="v4", expiration=timedelta(seconds=expires), method="GET", **extra
+            )
+        )
+
+    def put(self, key: str, data: bytes, content_type: str) -> None:
+        self.bucket.blob(key).upload_from_string(data, content_type=content_type)
+
+    def get(self, key: str) -> bytes:
+        return bytes(self.bucket.blob(key).download_as_bytes())
+
+    def size(self, key: str) -> int | None:
+        blob = self.bucket.get_blob(key)
+        return int(blob.size) if blob is not None and blob.size is not None else None
+
+    def delete(self, key: str) -> None:
+        self.bucket.blob(key).delete()
 
 
 def _b64(raw: bytes) -> str:
@@ -220,23 +343,34 @@ def _local_secret() -> bytes:
 @cache
 def sheets_store() -> BlobStore:
     """The private bucket for answer-sheet photos. Never the published-audio bucket."""
+    gcs = os.environ.get("GCS_SHEETS_BUCKET")
+    if gcs:
+        if gcs == os.environ.get("GCS_AUDIO_BUCKET"):
+            raise StorageNotConfigured("GCS_SHEETS_BUCKET must differ from GCS_AUDIO_BUCKET")
+        return GcsBlobStore.from_env("GCS_SHEETS")
     if os.environ.get("S3_SHEETS_BUCKET"):
         if os.environ.get("S3_SHEETS_BUCKET") == os.environ.get("S3_BUCKET"):
             raise StorageNotConfigured("S3_SHEETS_BUCKET must differ from S3_BUCKET")
         return S3BlobStore.from_env("S3_SHEETS")
     if os.environ.get("PILOT_LOCAL_STORE") == "1":
         return LocalBlobStore(_local_secret(), root=Path(".pilot-local") / "sheets")
-    raise StorageNotConfigured("S3_SHEETS_BUCKET is not set (PILOT_LOCAL_STORE=1 is for dev only)")
+    raise StorageNotConfigured(
+        "GCS_SHEETS_BUCKET or S3_SHEETS_BUCKET is not set (PILOT_LOCAL_STORE=1 is for dev only)"
+    )
 
 
 @cache
 def audio_store() -> BlobStore:
     """The published-audio bucket: approved audio only."""
+    if os.environ.get("GCS_AUDIO_BUCKET"):
+        return GcsBlobStore.from_env("GCS_AUDIO")
     if os.environ.get("S3_BUCKET"):
         return S3BlobStore.from_env("S3")
     if os.environ.get("PILOT_LOCAL_STORE") == "1":
         return LocalBlobStore(_local_secret(), root=Path(".pilot-local") / "audio")
-    raise StorageNotConfigured("S3_BUCKET is not set (PILOT_LOCAL_STORE=1 is for dev only)")
+    raise StorageNotConfigured(
+        "GCS_AUDIO_BUCKET or S3_BUCKET is not set (PILOT_LOCAL_STORE=1 is for dev only)"
+    )
 
 
 def get_sheets_store() -> BlobStore:

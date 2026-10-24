@@ -26,3 +26,7 @@ data/synthetic_sheets/
 
 # pilot mode: local dev store for sheets and audio (never commit)
 .pilot-local/
+
+# service-account keys (never commit)
+gcp/*.json
+*-key.json

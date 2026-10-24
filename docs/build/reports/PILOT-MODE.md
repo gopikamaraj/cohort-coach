@@ -45,9 +45,24 @@ class counts from the read sheets (`pilot_class_count`, summed) → diagnosis (`
 | 6 | The lesson content itself: order of moves per error, one worked example per error, the single question lesson 1 tells the teacher to ask. Scripts are about one minute each, shorter than the 2 to 3 minutes the size limit allows for. | Template from the move lists | Seema |
 | 7 | Which narrator voices to keep. | Seven stock speakers, default `ritu` | Shivani |
 
+## Storage: Google Cloud Storage or Firebase (added 24 Oct)
+
+`GcsBlobStore` (`services/pilot/storage.py`) is a third backend beside S3 and the local dev store. A Firebase Storage bucket is a GCS bucket, so the same code covers both. Set `GCS_SHEETS_BUCKET` (private, for sheet photos) and `GCS_AUDIO_BUCKET` (approved audio), two different buckets. If any `GCS_*` bucket is set it is used; otherwise the S3 keys; otherwise the pilot refuses to start. URLs are V4 signed, 5 minutes to upload and 2 to download (24 hours for a shared audio link). GCS encrypts at rest by default, so there is no encryption header.
+
+**Authentication needs no key file** (the project's organisation policy `iam.disableServiceAccountKeyCreation` blocks keys). In order: (1) a key in `GCS_CREDENTIALS_JSON` or `GOOGLE_APPLICATION_CREDENTIALS`, only if you have one; (2) otherwise Application Default Credentials: on Cloud Run or Compute Engine the attached service account (metadata server), on a laptop `gcloud auth application-default login`. Without a key a URL cannot be signed locally, so Google's IAM service signs it on behalf of a service account: the attached one on GCP, or `GCS_SIGNER_SERVICE_ACCOUNT` on a laptop.
+
+One-time setup in Google Cloud (not testable from here):
+1. Create the two buckets, **uniform bucket-level access on** and **public access prevention enforced**.
+2. Service account `gcs-storage-admin@fln-cohort-coach.iam.gserviceaccount.com` (already created) with *Storage Object Admin* on both buckets (done). Also grant **Service Account Token Creator** on that account: to yourself for a laptop (`gcloud iam service-accounts add-iam-policy-binding gcs-storage-admin@fln-cohort-coach.iam.gserviceaccount.com --member=user:<you> --role=roles/iam.serviceAccountTokenCreator`), and to the account itself when it is the one attached to Cloud Run or a VM. Enable the *IAM Service Account Credentials API*.
+3. Laptop: `gcloud auth application-default login`, then in `.env` leave `GCS_CREDENTIALS_JSON` and `GOOGLE_APPLICATION_CREDENTIALS` blank and set `GCS_SIGNER_SERVICE_ACCOUNT=gcs-storage-admin@fln-cohort-coach.iam.gserviceaccount.com`. On GCP: attach the service account to the service and leave all three blank.
+4. CORS on the sheets bucket so the phone can upload straight to it: `gsutil cors set cors.json gs://<sheets-bucket>` with `[{"origin":["<PWA origin>"],"method":["PUT"],"responseHeader":["Content-Type"],"maxAgeSeconds":3600}]`. The audio bucket needs no CORS.
+5. Lifecycle rule on the sheets bucket: delete objects older than 97 days (90-day default retention plus a week) as a backstop. Applied to `fcc-build-app-sheets-bucket` on 24 Oct; if `PILOT_RETENTION_DAYS` is raised above 90, raise the rule too. With Firebase, leave Storage security rules at deny-all: the app only uses signed URLs.
+
+Tests: `tests/pilot/test_gcs.py` (offline, with a throwaway key; no network).
+
 ## Could not verify
 
-- **A real S3 bucket.** The signed-URL shape and the encryption header are tested against boto3's offline signer (`tests/pilot/test_uploads.py`), not a live bucket. The bucket needs CORS allowing `PUT` from the PWA origin with the `Content-Type` and `x-amz-server-side-encryption` headers, public access blocked and default encryption on; none of that can be tested from here.
+- **A real GCS or S3 bucket.** The signed-URL shape and the encryption header are tested against boto3's offline signer (`tests/pilot/test_uploads.py`), not a live bucket. The bucket needs CORS allowing `PUT` from the PWA origin with the `Content-Type` and `x-amz-server-side-encryption` headers, public access blocked and default encryption on; none of that can be tested from here.
 - **Live Sarvam.** Speech is stubbed in tests. `tests/pilot/test_full_pass.py::test_live_speech_voices_one_short_line` runs only with `PILOT_LIVE_SPEECH=1`; the key was rejected on 22 Oct, so it has not run.
 - **A real phone.** Web Share with a file, the camera capture, the HEIC path and the m4a being accepted by WhatsApp are untested on a device. The browser tests use Chromium with a phone viewport and a stubbed `navigator.share`. The share code tries `audio/mp4`, `audio/x-m4a`, `audio/m4a` and keeps the first that `canShare` accepts; set `PILOT_AUDIO_FORMAT=mp3` if a phone refuses m4a.
 - **Call 8 on pilot photos.** Reading is tested with a stand-in model. The real reader has not seen the pilot pre-test sheets; its accuracy bar (eval 9) is unchanged and not re-run.

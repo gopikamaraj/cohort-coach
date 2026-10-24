@@ -123,6 +123,19 @@ class Env:
         return {"Authorization": f"Bearer {self.tokens[who]}"}
 
 
+@pytest.fixture(autouse=True)
+def _no_real_storage_settings(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A developer's .env may name real buckets; pilot tests choose their own storage."""
+    for name in (
+        "GCS_SHEETS_BUCKET",
+        "GCS_AUDIO_BUCKET",
+        "GCS_CREDENTIALS_JSON",
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GCS_SIGNER_SERVICE_ACCOUNT",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+
 @pytest.fixture
 def env(
     tmp_path: Path,
