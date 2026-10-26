@@ -4,11 +4,10 @@ drafts as review items. No network and no paid call."""
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
 import pytest
 from sqlalchemy import select
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 
 from ai import config
 from ai.calls.c05_track_draft import draft_part
@@ -16,19 +15,11 @@ from ai.client import CallContext
 from ai.pricing import Usage, cost_usd
 from ai.prompt_loader import load_prompt
 from ai.schemas import TrackPart, Verdict
-from services.api.db import Base, ReviewItem, make_engine
+from services.api.db import ReviewItem
 from services.content import drafting
 from services.content.track import load_track
 from tests.ai.test_c05_track_draft import GOOD, PASS
 from tests.support_ai import FakeClient
-
-
-@pytest.fixture
-def db(tmp_path: Path) -> Session:
-    engine = make_engine(f"sqlite:///{tmp_path / 'content.sqlite'}")
-    Base.metadata.create_all(engine)
-    with sessionmaker(engine, expire_on_commit=False)() as session:
-        yield session  # type: ignore[misc]
 
 
 def test_one_request_per_part_and_language() -> None:

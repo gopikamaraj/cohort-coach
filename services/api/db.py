@@ -420,3 +420,49 @@ class PilotAudit(Base):
     action: Mapped[str] = mapped_column(String(40), index=True)
     target: Mapped[str] = mapped_column(String(60), default="")
     detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+
+class ContentVersion(Base):
+    """One version of an item of content (a track, a strategy, a scenario, a setting).
+
+    draft -> in_review -> approved (the coach's key, gate 3) -> active (the officer's key) ->
+    retired. The body never changes after it is written: an edit is a new version, and the old one
+    stays in use until the new one is active (addendum v3.1 section D).
+    """
+
+    __tablename__ = "content_versions"
+    __table_args__ = (UniqueConstraint("content_type", "content_id", "version"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    content_type: Mapped[str] = mapped_column(
+        String(16), index=True
+    )  # track | strategy | scenario | setting
+    content_id: Mapped[str] = mapped_column(String(60), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(10), default="draft", index=True)
+    body: Mapped[dict[str, Any]] = mapped_column(JSON)
+    content_hash: Mapped[str] = mapped_column(String(64))
+    parent_version: Mapped[int | None] = mapped_column(Integer)
+    created_by: Mapped[str] = mapped_column(String(40))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    coach_approved_by: Mapped[str | None] = mapped_column(String(40))
+    coach_approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    officer_activated_by: Mapped[str | None] = mapped_column(String(40))
+    officer_activated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ContentAudit(Base):
+    """Who did what to which version: role, pseudonymous id, action, version. Ids and codes only;
+    never the text of a lesson."""
+
+    __tablename__ = "content_audit"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    role: Mapped[str] = mapped_column(String(12))
+    actor: Mapped[str] = mapped_column(String(40))
+    action: Mapped[str] = mapped_column(String(20), index=True)
+    content_type: Mapped[str] = mapped_column(String(16))
+    content_id: Mapped[str] = mapped_column(String(60))
+    version: Mapped[int] = mapped_column(Integer)
+    detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
