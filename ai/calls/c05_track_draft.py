@@ -144,15 +144,32 @@ def draft_part(
             run,
         )
     assert isinstance(part, TrackPart)
-    gate = run_gates(_gate_input(part.script, language, track.error, run.audit_id), context=base)
-    if not gate.passed_automatic:
-        status = "held_by_checker" if gate.stage_failed == "gate2" else "held_by_code"
-        return PartDraft(
-            kind, day, language, status, part, gate, gate.results, gate.explanation, run
-        )
-    return PartDraft(
-        kind, day, language, "needs_review", part, gate, gate.results, gate.explanation, run
+    return gate_part(track, kind, day, language, part, context=base, run=run)
+
+
+def gate_part(
+    track: Track,
+    kind: str,
+    day: int,
+    language: str,
+    part: TrackPart,
+    *,
+    context: CallContext | None = None,
+    run: CallResult | None = None,
+) -> PartDraft:
+    """Gates 1, 1b and call 7 on a drafted part, however it was drafted (synchronously or from a
+    Message Batch result). The result says whether it may go to the review queue."""
+    gate = run_gates(
+        _gate_input(part.script, language, track.error, run.audit_id if run else None),
+        context=context,
     )
+    if gate.passed_automatic:
+        status, kept = "needs_review", part
+    elif gate.stage_failed == "gate2":
+        status, kept = "held_by_checker", part  # kept so a person can see what was held and why
+    else:
+        status, kept = "held_by_code", None  # blocked before the queue
+    return PartDraft(kind, day, language, status, kept, gate, gate.results, gate.explanation, run)
 
 
 def _explain(held: bool, failed: list[ValidatorResult], language: str) -> str:
