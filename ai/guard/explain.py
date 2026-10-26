@@ -31,6 +31,16 @@ TEMPLATES: dict[str, dict[str, str]] = {
         "hi": "रोका गया: एक उद्धरण आपके कहे में नहीं मिला।",
         "ta": "நிறுத்தப்பட்டது: ஒரு மேற்கோள் நீங்கள் சொன்னதில் இல்லை.",
     },
+    "held_slots": {
+        "en": "Held back: a class number was written out instead of coming from a slot.",
+        "hi": "रोका गया: कक्षा की एक संख्या स्लॉट से आने की जगह सीधे लिखी गई थी।",
+        "ta": "நிறுத்தப்பட்டது: வகுப்பின் ஒரு எண் இடத்தின் மூலம் வராமல் நேரடியாக எழுதப்பட்டது.",
+    },
+    "held_check_item": {
+        "en": "Held back: it used an item from the pilot test, which a lesson must never do.",
+        "hi": "रोका गया: इसमें पायलट परीक्षा का एक प्रश्न था, जो किसी पाठ में नहीं होना चाहिए।",
+        "ta": "நிறுத்தப்பட்டது: இதில் பைலட் தேர்வின் ஒரு கேள்வி இருந்தது; பாடத்தில் அது இருக்கக்கூடாது.",
+    },
     "held_filter": {
         "en": "Held back: the safety filter stopped this text.",
         "hi": "रोका गया: सुरक्षा फ़िल्टर ने इस पाठ को रोक दिया।",

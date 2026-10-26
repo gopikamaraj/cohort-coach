@@ -8,7 +8,7 @@ method cards) -> gate 4 teacher flag (see flags.py).
 from __future__ import annotations
 
 from collections.abc import Iterable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import StrEnum
 
 from ai.calls.c07_checker import CheckOutcome, check_output
@@ -17,12 +17,14 @@ from ai.guard.badges import Badge, badge_line, compute_badge
 from ai.guard.explain import explain
 from ai.schemas import Verdict
 from ai.validators import ValidatorResult
-from ai.validators.arithmetic import check_arithmetic
+from ai.validators.arithmetic import check_arithmetic, check_child_tags, normalise_child_tags
+from ai.validators.check_items import check_items
 from ai.validators.length import check_length
 from ai.validators.numbers import check_digits_only, check_numbers
 from ai.validators.prefilter import check_prefilter
 from ai.validators.quotes import check_quotes
 from ai.validators.readability import check_readability
+from services.content.slots import check_slots, literal_class_counts, sample_fill
 
 
 class ContentType(StrEnum):
@@ -47,6 +49,10 @@ CHILD_LINE_MAX_WORDS = 30
 # violation code -> explanation key, in priority order
 _CODE_TO_REASON: tuple[tuple[str, str], ...] = (
     ("arithmetic_wrong", "held_maths"),
+    ("child_tag_is_correct", "held_maths"),
+    ("slot_unknown", "held_slots"),
+    ("class_number_literal", "held_slots"),
+    ("check_item", "held_check_item"),
     ("number_not_allowed", "held_number"),
     ("number_word", "held_number"),
     ("quote_not_found", "held_quote"),
@@ -70,6 +76,10 @@ class GateInput:
     human_approved: bool = False
     source_audit_id: int | None = None  # the audit row of the call that made the text
     checker_facts: dict[str, object] | None = None  # what call 7 needs to judge a child line
+    # A track draft written with {{slots}} and [child: n] tags (P09). Class numbers must come only
+    # through slots, and no Form A or Form B item may appear. Pilot scripts are built by code from
+    # real counts and leave this off.
+    slots_mode: bool = False
 
 
 @dataclass
@@ -91,6 +101,14 @@ def gate1(inp: GateInput) -> list[ValidatorResult]:
     audience = AUDIENCE[inp.content_type]
     results: list[ValidatorResult] = []
     child = inp.content_type is ContentType.CHILD_LINE
+    raw_text = inp.text
+    if inp.slots_mode:
+        results.append(ValidatorResult("slots", tuple(check_slots(raw_text))))
+        results.append(ValidatorResult("class_numbers", tuple(literal_class_counts(raw_text))))
+        # the text as a teacher will hear it: slots filled with sample values, tags normalised
+        inp = replace(inp, text=normalise_child_tags(sample_fill(raw_text)))
+        results.append(ValidatorResult("child_tags", tuple(check_child_tags(inp.text))))
+        results.append(ValidatorResult("check_items", tuple(check_items(inp.text))))
     if child:
         allowed = set(inp.allowed_numbers or ())
         results.append(ValidatorResult("numbers", tuple(check_numbers(inp.text, allowed))))

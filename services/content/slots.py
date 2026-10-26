@@ -132,3 +132,23 @@ def literal_class_counts(text: str) -> list[Violation]:
         for m in pattern.finditer(plain):
             hits.append(Violation("class_number_literal", m.group().strip()))
     return hits
+
+
+# Stand-in values used only to check how a draft reads once its slots are filled. They are never
+# shown to a teacher: delivery fills real values per cohort (fill()).
+SAMPLE_VALUES: dict[str, str] = {
+    "class.count_showing": "11",
+    "class.children_checked": "28",
+    "class.example_a": "52",
+    "class.example_b": "29",
+    "class.example_wrong_answer": "37 [child-wrong]",
+    "class.example_correct_answer": "23",
+    "track.error_name": "taking the smaller digit from the larger",
+    "track.day": "2",
+    "track.total_days": "6",
+}
+
+
+def sample_fill(text: str) -> str:
+    """Fill known slots with sample values; an unknown slot is left in place for check_slots."""
+    return _SLOT.sub(lambda m: SAMPLE_VALUES.get(m.group(1), m.group(0)), text)

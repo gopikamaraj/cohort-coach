@@ -83,6 +83,15 @@ class TrackLesson(BaseModel):
     slots: dict[str, str] = Field(default_factory=dict)
 
 
+class TrackPart(BaseModel):
+    """Call 5, one request: one voice lesson (day 1 to 6) or the model-lesson script (day 0).
+    The script holds slots and child-mistake tags; code fills and checks them."""
+
+    kind: Literal["lesson", "model_lesson"]
+    day: int = Field(ge=0, le=6)
+    script: str = Field(min_length=1, max_length=12000)
+
+
 class TrackDraft(BaseModel):
     """Call 5: six lessons and one model-lesson script. Class numbers are slots filled by code."""
 
