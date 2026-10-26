@@ -1,0 +1,46 @@
+# SUB-SFL track v1: six 5-minute voice lessons and one model-lesson script (P09).
+# The structure is data (owned by Seema); the drafts call 5 writes from it are reviewed by the coach
+# and switched on by the programme officer (the two keys). Class numbers appear only as slots.
+# TODO-HUMAN(Seema): review the lesson order and topics.
+# TODO-HUMAN(Gopi): Tamil topics.
+id: sub-sfl.v1
+error: SUB-SFL
+version: 1
+grade: 3
+languages: [hi, en, ta]
+# up to three approved method cards (mentor_id-free references); none are approved yet
+method_cards: []
+lessons:
+  - id: hear_the_error
+    day: 1
+    topic: {en: Hear the mistake, hi: गलती को पहचानना, ta: தவறைக் கண்டறிதல்}
+    strategies: [ask_explain, order_probe]
+    practice_level: 1
+  - id: ask_to_explain
+    day: 2
+    topic: {en: Ask the child to explain, hi: बच्चे से समझाने को कहना, ta: குழந்தையை விளக்கச் சொல்லுதல்}
+    strategies: [ask_explain]
+    practice_level: 1
+  - id: bundles_of_ten
+    day: 3
+    topic: {en: Bundles of ten, hi: दस की गड्डियाँ, ta: பத்து கட்டுகள்}
+    strategies: [show_bundles]
+    practice_level: 1
+  - id: opening_a_bundle
+    day: 4
+    topic: {en: Opening a bundle, hi: गड्डी खोलना, ta: கட்டைப் பிரித்தல்}
+    strategies: [exchange_ten, decomposition, compensation]
+    practice_level: 2
+  - id: check_by_adding_back
+    day: 5
+    topic: {en: Check by adding back, hi: जोड़कर जाँचना, ta: கூட்டிச் சரிபார்த்தல்}
+    strategies: [check_back]
+    practice_level: 2
+  - id: putting_it_together
+    day: 6
+    topic: {en: Putting it together, hi: सब मिलाकर, ta: எல்லாவற்றையும் இணைத்தல்}
+    strategies: [show_bundles, exchange_ten, check_back]
+    practice_level: 2
+model_lesson:
+  strategies: [show_bundles, exchange_ten, check_back]
+  minutes: 12
