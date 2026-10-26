@@ -20,6 +20,7 @@ from services.api.judge import router as judge_router
 from services.api.practice import router as practice_router
 from services.api.profiles import router as profiles_router
 from services.api.programme import router as programme_router
+from services.api.review import router as review_router
 from services.api.roles import router as roles_router
 from services.api.sheets import router as sheets_router
 from services.api.stages import router as stages_router
@@ -83,6 +84,7 @@ def create_app(pilot: bool | None = None) -> FastAPI:
         app.include_router(practice_router)
         app.include_router(profiles_router)
         app.include_router(programme_router)
+        app.include_router(review_router)
         app.include_router(sheets_router)
         app.include_router(stages_router)
 

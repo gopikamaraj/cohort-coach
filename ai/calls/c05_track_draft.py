@@ -147,6 +147,19 @@ def draft_part(
     return gate_part(track, kind, day, language, part, context=base, run=run)
 
 
+def gate_script(
+    script: str,
+    language: str,
+    error: str,
+    *,
+    context: CallContext | None = None,
+    audit_id: int | None = None,
+) -> GateResult:
+    """Gates 1, 1b and call 7 on a track script: used for a fresh draft and again for every edit a
+    reviewer makes, so a human edit cannot slip past the checks."""
+    return run_gates(_gate_input(script, language, error, audit_id), context=context)
+
+
 def gate_part(
     track: Track,
     kind: str,
@@ -159,9 +172,8 @@ def gate_part(
 ) -> PartDraft:
     """Gates 1, 1b and call 7 on a drafted part, however it was drafted (synchronously or from a
     Message Batch result). The result says whether it may go to the review queue."""
-    gate = run_gates(
-        _gate_input(part.script, language, track.error, run.audit_id if run else None),
-        context=context,
+    gate = gate_script(
+        part.script, language, track.error, context=context, audit_id=run.audit_id if run else None
     )
     if gate.passed_automatic:
         status, kept = "needs_review", part

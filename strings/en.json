@@ -870,5 +870,10 @@
   "lesson.err.ended": "This link has ended or is not right. Ask the person who sent it for a new one.",
   "lesson.err.busy": "Audio is busy today. You can read the lesson here, and try again tomorrow.",
   "lesson.err.voice": "The audio could not be made just now. Read the lesson here, or try again in a minute.",
-  "lesson.err.offline": "No signal. The lesson words are here; the audio needs a connection."
+  "lesson.err.offline": "No signal. The lesson words are here; the audio needs a connection.",
+  "roles.can.content_review_view": "See the drafts waiting for review and the check results",
+  "roles.can.content_coach_approve": "Edit, approve or return track drafts (the coach's key)",
+  "roles.can.content_officer_activate": "Switch approved content on for the block (the officer's key)",
+  "roles.can.content_mentor_approve": "Approve lessons built from your own method card",
+  "roles.can.content_propose": "Assemble a track version, or propose a setting inside its safe range"
 }

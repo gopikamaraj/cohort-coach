@@ -25,6 +25,12 @@ permissions:
   officer.results: {key: roles.can.officer_results, planned: P12}
   officer.advance_term: {key: roles.can.officer_advance, planned: P12, judge_only: true}
   officer.assign_roles: {key: roles.can.officer_assign, planned: P12}
+  # The review queue and the two keys (P09). The coach's key is gate 3; the officer's switches on.
+  content.review_view: {key: roles.can.content_review_view}
+  content.coach_approve: {key: roles.can.content_coach_approve}
+  content.officer_activate: {key: roles.can.content_officer_activate}
+  content.mentor_approve: {key: roles.can.content_mentor_approve}
+  content.propose: {key: roles.can.content_propose}
   # Pilot mode (PILOT_MODE=1). The only permissions that exist on the server in that mode.
   pilot.upload_sheets: {key: roles.can.pilot_upload}
   pilot.sheets_admin: {key: roles.can.pilot_sheets_admin}
@@ -79,21 +85,21 @@ roles:
     holders: roles.holders.mentor
     data: roles.data.mentor
     also_on: [telegram]
-    can: [mentor.record, mentor.items_view, cohort.chat]
+    can: [mentor.record, mentor.items_view, cohort.chat, content.mentor_approve]
     cannot: [mentor.own_cohorts_only, mentor.no_class_numbers, role.no_client_elevation]
   coach:
     card: roles.card.coach
     holders: roles.holders.coach
     data: roles.data.coach
     also_on: []
-    can: [coach.approve_items, coach.moderate, library.view, pilot.audio_view, pilot.approve_audio]
+    can: [coach.approve_items, coach.moderate, library.view, pilot.audio_view, pilot.approve_audio, content.review_view, content.coach_approve, content.propose]
     cannot: [coach.assigned_only, coach.no_teacher_numbers, role.no_client_elevation]
   officer:
     card: roles.card.officer
     holders: roles.holders.officer
     data: roles.data.officer
     also_on: []
-    can: [officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, pilot.audio_view]
+    can: [officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, pilot.audio_view, content.review_view, content.officer_activate, content.propose]
     cannot: [officer.aggregates_only, officer.no_approval, role.no_client_elevation]
   # The pilot coordinator: receives answer-sheet photos from teachers and uploads them, then
   # generates and shares the intervention audio. Signs in with an account key (pilot mode only).
