@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import Any
 
+import yaml
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -20,7 +21,7 @@ from services.api.db import ContentAudit, ContentVersion
 from services.api.practice import AI_CONTEXT
 from services.api.profiles import SESSION
 from services.api.roles import require
-from services.content import configurable, review, versions
+from services.content import configurable, rejections, review, versions
 from services.content.track import load_track
 
 router = APIRouter(prefix="/api/review", tags=["review"])
@@ -247,3 +248,49 @@ def audit(limit: int = 100, _: str = VIEW, db: Session = SESSION) -> list[dict[s
         }
         for r in rows
     ]
+
+
+# ---- rejections that may become checker examples ---------------------------------------------
+
+
+@router.get("/rejections")
+def pending_rejections(_: str = VIEW) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for path in rejections.list_pending():
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        out.append(
+            {
+                "name": path.stem,
+                "reason": data["reason"],
+                "language": data["language"],
+                "text": data["text"],
+                "note": data.get("note", ""),
+            }
+        )
+    return out
+
+
+class PromoteIn(BaseModel):
+    text: str | None = Field(default=None, max_length=4000)
+
+
+def _pending(name: str) -> Any:
+    try:
+        return rejections.find_pending(name)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, "That example is not waiting.") from exc
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
+@router.post("/rejections/{name}/promote")
+def promote_rejection(name: str, body: PromoteIn, role: str = COACH) -> dict[str, str]:
+    """Use as checker example: call 7 will be shown it from the next check on."""
+    saved = _call(rejections.promote, _pending(name), text=body.text)
+    return {"saved": saved.name}
+
+
+@router.post("/rejections/{name}/discard")
+def discard_rejection(name: str, role: str = COACH) -> dict[str, str]:
+    rejections.discard(_pending(name))
+    return {"discarded": name}

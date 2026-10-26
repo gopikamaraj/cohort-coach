@@ -189,3 +189,35 @@ def test_the_stats_route_reports_counts_computed_by_code(api: tuple[TestClient, 
 def test_the_review_routes_do_not_exist_in_pilot_mode(tmp_path: Path) -> None:
     client = TestClient(create_app(pilot=True))
     assert client.get("/api/review/items", headers=h("coach")).status_code == 404
+
+
+def test_a_rejection_can_be_promoted_to_a_checker_example_by_the_coach_only(
+    api: tuple[TestClient, Session], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from ai.guard import rejections as guard
+
+    monkeypatch.setattr(guard, "APPROVED_DIR", tmp_path / "approved")
+    client, db = api
+    item = queue(db)
+    client.post(
+        f"/api/review/items/{item}/reject", json={"reason": "wrong_maths"}, headers=h("coach")
+    )
+    waiting = client.get("/api/review/rejections", headers=h("officer")).json()
+    assert len(waiting) == 1 and waiting[0]["reason"] == "wrong_maths"
+    name = waiting[0]["name"]
+    denied = client.post(f"/api/review/rejections/{name}/promote", json={}, headers=h("officer"))
+    assert denied.status_code == 403
+    ok = client.post(f"/api/review/rejections/{name}/promote", json={}, headers=h("coach"))
+    assert ok.status_code == 200 and "wrong_maths" in guard.examples_block()
+    assert client.get("/api/review/rejections", headers=h("coach")).json() == []
+
+
+def test_a_rejection_name_cannot_reach_another_file(api: tuple[TestClient, Session]) -> None:
+    client, _ = api
+    for bad in ("..%2Fsecret", "x", "2026-10-26-001.yaml"):
+        res = client.post(f"/api/review/rejections/{bad}/discard", headers=h("coach"))
+        assert res.status_code in (404, 422), bad
+    assert (
+        client.post("/api/review/rejections/2026-10-26-001/discard", headers=h("coach")).status_code
+        == 404
+    )

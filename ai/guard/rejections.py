@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from enum import StrEnum
 from pathlib import Path
 
@@ -49,7 +50,24 @@ def latest_examples(n: int = 5, directory: Path | None = None) -> list[dict[str,
     return out
 
 
-def examples_block(n: int = 5, directory: Path | None = None) -> str:
+EXAMPLES_IN_PROMPT = 5
+
+
+def examples_version(n: int = EXAMPLES_IN_PROMPT, directory: Path | None = None) -> str:
+    """A short id for the set of examples call 7 is given, so an audit row can say which set it
+    saw. "none" when there are no examples; otherwise 8 hex digits of a hash of the files used."""
+    folder = directory or APPROVED_DIR
+    files = sorted(folder.glob("*.yaml"))[-n:] if folder.exists() else []
+    if not files:
+        return "none"
+    digest = hashlib.sha256()
+    for f in files:
+        digest.update(f.name.encode())
+        digest.update(f.read_bytes())
+    return digest.hexdigest()[:8]
+
+
+def examples_block(n: int = EXAMPLES_IN_PROMPT, directory: Path | None = None) -> str:
     """The 'rejected before, and why' text appended to call 7's prompt. Empty when none."""
     examples = latest_examples(n, directory)
     if not examples:

@@ -8,12 +8,13 @@ keeps one careless click from teaching the checker the wrong lesson.
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
 
-from ai.guard.rejections import RejectionReason
+from ai.guard.rejections import RejectionReason, add_approved_example
 
 PENDING_DIR = Path(__file__).resolve().parents[2] / "content" / "rejections" / "pending"
 
@@ -55,3 +56,37 @@ def write_pending(
 def list_pending(directory: Path | None = None) -> list[Path]:
     folder = directory or PENDING_DIR
     return sorted(folder.glob("*.yaml")) if folder.exists() else []
+
+
+_NAME = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{3}$")
+
+
+def find_pending(name: str, directory: Path | None = None) -> Path:
+    """A pending file by its name (no extension). The name must look like one of ours, so a
+    request cannot reach any other file."""
+    if not _NAME.match(name):
+        raise ValueError("That is not the name of a pending example.")
+    path = (directory or PENDING_DIR) / f"{name}.yaml"
+    if not path.exists():
+        raise FileNotFoundError(name)
+    return path
+
+
+def promote(path: Path, *, text: str | None = None) -> Path:
+    """ "Use as checker example": move a pending rejection to approved/, where call 7 reads it.
+    The curator may trim the excerpt to the sentence that was wrong. A file whose reason is not on
+    the list is refused and stays where it is."""
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    reason = RejectionReason(data["reason"])  # ValueError if it is not one of the five
+    excerpt = (text if text is not None else str(data["text"])).strip()
+    if not excerpt:
+        raise ValueError("An example needs some text.")
+    saved = add_approved_example(
+        excerpt, reason, str(data["language"]), date=datetime.now(UTC).date().isoformat()
+    )
+    path.unlink()
+    return saved
+
+
+def discard(path: Path) -> None:
+    path.unlink()

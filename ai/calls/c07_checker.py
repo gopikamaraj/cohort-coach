@@ -6,14 +6,17 @@ and the content goes to a human or a template.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, replace
 
 from pydantic import BaseModel
 
 from ai.client import CallContext, CallInput, CallResult, run_call
-from ai.guard.rejections import examples_block
+from ai.guard.rejections import examples_block, examples_version, latest_examples
 from ai.schemas import Verdict
 from ai.validators import ValidatorResult, Violation
+
+log = logging.getLogger(__name__)
 
 RUBRIC_ITEMS = frozenset(
     {
@@ -95,6 +98,27 @@ def check_output(
         untrusted={"candidate_text": text},
     )
     result = run_call(7, payload, context=ctx)
+    _record_examples(base, result)
     verdict = result.output
     assert isinstance(verdict, Verdict)
     return CheckOutcome(verdict=verdict, result=result)
+
+
+def _record_examples(base: CallContext, result: CallResult) -> None:
+    """Add the example-set version to the call's audit row, so the trail says which rejected
+    examples the checker was shown (version "none" and count 0 when it saw none)."""
+    try:
+        from ai.audit import default_sink
+
+        sink = base.sink or default_sink()
+        entries = [{"name": r.name, "ok": r.ok, "codes": r.codes} for r in result.results]
+        entries.append(
+            {
+                "name": "checker_examples",
+                "ok": True,
+                "codes": [examples_version(), str(len(latest_examples()))],
+            }
+        )
+        sink.update(result.audit_id, validator_results=entries)
+    except Exception:  # the audit trail must never stop a check
+        log.warning("could not record the checker example set", exc_info=True)
