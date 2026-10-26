@@ -324,6 +324,7 @@ def make_card(
             status="pending",
         )
         db.add(item)
+        db.flush()  # the item must exist before the lesson points at it (Postgres checks)
         row.review_item_id = item.item_id
         row.status = "needs_review"
         row.note = None if result.passed_automatic else "checker_down"

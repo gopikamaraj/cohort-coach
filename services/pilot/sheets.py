@@ -11,6 +11,7 @@ fixing reads, so those sheets wait for hand-keying with scripts/pilot_import.
 from __future__ import annotations
 
 import base64
+import threading
 import uuid
 from collections import Counter
 from collections.abc import Callable
@@ -51,6 +52,9 @@ MAX_READ_BYTES = 4_500_000  # the model's image limit is 5 MB
 PUT_EXPIRES_S = 300
 GET_EXPIRES_S = 120
 DONE = ("stored", "read", "needs_look")
+RETRY_AFTER_S = 120  # a stored sheet this old has lost its background read (restart, cut CPU)
+RETRY_BATCH = 30
+_retrying = threading.Lock()  # one retry pass at a time, so repeated looks do not pay twice
 
 
 class InitIn(BaseModel):
@@ -205,6 +209,40 @@ def read_stored_sheet(
         _count_read(db, sheet, [c.text for c in outcome.cells])
         db.commit()
         return "read"
+
+
+def stuck_ids(
+    db: Session, *, now: datetime | None = None, older_than_s: int = RETRY_AFTER_S
+) -> list[str]:
+    """Stored sheets old enough that their background read must have been lost."""
+    cutoff = (now or datetime.now(UTC)) - timedelta(seconds=older_than_s)
+    rows = db.execute(
+        select(PilotSheet.id, PilotSheet.uploaded_at)
+        .where(PilotSheet.status == "stored")
+        .order_by(PilotSheet.uploaded_at)
+    ).all()
+    return [r[0] for r in rows if _aware(r[1]) <= cutoff][:RETRY_BATCH]
+
+
+def retry_stuck(
+    factory: Callable[[], Session],
+    store: BlobStore,
+    ctx: CallContext,
+    *,
+    now: datetime | None = None,
+) -> int:
+    """Read the sheets whose first read was lost; returns how many it tried. A sheet is counted at
+    most once: read_stored_sheet claims it before adding to the class counts."""
+    if not _retrying.acquire(blocking=False):
+        return 0
+    try:
+        with factory() as db:
+            ids = stuck_ids(db, now=now)
+        for sheet_id in ids:
+            read_stored_sheet(factory, store, sheet_id, ctx)
+        return len(ids)
+    finally:
+        _retrying.release()
 
 
 def _flag(db: Session, sheet: PilotSheet, note: str) -> str:

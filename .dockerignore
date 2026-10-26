@@ -3,6 +3,7 @@
 node_modules
 apps
 docs
+!docs/design/pilot_forms.golden.json
 tests
 evals
 scripts

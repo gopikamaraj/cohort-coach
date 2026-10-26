@@ -12,6 +12,7 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import event
 from sqlalchemy.orm import Session, sessionmaker
 
 from ai.audit import SqlAuditSink
@@ -157,6 +158,9 @@ def env(
     auth.set_clock(clock)
     auth.reset_throttle()
     engine = make_engine(f"sqlite:///{tmp_path / 'pilot.sqlite'}")
+    # SQLite ignores foreign keys unless asked; Postgres (production) does not. Ask, so a row that
+    # points at one not yet written fails here and not on the live server.
+    event.listen(engine, "connect", lambda con, _rec: con.execute("PRAGMA foreign_keys=ON"))
     Base.metadata.create_all(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
 

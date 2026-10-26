@@ -142,8 +142,17 @@ def set_retention(
 
 
 @router.get("/sheets/summary", dependencies=[Depends(require("pilot.upload_sheets"))])
-def sheets_summary(db: Session = SESSION) -> dict[str, Any]:
-    return sheets.summary(db)
+def sheets_summary(
+    tasks: BackgroundTasks,
+    db: Session = SESSION,
+    store: BlobStore = SHEETS,
+    factory: Callable[[], Session] = FACTORY,
+    ctx: CallContext = AI_CONTEXT,
+) -> dict[str, Any]:
+    out = sheets.summary(db)
+    if out["waiting"]:  # a read that never ran is tried again, once the sheet is old enough
+        tasks.add_task(sheets.retry_stuck, factory, store, ctx)
+    return out
 
 
 @router.get("/sheets", dependencies=[Depends(require("pilot.upload_sheets"))])
@@ -314,7 +323,12 @@ def audio_generate(
     made = 0
     for plan in lessons.plan_slots(error, showing, pooled.children_checked, total):
         card = existing.get(plan.slot)
-        if card and card.status != "failed" and card.counts_hash == pooled.hash and not body.force:
+        if (
+            card
+            and card.status not in ("failed", "draft")  # a draft never finished: make it again
+            and card.counts_hash == pooled.hash
+            and not body.force
+        ):
             continue  # already made from these counts: do not pay for the checker again
         lessons.make_card(db, plan, body.language, body.voice, pooled, principal.name, ctx)
         made += 1
