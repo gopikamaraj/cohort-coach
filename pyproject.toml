@@ -21,6 +21,7 @@ dependencies = [
   "pillow",
   "google-cloud-storage",  # pilot mode: Google Cloud Storage / Firebase Storage buckets
   "boto3",  # pilot mode: private sheets bucket and published-audio bucket (S3-compatible)
+  "resvg-py>=0.5",  # sprites: SVG to PNG for the bot (imported at startup by the API)
 ]
 
 [project.optional-dependencies]
