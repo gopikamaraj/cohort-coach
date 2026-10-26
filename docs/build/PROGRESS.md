@@ -140,7 +140,7 @@ Spec: `docs/design/addendum-v3.1.md`; synthetic sheets: `docs/build/synthetic-sh
 
 | Environment | URL | Last deploy | Notes |
 | --- | --- | --- | --- |
-| Staging | | | |
+| Staging (pilot mode) | PWA https://cohort-coach-pwa-1097171252131.asia-south1.run.app · API https://cohort-coach-api-1097171252131.asia-south1.run.app | 2026-10-26 | Google Cloud project `fln-cohort-coach`, asia-south1. `PILOT_MODE=1`. API on Cloud Run (min instances 0, so the first request after idle is slow; set 1 for the judging window), Cloud SQL Postgres 16 `cohort-coach-db`, buckets `fcc-build-app-sheets-bucket` and `fcc-build-app-audio-bucket`. Checked from outside with curl only (health, 404 on non-pilot routes, CORS, sign-in, DB read); no browser, phone upload, live Claude read or Sarvam voice run yet. |
 | Production | | | |
 | Telegram bot | @… | | |
 

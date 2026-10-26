@@ -1,6 +1,8 @@
 # Deploying staging (and later production)
 
-Status: **recipe written, not yet run.** It needs hosting accounts and secrets (Gopi). Nothing below has been executed on a real host; steps marked "verify" are the checks to run once it is live. The defaults follow OD-3 in `docs/build/DECISIONS.md`: an always-on small API instance, managed Postgres, S3-compatible storage for published audio, and static hosting for the PWA. No plan that sleeps during 1–10 Nov.
+Status: **pilot mode is deployed on Google Cloud (26 Oct); the generic recipe below is still not run on Render, Neon or Cloudflare.** See "Google Cloud pilot deployment" at the end for what is live. The rest of this page is the original recipe.
+
+Status of the original recipe: **written, not yet run.** It needs hosting accounts and secrets (Gopi). Nothing below has been executed on a real host; steps marked "verify" are the checks to run once it is live. The defaults follow OD-3 in `docs/build/DECISIONS.md`: an always-on small API instance, managed Postgres, S3-compatible storage for published audio, and static hosting for the PWA. No plan that sleeps during 1–10 Nov.
 
 ## What runs where
 
@@ -52,3 +54,22 @@ A plan that sleeps makes the first judge wait. Use an always-on instance. As a b
 ## Rollback
 
 Redeploy the previous image or commit on the API host; on the PWA host, promote the previous deployment. Data in the database is class-level counts and audit metadata only, so a rollback loses nothing a teacher typed.
+
+## Google Cloud pilot deployment (live since 26 Oct)
+
+Project `fln-cohort-coach`, region `asia-south1`. Pilot mode only (`PILOT_MODE=1`): sign-in, Upload sheets and Intervention audio. Not the judge-mode demo.
+
+| Part | Where |
+| --- | --- |
+| API | Cloud Run service `cohort-coach-api`, built from the root `Dockerfile` with `gcloud run deploy --source .`. URL https://cohort-coach-api-1097171252131.asia-south1.run.app. Min instances **0** (cold start on the first request after idle), max 3, 1 GiB |
+| Web app | Cloud Run service `cohort-coach-pwa`: nginx serving `apps/pwa/dist`, built with `VITE_PILOT_MODE=1` and `VITE_API_BASE` set to the API URL. URL https://cohort-coach-pwa-1097171252131.asia-south1.run.app |
+| Database | Cloud SQL Postgres 16, instance `cohort-coach-db` (`db-f1-micro`), database `cohort`, reached over the Cloud SQL socket |
+| Buckets | `fcc-build-app-sheets-bucket` (private; CORS allows PUT from the web app only; lifecycle deletes after 97 days) and `fcc-build-app-audio-bucket` (private). Public access prevention enforced, uniform access on |
+| Identity | The API runs as `gcs-storage-admin@fln-cohort-coach.iam.gserviceaccount.com` (no key file): Storage Object Admin on both buckets, Secret Manager Secret Accessor, Cloud SQL Client, and Token Creator on itself so Google's IAM service signs the URLs |
+| Secrets | Secret Manager: `anthropic-api-key`, `sarvam-api-key`, `pilot-accounts`, `pilot-token-secret`, `db-password`. Rotate by adding a new version, then redeploy or update the service |
+
+Redeploy the API: `gcloud run deploy cohort-coach-api --source . --region asia-south1 --project fln-cohort-coach` (keep the existing settings; add flags only to change them). Redeploy the web app: rebuild `apps/pwa` with the two build variables above, then deploy it the same way from a folder holding the `dist` output, an nginx config and a small Dockerfile.
+
+**Before 1 Nov:** set the API's minimum instances to 1 (`gcloud run services update cohort-coach-api --min-instances=1 --region asia-south1`) so no judge waits on a cold start.
+
+**Checked from outside with curl on 26 Oct:** health, 404 on every non-pilot route, CORS limited to the web app, sign-in (401 on a wrong key), and an authenticated read of the database. **Not yet checked:** the web app in a browser or on a phone, a real sheet upload through a signed URL, a live Claude sheet read, and Sarvam voice (the key was rejected earlier).
