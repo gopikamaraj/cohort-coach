@@ -50,6 +50,18 @@ export async function shareFiles(files: File[], text: string, nav: ShareNav = na
   }
 }
 
+/** The phone's share sheet with a link and a short message (no file): WhatsApp is one of its targets. */
+export async function shareLink(text: string, url?: string, nav: ShareNav = navigator): Promise<ShareOutcome> {
+  if (typeof nav.share !== "function") return "unsupported";
+  try {
+    await nav.share(url ? { text, url } : { text });
+    return "shared";
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") return "cancelled";
+    return "failed";
+  }
+}
+
 /** Fetch (or take from the phone's saved copy) every card's file and make them ready to share. */
 export async function filesFor(
   cards: Card[],

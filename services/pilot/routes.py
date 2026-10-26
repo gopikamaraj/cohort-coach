@@ -7,6 +7,7 @@ from the engine, drafts from the chain in lessons.py, and the gates are the exis
 
 from __future__ import annotations
 
+import os
 from collections.abc import Callable
 from typing import Any
 
@@ -365,28 +366,11 @@ def audio_regenerate(
 
 @router.post("/audio/{audio_id}/approve", dependencies=[Depends(require("pilot.approve_audio"))])
 def audio_approve(
-    audio_id: str,
-    tasks: BackgroundTasks,
-    principal: Principal = ACTOR,
-    db: Session = SESSION,
-    store: BlobStore = AUDIO,
-    speech: SpeechService = SPEECH,
-    factory: Callable[[], Session] = FACTORY,
+    audio_id: str, principal: Principal = ACTOR, db: Session = SESSION
 ) -> dict[str, Any]:
+    """Approves the TEXT. The voice is made later, on the first teacher tap or Make audio."""
     card = audio_mod.approve(db, principal.name, audio_mod.get_card(db, audio_id))
-    tasks.add_task(_render_job, factory, principal.name, store, speech, card.id)
     return {"id": card.id, "status": card.status}
-
-
-def _render_job(
-    factory: Callable[[], Session],
-    actor: str,
-    store: BlobStore,
-    speech: SpeechService,
-    audio_id: str,
-) -> None:
-    with factory() as db:
-        audio_mod.render(db, actor, store, speech, audio_mod.get_card(db, audio_id))
 
 
 @router.post("/audio/{audio_id}/render", dependencies=[Depends(require("pilot.generate_audio"))])
@@ -457,3 +441,47 @@ def audio_shares(
 ) -> dict[str, int]:
     card = audio_mod.get_card(db, audio_id)
     return {"recorded": audio_mod.record_shares(db, principal.name, card, body.teacher_refs)}
+
+
+@router.get("/audio/{audio_id}/lesson-link", dependencies=[Depends(require("pilot.share_audio"))])
+def audio_lesson_link(
+    audio_id: str, principal: Principal = ACTOR, db: Session = SESSION
+) -> dict[str, Any]:
+    """The link a teacher opens: the approved text; audio is made on the first tap."""
+    origin = os.environ.get("PWA_ORIGIN", "").rstrip("/")
+    if not origin:
+        raise HTTPException(503, "The web address of this app is not set up on the server.")
+    card = audio_mod.get_card(db, audio_id)
+    audio_mod.require_shareable(db, card)
+    token = audio_mod.lesson_token(card)
+    audit(db, principal.name, "audio.lesson_link", card.id, days=audio_mod.LESSON_LINK_DAYS)
+    return {"url": f"{origin}/#/lesson/{token}", "expires_in_days": audio_mod.LESSON_LINK_DAYS}
+
+
+# ---- the lesson link a teacher opens (no sign-in; one approved lesson only) --------------------
+
+
+@router.get("/lesson/{token}")
+def lesson_page(token: str, db: Session = SESSION) -> dict[str, Any]:
+    return audio_mod.lesson_view(audio_mod.card_for_token(db, token))
+
+
+@router.post("/lesson/{token}/audio")
+def lesson_audio(
+    token: str,
+    db: Session = SESSION,
+    store: BlobStore = AUDIO,
+    speech: SpeechService = SPEECH,
+) -> dict[str, Any]:
+    """The first tap voices the approved script and keeps the file; later taps reuse it."""
+    card = audio_mod.voice_for_link(db, store, speech, audio_mod.card_for_token(db, token))
+    assert card.object_key is not None
+    fmt = card.object_key.rsplit(".", 1)[-1]
+    url = store.presign_get(card.object_key, 600, audio_mod.file_name(card, fmt))
+    return {
+        "url": url,
+        "file_name": audio_mod.file_name(card, fmt),
+        "mime": audio_mod.MIME.get(fmt, "audio/mp4"),
+        "seconds": round(card.duration_s, 1),
+        "bytes": card.bytes,
+    }

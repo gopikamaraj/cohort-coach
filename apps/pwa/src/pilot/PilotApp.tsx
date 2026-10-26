@@ -9,7 +9,8 @@ import SignIn from "./SignIn";
 import UploadSheets from "./UploadSheets";
 import { loadSession, onSessionEnded, saveSession, type Session } from "./api";
 import { PilotCtx } from "./context";
-import { enforceRoute, href, usePilotRoute } from "./route";
+import LessonPage from "./LessonPage";
+import { enforceRoute, href, useLessonToken, usePilotRoute } from "./route";
 import "./pilot.css";
 
 const SHORT: Record<Lang, string> = { en: "EN", hi: "हिं", ta: "தமி" };
@@ -28,6 +29,7 @@ export default function PilotApp() {
   const [session, setSession] = useState<Session | null>(loadSession);
   const [ended, setEnded] = useState(false);
   const route = usePilotRoute();
+  const lesson = useLessonToken();
   const online = useOnline();
 
   useEffect(() => {
@@ -58,6 +60,8 @@ export default function PilotApp() {
   }, []);
   const tr = useCallback((key: Key, params?: Record<string, string | number>) => t(lang, key, params), [lang]);
   const state = useMemo(() => (session ? { lang, tr, session, online } : null), [lang, tr, session, online]);
+
+  if (lesson) return <LessonPage token={lesson} />; // a teacher's lesson link: no sign-in
 
   const langSwitch = (
     <div className="p-seg" role="group" aria-label={tr("pilot.au.language")}>

@@ -52,6 +52,10 @@ def test_a_coordinator_can_go_from_photos_to_shared_audio(env: Env) -> None:
         assert env.client.get("/api/pilot/audio", headers=env.h("rev")).status_code == 200
         res = env.client.post(f"/api/pilot/audio/{card['id']}/approve", headers=env.h("rev"))
         assert res.status_code == 200
+    assert env.audio.keys() == []  # approved words, no audio yet, no speech credit spent
+    for card in page["cards"]:
+        res = env.client.post(f"/api/pilot/audio/{card['id']}/render", headers=env.h("ops"))
+        assert res.status_code == 200
     ready = env.client.get("/api/pilot/audio", headers=env.h("ops")).json()["cards"]
     assert [c["status"] for c in ready] == ["audio_ready"] * 3
     assert len(env.audio.keys()) == 3 and env.sheets.keys() != env.audio.keys()

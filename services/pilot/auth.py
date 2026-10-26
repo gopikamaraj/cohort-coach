@@ -91,6 +91,33 @@ def make_token(principal: Principal, ttl: int = TOKEN_TTL_S) -> str:
     return f"{body}.{_b64(sig)}"
 
 
+def now() -> float:
+    return _clock()
+
+
+def sign_claims(claims: dict[str, object]) -> str:
+    """A signed claim set for links that carry no sign-in (a lesson link). Staff tokens are
+    different: read_token needs a name and roles, which these never hold."""
+    body = _b64(json.dumps(claims, separators=(",", ":")).encode())
+    return f"{body}.{_b64(hmac.new(_secret(), body.encode(), hashlib.sha256).digest())}"
+
+
+def read_claims(token: str) -> dict[str, object] | None:
+    """The claims of an untampered, unexpired signed link, else None."""
+    body, _, sig = token.partition(".")
+    try:
+        if not hmac.compare_digest(
+            hmac.new(_secret(), body.encode(), hashlib.sha256).digest(), _unb64(sig)
+        ):
+            return None
+        claims = json.loads(_unb64(body))
+        if not isinstance(claims, dict) or float(claims["e"]) < _clock():
+            return None
+    except (ValueError, KeyError, TypeError):
+        return None
+    return claims
+
+
 def read_token(token: str) -> Principal | None:
     body, _, sig = token.partition(".")
     try:

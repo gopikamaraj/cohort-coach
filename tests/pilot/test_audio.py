@@ -189,6 +189,11 @@ def test_nothing_reaches_the_published_bucket_before_approval(seeded: Env) -> No
     )
     assert seeded.audio.keys() == []
     assert approve(seeded, first).status_code == 200
+    assert seeded.audio.keys() == []  # approving the words makes no audio and spends no credit
+    assert (
+        seeded.client.post(f"/api/pilot/audio/{first}/render", headers=seeded.h("ops")).status_code
+        == 200
+    )
     assert seeded.audio.keys() == [
         f"pilot-audio/{first}.m4a"
     ]  # only the approved one, and only now
@@ -198,10 +203,26 @@ def test_nothing_reaches_the_published_bucket_before_approval(seeded: Env) -> No
         assert db.get(ReviewItem, db.get(PilotAudio, first).review_item_id).status == "approved"  # type: ignore[union-attr]
 
 
-def test_approval_voices_the_script_and_marks_it_ready(seeded: Env) -> None:
+def test_approval_publishes_the_text_and_make_audio_voices_it(
+    seeded: Env, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    spoken: list[str] = []
+    monkeypatch.setattr(
+        seeded.speech, "synthesize", lambda text, lang, voice: spoken.append(text) or b"clip"
+    )
     generate(seeded)
     first = cards(seeded)[0]
     assert approve(seeded, first["id"]).status_code == 200
+    approved = cards(seeded)[0]
+    assert approved["status"] == "approved" and approved["shareable"] and not approved["ready"]
+    assert spoken == []  # nothing was voiced
+    assert (
+        seeded.client.post(
+            f"/api/pilot/audio/{first['id']}/render", headers=seeded.h("ops")
+        ).status_code
+        == 200
+    )
+    assert spoken  # the voice was called only now
     ready = cards(seeded)[0]
     assert ready["status"] == "audio_ready" and ready["ready"] and ready["duration_s"] > 0
     assert 0 < ready["bytes"] < 1_000_000
@@ -220,6 +241,7 @@ def test_a_failed_voice_leaves_the_lesson_approved_and_can_be_retried(
 
     monkeypatch.setattr(seeded.speech, "synthesize", down)
     approve(seeded, first)
+    seeded.client.post(f"/api/pilot/audio/{first}/render", headers=seeded.h("ops"))
     card = cards(seeded)[0]
     assert card["status"] == "failed" and card["note"] == "audio:unavailable"
     assert seeded.audio.keys() == []
@@ -260,6 +282,10 @@ def ready_card(env: Env) -> dict:  # type: ignore[type-arg]
     generate(env)
     for c in cards(env):
         assert approve(env, c["id"]).status_code == 200
+        assert (
+            env.client.post(f"/api/pilot/audio/{c['id']}/render", headers=env.h("ops")).status_code
+            == 200
+        )
     return cards(env)[0]
 
 
@@ -433,6 +459,7 @@ def test_a_long_script_is_encoded_smaller_to_stay_under_the_target(
     generate(seeded)
     card = cards(seeded)[0]
     approve(seeded, card["id"])
+    seeded.client.post(f"/api/pilot/audio/{card['id']}/render", headers=seeded.h("ops"))
     assert sizes == [32, 24] and cards(seeded)[0]["bytes"] < 1_000_000
 
 

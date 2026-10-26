@@ -120,3 +120,7 @@ No child name, roll number or per-child answer reaches the database, logs or aud
 
 Fixed from the non-blocking list: an object that arrives short or oversized is deleted; the local store refuses uploads over 8 MB.
 Not fixed (open): a failed bucket delete leaves an orphan (add a lifecycle rule on the sheets bucket); the sign-in throttle is per name and per process, with no minimum key length (use long random keys); sign-out leaves queued photos and cached audio on the phone; `PILOT_LOCAL_STORE=1` is not blocked in production (never set it there); the token secret falls back to `LINK_SECRET`.
+
+## Words first, voice on the first tap (added 26 Oct)
+
+The coach's approval now approves the text only. An approved lesson is shared as a lesson link (`/#/lesson/<token>`, signed, 14 days, one lesson, no sign-in). The first tap on **Download audio** on that page voices the script (one Sarvam call), keeps the file, and later taps reuse it; `PILOT_VOICE_DAILY_MAX` (default 20) caps new voicings caused by teachers' taps. The coordinator can still press **Make audio now**. Tests: `tests/pilot/test_lesson_link.py` (links, first-tap-once, two taps at once, the cap, the voice down, expiry, tampering, every other route still needing a token) and the lesson-link cases in `apps/pwa/e2e/pilot.spec.ts`. Decision: `DECISIONS.md` 2026-10-26. Not built: on-device voice (parked), and a "this is wrong" flag on the lesson page.

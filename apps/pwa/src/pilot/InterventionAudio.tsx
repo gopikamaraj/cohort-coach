@@ -18,7 +18,7 @@ import {
 import { loadPage, queueGenerate, savePage, flushJobs, waitingJobs, getAudioBlob, realDeps } from "./audioCache";
 import { usePilot } from "./context";
 import { goPilot } from "./route";
-import { canShareFiles, filesFor, makeShareFile, messageWithLink, saveToPhone, shareFiles, whatsappUrl } from "./share";
+import { messageWithLink, saveToPhone, shareLink, whatsappUrl } from "./share";
 
 const STATUS: Record<AudioStatus, { key: Key; icon: string; tone: string }> = {
   draft: { key: "pilot.au.st.draft", icon: "edit", tone: "" },
@@ -110,7 +110,7 @@ export default function InterventionAudio() {
   }, [voicing, online, load]);
 
   const cards = useMemo(() => (page?.cards ?? []).filter((c) => c.language === language), [page, language]);
-  const sharable = cards.filter((c) => c.ready && c.active);
+  const sharable = cards.filter((c) => c.shareable && c.active);
 
   async function setCount(next: number) {
     if (!config) return;
@@ -153,11 +153,21 @@ export default function InterventionAudio() {
   }
 
   async function shareAll() {
-    const files = await filesFor(sharable, session, realDeps());
-    const out = await shareFiles(files, tr("pilot.sh.message_all"));
+    let links: string[];
+    try {
+      links = await Promise.all(
+        sharable.map(async (c) => (await pilotJson<{ url: string }>(`/api/pilot/audio/${c.id}/lesson-link`, {}, session)).url),
+      );
+    } catch {
+      setMsg({ text: online ? tr("pilot.err.generic") : tr("pilot.au.need_signal"), bad: true });
+      return;
+    }
+    const text = [tr("pilot.sh.message_all"), ...links].join("\n");
+    const out = await shareLink(text);
     if (out === "shared") setLogCards(sharable);
     else if (out === "unsupported" || out === "failed") {
       setAllUnsupported(true);
+      window.open(whatsappUrl(text), "_blank", "noopener");
       setMsg({ text: tr(out === "failed" ? "pilot.sh.failed" : "pilot.sh.unsupported"), bad: out === "failed" });
     }
   }
@@ -312,6 +322,7 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
   const st = STATUS[card.status];
   const nk = noteKey(card.note);
   const fileOk = card.ready && card.active;
+  const canShare = card.shareable && card.active;
   const act = async (fn: () => Promise<unknown>) => {
     setBusy(true);
     try {
@@ -354,9 +365,9 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
   async function share() {
     setBusy(true);
     try {
-      const { blob } = await getAudioBlob(card.id, session, realDeps());
-      const file = makeShareFile(blob, card.file_name, card.mime);
-      const out = await shareFiles([file], tr("pilot.sh.message", { slot: card.slot }));
+      const url = await link();
+      if (!url) return;
+      const out = await shareLink(tr("pilot.sh.lesson_message", { slot: card.slot }), url);
       if (out === "shared") onLog([card]);
       else if (out === "unsupported" || out === "failed") {
         setFallback(true);
@@ -369,9 +380,10 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
     }
   }
 
+  /** The lesson link a teacher opens: the approved words, with audio made on the first tap. */
   async function link(): Promise<string | null> {
     try {
-      const out = await pilotJson<{ url: string }>(`/api/pilot/audio/${card.id}/link`, {}, session);
+      const out = await pilotJson<{ url: string }>(`/api/pilot/audio/${card.id}/lesson-link`, {}, session);
       return out.url;
     } catch {
       setMsg({ text: online ? tr("pilot.err.generic") : tr("pilot.au.need_signal"), bad: true });
@@ -384,7 +396,7 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
     if (!url) return;
     try {
       await navigator.clipboard.writeText(url);
-      setMsg({ text: tr("pilot.sh.link_copied", { hours: 24 }) });
+      setMsg({ text: tr("pilot.sh.lesson_link_copied", { days: 14 }) });
     } catch {
       window.prompt(tr("pilot.sh.copy_link"), url);
     }
@@ -392,11 +404,10 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
 
   async function openWhatsApp() {
     const url = await link();
-    if (url) window.open(whatsappUrl(messageWithLink(tr("pilot.sh.message", { slot: card.slot }), url)), "_blank", "noopener");
+    if (url) window.open(whatsappUrl(messageWithLink(tr("pilot.sh.lesson_message", { slot: card.slot }), url)), "_blank", "noopener");
   }
 
-  const dummy = useMemo(() => new File([""], card.file_name, { type: "audio/mp4" }), [card.file_name]);
-  const supportsFiles = canShareFiles([dummy]);
+  const supportsShare = typeof navigator.share === "function";
 
   return (
     <article className={card.active ? "p-card" : "p-card p-off"} data-testid={`card-${card.slot}`} data-status={card.status} data-active={card.active}>
@@ -434,25 +445,37 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
         <pre>{card.script}</pre>
       </details>
 
+      {canShare && !fileOk ? (
+        <p className="p-small p-muted" data-testid="text-only">
+          {tr("pilot.au.text_only")}
+        </p>
+      ) : null}
+
       <div className="p-actions">
         {fileOk ? (
-          <>
-            <button type="button" className="p-pillbtn" disabled={busy} onClick={() => void download()} data-testid="download">
-              <Icon name="download" size={18} />
-              {tr("pilot.au.download")}
+          <button type="button" className="p-pillbtn" disabled={busy} onClick={() => void download()} data-testid="download">
+            <Icon name="download" size={18} />
+            {tr("pilot.au.download")}
+          </button>
+        ) : null}
+        {canShare ? (
+          isCoordinator ? (
+            <button type="button" className="p-pillbtn p-go" disabled={busy || !online} onClick={() => void share()} data-testid="share">
+              <Icon name="send" size={18} />
+              {tr("pilot.au.share_link")}
             </button>
-            {isCoordinator ? (
-              <button type="button" className="p-pillbtn p-go" disabled={busy} onClick={() => void share()} data-testid="share">
-                <Icon name="send" size={18} />
-                {tr("pilot.au.share")}
-              </button>
-            ) : null}
-          </>
+          ) : null
         ) : (
           <p className="p-small p-muted" style={{ margin: 0 }}>
             {tr("pilot.au.only_approved")}
           </p>
         )}
+        {isCoordinator && canShare && !fileOk ? (
+          <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/render`, jsonInit("POST"), session))} data-testid="make-audio">
+            <Icon name="speaker" size={18} />
+            {tr("pilot.au.make_audio")}
+          </button>
+        ) : null}
         {isCoach && card.status === "needs_review" ? (
           <button type="button" className="p-btn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/approve`, jsonInit("POST"), session))} data-testid="approve">
             <Icon name="ok" size={18} />
@@ -491,15 +514,11 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
         </div>
       ) : null}
 
-      {fileOk && (fallback || !supportsFiles) && isCoordinator ? (
+      {canShare && (fallback || !supportsShare) && isCoordinator ? (
         <div className="p-sub" data-testid="share-fallback">
           <h2>{tr("pilot.sh.title")}</h2>
           <p className="p-small">{tr("pilot.sh.unsupported")}</p>
           <div className="p-actions" style={{ marginTop: 0 }}>
-            <button type="button" className="p-pillbtn" disabled={busy} onClick={() => void download()}>
-              <Icon name="download" size={18} />
-              {tr("pilot.au.download")}
-            </button>
             <button type="button" className="p-pillbtn" disabled={!online} onClick={() => void copyLink()} data-testid="copy-link">
               <Icon name="chat" size={18} />
               {tr("pilot.sh.copy_link")}

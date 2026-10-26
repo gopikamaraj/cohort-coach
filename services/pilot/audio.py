@@ -1,15 +1,19 @@
-"""Intervention audio: approval, voicing, the published bucket, and sharing.
+"""Intervention audio: approval, lesson links, voicing on demand, the published bucket, sharing.
 
-The order is fixed: a script passes the gates (lessons.py), the coach approves it, and only then
-is it voiced and written to the published-audio bucket. Download, share and the signed link all
-refuse any card that is not `audio_ready`, and a card past a lowered audio count is inactive.
+The order is fixed: a script passes the gates (lessons.py), the coach approves the TEXT, and the
+text can then be shared as a lesson link. The voice is paid for later and once: the first time a
+teacher taps Download audio on the link (or the coordinator presses Make audio) the approved
+script is voiced and written to the published-audio bucket; every later tap serves that file.
+Staff download and the signed audio link still refuse any card that is not `audio_ready`, and a
+card past a lowered audio count is inactive.
 """
 
 from __future__ import annotations
 
 import os
 import re
-from datetime import UTC, datetime
+import threading
+from datetime import UTC, datetime, timedelta
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -20,7 +24,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ai.guard.rejections import RejectionReason, add_approved_example
-from services.api.db import PilotAudio, PilotShare, ReviewDecision, ReviewItem
+from services.api.db import PilotAudio, PilotAudit, PilotShare, ReviewDecision, ReviewItem
+from services.pilot import auth
 from services.pilot.common import LANGUAGES, audio_count, audit
 from services.pilot.storage import BlobStore
 from services.speech.audio import join_to_file
@@ -34,6 +39,10 @@ TARGET_BYTES = 1_000_000  # a 2 to 3 minute note should stay under 1 MB
 LINK_HOURS = 24
 TEACHER_REF = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{1,23}$")
 MIME = {"m4a": "audio/mp4", "mp3": "audio/mpeg"}
+LESSON_LINK_DAYS = 14
+LINK_ACTOR = "lesson-link"  # audit actor for a voicing a teacher's tap caused
+DAILY_VOICE_MAX = 20  # new voicings a day that teachers' taps may cause (PILOT_VOICE_DAILY_MAX)
+LINK_ENDED = "This link has ended or is not right. Ask the person who sent it for a new one."
 
 
 @cache
@@ -99,6 +108,7 @@ def card_json(db: Session, card: PilotAudio, current_counts_hash: str | None) ->
         "active": card.slot <= audio_count(db),
         "stale": bool(current_counts_hash) and card.counts_hash != current_counts_hash,
         "ready": card.status == "audio_ready",
+        "shareable": lesson_shareable(db, card),
         "file_name": file_name(card),
         "mime": MIME[audio_format()],
         "created_at": _aware(card.created_at).isoformat(),
@@ -128,6 +138,99 @@ def require_ready(db: Session, card: PilotAudio) -> None:
         raise HTTPException(409, "Only approved audio can be downloaded or shared.")
     if card.slot > audio_count(db):
         raise HTTPException(409, "This lesson is switched off. Raise the number of audio files.")
+
+
+def lesson_shareable(db: Session, card: PilotAudio) -> bool:
+    """The text is approved (voiced or not) and the lesson is still wanted. A lesson whose voice
+    failed stays shareable: the words were approved, only the sound is missing."""
+    approved = card.status in ("approved", "audio_ready") or (
+        card.status == "failed" and (card.note or "").startswith("audio:")
+    )
+    return approved and card.slot <= audio_count(db)
+
+
+def require_shareable(db: Session, card: PilotAudio) -> None:
+    if not lesson_shareable(db, card):
+        raise HTTPException(409, "Only an approved lesson can be shared.")
+
+
+def voice_daily_max() -> int:
+    raw = os.environ.get("PILOT_VOICE_DAILY_MAX", "")
+    return int(raw) if raw.isdigit() else DAILY_VOICE_MAX
+
+
+# ---- lesson links -----------------------------------------------------------------------------
+
+
+def lesson_token(card: PilotAudio, days: int = LESSON_LINK_DAYS) -> str:
+    """An unguessable, expiring token for one approved lesson. It carries no teacher, school or
+    child, and opens nothing but that lesson's text and its audio."""
+    return auth.sign_claims({"k": "lesson", "a": card.id, "e": int(auth.now()) + days * 86400})
+
+
+def card_for_token(db: Session, token: str) -> PilotAudio:
+    claims = auth.read_claims(token)
+    card = None
+    if claims and claims.get("k") == "lesson":
+        card = db.get(PilotAudio, str(claims.get("a")))
+    if card is None or not lesson_shareable(db, card):
+        raise HTTPException(404, LINK_ENDED)
+    return card
+
+
+def lesson_view(card: PilotAudio) -> dict[str, Any]:
+    """What a teacher sees: the approved words and whether the audio exists yet."""
+    return {
+        "title": card.title,
+        "script": card.script,
+        "language": card.language,
+        "slot": card.slot,
+        "audio_ready": card.status == "audio_ready" and bool(card.object_key),
+        "seconds": round(card.duration_s, 1),
+        "bytes": card.bytes,
+        "mime": MIME[audio_format()],
+    }
+
+
+def voicings_today(db: Session) -> int:
+    """Voicings a teacher's tap caused since midnight UTC, failures included (each cost a call)."""
+    since = datetime.now(UTC) - timedelta(days=2)
+    midnight = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
+    rows = db.execute(
+        select(PilotAudit.at).where(
+            PilotAudit.actor == LINK_ACTOR,
+            PilotAudit.action.in_(("audio.published", "audio.render_failed")),
+            PilotAudit.at >= since.replace(tzinfo=None),
+        )
+    ).scalars()
+    return sum(1 for at in rows if _aware(at) >= midnight)
+
+
+_guard = threading.Lock()
+_locks: dict[str, threading.Lock] = {}
+
+
+def voice_for_link(
+    db: Session, store: BlobStore, speech: SpeechService, card: PilotAudio
+) -> PilotAudio:
+    """The audio for a lesson a teacher asked for. Made once (the first tap), then served from the
+    bucket. A daily cap stops a leaked link from running up speech credit."""
+    require_shareable(db, card)
+    with _guard:
+        lock = _locks.setdefault(card.id, threading.Lock())
+    with lock:  # two taps at once make it once
+        db.refresh(card)
+        if card.status == "audio_ready" and card.object_key:
+            return card
+        if voicings_today(db) >= voice_daily_max():
+            audit(db, LINK_ACTOR, "audio.cap_reached", card.id)
+            raise HTTPException(
+                429, "Audio is busy today. You can read the lesson here, and try again tomorrow."
+            )
+        render(db, LINK_ACTOR, store, speech, card)
+    if card.status != "audio_ready":
+        raise HTTPException(503, "The voice is not available just now. Read the lesson here.")
+    return card
 
 
 # ---- approval and voicing ---------------------------------------------------------------------
@@ -254,8 +357,8 @@ def render(
 
 
 def record_shares(db: Session, actor: str, card: PilotAudio, teacher_refs: list[str]) -> int:
-    """A manual record that the coordinator sent this file to these teachers. Not delivery."""
-    require_ready(db, card)
+    """A manual record that the coordinator sent this lesson to these teachers. Not delivery."""
+    require_shareable(db, card)
     refs = sorted({r.strip() for r in teacher_refs})
     if not refs or any(not TEACHER_REF.match(r) for r in refs):
         raise HTTPException(422, "Choose teacher codes, not names.")

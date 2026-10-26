@@ -142,12 +142,41 @@ export interface Card {
   active: boolean;
   stale: boolean;
   ready: boolean;
+  /** The words are approved (voiced or not), so a lesson link can be made. */
+  shareable: boolean;
   file_name: string;
   mime: string;
   created_at: string;
   shared_with: string[];
   versions: { id: string; version: number; status: AudioStatus; ready: boolean }[];
 }
+
+/** What a teacher's lesson link shows: the approved words, and whether the audio exists yet. */
+export interface LessonView {
+  title: string;
+  script: string;
+  language: string;
+  slot: number;
+  audio_ready: boolean;
+  seconds: number;
+  bytes: number;
+  mime: string;
+}
+
+export interface LessonAudio {
+  url: string;
+  file_name: string;
+  mime: string;
+  seconds: number;
+  bytes: number;
+}
+
+export const fetchLesson = (token: string): Promise<LessonView> =>
+  pilotJson<LessonView>(`/api/pilot/lesson/${encodeURIComponent(token)}`, {}, null);
+
+/** The first call makes the audio (one speech call); later calls return the kept file. */
+export const fetchLessonAudio = (token: string): Promise<LessonAudio> =>
+  pilotJson<LessonAudio>(`/api/pilot/lesson/${encodeURIComponent(token)}/audio`, jsonInit("POST"), null);
 
 export interface AudioPage {
   cards: Card[];
