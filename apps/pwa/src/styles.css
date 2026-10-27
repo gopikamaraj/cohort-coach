@@ -1101,3 +1101,8 @@ h2 .icon {
 .navtab.navtab-on {
   border-top-color: var(--pen);
 }
+
+/* Tap targets of at least 44 px found by the browser QA crawl (docs/evidence/browser_qa.md) */
+.subtab { min-width: 44px; padding: 0 8px; }
+.subtabs { flex-wrap: wrap; }
+ul.plain a { display: inline-block; min-height: 44px; line-height: 44px; }

@@ -58,6 +58,7 @@ select = ["E", "F", "I", "UP", "B"]
 "ai/guard/explain.py" = ["E501"]  # wording templates read best on one line
 "scripts/make_synthetic_sheets.py" = ["E501"]  # the generated README text and spec tables read best on one line
 "scripts/eval_results.py" = ["E501"]  # the table rows read best on one line
+"scripts/browser_qa_report.py" = ["E501"]  # table rows and prose read best on one line
 
 [tool.mypy]
 python_version = "3.12"
