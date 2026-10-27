@@ -22,6 +22,7 @@ from ai import config
 from ai.client import BudgetExceeded, CallContext
 from ai.config import ai_mode
 from engine.model import ErrorCode
+from services.api.ratelimit import RateLimiter
 from services.api.roles import judge_session, require
 from services.api.sprite_media import tray_items
 from services.practice.content import LANGS, load_personas, load_scenario
@@ -45,6 +46,12 @@ from services.practice.watch import (
 from services.speech.sarvam import SpeechError
 from services.speech.service import SpeechService, default_service
 from services.speech.voices import voice_for
+
+# Per connection, per minute; every one of these starts a paid call (docs/privacy.md).
+_LIMIT_SESSION = RateLimiter("practice_session", 20)
+_LIMIT_TURN = RateLimiter("practice_turn", 40)
+_LIMIT_VOICE = RateLimiter("practice_voice", 12)
+_LIMIT_WATCH = RateLimiter("practice_watch", 6)
 
 router = APIRouter(
     prefix="/api/practice",
@@ -118,7 +125,7 @@ def _to_dict(obj: Any) -> dict[str, Any]:
     return out
 
 
-@router.post("/sessions")
+@router.post("/sessions", dependencies=[Depends(_LIMIT_SESSION)])
 def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[str, Any]:
     if body.language not in LANGS:
         raise HTTPException(422, f"language must be one of {', '.join(LANGS)}")
@@ -155,7 +162,7 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
     }
 
 
-@router.post("/sessions/{session_id}/turns")
+@router.post("/sessions/{session_id}/turns", dependencies=[Depends(_LIMIT_TURN)])
 def post_turn(session_id: str, body: TurnRequest, ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
     session = _get(session_id)
     try:
@@ -211,7 +218,7 @@ def _text_mode(why: str) -> HTTPException:
     return HTTPException(503, {"text_mode": True, "message": why})
 
 
-@router.post("/sessions/{session_id}/voice-turn")
+@router.post("/sessions/{session_id}/voice-turn", dependencies=[Depends(_LIMIT_VOICE)])
 def post_voice_turn(
     session_id: str,
     request: Request,
@@ -317,7 +324,7 @@ class WatchRequest(BaseModel):
 WATCH_METER = LiveMeter(cap_per_hour=int(os.environ.get("WATCH_LIVE_PER_HOUR") or 6), runs=deque())
 
 
-@router.post("/watch")
+@router.post("/watch", dependencies=[Depends(_LIMIT_WATCH)])
 def post_watch(body: WatchRequest, ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
     """An AI teacher runs the rehearsal. Judge mode only: a real teacher hears the model run."""
     if not judge_session():

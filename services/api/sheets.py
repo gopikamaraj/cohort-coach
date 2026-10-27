@@ -19,6 +19,7 @@ from ai.calls.c08_answer_reading import read_sheet
 from ai.client import BudgetExceeded, CallContext
 from engine.forms import PILOT_FORMS
 from services.api.practice import AI_CONTEXT
+from services.api.ratelimit import RateLimiter
 from services.api.roles import require
 
 router = APIRouter(
@@ -38,7 +39,10 @@ def _media_type(data: bytes) -> str | None:
     return None
 
 
-@router.post("/read")
+_LIMIT_READ = RateLimiter("sheets_read", 30)  # each call reads one photo with a paid model
+
+
+@router.post("/read", dependencies=[Depends(_LIMIT_READ)])
 def read(
     request: Request,
     image: UploadFile = File(...),  # noqa: B008

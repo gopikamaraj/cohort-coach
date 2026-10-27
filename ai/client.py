@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import functools
 import hashlib
+import hmac
 import json
 import logging
 import os
@@ -127,6 +128,9 @@ def input_hash(
         ensure_ascii=False,
         sort_keys=True,
     )
+    salt = os.environ.get("AUDIT_HASH_SALT", "")
+    if salt:  # a keyed hash, so a short or guessable input cannot be checked against the log
+        return hmac.new(salt.encode(), blob.encode(), hashlib.sha256).hexdigest()
     return hashlib.sha256(blob.encode()).hexdigest()
 
 

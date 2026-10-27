@@ -82,3 +82,12 @@ def _judge_mode_on_for_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
     """The suite runs as the demo deployment (the server default is off); tests that check the
     production behaviour set JUDGE_MODE=0 themselves."""
     monkeypatch.setenv("JUDGE_MODE", "1")
+
+
+@pytest.fixture(autouse=True)
+def _rate_limits_off_for_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Many tests hit one endpoint from one test client; tests of the limit set their own."""
+    for name in (
+        "practice_session", "practice_turn", "practice_voice", "practice_watch", "sheets_read",
+    ):  # fmt: skip
+        monkeypatch.setenv(f"RATE_LIMIT_{name.upper()}_PER_MIN", "0")

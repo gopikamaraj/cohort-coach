@@ -64,3 +64,7 @@
 
 The stages (input, core, output) are worked out on the phone from the answers she typed or confirmed, with signature answers the engine writes into the answer keys; a parity test checks the phone's result against the Python engine on 136 synthetic children (`tests/fixtures/stage_cases.json`). The per-child rows never leave the phone. What stays on the phone with the check is her tag "missed the teaching on this" per child position. What reaches the server is nothing new: the class counts per error, as before. A stage is always "most likely", never shown to a child, and never a judgement of a child or a teacher. `POST /api/stages` (stateless, nothing stored or logged, a 300-child cap) exists for the bot's check flow in a later phase and is not called by the web app.
 
+
+## Abuse and cost limits (27 Oct)
+
+The endpoints that start a paid call (Practice Class sessions, turns, voice turns, the demo teacher's run, and sheet reading) accept a limited number of requests per minute from one connection (`services/api/ratelimit.py`; the limits and their environment names are in `.env.example`). Over the limit the answer is 429 with a Retry-After. The limit is kept in memory per server process and holds no personal data; the spend hard-stops in `ai/client.py` remain the backstop. The audit-trail and AI-map endpoints answer only in the judge-mode deployment (a test locks this). When `AUDIT_HASH_SALT` is set the audit log's input hashes are keyed, so a short or guessable input cannot be confirmed from the log.

@@ -256,3 +256,12 @@ def test_hints_over_the_api_are_judge_mode_only_and_carry_no_labels(
     assert body["hints"] and set(body["hints"][0]) == {"move", "line"}
     monkeypatch.setenv("JUDGE_MODE", "0")
     assert client.get(f"/api/practice/sessions/{sid}/hints").status_code == 403
+
+
+def test_session_creation_is_limited_per_connection(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("RATE_LIMIT_PRACTICE_SESSION_PER_MIN", "2")
+    body = {"scenario": "SUB-SFL", "language": "en", "seed": 5}
+    codes = [client.post("/api/practice/sessions", json=body).status_code for _ in range(3)]
+    assert codes == [200, 200, 429]

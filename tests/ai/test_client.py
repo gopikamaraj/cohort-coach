@@ -230,3 +230,21 @@ def test_the_live_client_is_reused_so_connections_stay_open(
     monkeypatch.delenv("ANTHROPIC_API_KEY")
     with pytest.raises(LiveNotAllowed):
         client_mod._live_client()
+
+
+def test_input_hash_is_keyed_when_a_salt_is_set(monkeypatch: pytest.MonkeyPatch) -> None:
+    from ai.client import input_hash
+    from ai.prompt_loader import load_prompt
+    from ai.registry import CALLS
+
+    spec = CALLS[0]
+    prompt = load_prompt(spec.key)
+    inp = client_mod.CallInput(trusted={"n": 1})
+    monkeypatch.delenv("AUDIT_HASH_SALT", raising=False)
+    plain = input_hash(spec, prompt, "m", inp)
+    monkeypatch.setenv("AUDIT_HASH_SALT", "one")
+    one = input_hash(spec, prompt, "m", inp)
+    monkeypatch.setenv("AUDIT_HASH_SALT", "two")
+    two = input_hash(spec, prompt, "m", inp)
+    assert len({plain, one, two}) == 3 and all(len(h) == 64 for h in (plain, one, two))
+    assert input_hash(spec, prompt, "m", inp) == two  # stable for the same salt

@@ -134,3 +134,12 @@ def test_try_to_break_it_is_judge_mode_only(monkeypatch: pytest.MonkeyPatch) -> 
 def test_the_injection_line_is_explained_as_an_instruction_not_as_a_rude_word() -> None:
     body = TestClient(app).post("/api/judge/try-break", json={"kind": "injection"}).json()
     assert "instruction to the system" in body["explanation"]
+
+
+def test_the_audit_trail_is_closed_outside_judge_mode(
+    api: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    res = api.get("/api/judge/audit")
+    assert res.status_code == 403  # the role gate already closes it
+    assert api.get("/api/judge/ai-map").status_code == 403
