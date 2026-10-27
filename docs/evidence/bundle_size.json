@@ -1,11 +1,11 @@
 {
-  "date": "2026-10-17",
+  "date": "2026-10-27",
   "fail_above_bytes": 1000000,
   "files": {
-    "index-lBYs12KF.js": 120723,
+    "index-TwAfu-qi.js": 69537,
     "registerSW.js": 126
   },
-  "initial_js_gzip_bytes": 120849,
+  "initial_js_gzip_bytes": 69663,
   "measure": "pwa_initial_js",
   "source": "scripts/bundle_size.py --write",
   "warn_above_bytes": 400000,

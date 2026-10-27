@@ -1,0 +1,23 @@
+# Assumptions behind scripts/cost_per_teacher.py. These are ASSUMPTIONS (a planned use per teacher per
+# 3-week track), not measurements. The per-call cost is measured: the mean of live calls in the audit
+# table. A teacher's cost is (calls she causes) x (measured mean per call), low to high.
+# Change a number here and re-run the script; never edit its output by hand.
+version: 1
+per_teacher_per_track:
+  sheets_read: {low: 25, high: 40}  # a class's check sheets (one call 8 read each), sent once
+  practice_sessions: {low: 2, high: 6}
+  turns_per_session: {low: 10, high: 25}  # each turn: a child line (call 1), a label (call 2), a check (call 7)
+  feedback_per_session: {low: 1, high: 1}  # call 3 at the end of a session
+  lesson_checks: {low: 0, high: 0}  # lessons are drafted once per track, not per teacher
+drafting:
+  parts_per_language: 7  # six lessons and the model-lesson script
+  languages: {low: 1, high: 2}
+  cohort_size: {low: 15, high: 20}  # teachers who share one drafting cost
+  checks_per_part: 1
+sources:
+  call_8: "mean cost of live c08_answer_reading calls"
+  call_1: "mean cost of live c01_child_voice calls on claude-sonnet-5-5"
+  call_2: "mean cost of live c02_move_label calls"
+  call_3: "mean cost of live c03_feedback calls"
+  call_5: "mean cost of live c05_track_draft calls"
+  call_7: "mean cost of live c07_checker calls"

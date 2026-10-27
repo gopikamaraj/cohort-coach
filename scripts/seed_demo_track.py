@@ -112,11 +112,39 @@ def seed(db: Session, languages: list[str], *, draft: bool, track_id: str = "sub
     return report
 
 
+def seed_cohort(db: Session) -> str:
+    """A demo cohort for the judge deployment: active, a coach and a mentor, five simulated
+    members (so the thread is open once a judge joins), and one coach prompt. Judge only."""
+    from services.api.cohorts import lifecycle, thread
+    from services.api.db import CohortSpace
+
+    if not config.judge_mode():
+        raise NotAJudgeDeployment("Seeding a demo cohort is only for the judge deployment.")
+    existing = db.get(CohortSpace, "co-demo-sub-sfl")
+    if existing is not None:
+        return existing.id
+    cohort = lifecycle.create(
+        db, error="SUB-SFL", coach_id="coach-demo", mentor_ids=["mentor-demo"],
+        officer_id="officer-demo", school_count=7, cohort_id="co-demo-sub-sfl",
+    )  # fmt: skip
+    lifecycle.transition(db, cohort.id, "active", role="officer", actor="officer-demo")
+    for i in range(5):
+        thread.join(db, cohort.id, f"t-demo{i:013d}")
+    thread.post_as_staff(
+        db, cohort.id, "coach", "coach-demo",
+        "This week: try the bundles with one child twice, then tell us how it went.", "en",
+    )  # fmt: skip
+    return cohort.id
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
     p.add_argument("--languages", default="hi,en")
     p.add_argument(
         "--draft", action="store_true", help="re-draft parts that have no passing draft (spends)"
+    )
+    p.add_argument(
+        "--cohort", action="store_true", help="also seed a demo cohort with a coach prompt"
     )
     args = p.parse_args(argv)
     config.load_env()
@@ -128,6 +156,8 @@ def main(argv: list[str] | None = None) -> int:
     except NotAJudgeDeployment as exc:
         print(exc)
         return 2
+    if args.cohort:
+        print("cohort:", seed_cohort(db))
     print(out)
     return 0 if out.get("published") else 1
 

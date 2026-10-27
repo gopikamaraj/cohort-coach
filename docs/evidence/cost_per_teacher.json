@@ -1,0 +1,41 @@
+{
+  "unit": "US cents per teacher per 3-week track",
+  "measured_mean_usd_per_call": {
+    "check_sheets": 0.000294,
+    "child_lines": 0.001541,
+    "move_labels": 0.000107,
+    "checks": 8.4e-05,
+    "feedback": 0.008887,
+    "drafting": 0.092049
+  },
+  "live_calls_measured": {
+    "check_sheets": 75,
+    "child_lines": 544,
+    "move_labels": 253,
+    "checks": 634,
+    "feedback": 26,
+    "drafting": 26
+  },
+  "assumptions": "docs/evidence/cost_assumptions.yaml",
+  "range": {
+    "low": {
+      "check_sheets": 0.735,
+      "child_lines": 3.081,
+      "move_labels": 0.214,
+      "checks": 0.184,
+      "feedback": 1.777,
+      "drafting": 3.225,
+      "total": 9.216
+    },
+    "high": {
+      "check_sheets": 1.176,
+      "child_lines": 23.109,
+      "move_labels": 1.606,
+      "checks": 1.307,
+      "feedback": 5.332,
+      "drafting": 8.599,
+      "total": 41.129
+    }
+  },
+  "not_included": "speech (services/speech/pricing.yaml), hosting"
+}

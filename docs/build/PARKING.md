@@ -32,3 +32,8 @@ The tray materials, item pictures, mats and avatars for the Practice Class are n
 | 2026-10-27 | Call 9 reflection pointer, voice reflections and the biweekly "Still using it?" prompts (P10 cut) | P10 "If behind" list | Gopi |
 | 2026-10-27 | Offline replay of a downloaded lesson in the web app (cache the lesson audio like the pilot's audio) | P10 cut | Gopi |
 | 2026-10-27 | CPD-hours export from the time budget; the mentor's name in T4 with her consent flag | P10 cut; needs P11 | Gopi |
+| 2026-10-27 | Telegram relay of the cohort thread, voice replies and notification digests (P11 cut) | time | Gopi |
+| 2026-10-27 | Mentor recording flow (M1), call 4 method cards and the call 6 weekly digest; mentor pages in the PWA | P11 cut | Gopi |
+| 2026-10-27 | Real coach and mentor assignment instead of a pseudonymous id in the request (P12) | P11 | Gopi |
+| 2026-10-27 | Role assignment with consent and a production-mode landing page (A8); cohort approval screen; CRC visit brief; content library screens; officer stage view | P12 cut | Gopi |
+| 2026-10-27 | Funnel: Practice Class sessions per cohort (needs a server-side, teacher-id-free session count), median teacher minutes against the cap, "waiting for review" after 7 days | P12 cut | Gopi |

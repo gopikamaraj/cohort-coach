@@ -496,3 +496,94 @@ class LessonTap(Base):
     tried: Mapped[bool | None] = mapped_column(Boolean)
     outcome: Mapped[str | None] = mapped_column(String(10))  # worked | partly | didnt
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class CohortSpace(Base):
+    """A cohort as a space people belong to: lifecycle, people and thread state. (The `cohort`
+    table is the grouping the engine computed from the check; this is what a coach runs.)
+    proposed, active, closing, closed; cancelled from proposed or active."""
+
+    __tablename__ = "cohort_spaces"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    error: Mapped[str] = mapped_column(String(16))
+    track_version: Mapped[int] = mapped_column(Integer, default=1)
+    status: Mapped[str] = mapped_column(String(10), default="proposed", index=True)
+    coach_id: Mapped[str | None] = mapped_column(String(40))
+    officer_id: Mapped[str | None] = mapped_column(String(40))
+    mentor_ids: Mapped[list[str]] = mapped_column(JSON, default=list)
+    school_count: Mapped[int] = mapped_column(Integer, default=0)
+    post_test_received: Mapped[bool] = mapped_column(Boolean, default=False)
+    close_reason: Mapped[str | None] = mapped_column(String(60))
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    simulated: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class CohortMember(Base):
+    """A teacher in a cohort space. The display name is a label the system made (Teacher 7),
+    unique in the cohort and never typed by her; the coach can map it to the teacher (see docs)."""
+
+    __tablename__ = "cohort_members"
+    __table_args__ = (UniqueConstraint("cohort_id", "display_name"),)
+
+    cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)
+    display_name: Mapped[str] = mapped_column(String(24))
+    joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class CohortAuditRow(Base):
+    """One row per cohort or thread decision: who (a role and a pseudonymous id), what, when."""
+
+    __tablename__ = "cohort_audit"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    cohort_id: Mapped[str] = mapped_column(String(40), index=True)
+    role: Mapped[str] = mapped_column(String(10))
+    actor: Mapped[str] = mapped_column(String(40))
+    action: Mapped[str] = mapped_column(String(30))
+    detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)  # ids, codes, counts only
+
+
+class ThreadPost(Base):
+    """A post in a cohort thread. `body` is emptied by the retention job and on a coach's call."""
+
+    __tablename__ = "thread_posts"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), index=True)
+    author_kind: Mapped[str] = mapped_column(String(8))  # teacher | mentor | coach | system
+    author_teacher_id: Mapped[str | None] = mapped_column(String(18))  # never returned by the API
+    author_name: Mapped[str] = mapped_column(String(24))
+    body: Mapped[str | None] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(10), default="visible", index=True)
+    # visible | reported | hidden | deleted
+    rule_id: Mapped[str | None] = mapped_column(String(20))
+    pinned: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class MentorItem(Base):
+    """A mentor's recording or method-card step on its way to teachers. Nothing reaches a teacher
+    unless the coach approved it and a published track version includes it (in_use)."""
+
+    __tablename__ = "mentor_items"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    mentor_id: Mapped[str] = mapped_column(String(40), index=True)
+    cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(12))  # recording | method_card
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    parent_id: Mapped[str | None] = mapped_column(String(32))
+    status: Mapped[str] = mapped_column(String(18), default="draft", index=True)
+    # draft | awaiting_coach | changes_requested | approved | rejected | in_use | retired
+    reason_code: Mapped[str | None] = mapped_column(String(30))
+    note: Mapped[str | None] = mapped_column(String(300))
+    decided_by: Mapped[str | None] = mapped_column(String(40))
+    in_use_version_id: Mapped[str | None] = mapped_column(String(40))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)

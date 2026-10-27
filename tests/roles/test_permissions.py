@@ -140,7 +140,9 @@ def test_get_roles_returns_the_config_the_dialog_renders(monkeypatch: pytest.Mon
     teacher = body["roles"][0]
     assert teacher["weekly_minutes"] == 20 and "telegram" in teacher["also_on"]
     assert all({"id", "key", "planned"} <= set(c) for c in teacher["can"])
-    assert any(c["planned"] == "P11" for c in teacher["can"])  # cohort chat arrives in P11
+    chat = next(c for c in teacher["can"] if c["id"] == "cohort.chat")
+    assert chat["planned"] is None  # cohort chat is built (P11, reduced): not "arrives soon"
+    assert any(c["planned"] for c in body["roles"][1]["can"])  # mentor card: planned items
 
 
 def test_in_production_only_the_teacher_card_is_offered_without_assignment(

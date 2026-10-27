@@ -1,0 +1,16 @@
+# Common first names in Latin, Devanagari and Tamil script, for the cohort thread's posting check.
+# A teacher must not name a child (CLAUDE.md rule 15). This list is best-effort: it catches the
+# common cases, never every name, and the notice at the compose step says so. The pseudonymous
+# labels ("Teacher 7") are not in it. Data owned by Seema and Shivani.
+# TODO-HUMAN(Seema, Shivani): extend with the first names common in the pilot schools.
+latin: [meena, anu, divya, nila, asha, priya, ravi, karthik, arun, vijay, mani, sunil, rahul, amit,
+  pooja, neha, kavya, sneha, rohan, aditya, ananya, aarav, riya, sita, gita, ramesh, suresh, mahesh,
+  lakshmi, kumar, selvi, murugan, deepa, sanjay, vikram, anjali, kiran, manoj, rekha, sunita,
+  ishita, shreya, varun, dev, krishna, gopal, mohan, geeta, radha, ganesh, vignesh, surya, kavin]
+devanagari: [मीना, अनु, दिव्या, नीला, आशा, प्रिया, रवि, कार्तिक, अरुण, विजय, मणि, सुनील, राहुल, अमित,
+  पूजा, नेहा, काव्या, स्नेहा, रोहन, आदित्य, अनन्या, आरव, रिया, सीता, गीता, रमेश, सुरेश, महेश,
+  लक्ष्मी, कुमार, दीपा, संजय, विक्रम, अंजलि, किरण, मनोज, रेखा, सुनीता, कृष्णा, गोपाल, मोहन]
+tamil: [மீனா, அனு, திவ்யா, நிலா, ஆஷா, பிரியா, ரவி, கார்த்திக், அருண், விஜய், மணி, சுனில், ராகுல்,
+  அமித், பூஜா, நேஹா, காவ்யா, ஸ்னேகா, ரோஹன், ஆதித்யா, அனன்யா, ஆரவ், ரியா, சீதா, கீதா, ரமேஷ்,
+  சுரேஷ், மகேஷ், லட்சுமி, குமார், செல்வி, முருகன், தீபா, சஞ்சய், விக்ரம், அஞ்சலி, கிரண்,
+  மனோஜ், ரேகா, சுனிதா, கிருஷ்ணா, கோபால், மோகன்]

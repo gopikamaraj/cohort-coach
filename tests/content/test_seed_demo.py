@@ -77,3 +77,29 @@ def test_a_part_the_checker_held_is_never_approved_by_the_seed(
     assert out["published"] is False and out["languages"]["en"]["missing"] == ["lesson:4"]
     assert db.execute(select(TrackManifest)).first() is None
     assert GOOD  # the held draft stays in the queue for a person
+
+
+def test_the_demo_cohort_is_active_with_an_open_thread_and_one_coach_prompt(
+    db: Session, judge_env: LocalBlobStore
+) -> None:
+    from scripts.seed_demo_track import seed_cohort
+    from services.api.cohorts import lifecycle, thread
+    from services.api.db import CohortSpace
+
+    cid = seed_cohort(db)
+    assert seed_cohort(db) == cid  # a second run changes nothing
+    c = db.get(CohortSpace, cid)
+    assert c is not None and c.status == "active" and c.coach_id == "coach-demo"
+    assert lifecycle.thread_state(db, c) == "open"  # five simulated members: the thread opens
+    assert thread.join(db, cid, "t-judge0000000000"[:18]).display_name == "Teacher 6"
+    assert [p["author_name"] for p in thread.posts_for(db, cid)] == ["Coach"]
+
+
+def test_the_demo_cohort_refuses_to_seed_outside_a_judge_deployment(
+    db: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from scripts.seed_demo_track import seed_cohort
+
+    monkeypatch.setenv("JUDGE_MODE", "0")
+    with pytest.raises(NotAJudgeDeployment):
+        seed_cohort(db)

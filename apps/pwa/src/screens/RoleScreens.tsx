@@ -78,16 +78,3 @@ export function Mentor() {
     </section>
   );
 }
-
-export function Officer() {
-  const { tr } = useApp();
-  return (
-    <section aria-labelledby="of-title" data-testid="officer">
-      <h1 id="of-title">
-        <Icon name="programme" /> {tr("role.officer")}
-      </h1>
-      <SimulatedBanner />
-      <p>{tr("role.later")}</p>
-    </section>
-  );
-}

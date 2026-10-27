@@ -1,0 +1,20 @@
+{
+  "kind": "computed worst case, not a measured journey",
+  "target_mb": 10.0,
+  "rows_mb": {
+    "web app first load (measured, compressed)": 0.07,
+    "check sheets (40 photos at about 80 KB)": 3.2,
+    "6 voice lessons at the 5-minute cap, 16 kbps": 3.6,
+    "model run (about 3 minutes)": 0.36,
+    "6 Practice Class sessions in text mode": 0.3
+  },
+  "total_mb_text_practice": 7.53,
+  "total_mb_if_every_session_uses_voice": 13.23,
+  "within_target_text": true,
+  "within_target_voice": false,
+  "settings": {
+    "lesson_seconds_cap": 300,
+    "voice_kbps": 16,
+    "sheet_kb": 80
+  }
+}

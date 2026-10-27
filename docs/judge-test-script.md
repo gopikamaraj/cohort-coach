@@ -14,3 +14,16 @@ Start at the landing page (`#/roles`) and press **Guided tour (5 min)**, or open
 | 5 | `#/tour/5` | Officer | 45 s | "Advance to Term 2"; read the funnel and the track verdicts; read the stage mix | Evaluation: honest statistics and source labels; a failed track counts against the track | P12 | pending |
 | 6 | `#/tour/6` | Teacher | 30 s | Open the AI map and the audit trail; press "Try to break it" chips | Ten calls, five layers; adversarial lines stopped, with the reason | P06, P08 | built: AI map, audit trail, Try to break it |
 | Extra | | Teacher | | Run the same teacher flow in Telegram with `/start judge` | One back end, two channels | P05, P10 | Telegram onboarding and T1 built; check and lessons pending |
+
+## Added 27 Oct: screens from P09 to P12
+
+Open each as the role named (the landing page's role cards, or `#/<screen>` in judge mode):
+
+| Screen | Role | What to try | Where the guardrail is |
+| --- | --- | --- | --- |
+| `#/review` | Coach, then Officer | Open a draft, read its checks, return it with no reason (it will not send), approve a track version, then switch it on as Officer | Two keys: neither alone publishes; the audit shows both |
+| `#/cohort` | Teacher, then Coach | Join with your own tap, post "Meena failed again" (it is refused), post a plain reply, report it, then moderate as Coach | Posting check, held posts invisible to others, erase on identifier |
+| T4 in the bot (`/start judge`) | Teacher | "My track and lessons": lesson 1 with the badge line, the two taps, the model lesson, Rehearse | Only approved, published content; taps are labelled self-report |
+| `#/officer` | Officer | Read the funnel (each step names its source), the track results (one working, one not, one with too few classes) and the error map | Aggregates only; nothing under 5 classes; a failed track counts against the track |
+
+Run `JUDGE_MODE=1 python scripts/seed_demo_track.py --languages en --cohort` first on a fresh judge deployment so there is a published track and an open cohort to look at.

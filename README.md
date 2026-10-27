@@ -9,6 +9,35 @@ Groups primary teachers for training by the specific error their pupils make, no
 
 Team A-Z 0-9 · Hack2skill × Anthropic "AI for Foundational Learning" · Challenge 3 (Teacher Support & Training).
 
+## For judges: try it
+
+The demo is a judge-mode web app (no login, simulated data, every screen labelled "Simulated").
+
+<!-- TODO-HUMAN(Gopi): put the deployed URL and the bot link here once the judge-mode deployment is up (docs/deploy.md); until then run it locally below -->
+
+1. Open the web app. The landing page has four role cards (Teacher, Mentor, Coach, Programme officer) and a guided tour. Follow [docs/judge-test-script.md](docs/judge-test-script.md) (about 5 minutes).
+2. In Telegram, send `/start judge` to the bot to run the same teacher flow there.
+3. Open the Practice Class and turn on the "AI layers" overlay to see each call, its guardrails and its checker verdict on a live turn.
+
+## What is built, cut, and still pending
+
+Statuses are the same as in [AI_USAGE.md](AI_USAGE.md) and [docs/build/PROGRESS.md](docs/build/PROGRESS.md). Nothing marked cut or pending is claimed anywhere else.
+
+| Area | State |
+| --- | --- |
+| Engine: errors, item generator, diagnosis, grouping, statistics, simulator | Built, tested; numbers in [docs/evidence/numbers.md](docs/evidence/numbers.md) |
+| Practice Class (text and voice) with five simulated children | Built; text turn median latency is over target (4968 ms against 3000 ms), reported in [evals/results.md](evals/results.md) |
+| Check by sheet photo, call 8 reading | Built; the hand-keyed accuracy eval is pending Shivani's keying |
+| Content pipeline: draft, checks, review queue, two keys | Built; live SUB-SFL drafts in hi and en ([docs/content-pipeline.md](docs/content-pipeline.md)) |
+| Teacher flows on Telegram and the web app (check, cards, lessons with voice, my result) | Built; not yet run on three real phones |
+| Cohort thread, mentor item approvals, officer error map and funnel | Built in reduced form ([docs/cohort-space.md](docs/cohort-space.md)) |
+| **Pilot mode** (sheet upload and lesson audio on Google Cloud) | Built and deployed ([docs/build/reports/PILOT-MODE.md](docs/build/reports/PILOT-MODE.md)) |
+| Red team | 52 cases, 0 unsafe reach a teacher ([evals/results.md](evals/results.md)) |
+| Cut, logged in [docs/build/PARKING.md](docs/build/PARKING.md) | Calls 4, 6 and 9, the model run, Tamil lessons, the Telegram thread relay, mentor recording, the visit brief, the content library |
+| Not measured | A real low-end phone and Slow 3G; user-testing rounds 3 and 4; human-rated evals |
+
+Roadmap: [docs/roadmap.md](docs/roadmap.md). Submission pack: [docs/submission/](docs/submission/).
+
 ## Where AI is used
 
 Every AI capability claim, with its file path and a status (Specified, Built or Verified), is in [AI_USAGE.md](AI_USAGE.md). The live proof is `python scripts/ai_proof.py`, which writes `docs/evidence/ai_usage_proof.json`.
@@ -112,6 +141,12 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 Gates: code validators → rule-based pre-filter → output checker (call 7) → human approval (track content, method cards) → teacher flag. Badges: *Checked ✓* after the first two automatic gates, *Checked ✓ · Reviewed ✓* after a human approves too. Details: [docs/guardrails.md](docs/guardrails.md), [docs/architecture.md](docs/architecture.md). Live map: `GET /api/judge/ai-map`; audit trail: `GET /api/judge/audit`.
 <!-- AI-USED:END -->
 
+## Guardrails, offline and privacy in brief
+
+- **Guardrails** ([docs/guardrails.md](docs/guardrails.md)): code computes every number; nothing AI-written reaches a teacher before code checks, a rule-based pre-filter and the output checker; lessons also need a coach and then an officer. Rejection reasons feed the checker.
+- **Offline and low data** ([docs/offline.md](docs/offline.md)): only the Practice Class needs a live connection and it falls back to text; uploads and lessons queue offline. Data per track is computed in [docs/evidence/data_budget.json](docs/evidence/data_budget.json) (inside the 10 MB target with text practice, over it if every session is voice).
+- **Privacy** ([docs/privacy.md](docs/privacy.md)): no child names, faces or voices; sheet photos are deleted after reading; teachers see counts, never percentages; officers see aggregates only.
+
 ## Setup
 
 ```text
@@ -119,17 +154,36 @@ python tasks.py setup    # install dependencies; installs a pre-commit hook runn
 python tasks.py dev      # API on :8000 + PWA on :5173
 python tasks.py test     # all tests (use this, not bare pytest)
 python tasks.py check    # lint + types + tests + eval smoke
+python tasks.py seed     # the simulated block
 ```
+
+Copy `.env.example` to `.env`. Without keys the app runs on recorded fixtures. Pilot mode (`PILOT_MODE=1`) serves only sign-in, sheet upload and lesson audio; see [docs/deploy.md](docs/deploy.md).
+
+## Architecture
+
+```mermaid
+flowchart LR
+  T[Telegram bot] --> A[Thin adapters]
+  W[Web app PWA] --> A
+  A --> F[Flow engine]
+  F --> E[Engine: all numbers]
+  F --> G[AI gates: validators, pre-filter, call 7]
+  G --> H[Human review: coach, officer]
+  F --> S[Speech: Sarvam]
+```
+
+Details: [docs/architecture.md](docs/architecture.md).
 
 ## Repo map
 
 | Path | What |
 | --- | --- |
 | `engine/` | Pure Python: error functions, items, diagnosis, grouping, mentors, statistics, simulator |
-| `ai/` | The 8 Claude calls: registry, client, prompts, validators, guardrails |
-| `services/api/` | FastAPI routes, channels (Telegram), review queue |
+| `ai/` | The Claude calls: registry, client, prompts, validators, guardrails |
+| `services/api/` | FastAPI routes, flow engine, channels (Telegram), review queue, cohorts, officer views |
+| `services/pilot/` | Pilot mode: sign-in, sheet upload, lesson audio |
 | `services/speech/` | Sarvam speech client |
-| `apps/pwa/` | React PWA: teacher, mentor, officer and judge screens |
+| `apps/pwa/` | React PWA: teacher, cohort, officer, review, pilot and judge screens |
 | `content/` | Scenarios, rubrics, move lists, personas, tracks (data, owned by Seema) |
 | `evals/` | Eval sets, runners, generated `results.md` |
-| `docs/` | Build log, design, evidence, guardrails, privacy, offline, roadmap |
+| `docs/` | Build log, design, evidence, guardrails, privacy, offline, roadmap, submission |

@@ -50,7 +50,7 @@ Live run with the real model (`evals/results/sim_fidelity_live.json`, 2026-10-17
 
 Seed set `evals/sets/redteam.yaml`: 22 attacks and 2 benign controls (seeds written by the build; the full 50 are still to be written). Code gates alone: 16 of 22 attacks blocked, 6 need a model.
 
-Live run (call 7 and the call 2 labeller on the rest, 2026-10-17): 0 of 22 attacks reached a teacher (bar 0); 0 of 2 benign controls blocked. Result: pass. Small seed set: read as directional.
+Live run (call 7 and the call 2 labeller on the rest, 2026-10-27): 0 of 52 attacks reached a teacher (bar 0); 0 of 5 benign controls blocked. Result: pass. Small seed set: read as directional.
 
 ## Practice Class text-turn latency (`evals/results/practice_latency.json`, 2026-10-17)
 

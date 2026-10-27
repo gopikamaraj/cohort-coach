@@ -59,6 +59,11 @@ export default function ProgrammeScreen() {
   return (
     <section aria-labelledby="pg-title" data-testid="programme">
       <h1 id="pg-title">{tr("prog.title")}</h1>
+      <p>
+        <a className="btn btn-secondary" href={href("/cohort")} data-testid="to-cohort">
+          {tr("cohort.title")}
+        </a>
+      </p>
       {data?.simulated || klass?.simulated ? (
         <>
           <SimulatedBanner />

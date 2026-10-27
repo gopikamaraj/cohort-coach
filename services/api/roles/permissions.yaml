@@ -15,14 +15,14 @@ permissions:
   profile.sync: {key: roles.can.profile_sync}
   programme.view_own: {key: roles.can.programme_own}
   judge.inspect: {key: roles.can.judge_inspect, judge_only: true}
-  cohort.chat: {key: roles.can.cohort_chat, planned: P11}
+  cohort.chat: {key: roles.can.cohort_chat}
   mentor.record: {key: roles.can.mentor_record, planned: P11}
-  mentor.items_view: {key: roles.can.mentor_items, planned: P11}
-  coach.approve_items: {key: roles.can.coach_approve, planned: P11}
-  coach.moderate: {key: roles.can.coach_moderate, planned: P11}
+  mentor.items_view: {key: roles.can.mentor_items}
+  coach.approve_items: {key: roles.can.coach_approve}
+  coach.moderate: {key: roles.can.coach_moderate}
   library.view: {key: roles.can.library_view, planned: P12}
-  officer.approve_cohorts: {key: roles.can.officer_cohorts, planned: P12}
-  officer.results: {key: roles.can.officer_results, planned: P12}
+  officer.approve_cohorts: {key: roles.can.officer_cohorts}
+  officer.results: {key: roles.can.officer_results}
   officer.advance_term: {key: roles.can.officer_advance, planned: P12, judge_only: true}
   officer.assign_roles: {key: roles.can.officer_assign, planned: P12}
   # The review queue and the two keys (P09). The coach's key is gate 3; the officer's switches on.
@@ -50,22 +50,22 @@ boundaries:
     planned: P12
   mentor.own_cohorts_only:
     key: roles.cannot.mentor_own_cohorts
-    planned: P11
+    enforced_by: tests/cohorts/test_cohorts_api.py::test_a_mentor_sees_only_her_own_cohorts_and_never_a_member_list
   mentor.no_class_numbers:
     key: roles.cannot.mentor_no_numbers
-    planned: P11
+    enforced_by: tests/cohorts/test_cohorts_api.py::test_a_mentor_gets_cohort_level_figures_only
   coach.assigned_only:
     key: roles.cannot.coach_assigned
-    planned: P11
+    enforced_by: tests/cohorts/test_cohorts_api.py::test_a_coach_acts_only_on_her_assigned_cohorts
   coach.no_teacher_numbers:
     key: roles.cannot.coach_no_numbers
-    planned: P12
+    enforced_by: tests/api/test_officer.py::test_a_coach_cannot_read_the_officer_views
   officer.aggregates_only:
     key: roles.cannot.officer_aggregates
-    planned: P12
+    enforced_by: tests/api/test_officer.py::test_the_officer_views_carry_no_teacher_or_class_ids_and_hide_small_groups
   officer.no_approval:
     key: roles.cannot.officer_no_approval
-    planned: P12
+    enforced_by: tests/content/test_review_api.py::test_only_the_coach_approves_and_the_officer_cannot
   pilot.sheets_private:
     key: roles.cannot.pilot_sheets_private
     enforced_by: tests/pilot/test_uploads.py::test_no_public_url_exists_for_any_sheet
