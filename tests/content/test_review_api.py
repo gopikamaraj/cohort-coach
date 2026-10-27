@@ -221,3 +221,32 @@ def test_a_rejection_name_cannot_reach_another_file(api: tuple[TestClient, Sessi
         client.post("/api/review/rejections/2026-10-26-001/discard", headers=h("coach")).status_code
         == 404
     )
+
+
+def test_the_officer_publishes_an_active_version_for_a_cohort(
+    api: tuple[TestClient, Session], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from services.content import publish
+    from services.pilot.storage import LocalBlobStore, get_audio_store
+    from services.speech.service import SpeechService
+    from tests.content.test_publish import approve_all, fake_join
+
+    client, db = api
+    monkeypatch.setattr(publish, "join_to_file", fake_join)
+    store = LocalBlobStore(b"audio")
+    speech = SpeechService("stub")
+    speech.synthesize = lambda text, lang, voice: b"clip"  # type: ignore[method-assign]
+    app = client.app  # type: ignore[attr-defined]
+    app.dependency_overrides[get_audio_store] = lambda: store
+    app.dependency_overrides[practice_api.get_speech] = lambda: speech
+    v = approve_all(db)
+    cohort = publish.cohorts_for_error("SUB-SFL")[0]
+    url = f"/api/review/versions/{v.id}/publish"
+    assert client.post(url, json={"cohort_id": cohort}, headers=h("officer")).status_code == 409
+    client.post(f"/api/review/versions/{v.id}/approve", headers=h("coach"))
+    client.post(f"/api/review/versions/{v.id}/activate", headers=h("officer"))
+    assert client.post(url, json={"cohort_id": cohort}, headers=h("coach")).status_code == 403
+    done = client.post(url, json={"cohort_id": cohort}, headers=h("officer"))
+    assert done.status_code == 200 and len(done.json()["parts"]) == 7
+    listed = client.get(f"/api/review/manifests?version_id={v.id}", headers=h("coach")).json()
+    assert listed[0]["cohort_id"] == cohort

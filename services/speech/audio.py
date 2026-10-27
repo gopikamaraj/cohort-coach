@@ -148,19 +148,24 @@ def join_to_file(
 ) -> tuple[bytes, float]:
     """Join speech clips with a short pause into one WhatsApp-friendly mono file.
 
-    `fmt` is "m4a" (AAC) or "mp3". Returns (file bytes, seconds). 32 kbps mono keeps a 3 minute
-    note near 0.7 MB, well under WhatsApp's 16 MB media limit.
+    `fmt` is "m4a" (AAC), "mp3", or "ogg" (Opus, what Telegram plays as a voice note; 16 kbps
+    mono keeps a 5 minute lesson near 0.6 MB). Returns (file bytes, seconds). 32 kbps mono keeps a
+    3 minute m4a note near 0.7 MB, well under WhatsApp's 16 MB media limit.
     """
     import subprocess
     import tempfile
     from pathlib import Path
 
-    if fmt not in ("m4a", "mp3"):
-        raise ValueError("fmt must be m4a or mp3")
+    if fmt not in ("m4a", "mp3", "ogg"):
+        raise ValueError("fmt must be m4a, mp3 or ogg")
     silence = b"\x00\x00" * int(gap_s * PCM_RATE)
     pcm = silence.join(to_pcm(c) for c in clips)
     seconds = len(pcm) / 2 / PCM_RATE
-    codec = ["-c:a", "aac", "-movflags", "+faststart"] if fmt == "m4a" else ["-c:a", "libmp3lame"]
+    codec = {
+        "m4a": ["-c:a", "aac", "-movflags", "+faststart"],
+        "mp3": ["-c:a", "libmp3lame"],
+        "ogg": ["-c:a", "libopus", "-application", "voip", "-f", "ogg"],
+    }[fmt]
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / f"lesson.{fmt}"
         done = subprocess.run(

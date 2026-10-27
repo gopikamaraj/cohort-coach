@@ -18,11 +18,12 @@ from sqlalchemy.orm import Session
 
 from ai.client import CallContext
 from services.api.db import ContentAudit, ContentVersion
-from services.api.practice import AI_CONTEXT
+from services.api.practice import AI_CONTEXT, SPEECH
 from services.api.profiles import SESSION
 from services.api.roles import require
-from services.content import configurable, rejections, review, versions
+from services.content import configurable, publish, rejections, review, versions
 from services.content.track import load_track
+from services.pilot.storage import BlobStore, get_audio_store
 
 router = APIRouter(prefix="/api/review", tags=["review"])
 
@@ -294,3 +295,45 @@ def promote_rejection(name: str, body: PromoteIn, role: str = COACH) -> dict[str
 def discard_rejection(name: str, role: str = COACH) -> dict[str, str]:
     rejections.discard(_pending(name))
     return {"discarded": name}
+
+
+# ---- publishing for a cohort ------------------------------------------------------------------
+
+AUDIO = Depends(get_audio_store)
+
+
+class PublishIn(BaseModel):
+    cohort_id: str = Field(max_length=60)
+
+
+@router.post("/versions/{version_id}/publish")
+def version_publish(
+    version_id: str,
+    body: PublishIn,
+    _: str = OFFICER,
+    db: Session = SESSION,
+    store: BlobStore = AUDIO,
+    speech: Any = SPEECH,
+) -> dict[str, Any]:
+    """Voice and publish an active version for one cohort. The class numbers come from code (the
+    cohort's classes), never from this request."""
+    try:
+        return dict(
+            publish.publish_version(db, version_id, body.cohort_id, store=store, speech=speech)
+        )
+    except publish.PublishBlocked as exc:
+        raise HTTPException(422, {"part": exc.part, "codes": exc.codes}) from exc
+    except versions.BadState as exc:
+        raise HTTPException(409, str(exc)) from exc
+
+
+@router.get("/manifests")
+def manifests(version_id: str, _: str = VIEW, db: Session = SESSION) -> list[dict[str, Any]]:
+    from services.api.db import TrackManifest
+
+    rows = db.execute(
+        select(TrackManifest)
+        .where(TrackManifest.version_id == version_id)
+        .order_by(TrackManifest.id.desc())
+    ).scalars()
+    return [r.body for r in rows]

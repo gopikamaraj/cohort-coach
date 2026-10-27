@@ -7,6 +7,8 @@ id: sub-sfl.v1
 error: SUB-SFL
 version: 1
 grade: 3
+# the worked example the slots use (never a Form A or Form B item)
+example: [52, 29]
 languages: [hi, en, ta]
 # up to three approved method cards (mentor_id-free references); none are approved yet
 method_cards: []

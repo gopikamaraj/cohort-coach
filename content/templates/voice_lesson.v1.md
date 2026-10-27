@@ -14,7 +14,7 @@ Slots you may use: {{class.count_showing}} of {{class.children_checked}} childre
 
 ## Hook (30 seconds)
 
-Say what today is about in one line, and why it matters to her class: {{class.count_showing}} of {{class.children_checked}} children made this mistake.
+Say what today is about in one line, and why it matters: in the classes of her cohort, {{class.count_showing}} of {{class.children_checked}} children made this mistake.
 
 ## The mistake in one child's words (60 seconds)
 

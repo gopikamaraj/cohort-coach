@@ -466,3 +466,16 @@ class ContentAudit(Base):
     content_id: Mapped[str] = mapped_column(String(60))
     version: Mapped[int] = mapped_column(Integer)
     detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+
+class TrackManifest(Base):
+    """What was published for one cohort from one track version: parts, audio keys, sizes, scripts
+    and badges, and the roles and times of the two keys. The lesson screen and the bot read it."""
+
+    __tablename__ = "track_manifests"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    version_id: Mapped[str] = mapped_column(ForeignKey("content_versions.id"), index=True)
+    cohort_id: Mapped[str] = mapped_column(String(60), index=True)
+    body: Mapped[dict[str, Any]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
