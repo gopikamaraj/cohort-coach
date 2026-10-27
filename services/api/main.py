@@ -17,6 +17,7 @@ from services.api.channels.pwa import router as flow_router
 from services.api.channels.telegram.webhook import router as telegram_router
 from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
+from services.api.lessons import router as lessons_router
 from services.api.practice import router as practice_router
 from services.api.profiles import router as profiles_router
 from services.api.programme import router as programme_router
@@ -77,6 +78,7 @@ def create_app(pilot: bool | None = None) -> FastAPI:
         app.include_router(pilot_router)
     else:
         app.include_router(judge_router)
+        app.include_router(lessons_router)
         app.include_router(roles_router)
         app.include_router(flow_router)
         app.include_router(telegram_router)

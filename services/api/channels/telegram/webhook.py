@@ -39,6 +39,17 @@ def requests_for(
     if message.url:
         rows.append([{"text": message.url_label or message.url, "url": message.url}])
     markup = json.dumps({"inline_keyboard": rows}) if rows else None
+    if message.audio:  # a lesson: a voice note (OGG/Opus), the words as its caption or a message
+        voice: dict[str, Any] = {"chat_id": chat_id, "voice": message.audio}
+        if len(message.text) <= CAPTION_MAX:
+            voice["caption"] = message.text
+            if markup:
+                voice["reply_markup"] = markup
+            return [("sendVoice", voice, {})]
+        text = {"chat_id": chat_id, "text": message.text}
+        if markup:
+            text["reply_markup"] = markup
+        return [("sendVoice", voice, {}), ("sendMessage", text, {})]
     png: bytes | None = None
     if message.scene:
         try:

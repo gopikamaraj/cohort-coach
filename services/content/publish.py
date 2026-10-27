@@ -34,6 +34,7 @@ from ai.validators.arithmetic import (
 from ai.validators.check_items import check_items
 from services.api.db import ContentAudit, ContentVersion, ReviewItem, TrackManifest
 from services.content import slots, versions
+from services.content.lessons_view import MAX_LESSON_SECONDS
 from services.content.track import load_track
 from services.pilot.audio import chunks
 from services.pilot.storage import BlobStore
@@ -185,6 +186,8 @@ def publish_version(
                 voice = Voice(speaker=LESSON_VOICE, pitch=1.0, pace=1.0)
                 clips = [speech.synthesize(c, p["language"], voice) for c in chunks(p["text"])]
                 data, seconds = encode(clips)
+                if seconds > MAX_LESSON_SECONDS:  # the content gate: a lesson over 5 minutes
+                    raise PublishBlocked(f"{p['part']} ({p['language']})", ["lesson_too_long"])
                 store.put(audio_key, data, MIME)
                 size = len(data)
                 voiced += 1

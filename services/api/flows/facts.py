@@ -38,6 +38,25 @@ def _demo_counts() -> tuple[int, dict[str, int]]:
     return int(rec["children_checked"]), dict(rec["counts"])
 
 
+def demo_change(error: str) -> tuple[str, int, int, int, int] | None:
+    """The simulated demo class's counts for one error in term 1 and term 2, from the synthetic
+    block (what a judge sees in My result). None if the block has no second term for that class."""
+    block = json.loads(BLOCK.read_text(encoding="utf-8"))
+    t1 = block["terms"]["T1"]["classes"]
+    best = max(t1, key=lambda c: (t1[c]["counts"].get("SUB-SFL", 0), c))
+    t2 = block["terms"].get("T2", {}).get("classes", {})
+    if best not in t2:
+        return None
+    a, b = t1[best], t2[best]
+    return (
+        error,
+        int(a["counts"].get(error, 0)),
+        int(a["children_checked"]),
+        int(b["counts"].get(error, 0)),
+        int(b["children_checked"]),
+    )
+
+
 def summary(db: Session, teacher: Teacher) -> Summary | None:
     if teacher.judge:
         checked, counts = _demo_counts()

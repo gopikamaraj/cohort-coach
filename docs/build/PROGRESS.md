@@ -24,7 +24,7 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | P07 | Voice | P0 | Thu 22 | 🟡 | 2026-10-17 (`874d069`) | 2026-10-17 | [report](reports/P07-voice.md) | Built; run live once (24 turns, median 7515 ms, over the 5 s target; plan documented). Open: voice latency fix, bytes per session on Slow 3G (v3), listening check |
 | P08 | Answer-sheet capture (both channels), stages, roles shell, Practice Class demo modes, import | P0/P1 | Fri 23 | 🟡 | 2026-10-22 (`a59ade4`) | | [addendum report](reports/P08-addendum-v3.1.md) | Addendum v3.1 items built (roles shell, call 10, Watch, hints, break-it, strategies, stages, sample sheets, tour shell). **Not started: P08's own capture scope** (check flow on both channels, importers, eval 9) |
 | P09 | Content pipeline, versions and the two keys, strategies | P0 | Sat 24 | 🟡 | 2026-10-26 (`f99d5bf`) | 2026-10-27 | [report](reports/P09-content-pipeline.md) | Built: call 5 drafting, slots, two keys, review queue API and screen (#/review), rejection loop, publish and manifest. Live drafts in hi and en: 12 of 14 reached the coach after call 7 was told sample numbers stand in for slots (2 of 14 before). Cut: model run T12, Tamil, citations pass 2, stage routines, live batch. Not run on a staging URL. Open: P3 screen uses a mocked API in e2e; Seema's review of the drafts |
-| P10 | Teacher flows on both channels | P0 | Sun 25 | ⬜ | | | | |
+| P10 | Teacher flows on both channels | P0 | Sun 25 | 🟡 | 2026-10-27 (`0e2ea8f`) | 2026-10-27 | [tasks](tasks/P10.md) | Built: T4 (lessons, voice note, badge, two taps), T6 (my result), time budget, judge seed script. Cut: call 9, voice reflections, biweekly prompts, offline replay. Not run on 3 real phones |
 | P11 | Cohort space, mentor pages, coach pages | P0/P1/P2 | Sun 25 | ⬜ | | | | Brief extended 20 Oct (steps 7–16); simple Coach and Mentor screens already exist from the profile pass: UI only, with no cohort, item-status or moderation logic, so rule 15 is not yet implemented |
 | P12 | Coach and officer views, funnel, roles, guided tour, content library, visit brief | P0 | Mon 26 | ⬜ | | | | Gate 2; depends on P11 |
 | P13 | Evals (including 11), red team, cost, latency | P0 | Tue 27 | ⬜ | | | | |
@@ -148,4 +148,5 @@ Spec: `docs/design/addendum-v3.1.md`; synthetic sheets: `docs/build/synthetic-sh
 
 | Date | Cut | Why | Moved to |
 | --- | --- | --- | --- |
+| 2026-10-27 | P10: call 9 reflection pointer, voice reflections, biweekly prompts, offline lesson replay in the web app, CPD export | Time; the phase's own "If behind" list | PARKING.md |
 | 2026-10-27 | P09: model run (T12), Tamil lessons, citations pass 2, stage routines F-e, a live Batches run | Time: P09 started 26 Oct; P10 to P16 untouched | PARKING.md |

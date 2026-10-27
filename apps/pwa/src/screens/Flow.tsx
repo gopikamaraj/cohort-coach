@@ -56,6 +56,7 @@ export default function Flow() {
         <div key={`${m.step_id}-${i}`} className="panel" data-testid={`flow-${m.step_id}`}>
           {m.scene ? <SceneView scene={m.scene} label={m.alt ?? ""} /> : null}
           <p style={{ whiteSpace: "pre-line" }}>{m.text}</p>
+          {m.audio ? <audio controls preload="none" src={m.audio} data-testid="flow-audio" style={{ width: "100%" }} /> : null}
           {m.url ? (
             <a className="btn btn-secondary" href={m.url} data-testid="flow-link">
               {m.url_label}

@@ -37,7 +37,11 @@ def _status_build(ctx: Any) -> Step:
 
 
 def _menu_build(ctx: Any) -> Step:
+    from services.api.flows import t4
+
     opts = [
+        *([("track", "t1.o.track")] if t4.has_track(ctx) else []),
+        *([("result", "t1.o.result")] if t4.has_result(ctx) else []),
         ("practice", "t1.o.practice"),
         ("cards", "t1.o.cards"),
         ("check", "t1.o.check"),
@@ -50,6 +54,8 @@ def _menu_build(ctx: Any) -> Step:
 
 def _menu_advance(ctx: Any, a: Answer) -> str | None:
     return {
+        "track": "t4:intro",
+        "result": "t6:result",
         "practice": "practice",
         "cards": "cards",
         "check": "check_info",
@@ -117,7 +123,15 @@ T1 = Flow(
         "menu": Node(
             _menu_build,
             _menu_advance,
-            ("t1.menu", "t1.o.practice", "t1.o.cards", "t1.o.check", "t1.o.delete"),
+            (
+                "t1.menu",
+                "t1.o.track",
+                "t1.o.result",
+                "t1.o.practice",
+                "t1.o.cards",
+                "t1.o.check",
+                "t1.o.delete",
+            ),
             reentry="status",
         ),
         "cards": Node(

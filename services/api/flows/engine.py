@@ -15,7 +15,15 @@ from typing import Any
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from services.api.db import ChannelLink, Consent, FlowState, LinkCode, ProfileSync, Teacher
+from services.api.db import (
+    ChannelLink,
+    Consent,
+    FlowState,
+    LessonTap,
+    LinkCode,
+    ProfileSync,
+    Teacher,
+)
 from services.api.flows import facts
 from services.api.flows.steps import Answer, Flow, Step
 from services.api.roles import judge_session
@@ -134,6 +142,7 @@ class FlowEngine:
         ]
         if devices:  # her consent history goes too: erasure means erasure
             self.db.execute(delete(Consent).where(Consent.subject_id.in_(devices)))
+        self.db.execute(delete(LessonTap).where(LessonTap.teacher_id == tid))
         self.db.execute(delete(LinkCode).where(LinkCode.teacher_id == tid))
         self.db.execute(delete(ChannelLink).where(ChannelLink.teacher_id == tid))
         self.db.execute(delete(FlowState).where(FlowState.teacher_id == tid))

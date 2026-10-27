@@ -45,6 +45,33 @@ teacher, links, flow state, her consent history and her class counts everywhere.
 3. Add the channel to `tests/channels/test_golden.py`: the same scripted answers must show the same
    words and choices and leave the same stored state as the web adapter.
 
+## T4 and T6: lessons, two taps, my result (P10)
+
+```mermaid
+flowchart TD
+  M[T1 menu] -->|"My track and lessons<br/>(only if a track is published)"| I[intro: error in words, number of lessons]
+  I --> L[lesson: one media step<br/>voice note + words + badge line]
+  L -->|not due yet| W[later: "Lesson N comes in D days"]
+  L --> T[tried in class?]
+  T -->|yes| H[how did it go?]
+  H --> K[thanks: your own report]
+  T -->|not yet| X
+  K --> X[next: next lesson / model lesson / rehearse / back]
+  X -->|next| L
+  X -->|rehearse| P[link: Practice Class]
+  M -->|"My result<br/>(after two checks)"| R[result in counts] --> F["a failed track counts against the track, not you"]
+```
+
+| Step | Telegram | Web app |
+| --- | --- | --- |
+| Lesson (`media`) | A voice note (OGG/Opus) fetched from a signed lesson link, the words as its caption, or as a following message when long; the badge line is part of the words | A lesson card with the words and an audio player on the same link |
+| Taps (`choice`) | Inline buttons, callback data `step:option` | Buttons |
+| Model lesson | A message with the script and the badge line | A card |
+| Rehearse (`link`) | A button that opens the Practice Class with a signed link | A link |
+| My result | Messages, counts only | Cards, counts only |
+
+Lessons come only from a published manifest (a track version both keys switched on). Taps are self-report, stored per lesson per pseudonymous teacher id, and shown to officers as counts. Not built (cut in P10): the call 9 reflection pointer, voice reflections and the biweekly "Still using it?" prompts. Offline replay of a downloaded lesson in the web app is not built either; a lesson is fetched when it is opened.
+
 ## Known gaps
 
 Photo, voice and number-grid steps have no adapter rendering yet (P08 and P10). The webhook sender

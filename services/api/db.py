@@ -479,3 +479,20 @@ class TrackManifest(Base):
     cohort_id: Mapped[str] = mapped_column(String(60), index=True)
     body: Mapped[dict[str, Any]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class LessonTap(Base):
+    """Her two taps after a lesson (self-report): "Tried it in class?" and "How did it go?". One row
+    per teacher per lesson, keyed by her pseudonymous id; no free text. Officers read counts only,
+    labelled self-report, and a figure over fewer than 5 classes is hidden."""
+
+    __tablename__ = "lesson_taps"
+    __table_args__ = (UniqueConstraint("teacher_id", "track_id", "lesson_day"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    teacher_id: Mapped[str] = mapped_column(String(18), index=True)
+    track_id: Mapped[str] = mapped_column(String(20))  # the tracked error, e.g. SUB-SFL
+    lesson_day: Mapped[int] = mapped_column(Integer)
+    tried: Mapped[bool | None] = mapped_column(Boolean)
+    outcome: Mapped[str | None] = mapped_column(String(10))  # worked | partly | didnt
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
