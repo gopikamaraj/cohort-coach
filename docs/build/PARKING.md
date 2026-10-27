@@ -30,7 +30,7 @@ The tray materials, item pictures, mats and avatars for the Practice Class are n
 | 2026-10-27 | SUB-SFL model run (T12): render, review, approve, voice, manifest, at most about 0.35 MB per 3 minutes | P09 cut: attempted last, no time; P10 to P16 untouched | Gopi |
 | 2026-10-27 | One live Message Batches run for call 5 (the request builder is built and tested on recorded data) | P09: drafting was run synchronously | Gopi |
 | 2026-10-27 | Call 9 reflection pointer, voice reflections and the biweekly "Still using it?" prompts (P10 cut) | P10 "If behind" list | Gopi |
-| 2026-10-27 | Offline replay of a downloaded lesson in the web app (cache the lesson audio like the pilot's audio) | P10 cut | Gopi |
+| 2026-10-27 | Offline replay of a downloaded lesson in the web app (cache the lesson audio like the pilot's audio) | P10 cut | Gopi **Done 2026-10-27: a Save tap keeps the audio in Cache Storage and it plays with no signal (`apps/pwa/src/lib/lessonAudio.ts`, `e2e/lesson-audio.spec.ts`).** |
 | 2026-10-27 | CPD-hours export from the time budget; the mentor's name in T4 with her consent flag | P10 cut; needs P11 | Gopi |
 | 2026-10-27 | Telegram relay of the cohort thread, voice replies and notification digests (P11 cut) | time | Gopi |
 | 2026-10-27 | Mentor recording flow (M1), call 4 method cards and the call 6 weekly digest; mentor pages in the PWA | P11 cut | Gopi |

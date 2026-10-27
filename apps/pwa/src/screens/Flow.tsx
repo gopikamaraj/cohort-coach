@@ -1,5 +1,6 @@
 // The step-by-step screen: renders the steps the server sends (message, choice, link) and posts
 // answers back. Every word and number comes from the server, the same as in the Telegram bot.
+import { LessonAudio } from "../components/LessonAudio";
 import { SceneView } from "../components/SceneView";
 import { useCallback, useEffect, useState } from "react";
 import { useApp } from "../state";
@@ -56,7 +57,7 @@ export default function Flow() {
         <div key={`${m.step_id}-${i}`} className="panel" data-testid={`flow-${m.step_id}`}>
           {m.scene ? <SceneView scene={m.scene} label={m.alt ?? ""} /> : null}
           <p style={{ whiteSpace: "pre-line" }}>{m.text}</p>
-          {m.audio ? <audio controls preload="none" src={m.audio} data-testid="flow-audio" style={{ width: "100%" }} /> : null}
+          {m.audio ? <LessonAudio url={m.audio} /> : null}
           {m.url ? (
             <a className="btn btn-secondary" href={m.url} data-testid="flow-link">
               {m.url_label}

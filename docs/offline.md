@@ -66,3 +66,7 @@ Throttled mobile Lighthouse figures (emulated phone, simulated slow 4G, CPU slow
 nothing the second time (tested at the API level). The web screen needs a connection to load the
 next step; the PWA outbox that queues answers offline is not built for this path yet (P08). In
 Telegram, messages sent while offline are held by Telegram and arrive when the phone reconnects.
+
+## Lesson audio on the phone (27 Oct)
+
+In the web app, a lesson's voice note has a "Save this audio on your phone" tap. It fetches the file once and keeps it in the browser's Cache Storage (`apps/pwa/src/lib/lessonAudio.ts`), keyed by its address, so a new lesson version is a new file. After that the lesson plays with no signal, and the page says "Saved on this phone". If there is no signal or no storage the save fails with a message and the online player stays. Covered by unit tests and `apps/pwa/e2e/lesson-audio.spec.ts` (save, lose the signal, reload, still plays). Not measured: a real phone's storage limits. In Telegram the voice note is in the chat and plays offline once Telegram has downloaded it.

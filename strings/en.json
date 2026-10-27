@@ -1021,5 +1021,9 @@
   "officer.fewer_than_5_classes": "fewer than 5 classes",
   "officer.chart_help": "The dot is the estimate and the line is its likely range (95 times in 100); the dashed line is no change.",
   "officer.map": "Error map (grade 3, term 1)",
-  "officer.map_help": "Share of classes showing each error, by medium. A class shows an error when at least 1 child in 4 does."
+  "officer.map_help": "Share of classes showing each error, by medium. A class shows an error when at least 1 child in 4 does.",
+  "flow.save_offline": "Save this audio on your phone",
+  "flow.saving": "Saving…",
+  "flow.saved_offline": "Saved on this phone. It plays with no signal.",
+  "flow.save_failed": "Could not save it. Check your signal and try again."
 }
