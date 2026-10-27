@@ -36,7 +36,7 @@ export default defineConfig({
       url: `http://localhost:${apiPort}/api/health`,
       reuseExistingServer: true,
       timeout: 60_000,
-      env: { AI_MODE: "recorded", SPEECH_MODE: "stub", ADMIN_OPEN: "1", JUDGE_MODE: "1", DATABASE_URL: "sqlite:///./e2e.sqlite" },
+      env: { PILOT_MODE: "0", AI_MODE: "recorded", SPEECH_MODE: "stub", ADMIN_OPEN: "1", JUDGE_MODE: "1", DATABASE_URL: "sqlite:///./e2e.sqlite" },
     },
   ],
 });

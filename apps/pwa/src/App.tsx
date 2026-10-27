@@ -19,6 +19,7 @@ import Flow from "./screens/Flow";
 import Landing from "./screens/Landing";
 import Watch from "./screens/Watch";
 import Tour from "./screens/Tour";
+import Review from "./screens/Review";
 import { useEffect, useState } from "react";
 import { go, href, useRoute, type Route } from "./lib/router";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
@@ -34,7 +35,7 @@ const ROLE_HOME: Record<Role, Route> = {
 
 const ICONS: Record<string, string> = {
   "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice", "/tour": "judge",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check",
 };  // fmt: skip
 
 function Shell() {
@@ -52,10 +53,10 @@ function Shell() {
   const byRole: Record<Role, { to: Route; label: string }[]> = {
     teacher: [...teacherTabs, mine],
     mentor: [{ to: "/mentor", label: tr("role.mentor") }, ...teacherTabs, mine],
-    coach: [{ to: "/coach", label: tr("role.coach") }, mine],
-    officer: [{ to: "/officer", label: tr("role.officer") }, mine],
+    coach: [{ to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, mine],
+    officer: [{ to: "/officer", label: tr("role.officer") }, { to: "/review", label: tr("queue.nav") }, mine],
     admin: [{ to: "/admin", label: tr("role.admin") }, mine],
-    judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/admin", label: tr("role.admin") }, mine],
+    judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
   const tabs = route === "/roles" || route === "/tour" ? [] : byRole[role];
   // A phone fits four tabs and a More button; the rest sit in a sheet, so nothing hides off-screen.
@@ -70,7 +71,7 @@ function Shell() {
   const bar = tabs.length > 5 ? tabs.slice(0, 4) : tabs;
   const rest = tabs.length > 5 ? tabs.slice(4) : [];
   const restOn = rest.some((tab) => tab.to === route);
-  const wide = route === "/roles" || route === "/tour" || route === "/watch" || role === "coach" || role === "officer" || role === "admin";
+  const wide = route === "/roles" || route === "/tour" || route === "/watch" || route === "/review" || role === "coach" || role === "officer" || role === "admin";
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
       <div className="frame">
@@ -133,6 +134,7 @@ function Shell() {
           {route === "/roles" ? <Landing /> : null}
           {route === "/watch" ? <Watch /> : null}
           {route === "/tour" ? <Tour /> : null}
+          {route === "/review" ? <Review /> : null}
           {route === "/officer" ? <Officer /> : null}
         </main>
         {more ? (

@@ -2,8 +2,8 @@
 // server rewrite, so a static host and the offline cache both serve every screen.
 import { useSyncExternalStore } from "react";
 
-export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer" | "/watch" | "/tour";
-export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer", "/watch", "/tour"];
+export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer" | "/watch" | "/tour" | "/review";
+export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer", "/watch", "/tour", "/review"];
 
 function current(): Route {
   const raw = window.location.hash.replace(/^#/, "").split("?")[0] ?? "";
