@@ -13,7 +13,9 @@ Team A-Z 0-9 · Hack2skill × Anthropic "AI for Foundational Learning" · Challe
 
 The demo is a judge-mode web app (no login, simulated data, every screen labelled "Simulated").
 
-<!-- TODO-HUMAN(Gopi): put the deployed URL and the bot link here once the judge-mode deployment is up (docs/deploy.md); until then run it locally below -->
+**Live demo (one link for both modes): https://cohort-coach-pwa-1097171252131.asia-south1.run.app** The landing page shows the mode (Judge demo, or Pilot for staff with a sign-in) and the role. Judge demo runs on simulated data with no sign-in. The Telegram bot link is still to come (webhook not set).
+
+<!-- TODO-HUMAN(Gopi): add the bot link once the Telegram webhook is set -->
 
 1. Open the web app. The landing page has four role cards (Teacher, Mentor, Coach, Programme officer) and a guided tour. Follow [docs/judge-test-script.md](docs/judge-test-script.md) (about 5 minutes).
 2. In Telegram, send `/start judge` to the bot to run the same teacher flow there.

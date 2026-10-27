@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Icon } from "../components/icons";
 import { LANG_NAMES, LANGS, isLang, t, type Key, type Lang } from "../i18n";
+import { CAN_SWITCH_MODE } from "../lib/api";
+import { switchMode } from "../lib/mode";
 import { useOnline } from "../lib/net";
 import InterventionAudio from "./InterventionAudio";
 import SignIn from "./SignIn";
@@ -73,11 +75,21 @@ export default function PilotApp() {
     </div>
   );
 
+  const modeSwitch = CAN_SWITCH_MODE ? (
+    <button type="button" className="p-pillbtn" data-testid="mode-to-judge" onClick={() => switchMode("judge")}>
+      {tr("mode.switch_judge")}
+    </button>
+  ) : null;
+
   if (!state || !session) {
     return (
       <div className="pilot">
         <header className="p-top">
           <span className="p-brand">{tr("pilot.title")}</span>
+          <span className="p-pill-state" data-testid="mode-chip">
+            {tr("mode.chip_pilot")}
+          </span>
+          {modeSwitch}
           {langSwitch}
         </header>
         <SignIn
@@ -99,11 +111,15 @@ export default function PilotApp() {
       <div className="pilot">
         <header className="p-top">
           <span className="p-brand">{tr("pilot.title")}</span>
+          <span className="p-pill-state" data-testid="mode-chip">
+            {tr("mode.chip_pilot_roles", { roles: session.roles.join(", ") })}
+          </span>
           <span className={online ? "p-pill-state" : "p-pill-state p-off"} data-testid="pilot-net">
             <Icon name="wifi" size={16} />
             {online ? tr("pilot.pill.offline_ready") : tr("pilot.pill.offline_now")}
           </span>
           <div className="p-bar">
+            {modeSwitch}
             {langSwitch}
             <button
               type="button"

@@ -2,6 +2,12 @@
 
 Newest first within each section. Every entry: date, decision, why, alternatives considered, who confirmed. A newer entry here overrides `CLAUDE.md`, the build prompts and the design doc; update `CLAUDE.md` in the same commit when a rule changes.
 
+### 2026-10-27 · One web address for both modes
+- **Decision:** the web app at https://cohort-coach-pwa-1097171252131.asia-south1.run.app serves both the judge demo and the pilot. The landing page shows the mode and the role and has a switch; a teacher's lesson link always opens the pilot. The two stay **separate servers** (judge: `cohort-coach-judge-api`, JUDGE_MODE=1, SQLite, min 1 instance; pilot: `cohort-coach-api`, PILOT_MODE=1, Cloud SQL). The page picks which API to call from the chosen mode (`VITE_API_BASE`, `VITE_PILOT_API_BASE`).
+- **Why:** one link for judges and staff. JUDGE_MODE opens every role to anyone and must never share a server or database with real consented sheets, so a single combined API was not done.
+- **Alternatives:** one API in both modes (rejected: breaks the fail-closed rule in CLAUDE.md section 4 and deploy.md); two links (what it was before).
+- **Confirmed by:** Gopi (asked for one link; separate back ends are my choice, to be confirmed).
+
 ## Open decisions (defaults apply until someone changes them)
 
 | ID | Question | Default | Needed by | Owner |

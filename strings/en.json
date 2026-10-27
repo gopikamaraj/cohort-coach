@@ -1049,5 +1049,14 @@
   "officer.status_closed": "Closed",
   "officer.status_cancelled": "Cancelled",
   "officer.review_waiting": "Content waiting for review: {n} items, {m} for more than 7 days. The oldest has waited {d} days.",
-  "officer.review_none": "No content is waiting for review."
+  "officer.review_none": "No content is waiting for review.",
+  "mode.label": "Mode",
+  "mode.judge": "Judge demo",
+  "mode.judge_hint": "simulated data, no sign-in",
+  "mode.role": "Role now",
+  "mode.pilot_hint": "The pilot is for staff with a sign-in. It handles real, consented class sheets and is a separate server from this demo.",
+  "mode.switch_pilot": "Open the pilot (staff sign-in)",
+  "mode.switch_judge": "Judge demo",
+  "mode.chip_pilot": "Mode: pilot",
+  "mode.chip_pilot_roles": "Mode: pilot · {roles}"
 }

@@ -1049,5 +1049,14 @@
   "officer.status_closed": "बंद",
   "officer.status_cancelled": "रद्द",
   "officer.review_waiting": "समीक्षा की प्रतीक्षा में सामग्री: {n} चीज़ें, {m} 7 दिन से ज़्यादा से। सबसे पुरानी {d} दिन से रुकी है।",
-  "officer.review_none": "समीक्षा के लिए कोई सामग्री प्रतीक्षा में नहीं है।"
+  "officer.review_none": "समीक्षा के लिए कोई सामग्री प्रतीक्षा में नहीं है।",
+  "mode.label": "मोड",
+  "mode.judge": "जज डेमो",
+  "mode.judge_hint": "नकली डेटा, साइन-इन नहीं",
+  "mode.role": "अभी की भूमिका",
+  "mode.pilot_hint": "पायलट साइन-इन वाले कर्मचारियों के लिए है। इसमें असली, सहमति वाली कक्षा-शीट आती हैं और यह इस डेमो से अलग सर्वर है।",
+  "mode.switch_pilot": "पायलट खोलें (कर्मचारी साइन-इन)",
+  "mode.switch_judge": "जज डेमो",
+  "mode.chip_pilot": "मोड: पायलट",
+  "mode.chip_pilot_roles": "मोड: पायलट · {roles}"
 }

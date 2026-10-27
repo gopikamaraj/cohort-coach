@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import type { Key } from "../i18n";
+import { CAN_SWITCH_MODE } from "../lib/api";
+import { switchMode } from "../lib/mode";
 import { go, useQuery, type Route } from "../lib/router";
 import { dialogSeen, loadRoles, markDialogSeen, type RoleConfig, type RoleId, type RolesResponse } from "../lib/roles";
 import { useApp, type Role } from "../state";
@@ -59,7 +61,7 @@ function Dialog({ cfg, onEnter, onWalk, onBack }: { cfg: RoleConfig; onEnter: ()
 }
 
 export default function Landing() {
-  const { tr, setRole } = useApp();
+  const { tr, role, setRole } = useApp();
   const query = useQuery();
   const [data, setData] = useState<RolesResponse | null>(null);
   const [failed, setFailed] = useState(false);
@@ -90,6 +92,22 @@ export default function Landing() {
   return (
     <section aria-labelledby="landing-title">
       <h1 id="landing-title">{tr("landing.title")}</h1>
+      <div className="panel" data-testid="mode-banner">
+        <p>
+          <strong>{tr("mode.label")}:</strong> {tr("mode.judge")} <span className="muted">({tr("mode.judge_hint")})</span>
+        </p>
+        <p data-testid="mode-role">
+          <strong>{tr("mode.role")}:</strong> {tr(`role.${role === "judge" ? "teacher" : role}` as Key)}
+        </p>
+        {CAN_SWITCH_MODE ? (
+          <>
+            <p className="muted">{tr("mode.pilot_hint")}</p>
+            <button type="button" className="btn btn-secondary" onClick={() => switchMode("pilot")} data-testid="mode-to-pilot">
+              {tr("mode.switch_pilot")}
+            </button>
+          </>
+        ) : null}
+      </div>
       <p>{tr("landing.intro")}</p>
       {failed ? (
         <div role="alert" data-testid="landing-error">
