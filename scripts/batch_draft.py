@@ -51,6 +51,8 @@ def _confirm(args: argparse.Namespace) -> bool:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Hindi explanation lines must print on a Windows console too (its default is cp1252)
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
     args = _parse(argv)
     track = load_track(args.track)
     languages = [x.strip() for x in args.languages.split(",") if x.strip()]
