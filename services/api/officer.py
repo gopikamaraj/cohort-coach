@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
+from datetime import UTC, datetime
 from functools import cache
 from typing import Any
 
@@ -22,9 +23,10 @@ from data.synthetic.block import track_verdicts
 from engine.diagnosis import MIN_CHILDREN_CHECKED
 from engine.evaluation import MIN_CLASSES_SHOWN
 from engine.model import ErrorCode
-from services.api.db import LessonTap
+from services.api.db import LessonTap, ReviewItem
 from services.api.profiles import BLOCK_PATH, SESSION
 from services.api.roles import require
+from services.content.review import OPEN
 
 router = APIRouter(prefix="/api/officer", tags=["officer"])
 RESULTS = Depends(require("officer.results"))
@@ -111,6 +113,23 @@ def results(_: str = RESULTS) -> dict[str, Any]:
     }
 
 
+def _review_waiting(db: Session) -> dict[str, Any]:
+    """Content items still waiting for a human (pending, or awaiting the mentor), and how long."""
+    now = datetime.now(UTC)
+    ages = []
+    for created in db.execute(
+        select(ReviewItem.created_at).where(ReviewItem.status.in_(OPEN))
+    ).scalars():
+        created = created if created.tzinfo else created.replace(tzinfo=UTC)
+        ages.append((now - created).days)
+    return {
+        "waiting": len(ages),
+        "over_7_days": sum(1 for a in ages if a > 7),
+        "oldest_days": max(ages) if ages else None,
+        "source": "system: review queue ages; gates never auto-approve",
+    }
+
+
 @router.get("/funnel")
 def funnel(_: str = RESULTS, db: Session = SESSION) -> dict[str, Any]:
     """Delivered, tried and how it went, per tracked error, as teacher counts with their source.
@@ -156,6 +175,7 @@ def funnel(_: str = RESULTS, db: Session = SESSION) -> dict[str, Any]:
         )
     return {
         "rows": rows,
+        "review_waiting": _review_waiting(db),
         "median_minutes": None,
         "cap_minutes": 20,
         "rule": "fewer than 5 teachers is hidden",

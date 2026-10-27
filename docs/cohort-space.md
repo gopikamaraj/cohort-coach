@@ -63,3 +63,9 @@ Audit rows keep ids, rule codes and counts only.
 ## Not built (cut, see DECISIONS 2026-10-27 and PARKING)
 
 The Telegram relay of the thread, voice replies and notifications, the mentor recording flow (M1), call 4 (method cards) and call 6 (the weekly digest), the mentor pages in the PWA (the routes exist: `/api/cohorts/mentor/*`), real role assignment (P12; until then a person is a pseudonymous id the judge deployment lets a request name). A mentor's name is never shown in the thread: a mentor posts as "Mentor".
+
+## Officer cohort screen and the review wait (27 Oct)
+
+The officer page now has a Cohorts panel (`apps/pwa/src/components/OfficerCohorts.tsx`): propose a cohort for one tracked error with a coach id and a school count, then Activate, Start closing, Close (post-test received, or without it with a written reason) or Cancel. The buttons shown are the ones the current status allows; the server enforces the same lifecycle and writes an audit row for every change (`services/api/cohorts/lifecycle.py`). Member counts under 5 show as "fewer than 5". Mentors are not assigned here yet (parked), and the coach id is a pseudonymous id typed in, not a role assignment with consent.
+
+The funnel also shows content waiting for review: how many items are pending or awaiting the mentor, how many for more than 7 days, and the age of the oldest (`review_waiting` in `/api/officer/funnel`, source "system: review queue ages"). Gates never auto-approve, so this is the queue's age made visible, not a deadline.

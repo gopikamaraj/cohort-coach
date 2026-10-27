@@ -84,3 +84,52 @@ test("the officer screen reads in Hindi and has no sideways scroll on a phone", 
   const wide = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   expect(wide).toBe(false);
 });
+
+test("the officer proposes a cohort, activates it and closes it with the server's rules", async ({ page }) => {
+  let cohorts: Array<Record<string, unknown>> = [];
+  const posts: Array<{ path: string; body: Record<string, unknown> }> = [];
+  await page.route("**/api/cohorts/officer/cohorts**", async (r) => {
+    const req = r.request();
+    if (req.method() === "GET") return json(r, cohorts);
+    const body = JSON.parse(req.postData() ?? "{}") as Record<string, unknown>;
+    posts.push({ path: new URL(req.url()).pathname, body });
+    const m = /cohorts\/([^/]+)\/status$/.exec(req.url());
+    if (!m) {
+      cohorts = [{ id: "co-1", error: body["error"], status: "proposed", track_version: 1, schools: null, members: null, thread: "read_only", simulated: true }];
+    } else {
+      cohorts = cohorts.map((c) => (c["id"] === m[1] ? { ...c, status: body["to"] } : c));
+    }
+    return json(r, cohorts[0]);
+  });
+  await page.reload();
+  await expect(page.getByTestId("officer-cohorts")).toContainText("No cohorts yet.");
+  await page.getByTestId("cohort-error").selectOption("SUB-SFL");
+  await page.getByTestId("cohort-create").click();
+  await expect(page.getByTestId("cohort-co-1")).toContainText("Proposed");
+  await expect(page.getByTestId("cohort-co-1")).toContainText("fewer than 5"); // a count under 5 is hidden
+  expect(posts[0]?.body).toMatchObject({ error: "SUB-SFL", coach_id: "coach-demo" });
+  await page.getByTestId("activate-co-1").click();
+  await expect(page.getByTestId("cohort-co-1")).toContainText("Active");
+  await page.getByTestId("closing-co-1").click();
+  await expect(page.getByTestId("cohort-co-1")).toContainText("Closing");
+  // closing without the post-test needs a reason
+  await expect(page.getByTestId("close-without-co-1")).toBeDisabled();
+  await page.getByTestId("reason-co-1").fill("school closed for exams");
+  await page.getByTestId("close-without-co-1").click();
+  await expect(page.getByTestId("cohort-co-1")).toContainText("Closed");
+  expect(posts.at(-1)?.body).toMatchObject({ to: "closed", post_test_received: false, reason: "school closed for exams" });
+});
+
+test("a refused change shows what happened", async ({ page }) => {
+  await page.route("**/api/cohorts/officer/cohorts**", (r) => (r.request().method() === "GET" ? json(r, []) : r.fulfill({ status: 409, contentType: "application/json", body: "{}" })));
+  await page.reload();
+  await page.getByTestId("cohort-create").click();
+  await expect(page.getByTestId("cohort-failed")).toContainText("That did not work");
+});
+
+test("the funnel says how much content has waited for review", async ({ page }) => {
+  await page.route("**/api/officer/funnel", (r) => json(r, { rows: [], review_waiting: { waiting: 3, over_7_days: 2, oldest_days: 9, source: "system: review queue ages; gates never auto-approve" } }));
+  await page.reload();
+  await expect(page.getByTestId("review-waiting")).toContainText("3 items, 2 for more than 7 days");
+  await expect(page.getByTestId("review-waiting")).toContainText("system:");
+});

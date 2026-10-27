@@ -150,3 +150,36 @@ def test_a_coach_cannot_read_the_officer_views(world) -> None:  # type: ignore[n
 def test_no_percentage_reaches_a_teacher_view_but_the_officer_may_have_one(world) -> None:  # type: ignore[no-untyped-def]
     c, _ = world
     assert "share_percent" in c.get("/api/officer/error-map", headers=OFFICER).text
+
+
+def test_the_funnel_says_how_much_content_has_waited_for_review_over_seven_days(world) -> None:  # type: ignore[no-untyped-def]
+    from datetime import UTC, datetime, timedelta
+
+    from services.api.db import ReviewItem
+
+    c, factory = world
+    out = c.get("/api/officer/funnel", headers=OFFICER).json()["review_waiting"]
+    assert out == {"waiting": 0, "over_7_days": 0, "oldest_days": None, "source": out["source"]}
+    assert out["source"].startswith("system")
+    now = datetime.now(UTC)
+    with factory() as db:
+        for i, (status, age) in enumerate(
+            [
+                ("pending", 9),
+                ("awaiting_mentor", 3),
+                ("pending", 8),
+                ("approved", 30),
+                ("rejected", 40),
+            ]
+        ):
+            db.add(
+                ReviewItem(
+                    item_id=f"it-{i}", content_type="track_draft", language="en",
+                    target_error="SUB-SFL", content={}, status=status,
+                    created_at=now - timedelta(days=age),
+                )
+            )  # fmt: skip
+        db.commit()
+    out = c.get("/api/officer/funnel", headers=OFFICER).json()["review_waiting"]
+    assert (out["waiting"], out["over_7_days"], out["oldest_days"]) == (3, 2, 9)
+    assert "teacher" not in json.dumps(out)

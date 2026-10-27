@@ -4,6 +4,7 @@
 // track, not the teacher. Percentages appear here (an officer view) and nowhere a teacher sees.
 import { useEffect, useState } from "react";
 import { Icon } from "../components/icons";
+import OfficerCohorts from "../components/OfficerCohorts";
 import { SimulatedBanner } from "../components/parts";
 import { API_BASE } from "../lib/api";
 import type { Key } from "../i18n";
@@ -32,6 +33,12 @@ interface Track {
 interface FunnelCell {
   hidden: boolean;
   teachers: number | null;
+  source: string;
+}
+interface ReviewWaiting {
+  waiting: number;
+  over_7_days: number;
+  oldest_days: number | null;
   source: string;
 }
 interface FunnelRow {
@@ -72,14 +79,16 @@ export default function OfficerHome() {
   const [map, setMap] = useState<{ cells: Cell[]; simulated: boolean } | null>(null);
   const [res, setRes] = useState<{ tracks: Track[]; note: string } | null>(null);
   const [fun, setFun] = useState<FunnelRow[] | null>(null);
+  const [waiting, setWaiting] = useState<ReviewWaiting | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    void Promise.all([get<{ cells: Cell[]; simulated: boolean }>("error-map"), get<{ tracks: Track[]; note: string }>("results"), get<{ rows: FunnelRow[] }>("funnel")])
+    void Promise.all([get<{ cells: Cell[]; simulated: boolean }>("error-map"), get<{ tracks: Track[]; note: string }>("results"), get<{ rows: FunnelRow[]; review_waiting?: ReviewWaiting }>("funnel")])
       .then(([m, r, f]) => {
         setMap(m);
         setRes(r);
         setFun(f.rows);
+        setWaiting(f.review_waiting ?? null);
       })
       .catch(() => setFailed(true));
   }, []);
@@ -102,9 +111,17 @@ export default function OfficerHome() {
         </p>
       ) : null}
 
+      <OfficerCohorts />
+
       <div className="panel" data-testid="funnel">
         <h2>{tr("officer.funnel")}</h2>
         <p className="muted">{tr("officer.funnel_help")}</p>
+        {waiting ? (
+          <p data-testid="review-waiting">
+            {waiting.waiting === 0 ? tr("officer.review_none") : tr("officer.review_waiting", { n: waiting.waiting, m: waiting.over_7_days, d: waiting.oldest_days ?? 0 })}{" "}
+            <span className="muted">({waiting.source})</span>
+          </p>
+        ) : null}
         {(fun ?? []).map((r) => (
           <div key={r.error} data-testid={`funnel-${r.error}`} className="panel">
             <strong>{r.error}</strong>
