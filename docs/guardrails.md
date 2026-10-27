@@ -45,6 +45,10 @@ Word lists live in `content/lang/` and `content/safety/` (data, not code). The H
 
 Rubric items: tone, child safety, stereotypes, language, fit to the target error, reading level for the stated audience, maths, no class statistics unless provided, and injection. For a simulated child line in the Practice Class, call 7 does not judge maths or fit: the engine chose the answer (often deliberately wrong) and code has already checked every number against it, so call 7 judges tone, safety, stereotypes, language, reading level, injection and role. The verdict is structured: `passed`, `failed_items`, a short reason for the team, and a one-line reason in the user's language. When unsure it fails the item.
 
+## Content pipeline (track drafts)
+
+A call 5 draft goes through the same gates as everything else, with two additions for track content: class numbers may appear only as slots (a literal count is blocked before the queue), and any pair of numbers that is an item of Form A or Form B is blocked, with the form and item named. The coach then reviews it in the queue, and a track version reaches teachers only after the coach's key and the officer's key. Details, and the open finding that call 7 treats a slot placeholder as a stated statistic: `docs/content-pipeline.md`.
+
 ## Rejection loop
 
 Reviewers reject with one structured reason: wrong maths, culturally off, too complex for the medium, tone issue, or factually shaky (`ai/guard/rejections.py`). Approved examples are saved in `content/rejections/approved/` and the latest few go into call 7's prompt as "rejected before, and why". The examples text is part of the recorded-response key, so a new example never silently reuses an old recording.

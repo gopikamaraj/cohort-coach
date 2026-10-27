@@ -186,6 +186,7 @@ def run_gates(inp: GateInput, *, context: CallContext | None = None) -> GateResu
         code_checks=results,
         context=context,
         facts=inp.checker_facts,
+        slots_filled_by_code=inp.slots_mode,
     )
     verdict = outcome.verdict
     if not outcome.passed:

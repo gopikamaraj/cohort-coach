@@ -33,6 +33,12 @@ RUBRIC_ITEMS = frozenset(
     }
 )
 
+SLOTS_NOTE = (
+    "The class numbers in this text are sample values standing in for slots. Code fills each slot "
+    "with the real count when a teacher receives the lesson, so the author stated no statistic. "
+    "Do not fail the text for these numbers; judge everything else as usual."
+)
+
 UNAVAILABLE = {
     "en": "This could not be checked, so a person will look at it first.",
     "hi": "इसकी जाँच नहीं हो सकी, इसलिए पहले कोई व्यक्ति इसे देखेगा।",
@@ -72,6 +78,7 @@ def check_output(
     code_checks: list[ValidatorResult],
     context: CallContext | None = None,
     facts: dict[str, object] | None = None,
+    slots_filled_by_code: bool = False,
 ) -> CheckOutcome:
     """Run call 7 on one candidate text. `audience` is 'child' or 'teacher'."""
     base = context or CallContext()
@@ -94,6 +101,7 @@ def check_output(
             "target_error": target_error,
             "code_checks": [{"name": r.name, "ok": r.ok} for r in code_checks],
             **({"simulated_child": facts} if facts else {}),
+            **({"slots_note": SLOTS_NOTE} if slots_filled_by_code else {}),
         },
         untrusted={"candidate_text": text},
     )

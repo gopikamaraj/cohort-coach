@@ -17,6 +17,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ai.client import CallContext
+from ai.validators.pii import check_pii
 from services.api.db import ContentAudit, ContentVersion
 from services.api.practice import AI_CONTEXT, SPEECH
 from services.api.profiles import SESSION
@@ -32,6 +33,22 @@ COACH = Depends(require("content.coach_approve"))
 OFFICER = Depends(require("content.officer_activate"))
 MENTOR = Depends(require("content.mentor_approve"))
 PROPOSE = Depends(require("content.propose"))
+
+
+def _screen(text: str | None) -> None:
+    """Free text a coach types (a reject note, a trimmed example) is checked for phone numbers,
+    emails and ID-like numbers before it is written to disk or shown to the checker."""
+    if not text:
+        return
+    bad = check_pii(text)
+    if bad:
+        raise HTTPException(
+            422,
+            {
+                "codes": sorted({v.code for v in bad}),
+                "explanation": "Remove phone numbers, emails and ID numbers.",
+            },
+        )
 
 
 def _actor(role: str) -> str:
@@ -112,6 +129,7 @@ class RejectIn(BaseModel):
 def item_reject(
     item_id: str, body: RejectIn, role: str = COACH, db: Session = SESSION
 ) -> dict[str, Any]:
+    _screen(body.note)
     return asdict(
         _call(review.reject, db, item_id, _actor(role), role, reason=body.reason, note=body.note)
     )
@@ -287,6 +305,7 @@ def _pending(name: str) -> Any:
 @router.post("/rejections/{name}/promote")
 def promote_rejection(name: str, body: PromoteIn, role: str = COACH) -> dict[str, str]:
     """Use as checker example: call 7 will be shown it from the next check on."""
+    _screen(body.text)
     saved = _call(rejections.promote, _pending(name), text=body.text)
     return {"saved": saved.name}
 
@@ -336,4 +355,14 @@ def manifests(version_id: str, _: str = VIEW, db: Session = SESSION) -> list[dic
         .where(TrackManifest.version_id == version_id)
         .order_by(TrackManifest.id.desc())
     ).scalars()
-    return [r.body for r in rows]
+    # The filled scripts hold the pooled counts of the cohort's classes: for a small cohort that is
+    # one teacher's class, which a coach or officer must not read (rules 3 and 15). Scripts stay in
+    # the published file teachers receive; this view shows ids, sizes, badges and roles only.
+    out = []
+    for r in rows:
+        body = dict(r.body)
+        body["parts"] = [
+            {k: v for k, v in p.items() if k != "script"} for p in body.get("parts", [])
+        ]
+        out.append(body)
+    return out

@@ -154,3 +154,26 @@ def test_an_unknown_part_kind_is_refused(bad_kind: str) -> None:
     track = load_track("sub-sfl.v1")
     with pytest.raises(ValueError):
         draft_part(track, bad_kind, 1, "en", context=ctx(part(GOOD)))
+
+
+def test_the_checker_is_told_that_sample_numbers_stand_in_for_slots() -> None:
+    """A draft is checked with sample values in its slots; without a note the checker reads them as
+    a statistic the author stated (the first live run held 12 of 14 drafts for that reason)."""
+    seen: list[dict[str, object]] = []
+
+    class Spy(FakeClient):
+        def __init__(self) -> None:
+            super().__init__([part(GOOD), PASS])
+            parse = self.messages.parse
+
+            def spying(**kw):  # type: ignore[no-untyped-def]
+                seen.append(kw)
+                return parse(**kw)
+
+            self.messages.parse = spying  # type: ignore[method-assign]
+
+    track = load_track("sub-sfl.v1")
+    draft_part(track, "lesson", 1, "en", context=CallContext(mode="stub", client=Spy()))  # type: ignore[arg-type]
+    texts = ["".join(str(c) for c in kw["messages"][0]["content"]) for kw in seen]
+    checker = [t for t in texts if "candidate_text" in t]
+    assert checker and all("slots_note" in t for t in checker)

@@ -250,3 +250,66 @@ def test_the_officer_publishes_an_active_version_for_a_cohort(
     assert done.status_code == 200 and len(done.json()["parts"]) == 7
     listed = client.get(f"/api/review/manifests?version_id={v.id}", headers=h("coach")).json()
     assert listed[0]["cohort_id"] == cohort
+
+
+# ---- privacy review of P09 (23 findings F1 to F3) -----------------------------------------------
+
+
+def test_the_manifest_view_carries_no_filled_script_for_a_coach_or_officer(
+    api: tuple[TestClient, Session], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The filled script holds the cohort's pooled counts; for a small cohort that is
+    one teacher's class (rules 3 and 15), so the coach and officer view has no script."""
+    client, db = api
+    monkeypatch.setattr(
+        "services.api.review.publish.publish_version",
+        lambda *a, **k: {},  # not used: the row is written below
+    )
+    from services.api.db import TrackManifest
+
+    body = {
+        "cohort_id": "c1",
+        "parts": [{"kind": "lesson", "day": 1, "script": "7 of 20 children", "audio_key": "k"}],
+    }
+    db.add(TrackManifest(version_id="v-x", cohort_id="c1", body=body))
+    db.commit()
+    for role in ("coach", "officer"):
+        out = client.get("/api/review/manifests?version_id=v-x", headers=h(role)).json()
+        assert out[0]["parts"] == [{"kind": "lesson", "day": 1, "audio_key": "k"}]
+        assert "7 of 20" not in str(out)
+
+
+def test_a_reject_note_or_a_trimmed_example_with_a_phone_number_is_refused(
+    api: tuple[TestClient, Session], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from ai.guard import rejections as guard
+
+    monkeypatch.setattr(guard, "APPROVED_DIR", tmp_path / "approved")
+    client, db = api
+    item = queue(db)
+    bad = client.post(
+        f"/api/review/items/{item}/reject",
+        json={"reason": "tone_issue", "note": "ask Meena on 9876543210"},
+        headers=h("coach"),
+    )
+    assert bad.status_code == 422 and "pii" in str(bad.json()).lower()
+    assert client.get("/api/review/rejections", headers=h("coach")).json() == []  # nothing written
+    ok = client.post(
+        f"/api/review/items/{item}/reject",
+        json={"reason": "tone_issue", "note": "too sharp"},
+        headers=h("coach"),
+    )
+    assert ok.status_code == 200
+    name = client.get("/api/review/rejections", headers=h("coach")).json()[0]["name"]
+    refused = client.post(
+        f"/api/review/rejections/{name}/promote",
+        json={"text": "mail me at a@b.example"},
+        headers=h("coach"),
+    )
+    assert refused.status_code == 422
+    assert not (tmp_path / "approved").exists() or not list((tmp_path / "approved").glob("*.yaml"))
+
+
+def test_pending_rejections_are_never_committed() -> None:
+    root = Path(__file__).resolve().parents[2]
+    assert "content/rejections/pending/" in (root / ".gitignore").read_text(encoding="utf-8")

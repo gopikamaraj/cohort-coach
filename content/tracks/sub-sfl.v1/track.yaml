@@ -9,7 +9,7 @@ version: 1
 grade: 3
 # the worked example the slots use (never a Form A or Form B item)
 example: [52, 29]
-languages: [hi, en, ta]
+languages: [hi, en, ta]  # Tamil is declared here but NOT drafted yet (cut in P09); hi and en only
 # up to three approved method cards (mentor_id-free references); none are approved yet
 method_cards: []
 lessons:

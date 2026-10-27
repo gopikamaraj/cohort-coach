@@ -30,3 +30,6 @@ data/synthetic_sheets/
 # service-account keys (never commit)
 gcp/*.json
 *-key.json
+
+# runtime rejection examples waiting for the coach (never commit)
+content/rejections/pending/

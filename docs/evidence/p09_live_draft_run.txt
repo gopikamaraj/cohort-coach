@@ -1,0 +1,29 @@
+Estimated cost: 14 requests, about 32,462 input and 23,360 output tokens, USD 0.60 at the standard rate. An estimate from the price file and stated assumptions, not a measurement.
+Drafting 14 parts synchronously (AI_MODE=live).
+  sub-sfl-v1_lesson_1_hi: held_by_checker  USD 0.091
+    रोका गया: जाँचकर्ता ने इसे पास नहीं किया (कुछ गणना और आँकड़े सही नहीं हैं, इसलिए पाठ दोबारा जाँचा जाएगा।)।
+  sub-sfl-v1_lesson_2_hi: needs_review  USD 0.088
+  sub-sfl-v1_lesson_3_hi: held_by_checker  USD 0.113
+    रोका गया: जाँचकर्ता ने इसे पास नहीं किया (पाठ में कक्षा के बच्चों की गिनती से जुड़ी जानकारी है जो सत्यापित नहीं हुई।)।
+  sub-sfl-v1_lesson_4_hi: held_by_checker  USD 0.075
+    रोका गया: जाँचकर्ता ने इसे पास नहीं किया (पाठ में एक जगह गणना की कुछ गलती लग सकती है, कृपया एक बार जाँच लें।)।
+  sub-sfl-v1_lesson_5_hi: held_by_checker  USD 0.062
+    रोका गया: जाँचकर्ता ने इसे पास नहीं किया (कुछ गणित की जाँच विफल रही, कृपया पुनः जाँचें।)।
+  sub-sfl-v1_lesson_6_hi: held_by_checker  USD 0.083
+    रोका गया: जाँचकर्ता ने इसे पास नहीं किया (कुछ गणना की जाँच ज़रूरी है, कृपया उदाहरण दोबारा देखें।)।
+  sub-sfl-v1_model_lesson_0_hi: needs_review  USD 0.104
+  sub-sfl-v1_lesson_1_en: held_by_checker  USD 0.076
+    Held back: the checker did not pass it (The text includes a class count ("{class.count_showing} of {class.children_checked}") that must be left as a slot, not stated as a figure.).
+  sub-sfl-v1_lesson_2_en: held_by_checker  USD 0.073
+    Held back: the checker did not pass it (The text includes class counts that were not supplied, so it cannot be shown.).
+  sub-sfl-v1_lesson_3_en: held_by_checker  USD 0.079
+    Held back: the checker did not pass it (The lesson text includes a class count statistic that cannot be shown to teachers.).
+  sub-sfl-v1_lesson_4_en: held_by_checker  USD 0.058
+    Held back: the checker did not pass it (The lesson text has a arithmetic issue that needs a check before it reaches you.).
+  sub-sfl-v1_lesson_5_en: held_by_checker (queued for the coach)  USD 0.084
+    Held back: the checker did not pass it (The lesson text includes a class count that was not supplied as a slot value.).
+  sub-sfl-v1_lesson_6_en: held_by_checker (queued for the coach)  USD 0.060
+    Held back: the checker did not pass it (The text includes a class statistic that was not supplied, so it needs review before it reaches you.).
+  sub-sfl-v1_model_lesson_0_en: held_by_checker (queued for the coach)  USD 0.061
+    Held back: the checker did not pass it (Please re-check the arithmetic in the lesson script before it reaches teachers.).
+Done. Measured spend this run: USD 1.11.
