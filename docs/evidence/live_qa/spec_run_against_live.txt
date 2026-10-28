@@ -1,0 +1,831 @@
+
+Running 106 tests using 1 worker
+
+  ok   1 e2e\app.spec.ts:43:1 › judge mode loads a simulated class: Home, then cards with counts, never a percentage (2.8s)
+  ok   2 e2e\app.spec.ts:59:1 › a teacher enters a 10-child check with the phone's number keyboard and gets counts on the phone (2.4s)
+  ok   3 e2e\app.spec.ts:85:1 › the answers are autosaved on the phone and come back after a reload (1.3s)
+  x    4 e2e\app.spec.ts:96:1 › languages switch at runtime and the page language follows (1.5m)
+  x    5 e2e\app.spec.ts:108:1 › role and language are chosen on the landing page only; the name leads back to it (7.7s)
+  ok   6 e2e\app.spec.ts:127:1 › is installable: a valid manifest and an active service worker (3.1s)
+  ok   7 e2e\app.spec.ts:146:1 › works offline after the first load: Home, Enter check and My class (2.5s)
+  ok   8 e2e\app.spec.ts:168:1 › Simulate offline stops sending and keeps the result waiting, then sends when back online (1.8s)
+  ok   9 e2e\app.spec.ts:186:1 › Advance to Term 2 starts a new term for the simulated class (1.7s)
+  ok  10 e2e\app.spec.ts:199:1 › each role has its own home, and role switching works (1.5s)
+  ok  11 e2e\check.spec.ts:20:1 › each box uses the phone's number keyboard, takes digits in any script, and Enter moves on (1.5s)
+  ok  12 e2e\check.spec.ts:32:1 › blank and can't read are marks on a box, and typing replaces them (1.7s)
+  ok  13 e2e\check.spec.ts:41:1 › a list of sheets lets her jump to any child and see what was entered (2.0s)
+  ok  14 e2e\check.spec.ts:57:1 › an absent child's roll number is skipped, kept in order and not counted (2.6s)
+  ok  15 e2e\check.spec.ts:75:1 › marking a child absent asks before clearing answers already entered (1.9s)
+  ok  16 e2e\check.spec.ts:87:1 › missed the teaching is tagged per concept, with the questions each covers (1.8s)
+  ok  17 e2e\cohort.spec.ts:80:1 › joining needs her own tap, then she is in and sees the prompt (2.1s)
+  ok  18 e2e\cohort.spec.ts:91:1 › a post with a child's name is not posted and she is asked to rewrite (2.4s)
+  ok  19 e2e\cohort.spec.ts:107:1 › reporting a post holds it: other members stop seeing it (2.4s)
+  ok  20 e2e\cohort.spec.ts:119:1 › the coach sees held posts and can hide, erase the text, restore and pin (2.5s)
+  x   21 e2e\cohort.spec.ts:139:1 › a read-only thread says why, and the chat reads in Hindi and Tamil (1.5m)
+  ok  22 e2e\hints.spec.ts:12:1 › try to break it shows which check stopped each prepared line, in her language (3.5s)
+  x   23 e2e\hints.spec.ts:21:1 › try with hints offers three replies, and choosing one runs the turn with a move tag (1.5m)
+  ok  24 e2e\landing.spec.ts:10:1 › a fresh browser lands on four role cards and the guided tour (3.0s)
+  ok  25 e2e\landing.spec.ts:18:1 › picking a role shows what it can and cannot do, then enters the dashboard once (1.9s)
+  ok  26 e2e\landing.spec.ts:35:1 › the teacher dialog says what is on Telegram and the weekly cap, with no percentage (1.8s)
+  ok  27 e2e\landing.spec.ts:43:1 › a role has a deep link that opens its dialog (1.9s)
+  ok  28 e2e\landing.spec.ts:48:1 › the landing page uses the width: one column on a phone, a grid of equal cards on a laptop (2.1s)
+  x   29 e2e\layout.spec.ts:15:3 › no page runs off the side at 320 px (4.2s)
+  x   30 e2e\layout.spec.ts:15:3 › no page runs off the side at 390 px (5.5s)
+  x   31 e2e\layout.spec.ts:15:3 › no page runs off the side at 768 px (5.6s)
+  x   32 e2e\layout.spec.ts:15:3 › no page runs off the side at 1280 px (5.5s)
+  ok  33 e2e\layout.spec.ts:29:1 › the bottom bar holds four tabs and More, and More opens the rest (3.0s)
+  ok  34 e2e\layout.spec.ts:44:1 › on a long page the content scrolls and the bottom bar stays in view (1.6s)
+  ok  35 e2e\lesson-audio.spec.ts:8:1 › save a lesson's audio, go offline, reload: it still plays from the phone (2.2s)
+  ok  36 e2e\lesson-audio.spec.ts:38:1 › a refused download says so and leaves the online player (1.8s)
+  ok  37 e2e\officer.spec.ts:50:1 › the funnel shows each step with its source and Changed waits for the next check (1.9s)
+  ok  38 e2e\officer.spec.ts:60:1 › track results show the verdict, the interval and say a failed track counts against the track (1.9s)
+  ok  39 e2e\officer.spec.ts:74:1 › the error map hides a cell under 5 classes, and the screen is labelled simulated (1.8s)
+  x   40 e2e\officer.spec.ts:82:1 › the officer screen reads in Hindi and has no sideways scroll on a phone (1.5m)
+  ok  41 e2e\officer.spec.ts:89:1 › the officer proposes a cohort, activates it and closes it with the server's rules (3.5s)
+  ok  42 e2e\officer.spec.ts:124:1 › a refused change shows what happened (1.8s)
+  ok  43 e2e\officer.spec.ts:131:1 › the funnel says how much content has waited for review (1.9s)
+  ok  44 e2e\photo.spec.ts:34:1 › a photo fills the boxes, marks the unsure ones, and she corrects and moves on (1.8s)
+  ok  45 e2e\photo.spec.ts:101:1 › when reading fails she is told to type, and her typing still works (1.7s)
+  ok  46 e2e\photo.spec.ts:112:1 › offline, the photo is not sent and she is told to type (1.6s)
+  ok  47 e2e\photo.spec.ts:126:1 › it only asks before replacing when the child already has digits written (1.8s)
+  x   48 e2e\practice.spec.ts:60:1 › a rehearsal of 7 turns with a material tap ends in two strengths with her own quotes (6.9s)
+  x   49 e2e\practice.spec.ts:102:1 › the AI-layers overlay matches the API trace, for judges only (1.5m)
+  x   50 e2e\practice.spec.ts:125:1 › the server request log holds no transcript text (application logs: tests/practice/test_api.py) (12.2s)
+  x   51 e2e\practice.spec.ts:136:1 › retry uses the same children (1.5m)
+  x   52 e2e\practice.spec.ts:145:1 › a class's own counts seat the children, and a slow reply is explained (8.3s)
+  ok  53 e2e\practice.spec.ts:169:1 › when practice is paused the teacher can watch a recorded sample (2.9s)
+  ok  54 e2e\practice.spec.ts:179:1 › offline, practice says so and sends nothing; everything else still opens (1.7s)
+  x   55 e2e\practice.spec.ts:194:1 › the AI map shows 10 calls by 5 layers and the audit trail shows metadata only (1.5m)
+  x   56 e2e\practice.spec.ts:208:1 › feedback thumbs stay on the phone, the flag goes to the team; sharing is off by default and remembered (1.5m)
+  x   57 e2e\practice.spec.ts:249:1 › the screen says what she is practising and lists the moves to try (1.5m)
+  ok  58 e2e\profile.spec.ts:21:1 › nothing is on by default, the notice is readable, and choices are recorded with a version (2.9s)
+  ok  59 e2e\profile.spec.ts:45:1 › class counts are not sent until she agrees (2.8s)
+  ok  60 e2e\profile.spec.ts:63:1 › the Practice Class asks before using AI, then remembers (1.9s)
+  ok  61 e2e\profile.spec.ts:73:1 › several classes: add, switch, rename and delete, each with its own data (2.1s)
+  ok  62 e2e\profile.spec.ts:88:1 › the browser is asked to keep her data, and she can see the answer (1.7s)
+  ok  63 e2e\profile.spec.ts:102:1 › data used counts the app's own calls, converts to a cost from her price, and clears (2.0s)
+  ok  64 e2e\profile.spec.ts:115:1 › export then restore brings the work back, and a passphrase-sealed file needs its passphrase (4.5s)
+  ok  65 e2e\profile.spec.ts:148:1 › erase everything clears the phone and asks the server to erase the class counts (1.9s)
+  x   66 e2e\profile.spec.ts:166:1 › feedback needs her switch, refuses personal details, and reaches the admin to review (7.3s)
+  x   67 e2e\profile.spec.ts:192:1 › the card's speaker icon answers with a toast instead of a paragraph, and a flag reaches the admin (8.4s)
+  ok  68 e2e\profile.spec.ts:210:1 › role screens: coach sees counts only, mentor sees what mentors do, nothing is a percentage (2.9s)
+  ok  69 e2e\programme.spec.ts:22:1 › My programme shows where she stands, step by step, and says where lessons will appear (1.7s)
+  ok  70 e2e\programme.spec.ts:37:1 › a class with no check yet is told to start with the check, and the screen works offline (1.7s)
+  ok  71 e2e\programme.spec.ts:48:1 › What I entered lists the check with its children and send state, and shows the answers on request (1.8s)
+  ok  72 e2e\programme.spec.ts:60:1 › a child filled from a photo is recorded as such in the history (1.7s)
+  ok  73 e2e\programme.spec.ts:73:1 › after trying it in class she records what she saw: kept on the phone, sent as choices only (11.8s)
+  x   74 e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 320 narrow phone (6.8s)
+  x   75 e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 360 phone (7.8s)
+  x   76 e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 768 tablet (8.0s)
+  x   77 e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 1280 laptop (8.0s)
+  ok  78 e2e\programme.spec.ts:133:1 › on a wide screen teacher screens sit in a phone-sized column and coach screens use the width (3.0s)
+  ok  79 e2e\review-queue.spec.ts:78:1 › the queue lists what waits, with its age, status and automatic checks (1.9s)
+  ok  80 e2e\review-queue.spec.ts:93:1 › a return needs a reason; with one it is sent (1.9s)
+  ok  81 e2e\review-queue.spec.ts:105:1 › an edit that fails the checks is not saved and says why; a good edit is (1.9s)
+  ok  82 e2e\review-queue.spec.ts:117:1 › the coach's key alone does not switch a version on; the officer's key does, and the audit shows both (2.5s)
+  x   83 e2e\review-queue.spec.ts:136:1 › the queue reads in Hindi and Tamil, and the targets are 44 px (1.5m)
+  x   84 e2e\review.spec.ts:44:1 › a rehearsal is recorded on the phone, tagged by her, replayed turn by turn, and can be deleted (1.5m)
+  x   85 e2e\review.spec.ts:86:1 › again from the review restarts with the same children (13.3s)
+  ok  86 e2e\review.spec.ts:95:1 › the cue card offers things to say, never a scolding, and a tap puts the line in the box (3.2s)
+  x   87 e2e\review.spec.ts:111:1 › the language switch changes the practice screen, and the next rehearsal is in the new language (1.5m)
+  x   88 e2e\review.spec.ts:133:1 › teacher screens show no English words in Hindi or Tamil (2.0m)
+  ok  89 e2e\stages.spec.ts:13:1 › sample sheets run a check, mark the unsure boxes, and the error card says where it most likely went wrong (3.1s)
+  ok  90 e2e\stages.spec.ts:32:1 › the sheets never leave the phone: no request carries the answers and the stage lines still show (1.9s)
+  ok  91 e2e\stages.spec.ts:46:1 › the stage lines are in her language (2.0s)
+  ok  92 e2e\tour.spec.ts:13:1 › the landing page's tour card starts the tour at step 1 as the teacher (1.7s)
+  ok  93 e2e\tour.spec.ts:23:1 › step 1 runs the check on sample sheets and shows the error card with stage lines, without leaving the tour (1.9s)
+  ok  94 e2e\tour.spec.ts:32:1 › skip and back move through the steps and switch the role banner (1.9s)
+  ok  95 e2e\tour.spec.ts:46:1 › a step that is built in a later phase says so (1.7s)
+  ok  96 e2e\tour.spec.ts:51:1 › leaving and coming back to the deep link resumes at that step (1.8s)
+  ok  97 e2e\tour.spec.ts:59:1 › a role's walk-through opens the tour at that role's step (2.4s)
+  x   98 e2e\voice.spec.ts:31:1 › hold to speak sends the recording and shows what was heard and the child's reply (9.5s)
+  ok  99 e2e\voice.spec.ts:58:1 › a very short tap is not sent: she is asked to hold and speak (4.4s)
+  x  100 e2e\voice.spec.ts:77:1 › two voice failures switch to typing by themselves, and she can switch back (9.5s)
+  ok 101 e2e\voice.spec.ts:101:1 › a 2g link starts in typing mode, and her choice of typing is remembered (3.0s)
+  ok 102 e2e\voice.spec.ts:117:1 › choosing to type is remembered for the next rehearsal (2.2s)
+  ok 103 e2e\watch.spec.ts:8:1 › watching an experienced run shows the AI label, move tags, subtitles and the feedback card (2.1s)
+  ok 104 e2e\watch.spec.ts:23:1 › the two styles can be shown together and read differently (2.1s)
+  x  105 e2e\watch.spec.ts:36:1 › asking for a live run in a recorded deployment says why a recorded run is shown (6.8s)
+  ok 106 e2e\watch.spec.ts:44:1 › the run plays itself when left alone (8.4s)
+
+
+  1) e2e\app.spec.ts:96:1 › languages switch at runtime and the page language follows ──────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('profile-lang')
+
+
+       at switch.ts:10
+
+       8 |   const at = new URL(page.url()).hash || "#/roles";
+       9 |   await page.goto("/#/profile");
+    > 10 |   await page.getByTestId("profile-lang").selectOption(lang);
+         |                                          ^
+      11 |   await page.goto(`/${at}`);
+      12 | }
+      13 |
+        at chooseLanguage (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\switch.ts:10:42)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\app.spec.ts:99:3
+
+    Error Context: test-results\app-languages-switch-at-ru-ed7f3-d-the-page-language-follows\error-context.md
+
+  2) e2e\app.spec.ts:108:1 › role and language are chosen on the landing page only; the name leads back to it 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByTestId('role')
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByTestId('role') with timeout 5000ms
+      - waiting for getByTestId('role')
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      113 |   for (const route of ["home", "check", "practice", "profile", "judge"]) {
+      114 |     await page.goto(`/#/${route}`);
+    > 115 |     await expect(page.getByTestId("role")).toHaveCount(0);
+          |                                            ^
+      116 |     await expect(page.getByTestId("lang")).toHaveCount(0);
+      117 |   }
+      118 |   await page.goto("/#/profile");
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\app.spec.ts:115:44
+
+    Error Context: test-results\app-role-and-language-are--a5dac-y-the-name-leads-back-to-it\error-context.md
+
+  3) e2e\cohort.spec.ts:139:1 › a read-only thread says why, and the chat reads in Hindi and Tamil ─
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('profile-lang')
+
+
+       at switch.ts:10
+
+       8 |   const at = new URL(page.url()).hash || "#/roles";
+       9 |   await page.goto("/#/profile");
+    > 10 |   await page.getByTestId("profile-lang").selectOption(lang);
+         |                                          ^
+      11 |   await page.goto(`/${at}`);
+      12 | }
+      13 |
+        at chooseLanguage (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\switch.ts:10:42)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\cohort.spec.ts:147:3
+
+    Error Context: test-results\cohort-a-read-only-thread--98911-at-reads-in-Hindi-and-Tamil\error-context.md
+
+  4) e2e\hints.spec.ts:21:1 › try with hints offers three replies, and choosing one runs the turn with a move tag 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-judge')
+
+
+      23 |   await page.getByTestId("start-practice").click();
+      24 |   await expect(page.getByTestId("kid-4")).toBeVisible();
+    > 25 |   await page.getByTestId("sec-judge").click();
+         |                                       ^
+      26 |   await page.getByTestId("hints-toggle").check();
+      27 |   await page.getByTestId("sec-class").click();
+      28 |   await expect(page.getByTestId("hint-pose_problem")).toBeVisible();
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\hints.spec.ts:25:39
+
+    Error Context: test-results\hints-try-with-hints-offer-48361-ns-the-turn-with-a-move-tag\error-context.md
+
+  5) e2e\layout.spec.ts:15:3 › no page runs off the side at 320 px ─────────────────────────────────
+
+    Error: page.evaluate: TypeError: Cannot read properties of null (reading 'scrollWidth')
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\layout.spec.ts:20:31
+
+    Error Context: test-results\layout-no-page-runs-off-the-side-at-320-px\error-context.md
+
+  6) e2e\layout.spec.ts:15:3 › no page runs off the side at 390 px ─────────────────────────────────
+
+    Error: page.evaluate: TypeError: Cannot read properties of null (reading 'scrollWidth')
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\layout.spec.ts:20:31
+
+    Error Context: test-results\layout-no-page-runs-off-the-side-at-390-px\error-context.md
+
+  7) e2e\layout.spec.ts:15:3 › no page runs off the side at 768 px ─────────────────────────────────
+
+    Error: page.evaluate: TypeError: Cannot read properties of null (reading 'scrollWidth')
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\layout.spec.ts:20:31
+
+    Error Context: test-results\layout-no-page-runs-off-the-side-at-768-px\error-context.md
+
+  8) e2e\layout.spec.ts:15:3 › no page runs off the side at 1280 px ────────────────────────────────
+
+    Error: page.evaluate: TypeError: Cannot read properties of null (reading 'scrollWidth')
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:370:30), <anonymous>:4:22)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\layout.spec.ts:20:31
+
+    Error Context: test-results\layout-no-page-runs-off-the-side-at-1280-px\error-context.md
+
+  9) e2e\officer.spec.ts:82:1 › the officer screen reads in Hindi and has no sideways scroll on a phone 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('profile-lang')
+
+
+       at switch.ts:10
+
+       8 |   const at = new URL(page.url()).hash || "#/roles";
+       9 |   await page.goto("/#/profile");
+    > 10 |   await page.getByTestId("profile-lang").selectOption(lang);
+         |                                          ^
+      11 |   await page.goto(`/${at}`);
+      12 | }
+      13 |
+        at chooseLanguage (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\switch.ts:10:42)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\officer.spec.ts:83:3
+
+    Error Context: test-results\officer-the-officer-screen-dde7f--sideways-scroll-on-a-phone\error-context.md
+
+  10) e2e\practice.spec.ts:60:1 › a rehearsal of 7 turns with a material tap ends in two strengths with her own quotes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('reply-1')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('reply-1') with timeout 5000ms
+      - waiting for getByTestId('reply-1')
+
+
+      46 |       await page.getByTestId("send").click();
+      47 |     }
+    > 48 |     await expect(page.getByTestId(`reply-${n}`)).toBeVisible();
+         |                                                  ^
+      49 |   }
+      50 | }
+      51 |
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:48:50)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:66:3
+
+    Error Context: test-results\practice-a-rehearsal-of-7--e99fb-rengths-with-her-own-quotes\error-context.md
+
+  11) e2e\practice.spec.ts:102:1 › the AI-layers overlay matches the API trace, for judges only ────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-materials')
+
+
+      39 |     n += 1;
+      40 |     if (line.startsWith("/tap ")) {
+    > 41 |       await page.getByTestId("sec-materials").click();
+         |                                               ^
+      42 |       await page.getByTestId(`tap-${line.slice(5)}`).click();
+      43 |       await expect(page.getByTestId("sec-class")).toHaveAttribute("aria-selected", "true"); // back to the class to hear the answer
+      44 |     } else {
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:41:47)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:104:3
+
+    Error Context: test-results\practice-the-AI-layers-ove-50fb5-e-API-trace-for-judges-only\error-context.md
+
+  12) e2e\practice.spec.ts:125:1 › the server request log holds no transcript text (application logs: tests/practice/test_api.py) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('reply-2')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('reply-2') with timeout 5000ms
+      - waiting for getByTestId('reply-2')
+
+
+      46 |       await page.getByTestId("send").click();
+      47 |     }
+    > 48 |     await expect(page.getByTestId(`reply-${n}`)).toBeVisible();
+         |                                                  ^
+      49 |   }
+      50 | }
+      51 |
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:48:50)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:126:3
+
+    Error Context: test-results\practice-the-server-reques-b395f-tests-practice-test-api-py-\error-context.md
+
+  13) e2e\practice.spec.ts:136:1 › retry uses the same children ────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-materials')
+
+
+      39 |     n += 1;
+      40 |     if (line.startsWith("/tap ")) {
+    > 41 |       await page.getByTestId("sec-materials").click();
+         |                                               ^
+      42 |       await page.getByTestId(`tap-${line.slice(5)}`).click();
+      43 |       await expect(page.getByTestId("sec-class")).toHaveAttribute("aria-selected", "true"); // back to the class to hear the answer
+      44 |     } else {
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:41:47)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:137:3
+
+    Error Context: test-results\practice-retry-uses-the-same-children\error-context.md
+
+  14) e2e\practice.spec.ts:145:1 › a class's own counts seat the children, and a slow reply is explained 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('reply-1')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('reply-1') with timeout 5000ms
+      - waiting for getByTestId('reply-1')
+
+
+      163 |   await page.getByTestId("say").fill("Who can tell me 52 minus 29?");
+      164 |   await page.getByTestId("send").click();
+    > 165 |   await expect(page.getByTestId("reply-1")).toBeVisible();
+          |                                             ^
+      166 |   await expect(page.getByText("The AI model is not switched on here, so a simple reply was used.")).toBeVisible();
+      167 | });
+      168 |
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:165:45
+
+    Error Context: test-results\practice-a-class-s-own-cou-1fa8a-d-a-slow-reply-is-explained\error-context.md
+
+  15) e2e\practice.spec.ts:194:1 › the AI map shows 10 calls by 5 layers and the audit trail shows metadata only 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-materials')
+
+
+      39 |     n += 1;
+      40 |     if (line.startsWith("/tap ")) {
+    > 41 |       await page.getByTestId("sec-materials").click();
+         |                                               ^
+      42 |       await page.getByTestId(`tap-${line.slice(5)}`).click();
+      43 |       await expect(page.getByTestId("sec-class")).toHaveAttribute("aria-selected", "true"); // back to the class to hear the answer
+      44 |     } else {
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:41:47)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:195:3
+
+    Error Context: test-results\practice-the-AI-map-shows--a4ba7-t-trail-shows-metadata-only\error-context.md
+
+  16) e2e\practice.spec.ts:208:1 › feedback thumbs stay on the phone, the flag goes to the team; sharing is off by default and remembered 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-materials')
+
+
+      39 |     n += 1;
+      40 |     if (line.startsWith("/tap ")) {
+    > 41 |       await page.getByTestId("sec-materials").click();
+         |                                               ^
+      42 |       await page.getByTestId(`tap-${line.slice(5)}`).click();
+      43 |       await expect(page.getByTestId("sec-class")).toHaveAttribute("aria-selected", "true"); // back to the class to hear the answer
+      44 |     } else {
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:41:47)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:222:3
+
+    Error Context: test-results\practice-feedback-thumbs-s-eb523-f-by-default-and-remembered\error-context.md
+
+  17) e2e\practice.spec.ts:249:1 › the screen says what she is practising and lists the moves to try 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-goal')
+
+
+      252 |   await page.getByTestId("start-practice").click();
+      253 |   await expect(page.getByTestId("goal")).toBeHidden(); // its own section, so the class comes first
+    > 254 |   await page.getByTestId("sec-goal").click();
+          |                                      ^
+      255 |   await expect(page.getByTestId("goal")).toBeVisible();
+      256 |   await expect(page.getByTestId("goal")).toContainText("What to practise");
+      257 |   expect(await page.getByTestId("goal").locator("li").count()).toBeGreaterThanOrEqual(3);
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\practice.spec.ts:254:38
+
+    Error Context: test-results\practice-the-screen-says-w-e8497--and-lists-the-moves-to-try\error-context.md
+
+  18) e2e\profile.spec.ts:166:1 › feedback needs her switch, refuses personal details, and reaches the admin to review 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('admin-item').first()
+    Expected substring: "The keypad is easy to use"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('admin-item').first() with timeout 5000ms
+      - waiting for getByTestId('admin-item').first()
+
+
+      180 |   await chooseRole(page, "admin");
+      181 |   await expect(page.getByTestId("admin")).toBeVisible();
+    > 182 |   await expect(page.getByTestId("admin-item").first()).toContainText("The keypad is easy to use");
+          |                                                        ^
+      183 |   await expect(page.getByTestId("admin-item").first()).toContainText("★★★★");
+      184 |   await page.getByTestId("admin-kind").selectOption("simulation");
+      185 |   await expect(page.getByTestId("admin-item")).toHaveCount(0);
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\profile.spec.ts:182:56
+
+    Error Context: test-results\profile-feedback-needs-her-f4056-reaches-the-admin-to-review\error-context.md
+
+  19) e2e\profile.spec.ts:192:1 › the card's speaker icon answers with a toast instead of a paragraph, and a flag reaches the admin 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('admin-item').first()
+    Expected substring: "SUB-SFL"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('admin-item').first() with timeout 5000ms
+      - waiting for getByTestId('admin-item').first()
+
+
+      205 |   await chooseRole(page, "admin");
+      206 |   await page.getByTestId("admin-kind").selectOption("card_flag");
+    > 207 |   await expect(page.getByTestId("admin-item").first()).toContainText("SUB-SFL");
+          |                                                        ^
+      208 | });
+      209 |
+      210 | test("role screens: coach sees counts only, mentor sees what mentors do, nothing is a percentage", async ({ page }) => {
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\profile.spec.ts:207:56
+
+    Error Context: test-results\profile-the-card-s-speaker-f8302-nd-a-flag-reaches-the-admin\error-context.md
+
+  20) e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 320 narrow phone ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('pc-top')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('pc-top') with timeout 5000ms
+      - waiting for getByTestId('pc-top')
+
+
+      115 |       if (route === "practice") {
+      116 |         await page.getByTestId("start-practice").click();
+    > 117 |         await expect(page.getByTestId("pc-top")).toBeVisible();
+          |                                                  ^
+      118 |       }
+      119 |       if (route === "history") await page.getByTestId("history-toggle").first().click();
+      120 |       const overflow = await page.evaluate(() => {
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\programme.spec.ts:117:50
+
+    Error Context: test-results\programme-no-sideways-scro-dea14-le-menu-at-320-narrow-phone\error-context.md
+
+  21) e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 360 phone ────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('pc-top')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('pc-top') with timeout 5000ms
+      - waiting for getByTestId('pc-top')
+
+
+      115 |       if (route === "practice") {
+      116 |         await page.getByTestId("start-practice").click();
+    > 117 |         await expect(page.getByTestId("pc-top")).toBeVisible();
+          |                                                  ^
+      118 |       }
+      119 |       if (route === "history") await page.getByTestId("history-toggle").first().click();
+      120 |       const overflow = await page.evaluate(() => {
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\programme.spec.ts:117:50
+
+    Error Context: test-results\programme-no-sideways-scro-6b692-reachable-menu-at-360-phone\error-context.md
+
+  22) e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 768 tablet ───────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('pc-top')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('pc-top') with timeout 5000ms
+      - waiting for getByTestId('pc-top')
+
+
+      115 |       if (route === "practice") {
+      116 |         await page.getByTestId("start-practice").click();
+    > 117 |         await expect(page.getByTestId("pc-top")).toBeVisible();
+          |                                                  ^
+      118 |       }
+      119 |       if (route === "history") await page.getByTestId("history-toggle").first().click();
+      120 |       const overflow = await page.evaluate(() => {
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\programme.spec.ts:117:50
+
+    Error Context: test-results\programme-no-sideways-scro-4ccff-eachable-menu-at-768-tablet\error-context.md
+
+  23) e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 1280 laptop ──────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('pc-top')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('pc-top') with timeout 5000ms
+      - waiting for getByTestId('pc-top')
+
+
+      115 |       if (route === "practice") {
+      116 |         await page.getByTestId("start-practice").click();
+    > 117 |         await expect(page.getByTestId("pc-top")).toBeVisible();
+          |                                                  ^
+      118 |       }
+      119 |       if (route === "history") await page.getByTestId("history-toggle").first().click();
+      120 |       const overflow = await page.evaluate(() => {
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\programme.spec.ts:117:50
+
+    Error Context: test-results\programme-no-sideways-scro-b5a05-achable-menu-at-1280-laptop\error-context.md
+
+  24) e2e\review-queue.spec.ts:136:1 › the queue reads in Hindi and Tamil, and the targets are 44 px 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('profile-lang')
+
+
+       at switch.ts:10
+
+       8 |   const at = new URL(page.url()).hash || "#/roles";
+       9 |   await page.goto("/#/profile");
+    > 10 |   await page.getByTestId("profile-lang").selectOption(lang);
+         |                                          ^
+      11 |   await page.goto(`/${at}`);
+      12 | }
+      13 |
+        at chooseLanguage (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\switch.ts:10:42)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review-queue.spec.ts:139:3
+
+    Error Context: test-results\review-queue-the-queue-rea-9e5b2-l-and-the-targets-are-44-px\error-context.md
+
+  25) e2e\review.spec.ts:44:1 › a rehearsal is recorded on the phone, tagged by her, replayed turn by turn, and can be deleted 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-materials')
+
+
+      32 |     n += 1;
+      33 |     if (line.startsWith("/tap ")) {
+    > 34 |       await page.getByTestId("sec-materials").click();
+         |                                               ^
+      35 |       await page.getByTestId(`tap-${line.slice(5)}`).click();
+      36 |     } else {
+      37 |       await page.getByTestId("say").fill(line);
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review.spec.ts:34:47)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review.spec.ts:49:3
+
+    Error Context: test-results\review-a-rehearsal-is-reco-89552--by-turn-and-can-be-deleted\error-context.md
+
+  26) e2e\review.spec.ts:86:1 › again from the review restarts with the same children ──────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('reply-2')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('reply-2') with timeout 5000ms
+      - waiting for getByTestId('reply-2')
+
+
+      38 |       await page.getByTestId("send").click();
+      39 |     }
+    > 40 |     await expect(page.getByTestId(`reply-${n}`)).toBeVisible();
+         |                                                  ^
+      41 |   }
+      42 | }
+      43 |
+        at rehearse (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review.spec.ts:40:50)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review.spec.ts:87:3
+
+    Error Context: test-results\review-again-from-the-review-restarts-with-the-same-children\error-context.md
+
+  27) e2e\review.spec.ts:111:1 › the language switch changes the practice screen, and the next rehearsal is in the new language 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByTestId('profile-lang')
+
+
+       at switch.ts:10
+
+       8 |   const at = new URL(page.url()).hash || "#/roles";
+       9 |   await page.goto("/#/profile");
+    > 10 |   await page.getByTestId("profile-lang").selectOption(lang);
+         |                                          ^
+      11 |   await page.goto(`/${at}`);
+      12 | }
+      13 |
+        at chooseLanguage (C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\switch.ts:10:42)
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review.spec.ts:117:3
+
+    Error Context: test-results\review-the-language-switch-5a027-rsal-is-in-the-new-language\error-context.md
+
+  28) e2e\review.spec.ts:133:1 › teacher screens show no English words in Hindi or Tamil ───────────
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByTestId('sec-materials')
+
+
+      155 |         text += await page.evaluate(() => document.body.innerText);
+      156 |         // the other sections of a running rehearsal, one tab at a time
+    > 157 |         await page.getByTestId("sec-materials").click();
+          |                                                 ^
+      158 |         await expect(page.getByTestId("tap-bundles")).toBeVisible();
+      159 |         text += await page.evaluate(() => document.body.innerText);
+      160 |         await page.getByTestId("sec-goal").click();
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\review.spec.ts:157:49
+
+    Error Context: test-results\review-teacher-screens-sho-58524-ish-words-in-Hindi-or-Tamil\error-context.md
+
+  29) e2e\voice.spec.ts:31:1 › hold to speak sends the recording and shows what was heard and the child's reply 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('reply-1')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('reply-1') with timeout 5000ms
+      - waiting for getByTestId('reply-1')
+
+
+      44 |   await expect(page.getByTestId("say")).toHaveCount(0);
+      45 |   await hold(page);
+    > 46 |   await expect(page.getByTestId("reply-1")).toBeVisible();
+         |                                             ^
+      47 |   await expect(page.getByTestId("turn-1")).toContainText(
+      48 |     /bundles|explain|add it back|Well done/,
+      49 |   ); // one of the stub's scripted lines
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\voice.spec.ts:46:45
+
+    Error Context: test-results\voice-hold-to-speak-sends--4e41f-heard-and-the-child-s-reply\error-context.md
+
+  30) e2e\voice.spec.ts:77:1 › two voice failures switch to typing by themselves, and she can switch back 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('reply-1')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('reply-1') with timeout 5000ms
+      - waiting for getByTestId('reply-1')
+
+
+      94 |   await page.getByTestId("say").fill("Priya, what is 52 minus 29?");
+      95 |   await page.getByTestId("send").click();
+    > 96 |   await expect(page.getByTestId("reply-1")).toBeVisible();
+         |                                             ^
+      97 |   await page.getByTestId("use-voice").click();
+      98 |   await expect(page.getByTestId("talk")).toBeVisible();
+      99 | });
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\voice.spec.ts:96:45
+
+    Error Context: test-results\voice-two-voice-failures-s-333f4-ves-and-she-can-switch-back\error-context.md
+
+  31) e2e\watch.spec.ts:36:1 › asking for a live run in a recorded deployment says why a recorded run is shown 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('run-reason')
+    Expected substring: "Showing a recorded run"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('run-reason') with timeout 5000ms
+      - waiting for getByTestId('run-reason')
+
+
+      38 |   await page.getByTestId("watch-live").check();
+      39 |   await page.getByTestId("watch-struggling").click();
+    > 40 |   await expect(page.getByTestId("run-reason")).toContainText("Showing a recorded run");
+         |                                                ^
+      41 |   await expect(page.getByTestId("watch-meter")).toBeVisible();
+      42 | });
+      43 |
+        at C:\Users\gopi.kamaraj\Desktop\AIML\Hackathons\FLN\Build\fln_src\cohort-coach\apps\pwa\e2e\watch.spec.ts:40:48
+
+    Error Context: test-results\watch-asking-for-a-live-ru-a3e92-why-a-recorded-run-is-shown\error-context.md
+
+  31 failed
+    e2e\app.spec.ts:96:1 › languages switch at runtime and the page language follows ───────────────
+    e2e\app.spec.ts:108:1 › role and language are chosen on the landing page only; the name leads back to it 
+    e2e\cohort.spec.ts:139:1 › a read-only thread says why, and the chat reads in Hindi and Tamil ──
+    e2e\hints.spec.ts:21:1 › try with hints offers three replies, and choosing one runs the turn with a move tag 
+    e2e\layout.spec.ts:15:3 › no page runs off the side at 320 px ──────────────────────────────────
+    e2e\layout.spec.ts:15:3 › no page runs off the side at 390 px ──────────────────────────────────
+    e2e\layout.spec.ts:15:3 › no page runs off the side at 768 px ──────────────────────────────────
+    e2e\layout.spec.ts:15:3 › no page runs off the side at 1280 px ─────────────────────────────────
+    e2e\officer.spec.ts:82:1 › the officer screen reads in Hindi and has no sideways scroll on a phone 
+    e2e\practice.spec.ts:60:1 › a rehearsal of 7 turns with a material tap ends in two strengths with her own quotes 
+    e2e\practice.spec.ts:102:1 › the AI-layers overlay matches the API trace, for judges only ──────
+    e2e\practice.spec.ts:125:1 › the server request log holds no transcript text (application logs: tests/practice/test_api.py) 
+    e2e\practice.spec.ts:136:1 › retry uses the same children ──────────────────────────────────────
+    e2e\practice.spec.ts:145:1 › a class's own counts seat the children, and a slow reply is explained 
+    e2e\practice.spec.ts:194:1 › the AI map shows 10 calls by 5 layers and the audit trail shows metadata only 
+    e2e\practice.spec.ts:208:1 › feedback thumbs stay on the phone, the flag goes to the team; sharing is off by default and remembered 
+    e2e\practice.spec.ts:249:1 › the screen says what she is practising and lists the moves to try ─
+    e2e\profile.spec.ts:166:1 › feedback needs her switch, refuses personal details, and reaches the admin to review 
+    e2e\profile.spec.ts:192:1 › the card's speaker icon answers with a toast instead of a paragraph, and a flag reaches the admin 
+    e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 320 narrow phone ───
+    e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 360 phone ──────────
+    e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 768 tablet ─────────
+    e2e\programme.spec.ts:108:3 › no sideways scrolling and a reachable menu at 1280 laptop ────────
+    e2e\review-queue.spec.ts:136:1 › the queue reads in Hindi and Tamil, and the targets are 44 px ─
+    e2e\review.spec.ts:44:1 › a rehearsal is recorded on the phone, tagged by her, replayed turn by turn, and can be deleted 
+    e2e\review.spec.ts:86:1 › again from the review restarts with the same children ────────────────
+    e2e\review.spec.ts:111:1 › the language switch changes the practice screen, and the next rehearsal is in the new language 
+    e2e\review.spec.ts:133:1 › teacher screens show no English words in Hindi or Tamil ─────────────
+    e2e\voice.spec.ts:31:1 › hold to speak sends the recording and shows what was heard and the child's reply 
+    e2e\voice.spec.ts:77:1 › two voice failures switch to typing by themselves, and she can switch back 
+    e2e\watch.spec.ts:36:1 › asking for a live run in a recorded deployment says why a recorded run is shown 
+  75 passed (26.2m)

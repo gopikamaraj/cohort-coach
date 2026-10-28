@@ -1,0 +1,33 @@
+PASS | Landing: mode banner, role, 4 role cards + tour card
+PASS | Role dialog and enter: teacher | /home
+PASS | Role dialog and enter: mentor | /mentor
+PASS | Role dialog and enter: coach | /coach
+PASS | Role dialog and enter: officer | /officer
+PASS | Guided tour: steps advance 1 to 3 |  -> /tour/2
+PASS | Check: type a child's 10 answers, next child, finish | 1 children entered · Saved on this phone
+PASS | Judge page: load simulated class
+PASS | Home: 28 children counted, no percentage
+PASS | Cards: SUB-SFL count line (11 of 28)
+PASS | Practice: start, 3 typed turns get checked child replies (live AI) | 3 turns
+PASS | Practice: end gives feedback with Checked badge and 2 strengths | Checked ✓; 2 strength items
+PASS | AI layers map and audit trail
+PASS | Watch: model run plays (recorded) with steps
+PASS | Page opens with content: #/programme
+PASS | Page opens with content: #/history
+PASS | Page opens with content: #/profile
+PASS | Page opens with content: #/privacy
+PASS | Page opens with content: #/coach
+PASS | Page opens with content: #/mentor
+PASS | Page opens with content: #/officer
+PASS | Page opens with content: #/review
+PASS | Page opens with content: #/cohort
+PASS | Page opens with content: #/flow
+PASS | Page opens with content: #/admin | shows 'closed' message
+PASS | Officer: cohort panel and funnel with review-waiting line | No content is waiting for review. (system: review queue ages; gates never auto-approve)
+PASS | Officer: propose then activate a cohort | Start a cohort Error PV-HEARD ADD-NOCARRY SUB-SFL SUB-NODEC Coach idSchools Propose cohort
+PASS | Language switch: Hindi then Tamil, no raw keys
+PASS | Offline: Programme still opens with no network
+PASS | Mode switch: pilot sign-in page, wrong key refused, back to judge | wrong key refused with message
+PASS | Pilot deep links stay inside pilot: #/home redirects to upload
+
+31/31 steps passed. Page errors / 5xx outside admin: 0

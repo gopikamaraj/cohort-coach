@@ -60,6 +60,10 @@ export default function Admin() {
         setError("auth");
         return;
       }
+      if (f.status === 503) {
+        setError("closed");
+        return;
+      }
       setItems(((await f.json()) as { items: Item[] }).items);
       setObs(((await o.json()) as { items: Observation[] }).items);
       setSum((await s.json()) as Summary);
@@ -101,6 +105,7 @@ export default function Admin() {
         />
       </label>
       {error === "auth" ? <p role="alert">{tr("admin.auth")}</p> : null}
+      {error === "closed" ? <p role="alert" data-testid="admin-closed">{tr("admin.closed")}</p> : null}
       {error === "offline" ? <p role="alert">{tr("prog.offline")}</p> : null}
       {sum ? (
         <dl className="stats" data-testid="admin-summary">

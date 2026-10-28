@@ -1061,5 +1061,6 @@
   "practice.sec_class": "Class",
   "practice.sec_goal": "Goal",
   "practice.sec_judge": "Judge",
-  "profile.change_role": "Change role"
+  "profile.change_role": "Change role",
+  "admin.closed": "The admin page is closed on this server: no admin key is set."
 }

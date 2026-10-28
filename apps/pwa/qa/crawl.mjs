@@ -9,7 +9,7 @@ fs.mkdirSync(out, { recursive: true });
 const ROUTES = ["roles", "judge", "home", "check", "cards", "practice", "programme", "history", "aimap", "audit", "profile", "privacy", "admin", "coach", "mentor", "flow", "officer", "watch", "tour", "tour/2", "review", "cohort"];
 const LANGS = ["en", "hi", "ta"];
 const VIEWS = { phone: { ...devices["Pixel 5"], viewport: { width: 360, height: 740 } }, desktop: { viewport: { width: 1280, height: 800 } } };
-const base = "http://localhost:4173";
+const base = process.env.QA_BASE ?? "http://localhost:4173";
 const teacherRoutes = new Set(["home", "check", "cards", "practice", "history", "flow", "watch", "tour", "tour/2", "profile", "programme"]);
 const rows = [];
 const browser = await chromium.launch();

@@ -1061,5 +1061,6 @@
   "practice.sec_class": "வகுப்பு",
   "practice.sec_goal": "இலக்கு",
   "practice.sec_judge": "நடுவர்",
-  "profile.change_role": "பங்கை மாற்று"
+  "profile.change_role": "பங்கை மாற்று",
+  "admin.closed": "இந்த சர்வரில் நிர்வாகப் பக்கம் மூடப்பட்டுள்ளது: நிர்வாக விசை அமைக்கப்படவில்லை."
 }

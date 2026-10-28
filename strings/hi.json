@@ -1061,5 +1061,6 @@
   "practice.sec_class": "कक्षा",
   "practice.sec_goal": "लक्ष्य",
   "practice.sec_judge": "जज",
-  "profile.change_role": "भूमिका बदलें"
+  "profile.change_role": "भूमिका बदलें",
+  "admin.closed": "इस सर्वर पर एडमिन पेज बंद है: कोई एडमिन कुंजी सेट नहीं है।"
 }
