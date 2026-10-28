@@ -876,6 +876,11 @@ h2 .icon {
   align-items: center;
   gap: var(--s2);
 }
+.who a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 @media (min-width: 768px) {
   .tiles {
     grid-template-columns: repeat(4, 1fr);
