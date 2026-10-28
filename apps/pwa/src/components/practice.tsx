@@ -23,10 +23,38 @@ export function ChildrenRow({ children, speaker, faces }: { children: PracticeCh
         <li key={c.name} className={speaker === c.name ? "kid kid-on" : "kid"} data-testid={`kid-${i}`} aria-current={speaker === c.name ? "true" : undefined}>
           <Face persona={c.persona} expression={faces[c.name] ?? c.expression} speaking={speaker === c.name} />
           <span className="kid-name">{c.name}</span>
-          {c.shy ? <span className="kid-shy">{tr("practice.shy")}</span> : null}
+          {c.shy ? <span className="kid-shy" title={tr("practice.shy")}>{tr("practice.shy")}</span> : null}
         </li>
       ))}
     </ul>
+  );
+}
+
+export type Section = "class" | "materials" | "goal" | "judge";
+
+/** Sections of a running rehearsal, one at a time, so the phone never scrolls past the children. */
+export function SectionTabs({ section, onSection, judge }: { section: Section; onSection: (s: Section) => void; judge: boolean }) {
+  const { tr } = useApp();
+  const all: Section[] = judge ? ["class", "materials", "goal", "judge"] : ["class", "materials", "goal"];
+  const label: Record<Section, string> = { class: tr("practice.sec_class"), materials: tr("practice.materials"), goal: tr("practice.sec_goal"), judge: tr("practice.sec_judge") };
+  return (
+    <div className="sections" role="tablist" aria-label={tr("practice.sections")}>
+      {all.map((s) => (
+        <button
+          key={s}
+          type="button"
+          role="tab"
+          id={`sec-${s}`}
+          aria-selected={section === s}
+          aria-controls={`panel-${s}`}
+          className={section === s ? "section-tab section-on" : "section-tab"}
+          onClick={() => onSection(s)}
+          data-testid={`sec-${s}`}
+        >
+          {label[s]}
+        </button>
+      ))}
+    </div>
   );
 }
 

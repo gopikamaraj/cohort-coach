@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { chooseLanguage } from "./switch";
 
 // The Practice Class review tab (rehearsals recorded on this phone, replayed, tagged by her), the
 // cue card of things to say, and the language. The API replays a recording made on 2026-10-17
@@ -29,8 +30,10 @@ async function rehearse(page: Page, count = LINES.length) {
   let n = 0;
   for (const line of LINES.slice(0, count)) {
     n += 1;
-    if (line.startsWith("/tap ")) await page.getByTestId(`tap-${line.slice(5)}`).click();
-    else {
+    if (line.startsWith("/tap ")) {
+      await page.getByTestId("sec-materials").click();
+      await page.getByTestId(`tap-${line.slice(5)}`).click();
+    } else {
       await page.getByTestId("say").fill(line);
       await page.getByTestId("send").click();
     }
@@ -105,13 +108,13 @@ test("the cue card offers things to say, never a scolding, and a tap puts the li
   await expect(page.getByTestId("say")).toHaveValue(lines[0]!);
 });
 
-test("the language switch changes the practice screen, and a running rehearsal offers a restart", async ({ page }) => {
+test("the language switch changes the practice screen, and the next rehearsal is in the new language", async ({ page }) => {
   const created: string[] = [];
   page.on("request", (r) => {
     if (/\/api\/practice\/sessions$/.test(r.url())) created.push(JSON.parse(r.postData() ?? "{}").language as string);
   });
   await page.goto("/#/practice?seed=5");
-  await page.getByTestId("lang").selectOption("hi");
+  await chooseLanguage(page, "hi");
   await expect(page.getByTestId("goal-intro")).toContainText("उन बच्चों की मदद करें");
   await expect(page.getByTestId("tab-practise")).toHaveText("अभ्यास");
   await page.getByTestId("start-practice").click();
@@ -120,10 +123,9 @@ test("the language switch changes the practice screen, and a running rehearsal o
   await expect(page.getByTestId("cue-panel")).toContainText("कैसे कहें");
   expect(await page.getByTestId("cue-line").first().innerText()).toMatch(/[ऀ-ॿ]/); // Hindi lines
 
-  await page.getByTestId("lang").selectOption("ta");
-  await expect(page.getByTestId("lang-banner")).toContainText("தமிழ்");
-  await page.getByTestId("lang-restart").click();
-  await expect(page.getByTestId("lang-banner")).toHaveCount(0);
+  await chooseLanguage(page, "ta");
+  await page.getByTestId("start-practice").click();
+  await page.getByTestId("sec-goal").click();
   await expect(page.getByTestId("goal")).toContainText("என்ன பயிற்சி செய்ய வேண்டும்");
   expect(created).toEqual(["hi", "ta"]);
 });
@@ -146,12 +148,19 @@ test("teacher screens show no English words in Hindi or Tamil", async ({ page })
         await page.getByTestId("form-A").or(page.getByTestId("child-title")).first().waitFor();
         if ((await page.getByTestId("form-A").count()) > 0) await page.getByTestId("form-A").click({ timeout: 3000 }).catch(() => undefined);
       }
+      let text = "";
       if (route === "practice") {
         await page.getByTestId("start-practice").click();
-        await expect(page.getByTestId("goal")).toBeVisible();
         await page.getByTestId("cue-toggle").click();
+        text += await page.evaluate(() => document.body.innerText);
+        // the other sections of a running rehearsal, one tab at a time
+        await page.getByTestId("sec-materials").click();
+        await expect(page.getByTestId("tap-bundles")).toBeVisible();
+        text += await page.evaluate(() => document.body.innerText);
+        await page.getByTestId("sec-goal").click();
+        await expect(page.getByTestId("goal")).toBeVisible();
       }
-      const text = await page.evaluate(() => document.body.innerText);
+      text += await page.evaluate(() => document.body.innerText);
       const words = [...new Set(text.match(/[A-Za-z][A-Za-z'’-]{2,}/g) ?? [])].filter((w) => !allowed.has(w));
       expect(words, `${lang}/${route}`).toEqual([]);
     }

@@ -187,8 +187,6 @@
   "common.loading": "ஏற்றுகிறது…",
   "practice.tab_practise": "பயிற்சி",
   "practice.tab_review": "மதிப்பாய்வு",
-  "practice.lang_changed": "மொழியை மாற்றியுள்ளீர்கள். இந்தப் பயிற்சி இன்னும் {lang} மொழியில் உள்ளது.",
-  "practice.lang_restart": "{lang} மொழியில் மீண்டும் தொடங்கு",
   "review.title": "உங்கள் பயிற்சிகள்",
   "review.private": "இந்த ஃபோனில் மட்டும் பதிவாகும். நீங்கள் பகிராதவரை வேறு யாரும் பார்க்க மாட்டார்கள்.",
   "review.empty": "இன்னும் எந்தப் பயிற்சியும் பதிவாகவில்லை. ஒருமுறை பயிற்சி செய்தால் இங்கே தெரியும்.",
@@ -1058,5 +1056,10 @@
   "mode.switch_pilot": "பைலட்டைத் திறக்க (பணியாளர் உள்நுழைவு)",
   "mode.switch_judge": "நடுவர் டெமோ",
   "mode.chip_pilot": "பயன்முறை: பைலட்",
-  "mode.chip_pilot_roles": "பயன்முறை: பைலட் · {roles}"
+  "mode.chip_pilot_roles": "பயன்முறை: பைலட் · {roles}",
+  "practice.sections": "பயிற்சி வகுப்பின் பகுதிகள்",
+  "practice.sec_class": "வகுப்பு",
+  "practice.sec_goal": "இலக்கு",
+  "practice.sec_judge": "நடுவர்",
+  "profile.change_role": "பங்கை மாற்று"
 }

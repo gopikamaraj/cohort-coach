@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { chooseRole } from "./switch";
 
 // My profile (classes, storage and backup, data used, privacy), the privacy notice and consent, feedback to
 // the admin, and the icon toasts. These tests start with NO consent (unlike the others) on purpose.
@@ -176,7 +177,7 @@ test("feedback needs her switch, refuses personal details, and reaches the admin
   await page.getByTestId("feedback-send").click();
   await expect(page.getByTestId("toast").last()).toContainText("Thank you");
 
-  await page.getByTestId("role").selectOption("admin");
+  await chooseRole(page, "admin");
   await expect(page.getByTestId("admin")).toBeVisible();
   await expect(page.getByTestId("admin-item").first()).toContainText("The keypad is easy to use");
   await expect(page.getByTestId("admin-item").first()).toContainText("★★★★");
@@ -201,17 +202,16 @@ test("the card's speaker icon answers with a toast instead of a paragraph, and a
   await expect(page.getByTestId("toast").last()).toContainText("Listening arrives");
   await page.getByTestId("flag-SUB-SFL").click();
   await expect(page.getByTestId("toast").last()).toContainText("review this card");
-  await page.getByTestId("role").selectOption("admin");
+  await chooseRole(page, "admin");
   await page.getByTestId("admin-kind").selectOption("card_flag");
   await expect(page.getByTestId("admin-item").first()).toContainText("SUB-SFL");
 });
 
 test("role screens: coach sees counts only, mentor sees what mentors do, nothing is a percentage", async ({ page }) => {
-  await page.goto("/#/judge");
-  await page.getByTestId("role").selectOption("coach");
+  await chooseRole(page, "coach");
   await expect(page.getByTestId("coach-T1")).toBeVisible();
   await expect(page.getByTestId("coach-T1")).toContainText(/\d+ of \d+ children checked/);
-  await page.getByTestId("role").selectOption("mentor");
+  await chooseRole(page, "mentor");
   await expect(page.getByTestId("mentor")).toContainText("exact words");
   expect(await page.locator("body").innerText()).not.toMatch(/%/);
 });

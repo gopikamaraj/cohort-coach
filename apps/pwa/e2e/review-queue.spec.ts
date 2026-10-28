@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
+import { chooseLanguage } from "./switch";
 
 // P3: the review queue and the two keys. The API is mocked here (the real routes, the gates and the
 // audit rows are tested in tests/content); this proves the screen: what it lists, what a return
@@ -135,9 +136,9 @@ test("the coach's key alone does not switch a version on; the officer's key does
 test("the queue reads in Hindi and Tamil, and the targets are 44 px", async ({ page }) => {
   await mockQueue(page);
   await asRole(page, "coach");
-  await page.getByTestId("lang").selectOption("hi");
+  await chooseLanguage(page, "hi");
   await expect(page.getByRole("heading", { name: "समीक्षा कतार" })).toBeVisible();
-  await page.getByTestId("lang").selectOption("ta");
+  await chooseLanguage(page, "ta");
   await expect(page.getByRole("heading", { name: "மதிப்பாய்வு வரிசை" })).toBeVisible();
   const small = await page.evaluate(() =>
     [...document.querySelectorAll<HTMLElement>("main button, main select, main input")]

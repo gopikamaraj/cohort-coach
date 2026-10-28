@@ -2,6 +2,12 @@
 
 Newest first within each section. Every entry: date, decision, why, alternatives considered, who confirmed. A newer entry here overrides `CLAUDE.md`, the build prompts and the design doc; update `CLAUDE.md` in the same commit when a rule changes.
 
+### 2026-10-28 · Role and language bar on the landing page only; Practice Class in sections
+- **Decision:** (1) the dark bar with the role and language menus shows only on the landing page (`#/roles`). Elsewhere, the app name in the header leads back to the landing page; My profile has a language menu and a "Change role" link. This overrides addendum v3.1 §A ("a role switcher stays in the header"). (2) Because the language can no longer change in the middle of a rehearsal, the Practice Class "language changed, restart?" banner and its two strings are removed; the next rehearsal starts in the new language. (3) On the running Practice Class, the children, the turn count and section tabs (Class, Materials, Goal, and Judge in judge mode) stay at the top while the conversation scrolls; the typing box stays at the bottom. The layers switch, "Try with hints" and "Try to break it" sit in the Judge tab.
+- **Why:** the bar took a band of every phone screen for a choice made once; the Practice Class ran several screens long on a phone.
+- **Alternatives:** a small globe button in every header (not asked for; kept simple); hiding the bar for teachers only (judges switch roles from the landing page cards anyway).
+- **Confirmed by:** Gopi, 28 Oct (both changes, the profile language menu and the removed banner).
+
 ### 2026-10-27 · One web address for both modes
 - **Decision:** the web app at https://cohort-coach-pwa-1097171252131.asia-south1.run.app serves both the judge demo and the pilot. The landing page shows the mode and the role and has a switch; a teacher's lesson link always opens the pilot. The two stay **separate servers** (judge: `cohort-coach-judge-api`, JUDGE_MODE=1, SQLite, min 1 instance; pilot: `cohort-coach-api`, PILOT_MODE=1, Cloud SQL). The page picks which API to call from the chosen mode (`VITE_API_BASE`, `VITE_PILOT_API_BASE`).
 - **Why:** one link for judges and staff. JUDGE_MODE opens every role to anyone and must never share a server or database with real consented sheets, so a single combined API was not done.

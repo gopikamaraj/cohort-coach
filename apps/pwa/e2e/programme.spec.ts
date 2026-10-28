@@ -114,7 +114,7 @@ for (const size of SIZES) {
       if (route === "check" && (await page.getByTestId("form-A").count()) > 0) await page.getByTestId("form-A").click();
       if (route === "practice") {
         await page.getByTestId("start-practice").click();
-        await expect(page.getByTestId("goal")).toBeVisible();
+        await expect(page.getByTestId("pc-top")).toBeVisible();
       }
       if (route === "history") await page.getByTestId("history-toggle").first().click();
       const overflow = await page.evaluate(() => {

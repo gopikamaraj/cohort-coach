@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Request } from "@playwright/test";
+import { chooseLanguage, chooseRole } from "./switch";
 import { readFileSync } from "node:fs";
 
 interface Item {
@@ -61,8 +62,7 @@ test("a teacher enters a 10-child check with the phone's number keyboard and get
     if (r.url().includes("/api/")) requests.push(r);
   });
   await page.route("**/api/classes/*/profile", (route) => route.fulfill({ status: 200, contentType: "application/json", body: '{"stored":true}' }));
-  await page.goto("/#/judge");
-  await page.getByTestId("role").selectOption("teacher");
+  await chooseRole(page, "teacher");
   await enterCheck(page, tenChildren());
   await expect(page.getByTestId("check-count")).toContainText("10 children entered");
   await page.getByTestId("finish").click();
@@ -96,13 +96,32 @@ test("the answers are autosaved on the phone and come back after a reload", asyn
 test("languages switch at runtime and the page language follows", async ({ page }) => {
   await page.goto("/#/home");
   await expect(page.getByRole("heading", { name: "Home" })).toBeVisible();
-  await page.getByTestId("lang").selectOption("hi");
+  await chooseLanguage(page, "hi");
   await expect(page.getByRole("heading", { name: "होम" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "hi");
-  await page.getByTestId("lang").selectOption("ta");
+  await chooseLanguage(page, "ta");
   await expect(page.getByRole("heading", { name: "முகப்பு" })).toBeVisible();
-  await page.getByTestId("lang").selectOption("en");
+  await chooseLanguage(page, "en");
   await expect(page.getByRole("heading", { name: "Home" })).toBeVisible();
+});
+
+test("role and language are chosen on the landing page only; the name leads back to it", async ({ page }) => {
+  await page.goto("/#/roles");
+  await page.getByTestId("lang").selectOption("hi");
+  await expect(page.locator("html")).toHaveAttribute("lang", "hi");
+  await page.getByTestId("lang").selectOption("en");
+  for (const route of ["home", "check", "practice", "profile", "judge"]) {
+    await page.goto(`/#/${route}`);
+    await expect(page.getByTestId("role")).toHaveCount(0);
+    await expect(page.getByTestId("lang")).toHaveCount(0);
+  }
+  await page.goto("/#/profile");
+  await page.getByTestId("change-role").click();
+  await expect(page).toHaveURL(/#\/roles/);
+  await expect(page.getByTestId("role")).toBeVisible();
+  await page.goto("/#/home");
+  await page.getByTestId("brand").click();
+  await expect(page).toHaveURL(/#\/roles/);
 });
 
 test("is installable: a valid manifest and an active service worker", async ({ page }) => {
@@ -178,13 +197,12 @@ test("Advance to Term 2 starts a new term for the simulated class", async ({ pag
 });
 
 test("each role has its own home, and role switching works", async ({ page }) => {
-  await page.goto("/#/judge");
-  await page.getByTestId("role").selectOption("mentor");
+  await chooseRole(page, "mentor");
   await expect(page.getByTestId("mentor")).toBeVisible();
-  await page.getByTestId("role").selectOption("coach");
+  await chooseRole(page, "coach");
   await expect(page.getByTestId("coach")).toBeVisible();
-  await page.getByTestId("role").selectOption("admin");
+  await chooseRole(page, "admin");
   await expect(page.getByTestId("admin")).toBeVisible();
-  await page.getByTestId("role").selectOption("teacher");
+  await chooseRole(page, "teacher");
   await expect(page.getByRole("heading", { name: "Home" })).toBeVisible();
 });

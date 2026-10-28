@@ -22,7 +22,9 @@ test("try with hints offers three replies, and choosing one runs the turn with a
   await page.goto("/#/practice?seed=5");
   await page.getByTestId("start-practice").click();
   await expect(page.getByTestId("kid-4")).toBeVisible();
+  await page.getByTestId("sec-judge").click();
   await page.getByTestId("hints-toggle").check();
+  await page.getByTestId("sec-class").click();
   await expect(page.getByTestId("hint-pose_problem")).toBeVisible();
   await page.getByTestId("hint-pose_problem").click();
   await expect(page.getByTestId("reply-1")).toBeVisible();

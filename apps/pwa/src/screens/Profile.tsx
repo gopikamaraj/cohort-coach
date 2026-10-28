@@ -11,6 +11,7 @@ import { costOf, getPrice, getUsage, resetUsage, setPrice, type Usage } from "..
 import { persistenceStatus, requestPersistence, type PersistenceStatus } from "../lib/storage";
 import { href } from "../lib/router";
 import { sendFeedback, type FeedbackKind } from "../lib/feedback";
+import { LANG_NAMES, LANGS, isLang } from "../i18n";
 import { useApp } from "../state";
 import { useConsent } from "../lib/useConsent";
 
@@ -347,13 +348,34 @@ function Feedback() {
 }
 
 export default function Profile() {
-  const { tr, role, lang } = useApp();
+  const { tr, role, lang, setLang } = useApp();
   return (
     <div data-testid="profile">
       <h1>{tr("profile.title")}</h1>
       <p className="who">
-        <Icon name={role} /> <strong>{tr(`role.${role}` as "role.teacher")}</strong> · <Icon name="globe" size={18} /> {lang.toUpperCase()}
+        <Icon name={role} /> <strong>{tr(`role.${role}` as "role.teacher")}</strong> ·{" "}
+        <a href={href("/roles")} data-testid="change-role">
+          {tr("profile.change_role")}
+        </a>
       </p>
+      <label className="field">
+        <span>
+          <Icon name="globe" size={18} /> {tr("common.language")}
+        </span>
+        <select
+          value={lang}
+          data-testid="profile-lang"
+          onChange={(e) => {
+            if (isLang(e.target.value)) setLang(e.target.value);
+          }}
+        >
+          {LANGS.map((l) => (
+            <option key={l} value={l}>
+              {LANG_NAMES[l]}
+            </option>
+          ))}
+        </select>
+      </label>
       <Classes />
       <Storage />
       <DataUsed />

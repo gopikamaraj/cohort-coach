@@ -77,44 +77,49 @@ function Shell() {
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
       <div className="frame">
-        <div className="strip">
-          <label>
-            <span className="sr">{tr("common.menu")}</span>
-            <select
-              value={role}
-              data-testid="role"
-              onChange={(e) => {
-                const next = e.target.value as Role;
-                setRole(next);
-                go(next === "judge" ? "/roles" : ROLE_HOME[next]);
-              }}
-            >
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {tr(`role.${r}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span className="sr">{tr("common.language")}</span>
-            <select
-              value={lang}
-              data-testid="lang"
-              onChange={(e) => {
-                if (isLang(e.target.value)) setLang(e.target.value);
-              }}
-            >
-              {LANGS.map((l) => (
-                <option key={l} value={l}>
-                  {LANG_NAMES[l]}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        {/* Role and language are chosen on the landing page; elsewhere: My profile (language) and the name (back here). */}
+        {route === "/roles" ? (
+          <div className="strip">
+            <label>
+              <span className="sr">{tr("common.menu")}</span>
+              <select
+                value={role}
+                data-testid="role"
+                onChange={(e) => {
+                  const next = e.target.value as Role;
+                  setRole(next);
+                  go(next === "judge" ? "/roles" : ROLE_HOME[next]);
+                }}
+              >
+                {ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {tr(`role.${r}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="sr">{tr("common.language")}</span>
+              <select
+                value={lang}
+                data-testid="lang"
+                onChange={(e) => {
+                  if (isLang(e.target.value)) setLang(e.target.value);
+                }}
+              >
+                {LANGS.map((l) => (
+                  <option key={l} value={l}>
+                    {LANG_NAMES[l]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        ) : null}
         <header className="top">
-          <span className="brand">{tr("app.title")}</span>
+          <a className="brand" href={href("/roles")} data-testid="brand">
+            {tr("app.title")}
+          </a>
           <StatusLine />
         </header>
         <main>

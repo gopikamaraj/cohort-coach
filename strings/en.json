@@ -187,8 +187,6 @@
   "common.loading": "Loading…",
   "practice.tab_practise": "Practise",
   "practice.tab_review": "Review",
-  "practice.lang_changed": "You changed the language. This rehearsal is still in {lang}.",
-  "practice.lang_restart": "Restart in {lang}",
   "review.title": "Your rehearsals",
   "review.private": "Recorded on this phone only. Nobody else sees them unless you choose to share.",
   "review.empty": "No rehearsals recorded yet. Practise once and it will appear here.",
@@ -1058,5 +1056,10 @@
   "mode.switch_pilot": "Open the pilot (staff sign-in)",
   "mode.switch_judge": "Judge demo",
   "mode.chip_pilot": "Mode: pilot",
-  "mode.chip_pilot_roles": "Mode: pilot · {roles}"
+  "mode.chip_pilot_roles": "Mode: pilot · {roles}",
+  "practice.sections": "Practice Class sections",
+  "practice.sec_class": "Class",
+  "practice.sec_goal": "Goal",
+  "practice.sec_judge": "Judge",
+  "profile.change_role": "Change role"
 }

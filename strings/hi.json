@@ -187,8 +187,6 @@
   "common.loading": "लोड हो रहा है…",
   "practice.tab_practise": "अभ्यास",
   "practice.tab_review": "समीक्षा",
-  "practice.lang_changed": "आपने भाषा बदली है। यह अभ्यास अभी भी {lang} में है।",
-  "practice.lang_restart": "{lang} में फिर से शुरू करें",
   "review.title": "आपके अभ्यास",
   "review.private": "सिर्फ़ इस फ़ोन पर रिकॉर्ड हुए हैं। जब तक आप साझा न करें, कोई और नहीं देखता।",
   "review.empty": "अभी कोई अभ्यास रिकॉर्ड नहीं हुआ। एक बार अभ्यास करें, वह यहाँ दिखेगा।",
@@ -1058,5 +1056,10 @@
   "mode.switch_pilot": "पायलट खोलें (कर्मचारी साइन-इन)",
   "mode.switch_judge": "जज डेमो",
   "mode.chip_pilot": "मोड: पायलट",
-  "mode.chip_pilot_roles": "मोड: पायलट · {roles}"
+  "mode.chip_pilot_roles": "मोड: पायलट · {roles}",
+  "practice.sections": "अभ्यास कक्षा के भाग",
+  "practice.sec_class": "कक्षा",
+  "practice.sec_goal": "लक्ष्य",
+  "practice.sec_judge": "जज",
+  "profile.change_role": "भूमिका बदलें"
 }

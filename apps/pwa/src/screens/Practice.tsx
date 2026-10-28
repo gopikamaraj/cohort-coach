@@ -2,9 +2,8 @@
 // text; a private feedback card follows. The transcript is kept on this phone only. Judges can
 // turn on a panel that shows the five AI layers of each turn.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChildrenRow, FeedbackView, LayersPanel, Materials, SpriteSpec } from "../components/practice";
+import { ChildrenRow, FeedbackView, LayersPanel, Materials, SectionTabs, SpriteSpec, type Section } from "../components/practice";
 import { CuePanel, ImpactPicker, PracticeTabs, ReviewTab, type PracticeTab } from "../components/review";
-import { LANG_NAMES, type Lang } from "../i18n";
 import { Icon } from "../components/icons";
 import { getConsent, setConsent, recordOnServer, type Choices } from "../lib/consent";
 import { useConsent } from "../lib/useConsent";
@@ -92,7 +91,7 @@ export default function Practice() {
   const consent = useConsent();
   const [tab, setTab] = useState<PracticeTab>("practise");
   const [cueOpen, setCueOpen] = useState(false);
-  const [goalOpen, setGoalOpen] = useState(true); // open until she says her first line, then out of the way
+  const [section, setSection] = useState<Section>("class");
   const [impact, setImpactState] = useState<Impact | undefined>(undefined);
   const [voiceOn, setVoiceOn] = useState(false);
   const [hintsOn, setHintsOn] = useState(false);
@@ -121,8 +120,10 @@ export default function Practice() {
     [],
   );
   useEffect(() => {
-    log.current?.scrollTo({ top: log.current.scrollHeight });
-  }, [turns]);
+    // the newest reply sits just above the box she types in: scroll the screen, not the log
+    const main = log.current?.closest("main");
+    main?.scrollTo({ top: main.scrollHeight });
+  }, [turns, busy]);
 
   const fail = useCallback((e: unknown) => {
     const kind = e instanceof PracticeError ? e.kind : "other";
@@ -144,7 +145,7 @@ export default function Practice() {
     setFlagged(false);
     setImpactState(undefined);
     setCueOpen(false);
-    setGoalOpen(true);
+    setSection("class");
     const urlSeed = query.get("seed");
     try {
       const created = await createSession({
@@ -173,7 +174,6 @@ export default function Practice() {
     setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, why, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [] }]);
     setSpeaker(r.speaker);
     setFaces(Object.fromEntries((r.children ?? []).map((c) => [c.name, c.expression])));
-    if (r.turn === 1) setGoalOpen(false);
     const moveId = r.layers.processing.label.move_id;
     const move = session?.moves.find((m) => m.id === moveId)?.label;
     if (rowId.current !== null) await appendTurn(rowId.current, { turn: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, ...(move ? { move } : {}) });
@@ -316,6 +316,7 @@ export default function Practice() {
   };
   const tap = (m: string) => {
     const names: Record<string, string> = { bundles: tr("practice.bundles"), sticks: tr("practice.sticks"), chart: tr("practice.chart") };
+    setSection("class"); // she sees the child answer
     void doTurn({ material: m }, tr("practice.tapped", { material: names[m] ?? m }));
   };
 
@@ -495,179 +496,186 @@ export default function Practice() {
       <h1 id="pr-title">{tr("practice.title")}</h1>
       {tabs}
       {banner}
-      {session && session.language !== lang ? (
-        <div className="card" role="status" data-testid="lang-banner">
-          <p>{tr("practice.lang_changed", { lang: LANG_NAMES[session.language as Lang] ?? session.language })}</p>
-          <button type="button" className="btn btn-secondary" onClick={() => void start(session.seed)} data-testid="lang-restart">
-            {tr("practice.lang_restart", { lang: LANG_NAMES[lang] })}
-          </button>
-        </div>
-      ) : null}
       {session ? (
-        <details className="card" open={goalOpen} onToggle={(e) => setGoalOpen(e.currentTarget.open)} data-testid="goal">
-          <summary>{tr("practice.goal_title")}</summary>
-          <p>{tr("practice.goal_line", { error: tr(`err.desc.${session.goal.error}` as "err.desc.SUB-SFL") })}</p>
-          <p className="muted">{tr("practice.goal_tips")}</p>
-          <ul className="plain">
-            {session.goal.tips.map((tip) => (
-              <li key={tip}>{tip}</li>
-            ))}
-          </ul>
-        </details>
-      ) : null}
-      {session ? <ChildrenRow children={session.children} speaker={speaker} faces={faces} /> : null}
-      <p className="muted" data-testid="turn-counter">
-        {tr("practice.turn", { n: turns.length, cap })}
-      </p>
-      {judgeMode ? (
-        <button type="button" className="btn btn-secondary" onClick={toggleLayers} aria-pressed={showLayers} data-testid="layers-toggle">
-          {showLayers ? tr("layers.hide") : tr("layers.show")}
-        </button>
-      ) : null}
-      <div className="log" ref={log} aria-live="polite" data-testid="log">
-        {turns.map((t) => (
-          <div key={t.n} className="exchange" data-testid={`turn-${t.n}`}>
-            <p className="said">{t.teacher}</p>
-            <p className="reply" data-testid={`reply-${t.n}`}>
-              {t.child ? (
-                <>
-                  <strong>{t.speaker}</strong>: {t.child} {t.badge !== "none" ? <span className="tick" aria-label={tr("practice.checked")}>✓</span> : null}
-                </>
-              ) : (
-                <em>{tr("practice.silent")}</em>
-              )}
-            </p>
-            {t.why ? <p className="muted" role="status">{tr(t.why)}</p> : null}
-            {t.child && t.written !== null ? (
-              <p className="slate" data-testid={`slate-${t.n}`}>
-                {tr("practice.slate", { who: t.speaker ?? "", n: t.written })}
-              </p>
-            ) : null}
-            {judgeMode && t.child && t.textEn && lang !== "en" ? (
-              <p className="muted" data-testid={`subtitle-${t.n}`}>
-                {tr("watch.subtitle")}: {t.textEn}
-              </p>
-            ) : null}
-            {judgeMode && t.move ? (
-              <p className="muted" data-testid={`move-tag-${t.n}`}>
-                {tr("watch.move", { move: t.move.label })}
-                {t.move.strategy ? `, ${tr("watch.strategy")}` : ""}
-                {t.move.quality === "common_mistake" ? `, ${tr("watch.mistake")}` : ""}
-              </p>
-            ) : null}
-            {judgeMode && t.meters.length > 0 ? <Meters children={t.meters} /> : null}
-            {judgeMode && showLayers ? (
-              <>
-                <LayersPanel layers={t.layers} />
-                <SpriteSpec child={t.meters.find((c) => c.speaking)} />
-              </>
-            ) : null}
-          </div>
-        ))}
-        {busy ? <p className="muted" role="status">{tr("practice.sending")}</p> : null}
-      </div>
-      {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
-      {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
-      {session ? <Materials items={session.materials} itemFor={session.material_items} disabled={busy || over !== null} onTap={tap} /> : null}
-      {session ? (
-        <>
-          <button type="button" className="btn btn-secondary btn-with-icon" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
-            <Icon name="bulb" /> <span>{cueOpen ? tr("cue.hide") : tr("cue.button")}</span>
-          </button>
-          {cueOpen ? (
-            <CuePanel
-              moves={session.moves}
-              onUse={(line) => {
-                setVoiceOn(false); // she will type or edit the line
-                setText(line);
-                setCueOpen(false);
-              }}
-            />
-          ) : null}
-        </>
-      ) : null}
-      {voiceOn ? (
-        <div className="compose">
-          <button
-            type="button"
-            className="btn btn-primary btn-talk"
-            data-testid="talk"
-            data-state={vstate}
-            aria-label={tr("practice.voice_label")}
-            disabled={over !== null || vstate === "thinking" || vstate === "speaking"}
-            onPointerDown={() => void startRec()}
-            onPointerUp={stopRec}
-            onPointerCancel={stopRec}
-            onPointerLeave={stopRec}
-            onKeyDown={(e) => {
-              if ((e.key === " " || e.key === "Enter") && !e.repeat) {
-                e.preventDefault();
-                void startRec();
-              }
-            }}
-            onKeyUp={(e) => {
-              if (e.key === " " || e.key === "Enter") stopRec();
-            }}
-            onContextMenu={(e) => e.preventDefault()}
-          >
-            {vstate === "listening" ? tr("practice.talk_release") : vstate === "thinking" ? tr("practice.sending") : vstate === "speaking" ? tr("practice.speaking") : tr("practice.talk")}
-          </button>
-          {session?.voice.mode === "stub" ? (
-            <p className="muted" data-testid="voice-stub">
-              {tr("practice.voice_stub")}
-            </p>
-          ) : null}
-          <p className="muted" role="status" data-testid="voice-state">
-            {vstate === "listening" ? tr("practice.listening") : ""}
+        <div className="pc-top" data-testid="pc-top">
+          <ChildrenRow children={session.children} speaker={speaker} faces={faces} />
+          <p className="muted pc-count" data-testid="turn-counter">
+            {tr("practice.turn", { n: turns.length, cap })}
           </p>
-          <button type="button" className="btn btn-secondary" onClick={useText} data-testid="use-text">
-            {tr("practice.use_text")}
-          </button>
+          <SectionTabs section={section} onSection={setSection} judge={judgeMode} />
         </div>
-      ) : (
-        <>
-          {judgeMode ? (
-            <label className="check">
-              <input type="checkbox" checked={hintsOn} onChange={(e) => setHintsOn(e.target.checked)} data-testid="hints-toggle" />
-              <span>{tr("hints.toggle")}</span>
-            </label>
-          ) : null}
-          {hintsOn && hintList.length > 0 ? (
-            <div className="stack" data-testid="hints">
-              <p className="muted">{tr("hints.intro")}</p>
-              {hintList.map((h) => (
-                <button key={h.move} type="button" className="btn btn-secondary" disabled={busy || over !== null} onClick={() => void doTurn({ text: h.line }, h.line)} data-testid={`hint-${h.move}`}>
-                  {h.line}
-                </button>
-              ))}
+      ) : null}
+      <div role="tabpanel" id="panel-class" aria-labelledby="sec-class" hidden={section !== "class"}>
+        {/* ideas first, so the newest reply sits right above the box she answers in */}
+        {session ? (
+          <>
+            <button type="button" className="btn btn-secondary btn-with-icon" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
+              <Icon name="bulb" /> <span>{cueOpen ? tr("cue.hide") : tr("cue.button")}</span>
+            </button>
+            {cueOpen ? (
+              <CuePanel
+                moves={session.moves}
+                onUse={(line) => {
+                  setVoiceOn(false); // she will type or edit the line
+                  setText(line);
+                  setCueOpen(false);
+                }}
+              />
+            ) : null}
+          </>
+        ) : null}
+        <div className="log" ref={log} aria-live="polite" data-testid="log">
+          {turns.map((t) => (
+            <div key={t.n} className="exchange" data-testid={`turn-${t.n}`}>
+              <p className="said">{t.teacher}</p>
+              <p className="reply" data-testid={`reply-${t.n}`}>
+                {t.child ? (
+                  <>
+                    <strong>{t.speaker}</strong>: {t.child} {t.badge !== "none" ? <span className="tick" aria-label={tr("practice.checked")}>✓</span> : null}
+                  </>
+                ) : (
+                  <em>{tr("practice.silent")}</em>
+                )}
+              </p>
+              {t.why ? <p className="muted" role="status">{tr(t.why)}</p> : null}
+              {t.child && t.written !== null ? (
+                <p className="slate" data-testid={`slate-${t.n}`}>
+                  {tr("practice.slate", { who: t.speaker ?? "", n: t.written })}
+                </p>
+              ) : null}
+              {judgeMode && t.child && t.textEn && lang !== "en" ? (
+                <p className="muted" data-testid={`subtitle-${t.n}`}>
+                  {tr("watch.subtitle")}: {t.textEn}
+                </p>
+              ) : null}
+              {judgeMode && t.move ? (
+                <p className="muted" data-testid={`move-tag-${t.n}`}>
+                  {tr("watch.move", { move: t.move.label })}
+                  {t.move.strategy ? `, ${tr("watch.strategy")}` : ""}
+                  {t.move.quality === "common_mistake" ? `, ${tr("watch.mistake")}` : ""}
+                </p>
+              ) : null}
+              {judgeMode && t.meters.length > 0 ? <Meters children={t.meters} /> : null}
+              {judgeMode && showLayers ? (
+                <>
+                  <LayersPanel layers={t.layers} />
+                  <SpriteSpec child={t.meters.find((c) => c.speaking)} />
+                </>
+              ) : null}
             </div>
-          ) : null}
-          <form
-            className="compose"
-            onSubmit={(e) => {
-              e.preventDefault();
-              send();
-            }}
-          >
-            <label className="sr" htmlFor="say">
-              {tr("practice.placeholder")}
-            </label>
-            <textarea id="say" rows={2} value={text} placeholder={tr("practice.placeholder")} onChange={(e) => setText(e.target.value)} disabled={busy || over !== null} data-testid="say" />
-            <button type="submit" className="btn btn-primary" disabled={busy || over !== null || text.trim() === ""} data-testid="send">
-              {tr("practice.send")}
+          ))}
+          {busy ? <p className="muted" role="status">{tr("practice.sending")}</p> : null}
+        </div>
+        {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
+        {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
+        {voiceOn ? (
+          <>
+            <div className="compose compose-dock">
+              <button
+                type="button"
+                className="btn btn-primary btn-talk"
+                data-testid="talk"
+                data-state={vstate}
+                aria-label={tr("practice.voice_label")}
+                disabled={over !== null || vstate === "thinking" || vstate === "speaking"}
+                onPointerDown={() => void startRec()}
+                onPointerUp={stopRec}
+                onPointerCancel={stopRec}
+                onPointerLeave={stopRec}
+                onKeyDown={(e) => {
+                  if ((e.key === " " || e.key === "Enter") && !e.repeat) {
+                    e.preventDefault();
+                    void startRec();
+                  }
+                }}
+                onKeyUp={(e) => {
+                  if (e.key === " " || e.key === "Enter") stopRec();
+                }}
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                {vstate === "listening" ? tr("practice.talk_release") : vstate === "thinking" ? tr("practice.sending") : vstate === "speaking" ? tr("practice.speaking") : tr("practice.talk")}
+              </button>
+              {session?.voice.mode === "stub" ? (
+                <p className="muted" data-testid="voice-stub">
+                  {tr("practice.voice_stub")}
+                </p>
+              ) : null}
+              <p className="muted" role="status" data-testid="voice-state">
+                {vstate === "listening" ? tr("practice.listening") : ""}
+              </p>
+            </div>
+            <button type="button" className="btn btn-secondary" onClick={useText} data-testid="use-text">
+              {tr("practice.use_text")}
             </button>
-          </form>
-          {canRecord() ? (
-            <button type="button" className="btn btn-secondary" onClick={useVoice} data-testid="use-voice">
-              {tr("practice.use_voice")}
-            </button>
-          ) : null}
-        </>
-      )}
-      {judgeMode ? <BreakIt /> : null}
-      <button type="button" className="btn btn-secondary" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
-        {tr("practice.end")}
-      </button>
+          </>
+        ) : (
+          <>
+            {hintsOn && hintList.length > 0 ? (
+              <div className="stack" data-testid="hints">
+                <p className="muted">{tr("hints.intro")}</p>
+                {hintList.map((h) => (
+                  <button key={h.move} type="button" className="btn btn-secondary" disabled={busy || over !== null} onClick={() => void doTurn({ text: h.line }, h.line)} data-testid={`hint-${h.move}`}>
+                    {h.line}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            <form
+              className="compose compose-dock"
+              onSubmit={(e) => {
+                e.preventDefault();
+                send();
+              }}
+            >
+              <label className="sr" htmlFor="say">
+                {tr("practice.placeholder")}
+              </label>
+              <textarea id="say" rows={2} value={text} placeholder={tr("practice.placeholder")} onChange={(e) => setText(e.target.value)} disabled={busy || over !== null} data-testid="say" />
+              <button type="submit" className="btn btn-primary" disabled={busy || over !== null || text.trim() === ""} data-testid="send">
+                {tr("practice.send")}
+              </button>
+            </form>
+            {canRecord() ? (
+              <button type="button" className="btn btn-secondary" onClick={useVoice} data-testid="use-voice">
+                {tr("practice.use_voice")}
+              </button>
+            ) : null}
+          </>
+        )}
+        <button type="button" className="btn btn-secondary" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
+          {tr("practice.end")}
+        </button>
+      </div>
+      <div role="tabpanel" id="panel-materials" aria-labelledby="sec-materials" hidden={section !== "materials"}>
+        {session ? <Materials items={session.materials} itemFor={session.material_items} disabled={busy || over !== null} onTap={tap} /> : null}
+      </div>
+      <div role="tabpanel" id="panel-goal" aria-labelledby="sec-goal" hidden={section !== "goal"}>
+        {session ? (
+          <div className="card" data-testid="goal">
+            <h2>{tr("practice.goal_title")}</h2>
+            <p>{tr("practice.goal_line", { error: tr(`err.desc.${session.goal.error}` as "err.desc.SUB-SFL") })}</p>
+            <p className="muted">{tr("practice.goal_tips")}</p>
+            <ul className="plain">
+              {session.goal.tips.map((tip) => (
+                <li key={tip}>{tip}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+      {judgeMode ? (
+        <div role="tabpanel" id="panel-judge" aria-labelledby="sec-judge" hidden={section !== "judge"}>
+          <button type="button" className="btn btn-secondary" onClick={toggleLayers} aria-pressed={showLayers} data-testid="layers-toggle">
+            {showLayers ? tr("layers.hide") : tr("layers.show")}
+          </button>
+          <label className="check">
+            <input type="checkbox" checked={hintsOn} onChange={(e) => setHintsOn(e.target.checked)} data-testid="hints-toggle" />
+            <span>{tr("hints.toggle")}</span>
+          </label>
+          <p className="muted">{tr("layers.judge_only")}</p>
+          <BreakIt />
+        </div>
+      ) : null}
     </section>
   );
 }

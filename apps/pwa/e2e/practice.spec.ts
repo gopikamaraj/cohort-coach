@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { expect, test, type Page, type Request } from "@playwright/test";
+import { chooseRole } from "./switch";
 
 // The recorded rehearsal (evals/sets/practice_scripts/sub-sfl-en.txt, seed 5).
 const LINES = [
@@ -36,8 +37,11 @@ async function rehearse(page: Page, turns: TurnJson[]) {
   let n = 0;
   for (const line of LINES) {
     n += 1;
-    if (line.startsWith("/tap ")) await page.getByTestId(`tap-${line.slice(5)}`).click();
-    else {
+    if (line.startsWith("/tap ")) {
+      await page.getByTestId("sec-materials").click();
+      await page.getByTestId(`tap-${line.slice(5)}`).click();
+      await expect(page.getByTestId("sec-class")).toHaveAttribute("aria-selected", "true"); // back to the class to hear the answer
+    } else {
       await page.getByTestId("say").fill(line);
       await page.getByTestId("send").click();
     }
@@ -99,7 +103,9 @@ test("the AI-layers overlay matches the API trace, for judges only", async ({ pa
   const turns: TurnJson[] = [];
   await rehearse(page, turns);
   await expect(page.getByTestId("layers-panel")).toHaveCount(0);
+  await page.getByTestId("sec-judge").click();
   await page.getByTestId("layers-toggle").click();
+  await page.getByTestId("sec-class").click();
   const panel2 = page.getByTestId("turn-2").getByTestId("layers-panel");
   const t2 = turns[1]!;
   await expect(panel2.getByTestId("layer-input")).toHaveText("Tell me how you got that.");
@@ -109,10 +115,11 @@ test("the AI-layers overlay matches the API trace, for judges only", async ({ pa
   await expect(panel2.getByTestId("layer-output")).toHaveText(`${t2.layers.output.source} · ${t2.layers.output.badge}`);
   for (const label of ["Input", "Processing", "Guardrails", "Evaluation", "Output"]) await expect(panel2).toContainText(label);
 
-  await page.getByTestId("role").selectOption("teacher");
+  await chooseRole(page, "teacher");
   await page.goto("/#/practice?seed=5");
   await page.getByTestId("start-practice").click();
   await expect(page.getByTestId("layers-toggle")).toHaveCount(0); // not for teachers
+  await expect(page.getByTestId("sec-judge")).toHaveCount(0);
 });
 
 test("the server request log holds no transcript text (application logs: tests/practice/test_api.py)", async ({ page }) => {
@@ -243,6 +250,8 @@ test("the screen says what she is practising and lists the moves to try", async 
   await page.goto("/#/practice?seed=5");
   await expect(page.getByTestId("goal-intro")).toContainText("take the smaller digit from the larger");
   await page.getByTestId("start-practice").click();
+  await expect(page.getByTestId("goal")).toBeHidden(); // its own section, so the class comes first
+  await page.getByTestId("sec-goal").click();
   await expect(page.getByTestId("goal")).toBeVisible();
   await expect(page.getByTestId("goal")).toContainText("What to practise");
   expect(await page.getByTestId("goal").locator("li").count()).toBeGreaterThanOrEqual(3);

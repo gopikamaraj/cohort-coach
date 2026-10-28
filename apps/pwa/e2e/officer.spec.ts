@@ -1,4 +1,5 @@
 import { expect, test, type Route } from "@playwright/test";
+import { chooseLanguage } from "./switch";
 
 // The officer's view (P12, reduced). The API is mocked here; the real numbers (engine verdicts,
 // suppression under 5, no ids) are tested in tests/api/test_officer.py. This proves the screen shows
@@ -79,7 +80,7 @@ test("the error map hides a cell under 5 classes, and the screen is labelled sim
 });
 
 test("the officer screen reads in Hindi and has no sideways scroll on a phone", async ({ page }) => {
-  await page.getByTestId("lang").selectOption("hi");
+  await chooseLanguage(page, "hi");
   await expect(page.getByRole("heading", { name: "ट्रैक के नतीजे" })).toBeVisible();
   const wide = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   expect(wide).toBe(false);

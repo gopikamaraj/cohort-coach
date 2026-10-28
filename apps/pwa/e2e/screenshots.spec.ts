@@ -17,8 +17,9 @@ for (const lang of ["en", "hi", "ta"] as const) {
     (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
-    await page.goto("/#/judge");
+    await page.goto("/#/roles");
     await page.getByTestId("lang").selectOption(lang);
+    await page.goto("/#/judge");
     await page.getByTestId("reset").click();
     await page.getByTestId("load-demo").click();
     await expect(page.getByTestId("demo-loaded")).toBeVisible();
@@ -65,11 +66,15 @@ test("Practice Class screenshots: intro, a turn with the AI layers, feedback, AI
     await page.getByTestId("send").click();
   }
   await expect(page.getByTestId("reply-2")).toBeVisible();
+  await page.getByTestId("sec-judge").click();
   await page.getByTestId("layers-toggle").click();
+  await page.getByTestId("sec-class").click();
   await page.getByTestId("turn-2").getByTestId("layers-panel").scrollIntoViewIfNeeded();
   await page.getByTestId("turn-2").getByTestId("layer-output").scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${OUT}en-6-practice-layers.png` });
+  await page.getByTestId("sec-judge").click();
   await page.getByTestId("layers-toggle").click();
+  await page.getByTestId("sec-materials").click();
   await page.getByTestId("tap-bundles").click();
   await page.getByTestId("say").fill("Priya, you only have 2 loose ones. Open a bundle to exchange it for ten sticks.");
   await page.getByTestId("send").click();
@@ -99,8 +104,9 @@ for (const lang of ["hi", "ta"] as const) {
     (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
-    await page.goto("/#/practice");
+    await page.goto("/#/roles");
     await page.getByTestId("lang").selectOption(lang);
+    await page.goto("/#/practice");
     await page.screenshot({ path: `${OUT}${lang}-5-practice-intro.png` });
   });
 }

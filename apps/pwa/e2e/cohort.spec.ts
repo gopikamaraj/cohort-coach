@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
+import { chooseLanguage } from "./switch";
 
 // The cohort chat (P11, reduced). The API is mocked here; the real checks (names blocked, held posts
 // invisible, the roles, retention) are tested in tests/cohorts. This proves the screen: joining needs
@@ -143,8 +144,8 @@ test("a read-only thread says why, and the chat reads in Hindi and Tamil", async
   await page.getByTestId("open-cohort").click();
   await expect(page.getByTestId("read-only")).toContainText("read-only");
   await expect(page.getByTestId("compose")).toHaveCount(0);
-  await page.getByTestId("lang").selectOption("hi");
+  await chooseLanguage(page, "hi");
   await expect(page.getByRole("heading", { name: "कोहॉर्ट चैट" })).toBeVisible();
-  await page.getByTestId("lang").selectOption("ta");
+  await chooseLanguage(page, "ta");
   await expect(page.getByRole("heading", { name: "குழு அரட்டை" })).toBeVisible();
 });
