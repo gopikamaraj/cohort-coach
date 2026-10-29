@@ -1062,5 +1062,7 @@
   "practice.sec_goal": "Goal",
   "practice.sec_judge": "Judge",
   "profile.change_role": "Change role",
-  "admin.closed": "The admin page is closed on this server: no admin key is set."
+  "admin.closed": "The admin page is closed on this server: no admin key is set.",
+  "pilot.au.more_options": "More options",
+  "pilot.sh.sent_to": "Shared with {teachers}"
 }

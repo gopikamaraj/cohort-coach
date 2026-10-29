@@ -1062,5 +1062,7 @@
   "practice.sec_goal": "लक्ष्य",
   "practice.sec_judge": "जज",
   "profile.change_role": "भूमिका बदलें",
-  "admin.closed": "इस सर्वर पर एडमिन पेज बंद है: कोई एडमिन कुंजी सेट नहीं है।"
+  "admin.closed": "इस सर्वर पर एडमिन पेज बंद है: कोई एडमिन कुंजी सेट नहीं है।",
+  "pilot.au.more_options": "और विकल्प",
+  "pilot.sh.sent_to": "{teachers} को साझा किया"
 }

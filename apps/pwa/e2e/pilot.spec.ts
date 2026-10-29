@@ -224,10 +224,13 @@ test("the audio page: empty state, stepper, generate, approval gates sharing; au
   await expect(first.getByTestId("text-only")).toContainText("The audio is made when a teacher first taps");
   await expect(first.getByTestId("download")).toHaveCount(0);
   await expect(first.getByTestId("play")).toHaveCount(0);
+  // the main action is Share; making the audio now is optional, so it waits under More options
+  await expect(first.getByTestId("make-audio")).toBeHidden();
+  await first.getByTestId("more").locator("summary").click();
   await first.getByTestId("make-audio").click();
   await expect(first).toHaveAttribute("data-status", "audio_ready");
-  await expect(first.getByTestId("download")).toBeVisible();
   await expect(first.getByTestId("play")).toBeVisible();
+  await expect(first.getByTestId("download")).toBeVisible(); // More stays open while she works
 });
 
 test("when the phone cannot share, Copy link and Open WhatsApp carry the lesson link", async ({ page }) => {
@@ -246,6 +249,8 @@ test("when the phone cannot share, Copy link and Open WhatsApp carry the lesson 
   await signIn(page);
   await page.getByTestId("nav-audio").click();
   const first = page.getByTestId("card-1");
+  await expect(first.getByTestId("share-fallback")).toHaveCount(0); // not until she taps Share
+  await first.getByTestId("share").click();
   await expect(first.getByTestId("share-fallback")).toBeVisible();
   await expect(first.getByTestId("copy-link")).toBeVisible();
   await expect(first.getByTestId("open-whatsapp")).toBeVisible();

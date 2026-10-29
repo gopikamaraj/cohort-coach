@@ -87,7 +87,7 @@ export default function LessonPage({ token }: { token: string }) {
     <div className="pilot" data-testid="lesson-page">
       <header className="p-top">
         <span className="p-brand">{tr("pilot.title")}</span>
-        <span className={online ? "p-pill-state" : "p-pill-state p-off"}>
+        <span className={online ? "p-pill-state" : "p-pill-state p-off"} data-testid="pilot-net">
           <Icon name="wifi" size={16} />
           {online ? tr("pilot.pill.offline_ready") : tr("pilot.pill.offline_now")}
         </span>
@@ -114,10 +114,6 @@ export default function LessonPage({ token }: { token: string }) {
               </span>
               <span className="p-chip">{lesson.language.toUpperCase()}</span>
             </div>
-            <p className="p-lesson-text" data-testid="lesson-text">
-              {lesson.script}
-            </p>
-
             {audio ? (
               <div className="p-sub" data-testid="lesson-audio">
                 <audio controls src={audio.url} />
@@ -135,6 +131,10 @@ export default function LessonPage({ token }: { token: string }) {
                 </button>
               </div>
             )}
+            <p className="p-lesson-text" data-testid="lesson-text">
+              {lesson.script}
+            </p>
+
             {problem ? (
               <p className="p-msg p-bad" role="alert" data-testid="lesson-problem">
                 <Icon name="close" size={18} />

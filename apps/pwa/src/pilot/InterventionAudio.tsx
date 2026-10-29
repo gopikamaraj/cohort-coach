@@ -407,7 +407,6 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
     if (url) window.open(whatsappUrl(messageWithLink(tr("pilot.sh.lesson_message", { slot: card.slot }), url)), "_blank", "noopener");
   }
 
-  const supportsShare = typeof navigator.share === "function";
 
   return (
     <article className={card.active ? "p-card" : "p-card p-off"} data-testid={`card-${card.slot}`} data-status={card.status} data-active={card.active}>
@@ -451,70 +450,74 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
         </p>
       ) : null}
 
-      <div className="p-actions">
-        {fileOk ? (
-          <button type="button" className="p-pillbtn" disabled={busy} onClick={() => void download()} data-testid="download">
-            <Icon name="download" size={18} />
-            {tr("pilot.au.download")}
-          </button>
-        ) : null}
-        {canShare ? (
-          isCoordinator ? (
-            <button type="button" className="p-pillbtn p-go" disabled={busy || !online} onClick={() => void share()} data-testid="share">
-              <Icon name="send" size={18} />
-              {tr("pilot.au.share_link")}
-            </button>
-          ) : null
-        ) : (
-          <p className="p-small p-muted" style={{ margin: 0 }}>
-            {tr("pilot.au.only_approved")}
-          </p>
-        )}
-        {isCoordinator && canShare && !fileOk ? (
-          <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/render`, jsonInit("POST"), session))} data-testid="make-audio">
-            <Icon name="speaker" size={18} />
-            {tr("pilot.au.make_audio")}
-          </button>
-        ) : null}
-        {isCoach && card.status === "needs_review" ? (
-          <button type="button" className="p-btn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/approve`, jsonInit("POST"), session))} data-testid="approve">
-            <Icon name="ok" size={18} />
-            {tr("pilot.au.approve")}
-          </button>
-        ) : null}
-        {isCoordinator && card.status === "failed" && card.note?.startsWith("audio:") ? (
-          <button type="button" className="p-pillbtn p-go" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/render`, jsonInit("POST"), session))}>
-            <Icon name="refresh" size={18} />
-            {tr("pilot.au.voice_again")}
-          </button>
-        ) : null}
-        {isCoordinator && card.active ? (
-          <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/regenerate`, jsonInit("POST"), session))} data-testid="regenerate">
-            <Icon name="refresh" size={18} />
-            {tr("pilot.au.regenerate")}
-          </button>
-        ) : null}
-      </div>
-
+      {/* One main action per card, by who she is and where the lesson stands; the rest sit under More */}
       {isCoach && card.status === "needs_review" ? (
-        <div className="p-sub">
-          <label className="p-field">
-            <span>{tr("pilot.au.return_reason")}</span>
-            <select value={reason} onChange={(e) => setReason(e.target.value as (typeof REASONS)[number])}>
-              {REASONS.map((r) => (
-                <option key={r} value={r}>
-                  {tr(`pilot.au.reason.${r}` as Key)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/reject`, jsonInit("POST", { reason }), session))}>
-            {tr("pilot.au.return")}
-          </button>
-        </div>
+        <button type="button" className="p-btn p-block" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/approve`, jsonInit("POST"), session))} data-testid="approve">
+          <Icon name="ok" size={18} />
+          {tr("pilot.au.approve")}
+        </button>
+      ) : canShare && isCoordinator ? (
+        <button type="button" className="p-btn p-block" disabled={busy || !online} onClick={() => void share()} data-testid="share">
+          <Icon name="send" size={18} />
+          {tr("pilot.au.share_link")}
+        </button>
+      ) : null}
+      {!canShare ? (
+        <p className="p-small p-muted" style={{ margin: "8px 0 0" }}>
+          {tr("pilot.au.only_approved")}
+        </p>
       ) : null}
 
-      {canShare && (fallback || !supportsShare) && isCoordinator ? (
+      {fileOk || (isCoordinator && (canShare || card.active)) || (isCoach && card.status === "needs_review") ? (
+        <details className="p-more" data-testid="more">
+          <summary>{tr("pilot.au.more_options")}</summary>
+          <div className="p-actions">
+            {fileOk ? (
+              <button type="button" className="p-pillbtn" disabled={busy} onClick={() => void download()} data-testid="download">
+                <Icon name="download" size={18} />
+                {tr("pilot.au.download")}
+              </button>
+            ) : null}
+            {isCoordinator && canShare && !fileOk ? (
+              <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/render`, jsonInit("POST"), session))} data-testid="make-audio">
+                <Icon name="speaker" size={18} />
+                {tr("pilot.au.make_audio")}
+              </button>
+            ) : null}
+            {isCoordinator && card.status === "failed" && card.note?.startsWith("audio:") ? (
+              <button type="button" className="p-pillbtn p-go" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/render`, jsonInit("POST"), session))}>
+                <Icon name="refresh" size={18} />
+                {tr("pilot.au.voice_again")}
+              </button>
+            ) : null}
+            {isCoordinator && card.active ? (
+              <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/regenerate`, jsonInit("POST"), session))} data-testid="regenerate">
+                <Icon name="refresh" size={18} />
+                {tr("pilot.au.regenerate")}
+              </button>
+            ) : null}
+          </div>
+          {isCoach && card.status === "needs_review" ? (
+            <div className="p-sub">
+              <label className="p-field">
+                <span>{tr("pilot.au.return_reason")}</span>
+                <select value={reason} onChange={(e) => setReason(e.target.value as (typeof REASONS)[number])}>
+                  {REASONS.map((r) => (
+                    <option key={r} value={r}>
+                      {tr(`pilot.au.reason.${r}` as Key)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button type="button" className="p-pillbtn" disabled={busy || !online} onClick={() => void act(() => pilotJson(`/api/pilot/audio/${card.id}/reject`, jsonInit("POST", { reason }), session))}>
+                {tr("pilot.au.return")}
+              </button>
+            </div>
+          ) : null}
+        </details>
+      ) : null}
+
+      {canShare && fallback && isCoordinator ? (
         <div className="p-sub" data-testid="share-fallback">
           <h2>{tr("pilot.sh.title")}</h2>
           <p className="p-small">{tr("pilot.sh.unsupported")}</p>
@@ -536,7 +539,7 @@ function AudioCard({ card, isCoordinator, isCoach, onChanged, onLog, setMsg }: C
 
       {card.shared_with.length > 0 ? (
         <p className="p-small p-muted" style={{ marginTop: 8, marginBottom: 0 }}>
-          {tr("pilot.sh.log.title")} {card.shared_with.join(", ")}
+          {tr("pilot.sh.sent_to", { teachers: card.shared_with.join(", ") })}
         </p>
       ) : null}
 
