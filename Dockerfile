@@ -16,6 +16,8 @@ COPY ai ./ai
 COPY services ./services
 COPY content ./content
 COPY strings ./strings
+# The assistant's scope for each role (its indexes are bundled under services/assistant/index/).
+COPY assistant_scopes.yaml ./assistant_scopes.yaml
 # The pilot forms the item validator checks scripts against (read at run time).
 COPY docs/design/pilot_forms.golden.json ./docs/design/pilot_forms.golden.json
 COPY data/__init__.py ./data/__init__.py

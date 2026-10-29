@@ -1,0 +1,6 @@
+{
+  "url": null,
+  "length_s": 175,
+  "final": false,
+  "note": "Set url to the public YouTube address and length_s to the real length once the video is uploaded; then set final to true and update video_script.md to the real times."
+}

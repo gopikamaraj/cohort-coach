@@ -1,0 +1,152 @@
+[
+ {
+  "id": "m01",
+  "text": {
+   "en": "How do I record my method?",
+   "hi": "मैं अपनी विधि कैसे रिकॉर्ड करूँ?",
+   "ta": "என் முறையை எப்படிப் பதிவு செய்வது?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "record my method card how"
+ },
+ {
+  "id": "m02",
+  "text": {
+   "en": "What happened with my card?",
+   "hi": "मेरे कार्ड का क्या हुआ?",
+   "ta": "என் அட்டைக்கு என்ன ஆனது?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "my card states submitted awaiting coach approved in use"
+ },
+ {
+  "id": "m03",
+  "text": {
+   "en": "What does the coach check?",
+   "hi": "कोच क्या जाँचता है?",
+   "ta": "பயிற்சியாளர் எதைச் சரிபார்க்கிறார்?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what does the coach check"
+ },
+ {
+  "id": "m04",
+  "text": {
+   "en": "Who is a mentor?",
+   "hi": "मेंटर कौन होता है?",
+   "ta": "வழிகாட்டி யார்?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "who is a mentor proven candidate"
+ },
+ {
+  "id": "m05",
+  "text": {
+   "en": "Can I see which teachers tried my card?",
+   "hi": "क्या मैं देख सकती हूँ कि किन शिक्षकों ने मेरा कार्ड आज़माया?",
+   "ta": "என் அட்டையை எந்த ஆசிரியர்கள் முயன்றனர் என்று நான் பார்க்க முடியுமா?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "which teachers tried my card see counts"
+ },
+ {
+  "id": "m06",
+  "text": {
+   "en": "How much time does this take?",
+   "hi": "इसमें कितना समय लगता है?",
+   "ta": "இதற்கு எவ்வளவு நேரம் ஆகும்?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "mentor time thirty minutes a week"
+ },
+ {
+  "id": "m07",
+  "text": {
+   "en": "Can I answer a teacher's question in the thread?",
+   "hi": "क्या मैं थ्रेड में शिक्षक के सवाल का जवाब दे सकती हूँ?",
+   "ta": "ஆசிரியரின் கேள்விக்கு நூலில் பதில் சொல்லலாமா?"
+  },
+  "screens": [
+   "cohort"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "answer a teacher question cohort thread"
+ },
+ {
+  "id": "m08",
+  "text": {
+   "en": "What does the cohort thread show?",
+   "hi": "कोहॉर्ट थ्रेड में क्या दिखता है?",
+   "ta": "குழு நூலில் என்ன தெரியும்?"
+  },
+  "screens": [
+   "cohort"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "cohort thread pseudonyms phone numbers child name"
+ },
+ {
+  "id": "m09",
+  "text": {
+   "en": "What happens if the coach sends my card back?",
+   "hi": "अगर कोच मेरा कार्ड वापस भेजे तो क्या होगा?",
+   "ta": "பயிற்சியாளர் என் அட்டையைத் திருப்பி அனுப்பினால் என்ன ஆகும்?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "coach sends card back changes requested reason"
+ },
+ {
+  "id": "m10",
+  "text": {
+   "en": "When does my card reach teachers?",
+   "hi": "मेरा कार्ड शिक्षकों तक कब पहुँचता है?",
+   "ta": "என் அட்டை ஆசிரியர்களை எப்போது அடையும்?"
+  },
+  "screens": [
+   "mentor"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "when does my card reach teachers coach approves in use"
+ }
+]

@@ -146,6 +146,26 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M8 12.5l2.7 2.7L16 9.5" />
     </>
   ),
+  cloud: <path d="M7 18a4 4 0 01-.6-7.95A5.5 5.5 0 0117.1 8.6 4.7 4.7 0 0117 18z" />,
+  cloudoff: (
+    <>
+      <path d="M9.2 6.2A5.5 5.5 0 0117.1 8.6 4.7 4.7 0 0120 13M17 18H7a4 4 0 01-.4-7.98M4 4l16 16" />
+    </>
+  ),
+  signal: <path d="M5 20v-4M10 20v-8M15 20V8M20 20V4" />,
+  install: (
+    <>
+      <rect x="7" y="2.5" width="10" height="19" rx="2" />
+      <path d="M12 7v7M9 11.5l3 3 3-3" />
+    </>
+  ),
+  mode: (
+    <>
+      <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+      <circle cx="16" cy="7" r="2" />
+      <circle cx="8" cy="17" r="2" />
+    </>
+  ),
   close: <path d="M6 6l12 12M18 6L6 18" />,
   chevron: <path d="M9 5l7 7-7 7" />,
   wifi: (

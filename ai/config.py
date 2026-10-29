@@ -18,6 +18,7 @@ DEFAULT_MODELS: dict[str, str] = {
     "MODEL_SPRITE": "claude-sonnet-5-5",  # call 11 (sprite item authoring), offline only
     "MODEL_CHAT_CLASS": "claude-haiku-5-5",  # call 12 (class of a teacher's question to her mentor)
     "MODEL_CHAT": "claude-sonnet-5-5",  # call 13 (draft of a reply from approved material)
+    "MODEL_ASSIST": "claude-sonnet-5-5",  # call 14 (the role-scoped assistant's answer)
     "MODEL_CHECK": "claude-haiku-5-5",
     "MODEL_READ": "claude-haiku-5-5",
     "MODEL_READ_RETRY": "claude-sonnet-5-5",
@@ -71,6 +72,7 @@ POLICIES: dict[str, CallPolicy] = {
     "c11_sprite_author": CallPolicy(timeout_s=60, max_retries=2, effort="medium", max_tokens=2500),
     "c12_chat_classify": CallPolicy(10, 1, "low", 200, thinking="off"),
     "c13_chat_reply": CallPolicy(timeout_s=40, max_retries=1, effort="medium", max_tokens=1500),
+    "c14_assistant_answer": CallPolicy(timeout_s=30, max_retries=1, effort="low", max_tokens=1200),
 }
 
 

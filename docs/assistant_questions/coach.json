@@ -1,0 +1,153 @@
+[
+ {
+  "id": "c01",
+  "text": {
+   "en": "What is waiting for me?",
+   "hi": "मेरे लिए क्या रुका है?",
+   "ta": "எனக்காக என்ன காத்திருக்கிறது?"
+  },
+  "screens": [
+   "review",
+   "cohort"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what is waiting review queue age"
+ },
+ {
+  "id": "c02",
+  "text": {
+   "en": "Which drafts came from the AI?",
+   "hi": "कौन से ड्राफ़्ट एआई से आए?",
+   "ta": "எந்த வரைவுகள் AI-இடமிருந்து வந்தன?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "which drafts came from the AI"
+ },
+ {
+  "id": "c03",
+  "text": {
+   "en": "Which cohorts have gone quiet?",
+   "hi": "कौन से समूह शांत हो गए हैं?",
+   "ta": "எந்தக் குழுக்கள் அமைதியாகிவிட்டன?"
+  },
+  "screens": [
+   "cohort"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "which cohorts have gone quiet"
+ },
+ {
+  "id": "c04",
+  "text": {
+   "en": "How do I approve a document?",
+   "hi": "मैं दस्तावेज़ कैसे मंज़ूर करूँ?",
+   "ta": "ஒரு ஆவணத்தை எப்படி அங்கீகரிப்பது?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "how do I approve a document coach key"
+ },
+ {
+  "id": "c05",
+  "text": {
+   "en": "What reasons can I give when I send something back?",
+   "hi": "कुछ वापस भेजते समय मैं कौन से कारण दे सकती हूँ?",
+   "ta": "ஒன்றைத் திருப்பி அனுப்பும்போது என்ன காரணங்கள் தரலாம்?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "reasons send back wrong maths culturally off tone"
+ },
+ {
+  "id": "c06",
+  "text": {
+   "en": "What do the automatic checks do?",
+   "hi": "स्वचालित जाँचें क्या करती हैं?",
+   "ta": "தானியங்கிச் சரிபார்ப்புகள் என்ன செய்கின்றன?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "automatic checks validators pre-filter output checker"
+ },
+ {
+  "id": "c07",
+  "text": {
+   "en": "Can I see how one teacher is doing?",
+   "hi": "क्या मैं देख सकती हूँ कि एक शिक्षक कैसा कर रहा है?",
+   "ta": "ஒரு ஆசிரியர் எப்படிச் செய்கிறார் என்று பார்க்கலாமா?"
+  },
+  "screens": [
+   "cohort"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "see how one teacher is doing ranking"
+ },
+ {
+  "id": "c08",
+  "text": {
+   "en": "How do I moderate the thread?",
+   "hi": "मैं थ्रेड को कैसे मॉडरेट करूँ?",
+   "ta": "நூலை எப்படி நெறிப்படுத்துவது?"
+  },
+  "screens": [
+   "cohort"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "moderate the thread hide erase restore pin reported"
+ },
+ {
+  "id": "c09",
+  "text": {
+   "en": "What is the officer's key for?",
+   "hi": "अधिकारी की चाबी किसलिए है?",
+   "ta": "அதிகாரியின் சாவி எதற்கு?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "officer key switches on version two keys"
+ },
+ {
+  "id": "c10",
+  "text": {
+   "en": "How much time should this take?",
+   "hi": "इसमें कितना समय लगना चाहिए?",
+   "ta": "இதற்கு எவ்வளவு நேரம் ஆக வேண்டும்?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "coach time thirty minutes weekly batch"
+ }
+]

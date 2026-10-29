@@ -12,7 +12,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 OUT = Path(__file__).resolve().parent.parent / "apps" / "pwa" / "public"
-SLATE, PAPER, STICK, INK = "#1F3A33", "#FBFCFD", "#E8B93C", "#14201F"
+# --slate, --paper, --stick and --ink in apps/pwa/src/theme.css
+SLATE, PAPER, STICK, INK = "#0F3B3B", "#F7FAFA", "#E8B93C", "#191C1C"
 
 
 def draw(size: int, safe: float) -> Image.Image:

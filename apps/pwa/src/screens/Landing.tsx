@@ -2,9 +2,9 @@
 // from the server's role config (what the role can and cannot do), then the role's dashboard.
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "../components/icons";
-import type { Key } from "../i18n";
+import { InstallEntry } from "../components/install";
 import { CAN_SWITCH_MODE } from "../lib/api";
-import { switchMode } from "../lib/mode";
+import type { Key } from "../i18n";
 import { go, useQuery, type Route } from "../lib/router";
 import { dialogSeen, loadRoles, markDialogSeen, type RoleConfig, type RoleId, type RolesResponse } from "../lib/roles";
 import { useApp, type Role } from "../state";
@@ -90,29 +90,29 @@ export default function Landing() {
 
   const cfg = data?.roles.find((r) => r.id === open) ?? null;
   return (
-    <section aria-labelledby="landing-title">
-      <h1 id="landing-title">{tr("landing.title")}</h1>
-      <div className="panel" data-testid="mode-banner">
-        <p>
-          <strong>{tr("mode.label")}:</strong> {tr("mode.judge")} <span className="muted">({tr("mode.judge_hint")})</span>
-        </p>
-        <p data-testid="mode-role">
-          <strong>{tr("mode.role")}:</strong> {tr(`role.${role === "judge" ? "teacher" : role}` as Key)}
-        </p>
-        {CAN_SWITCH_MODE ? (
-          <>
-            <p className="muted">{tr("mode.pilot_hint")}</p>
-            <button type="button" className="btn btn-secondary" onClick={() => switchMode("pilot")} data-testid="mode-to-pilot">
-              {tr("mode.switch_pilot")}
-            </button>
-          </>
-        ) : null}
+    <section className="landing" aria-labelledby="landing-title">
+      <div className="l-hero">
+        <h1 id="landing-title">{tr("landing.title")}</h1>
+        <p className="l-lead">{tr("landing.intro")}</p>
+        <ul className="l-chips" data-testid="mode-banner">
+          <li className="m-chip" title={tr("mode.judge_hint")}>
+            <Icon name="mode" size={18} />
+            <span>
+              <strong>{tr("mode.label")}:</strong> {tr("mode.judge")}
+            </span>
+          </li>
+          <li className="m-chip" data-testid="mode-role">
+            <Icon name="profile" size={18} />
+            <span>
+              <strong>{tr("mode.role")}:</strong> {tr(`role.${role === "judge" ? "teacher" : role}` as Key)}
+            </span>
+          </li>
+        </ul>
       </div>
-      <p>{tr("landing.intro")}</p>
       {failed ? (
-        <div role="alert" data-testid="landing-error">
+        <div className="m-note m-note-error" role="alert" data-testid="landing-error">
           <p>{tr("flow.error")}</p>
-          <button type="button" className="btn btn-primary" onClick={load}>
+          <button type="button" className="m-btn m-btn-filled" onClick={load}>
             {tr("flow.retry")}
           </button>
         </div>
@@ -120,25 +120,35 @@ export default function Landing() {
       {cfg ? (
         <Dialog cfg={cfg} onEnter={() => enter(cfg.id)} onWalk={() => { markDialogSeen(cfg.id); setRole(cfg.id as Role); window.location.hash = `/tour/${WALK_START[cfg.id]}`; }} onBack={() => setOpen(null)} />
       ) : (
-        <div className="role-cards" data-testid="role-cards">
-          <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
-            <Icon name="judge" size={28} />
-            <span>
-              <strong className="role-name">{tr("landing.tour")}</strong>
-              <span className="muted role-line">{tr("landing.tour_hint")}</span>
-            </span>
-          </a>
-          {data?.roles.map((r) => (
-            <button key={r.id} type="button" className="tile" onClick={() => choose(r.id)} data-testid={`card-${r.id}`}>
-              <Icon name={ICON[r.id]} size={28} />
-              <span>
-                <strong className="role-name">{tr(`role.${r.id}` as Key)}</strong>
-                <span className="muted role-line">{tr(r.holders as Key)}</span>
-                <span className="role-line">{tr(r.card as Key)}</span>
+        <>
+          <div className="role-cards" data-testid="role-cards">
+            <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
+              <span className="m-iconwell m-iconwell-on" aria-hidden="true">
+                <Icon name="judge" size={28} />
               </span>
-            </button>
-          ))}
-        </div>
+              <span className="l-card-text">
+                <strong className="role-name">{tr("landing.tour")}</strong>
+                <span className="role-line">{tr("landing.tour_hint")}</span>
+              </span>
+              <Icon name="chevron" size={24} className="l-go" />
+            </a>
+            {data?.roles.map((r) => (
+              <button key={r.id} type="button" className="tile" onClick={() => choose(r.id)} data-testid={`card-${r.id}`}>
+                <span className="m-iconwell" aria-hidden="true">
+                  <Icon name={ICON[r.id]} size={28} />
+                </span>
+                <span className="l-card-text">
+                  <strong className="role-name">{tr(`role.${r.id}` as Key)}</strong>
+                  <span className="muted role-line">{tr(r.holders as Key)}</span>
+                  <span className="role-line">{tr(r.card as Key)}</span>
+                </span>
+                <Icon name="chevron" size={24} className="l-go" />
+              </button>
+            ))}
+          </div>
+          <InstallEntry variant="card" />
+          {CAN_SWITCH_MODE ? <p className="muted l-foot">{tr("landing.pilot_note")}</p> : null}
+        </>
       )}
     </section>
   );

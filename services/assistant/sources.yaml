@@ -1,0 +1,67 @@
+# What each namespace may be built from. Only files matched here are ever read; anything else in the
+# repository (data folders, photos, .env files, pilot records, the code itself) is never indexed.
+# `deny` wins over every pattern. Patterns are relative to the repository root.
+#
+# teacher_kb and coach_kb hold approved (and, for the coach, draft) lesson documents. Those live in
+# the database and are served by the cohort chat; no approved document is bundled with the build, so
+# both namespaces are empty here and the assistant says it cannot answer lesson questions.
+
+deny:
+  - "**/.env*"
+  - "data/**"
+  - "docs/evidence/**"
+  - "docs/user-testing/**"
+  - "docs/design/stitch/exports/**"
+  - "**/*.png"
+  - "**/*.jpg"
+  - "**/*.jpeg"
+  - "**/*.pdf"
+  - "**/*.csv"
+  - "**/*.sqlite"
+  - "gcp/**"
+  - "node_modules/**"
+  - ".venv/**"
+
+namespaces:
+  judge:
+    kind: markdown
+    files:
+      - README.md
+      - AI_USAGE.md
+      - CLAUDE.md
+      - docs/build/DECISIONS.md
+      - docs/build/PROGRESS.md
+      - docs/*.md
+      - docs/design/cohort-coach-design.md
+      - docs/design/addendum-v3.1.md
+      - docs/design/evidence-digest.md
+      - docs/design/sprite-system.md
+      - docs/help/judge.md
+      - evals/results.md
+      - evals/assistant_eval.md
+  judge_deck:
+    into: judge
+    kind: slides
+    files: [docs/submission/slides.md]
+  judge_video:
+    into: judge
+    kind: video
+    files: [docs/submission/video_script.md]
+  product_help:
+    kind: markdown
+    files: [docs/help/product.md, docs/help/teacher.md]
+  mentor_help:
+    kind: markdown
+    files: [docs/help/mentor.md]
+  coach_help:
+    kind: markdown
+    files: [docs/help/coach.md]
+  officer_help:
+    kind: markdown
+    files: [docs/help/officer.md]
+  teacher_kb:
+    kind: markdown
+    files: []
+  coach_kb:
+    kind: markdown
+    files: []

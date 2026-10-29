@@ -1,26 +1,5 @@
-/* Tokens: docs/design-system.md. System fonts only; no images; no shadows. */
-:root {
-  --paper: #fbfcfd;
-  --ink: #14201f;
-  --muted: #4a5856;
-  --pen: #1b4f9c;
-  --margin: #b3261e;
-  --stick: #e8b93c;
-  --slate: #1f3a33;
-  --chalk: #f2f5f0;
-  --rule: #9db4d2;
-  --s1: 4px;
-  --s2: 8px;
-  --s3: 12px;
-  --s4: 16px;
-  --s5: 24px;
-  --s6: 32px;
-  font-family: system-ui, "Noto Sans Devanagari", "Noto Sans Tamil", sans-serif;
-  font-size: 18px;
-  line-height: 1.5;
-  color: var(--ink);
-  color-scheme: light;
-}
+/* Layout and components. Every colour, corner, spacing step and type size is a token from
+   theme.css (docs/design-system.md); no colour literal belongs in this file. */
 
 * {
   box-sizing: border-box;
@@ -77,7 +56,7 @@ ul.cards {
   height: 100vh;
   height: 100dvh;
   background: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(157, 180, 210, 0.35) 31px, rgba(157, 180, 210, 0.35) 32px);
+  background-image: var(--frame-ruling);
 }
 /* Larger screens: the same app grows into a centred column, never a fixed phone frame. */
 @media (min-width: 768px) {
@@ -85,14 +64,14 @@ ul.cards {
     display: flex;
     justify-content: center;
     padding: var(--s5) var(--s4);
-    background: #e9edf1;
+    background: var(--stage-bg);
   }
   .frame {
     width: min(100%, 820px);
     height: calc(100vh - 48px);
     height: calc(100dvh - 48px);
     border: 1px solid var(--rule);
-    border-radius: 12px;
+    border-radius: var(--r-chip);
     overflow: hidden;
   }
   main {
@@ -103,9 +82,6 @@ ul.cards {
   }
 }
 @media (min-width: 1200px) {
-  :root {
-    font-size: 19px;
-  }
   .frame {
     width: min(100%, 1000px);
   }
@@ -151,25 +127,44 @@ ol.prog {
 
 .strip {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--s2);
   padding: var(--s2) var(--s3);
-  background: var(--slate);
+  background: var(--chalk);
+  border-bottom: 1px solid var(--line);
+}
+.strip label {
+  flex: 1 1 96px;
+  min-width: 0;
+}
+.strip label:has([data-testid="mode"]) {
+  flex: 1.4 1 124px;
 }
 .strip select {
+  text-overflow: ellipsis;
+}
+/* Hindi and Tamil words are longer: two menus to a row, the third wraps, instead of cutting the words. */
+html:not([lang="en"]) .strip label,
+html:not([lang="en"]) .strip label:has([data-testid="mode"]) {
+  flex-basis: 150px;
+}
+.strip select {
+  width: 100%;
   min-height: 48px;
   font: inherit;
   font-size: 16px;
   padding: 0 var(--s2);
-  background: var(--chalk);
+  background: var(--surface);
   color: var(--ink);
-  border: 1px solid var(--chalk);
-  border-radius: 2px;
+  border: 1px solid var(--outline);
+  border-radius: var(--r-btn);
 }
 .top {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: var(--s2);
+  gap: var(--s1) var(--s2);
   padding: var(--s2) var(--s4);
   border-bottom: 1px solid var(--rule);
   background: var(--paper);
@@ -182,17 +177,53 @@ ol.prog {
   font-size: 20px;
   color: inherit;
   text-decoration: none;
+  white-space: nowrap;
 }
+/* The signal pill: an icon and a word (never colour alone); a speed estimate follows when the browser gives one. */
 .status {
-  display: flex;
+  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--s1);
+  gap: var(--s1) var(--s2);
   margin: 0;
+  padding: var(--s1) var(--s3);
+  min-height: 32px;
   font-size: 16px;
   color: var(--muted);
+  background: var(--chalk);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+.status > .icon {
+  flex: none;
 }
 .status-off {
-  color: var(--margin);
+  color: var(--on-warn-container);
+  background: var(--warn-container);
+  border-color: var(--warn);
+}
+.status-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  padding-left: var(--s2);
+  border-left: 1px solid var(--rule);
+}
+/* What still works with no signal, under the header, in her language. */
+.offline-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  margin: 0;
+  padding: var(--s2) var(--s4);
+  font-size: 16px;
+  color: var(--on-warn-container);
+  background: var(--warn-container);
+  border-bottom: 1px solid var(--warn);
+}
+.offline-note .icon {
+  flex: none;
+  margin-top: 2px;
 }
 main {
   flex: 1;
@@ -201,7 +232,7 @@ main {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   padding: var(--s4);
-  background: rgba(251, 252, 253, 0.9);
+  background: var(--paper);
 }
 .navbar {
   display: flex;
@@ -250,12 +281,12 @@ main {
   font-weight: 600;
   text-align: center;
   text-decoration: none;
-  border-radius: 2px;
+  border-radius: var(--r-btn);
   cursor: pointer;
 }
 .btn-primary {
   background: var(--pen);
-  color: #fff;
+  color: var(--on-pen);
   border: 1px solid var(--pen);
 }
 .btn-secondary {
@@ -312,7 +343,7 @@ ol.steps li {
   font: inherit;
   background: var(--paper);
   border: 1px solid var(--rule);
-  border-radius: 2px;
+  border-radius: var(--r-btn);
 }
 .box:focus-within {
   border: 2px solid var(--pen);
@@ -325,9 +356,9 @@ ol.steps li {
   font-size: 20px;
   font-weight: 700;
   color: var(--ink);
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--ink);
-  border-radius: 2px;
+  border-radius: var(--r-btn);
 }
 .box-input::placeholder {
   font-size: 16px;
@@ -349,10 +380,10 @@ ol.steps li {
   color: var(--ink);
   background: var(--paper);
   border: 1px solid var(--rule);
-  border-radius: 2px;
+  border-radius: var(--r-btn);
 }
 .mark-on {
-  color: #fff;
+  color: var(--on-pen);
   background: var(--pen);
   border-color: var(--pen);
 }
@@ -486,7 +517,7 @@ ol.steps li {
   background: var(--paper);
   color: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: 2px;
+  border-radius: var(--r-btn);
 }
 .tool:disabled {
   opacity: 0.55;
@@ -501,7 +532,7 @@ ol.steps li {
   padding: var(--s2) var(--s3);
   font: inherit;
   border: 1px solid var(--ink);
-  border-radius: 2px;
+  border-radius: var(--r-btn);
   background: var(--paper);
   color: var(--ink);
   resize: vertical;
@@ -549,7 +580,7 @@ ol.steps li {
   grid-template-columns: 96px 1fr;
   gap: var(--s2);
   padding: var(--s1) 0;
-  border-top: 1px solid rgba(242, 245, 240, 0.3);
+  border-top: 1px solid var(--on-slate-line);
 }
 .layer dt {
   font-weight: 700;
@@ -612,13 +643,13 @@ ol.steps li {
 }
 
 .box-check {
-  border-color: #b45309;
-  background: #fff7ed;
+  border-color: var(--warn);
+  background: var(--warn-container);
 }
 .box-flag {
   display: block;
   font-size: 0.75rem;
-  color: #b45309;
+  color: var(--warn);
 }
 .photo-btn {
   display: flex;
@@ -633,24 +664,16 @@ ol.steps li {
 
 .cue-line { text-align: left; width: 100%; margin: 4px 0; white-space: normal; height: auto; }
 .review-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin: 6px 0; text-align: left; height: auto; }
-.chip { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #e2e8f0; font-size: 0.85rem; }
-.chip-positive { background: #dcfce7; }
-.chip-none { background: #e2e8f0; }
-.chip-negative { background: #fee2e2; }
+.chip { display: inline-block; padding: 2px 10px; border-radius: var(--r-pill); background: var(--tonal); font-size: 0.85rem; }
+.chip-positive { background: var(--good-container); }
+.chip-none { background: var(--tonal); }
+.chip-negative { background: var(--margin-container); }
 .impact .row { flex-wrap: wrap; }
 .subtabs { display: flex; gap: 8px; margin: 8px 0 12px; }
-.subtab { flex: 1; min-height: 48px; border: 2px solid #cbd5e1; background: #fff; border-radius: 10px; font: inherit; }
-.subtab-on { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
+.subtab { flex: 1; min-height: 48px; border: 2px solid var(--rule); background: var(--surface); border-radius: var(--r-btn); font: inherit; }
+.subtab-on { background: var(--pen); color: var(--on-pen); border-color: var(--pen); }
 
 /* ---- Professional polish: icons, tiles, panels, toasts (docs/ui-guidelines.md) ---- */
-:root {
-  --radius: 12px;
-  --good: #1f7a4d;
-  --warn: #b45309;
-  --bad: #b3261e;
-  --surface: #ffffff;
-  --line: #d5dde6;
-}
 .icon {
   flex: none;
   vertical-align: middle;
@@ -743,10 +766,10 @@ h2 .icon {
   align-items: center;
   gap: var(--s2);
   padding: var(--s3);
-  color: #fff;
+  color: var(--on-pen);
   background: var(--slate);
   border-radius: var(--radius);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--elev-float);
 }
 .toast-ok {
   background: var(--good);
@@ -800,7 +823,7 @@ h2 .icon {
   font: inherit;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--r-btn);
 }
 .inline-form {
   display: flex;
@@ -924,7 +947,7 @@ h2 .icon {
   display: block;
   height: 10px;
   border: 1px solid var(--rule);
-  background: #fff;
+  background: var(--surface);
 }
 .meter > span {
   display: block;
@@ -935,7 +958,7 @@ h2 .icon {
   display: inline-block;
   padding: 2px 10px;
   border: 2px solid var(--pen);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-weight: 600;
 }
 .row {
@@ -956,8 +979,8 @@ h2 .icon {
   margin: 0;
   padding: 4px 10px;
   border: 2px solid var(--rule);
-  background: #2f3b3a;
-  color: #f4f1e8;
+  background: var(--slate);
+  color: var(--chalk);
   display: inline-block;
 }
 
@@ -1076,7 +1099,7 @@ h2 .icon {
   position: absolute;
   inset: 0;
   z-index: 20;
-  background: rgba(20, 32, 31, 0.35);
+  background: var(--scrim);
   border: 0;
   padding: 0;
 }
@@ -1216,4 +1239,447 @@ form.compose-dock {
     margin: var(--s3) calc(-1 * var(--s6)) 0;
     padding: var(--s2) var(--s6) var(--s5);
   }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Landing page and install sheet: Material 3 as the Stitch design file sets it (docs/design/stitch/
+   DESIGN.md, "Calm Institutional Material"): tonal containers instead of shadows, 16 px cards,
+   8 px buttons, pill chips, icons in tonal wells, state layers for hover, focus and press, 48 px
+   targets. The tokens are scoped here; the rest of the app keeps its own palette until it is rebuilt.
+   --------------------------------------------------------------------------------------------- */
+.landing,
+.sheet {
+  color: var(--ink);
+}
+.landing {
+  padding-bottom: var(--s6);
+}
+.l-hero h1 {
+  margin: var(--s1) 0 var(--s2);
+  font-size: 28px;
+  line-height: 36px;
+}
+.l-lead {
+  margin: 0 0 var(--s3);
+  color: var(--muted);
+}
+.l-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: 0 0 var(--s4);
+  padding: 0;
+  list-style: none;
+}
+.m-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 40px;
+  padding: var(--s1) var(--s3);
+  color: var(--on-pen-container);
+  background: var(--tonal);
+  border-radius: var(--r-chip);
+}
+.m-chip .icon {
+  flex: none;
+}
+.m-chip-info {
+  background: var(--pen-container);
+}
+.m-chip-info span::first-letter {
+  text-transform: uppercase;
+}
+.m-iconwell {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  color: var(--pen);
+  background: var(--tonal);
+  border-radius: 50%;
+}
+.m-iconwell .icon {
+  color: inherit;
+}
+.m-iconwell-lg {
+  width: 56px;
+  height: 56px;
+}
+.m-iconwell-on {
+  color: var(--on-pen);
+  background: var(--pen);
+}
+
+/* Cards: a row on a phone (icon, words, arrow), a column on a wide screen. */
+.landing .role-cards {
+  gap: var(--s3);
+  margin: 0 0 var(--s3);
+}
+.landing .role-cards .tile {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--s4);
+  width: 100%;
+  min-height: 96px;
+  padding: var(--s4);
+  text-align: left;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.landing .role-cards .tile::after,
+.m-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--pen);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.landing .role-cards .tile:hover::after,
+.m-btn:hover::after {
+  opacity: 0.08;
+}
+.landing .role-cards .tile:focus-visible::after,
+.landing .role-cards .tile:active::after,
+.m-btn:focus-visible::after,
+.m-btn:active::after {
+  opacity: 0.12;
+}
+.landing .role-cards .tile > .l-card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+.landing .role-cards .tile > .m-iconwell {
+  display: grid;
+  place-items: center;
+}
+.landing .role-cards .tile .role-name {
+  font-size: 18px;
+  line-height: 24px;
+}
+.landing .role-cards .tile .role-line {
+  font-size: 16px;
+  line-height: 24px;
+}
+.landing .role-cards .tile .l-go {
+  color: var(--muted);
+}
+.landing .role-cards .tile-start {
+  color: var(--on-pen-container);
+  background: var(--pen-container);
+  border-color: var(--pen-container);
+}
+.landing .role-cards .tile-start .role-line {
+  font-weight: 600;
+}
+.landing .role-cards .tile-start .l-go {
+  color: var(--on-pen-container);
+}
+@media (min-width: 640px) {
+  .landing .role-cards .tile-start {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1100px) {
+  .landing .role-cards .tile:not(.tile-start) {
+    grid-template-columns: 1fr;
+    align-items: start;
+    align-content: start;
+    gap: var(--s3);
+  }
+  .landing .role-cards .tile:not(.tile-start) .l-go {
+    display: none;
+  }
+}
+
+/* The "keep the app on your phone" card */
+.l-install {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--s3) var(--s4);
+  margin: 0 0 var(--s3);
+  padding: var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+.l-install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.l-install .m-btn {
+  grid-column: 1 / -1;
+}
+@media (min-width: 640px) {
+  .l-install {
+    grid-template-columns: auto 1fr auto;
+  }
+  .l-install .m-btn {
+    grid-column: auto;
+  }
+}
+.l-foot {
+  margin: var(--s4) 0 0;
+}
+
+/* Buttons: filled for the one main action, tonal for the rest. */
+.m-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: 48px;
+  padding: 0 var(--s5);
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  border: 0;
+  border-radius: var(--r-btn);
+  overflow: hidden;
+  cursor: pointer;
+}
+.m-btn-filled {
+  color: var(--on-pen);
+  background: var(--pen);
+}
+.m-btn-filled::after {
+  background: var(--on-pen);
+}
+.m-btn-tonal {
+  color: var(--on-pen-container);
+  background: var(--tonal);
+}
+.m-note {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0 0 var(--s3);
+  padding: var(--s3) var(--s4);
+  color: var(--on-good-container);
+  background: var(--good-container);
+  border-radius: var(--r-chip);
+}
+.m-note-error {
+  display: block;
+  color: var(--on-margin-container);
+  background: var(--margin-container);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing .role-cards .tile::after,
+  .m-btn::after {
+    transition: none;
+  }
+}
+
+/* The scope dialog on the landing page, in the same shapes */
+.landing .panel {
+  padding: var(--s5) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+.landing .btn {
+  border-radius: var(--r-btn);
+}
+
+/* The install sheet: a bottom sheet on a phone, a centred dialog on a wide screen. */
+.sheet {
+  width: min(100%, 560px);
+  max-width: 100%;
+  max-height: 88vh;
+  max-height: 88dvh;
+  margin: auto auto 0;
+  padding: 0;
+  background: var(--surface);
+  border: 0;
+  border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  overflow-y: auto;
+}
+.sheet::backdrop {
+  background: var(--scrim);
+}
+.sheet-body {
+  padding: var(--s5) var(--s4) 0;
+}
+.sheet-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  margin-bottom: var(--s3);
+}
+.sheet-head h2 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 28px;
+}
+.sheet h3 {
+  margin: var(--s4) 0 var(--s2);
+  font-size: 18px;
+  line-height: 24px;
+}
+ol.install-steps {
+  margin: 0 0 var(--s3);
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+ol.install-steps li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: var(--s3);
+  margin: 0 0 var(--s3);
+  counter-increment: step;
+}
+ol.install-steps li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-weight: 700;
+  color: var(--on-pen-container);
+  background: var(--pen-container);
+  border-radius: 50%;
+}
+.sheet-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s3) 0 var(--s4);
+  background: var(--surface);
+}
+.sheet-actions .m-btn {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .sheet {
+    margin: auto;
+    border-radius: var(--r-sheet);
+  }
+  .sheet-body {
+    padding: var(--s5) var(--s5) 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Material 3 for every screen: buttons with state layers, a navigation bar with a selected pill,
+   a bottom sheet for More, tonal banners. Values come from theme.css.
+   --------------------------------------------------------------------------------------------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-btn);
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion);
+}
+.btn:hover::after {
+  opacity: var(--state-hover);
+}
+.btn:active::after,
+.btn:focus-visible::after {
+  opacity: var(--state-press);
+}
+.btn:disabled::after {
+  display: none;
+}
+.btn-secondary {
+  border-color: var(--outline);
+}
+.banner {
+  color: var(--on-pen-container);
+  background: var(--tonal);
+  border: 0;
+  border-radius: var(--r-chip);
+}
+.navbar {
+  background: var(--chalk);
+  border-top: 0;
+}
+.navbar .navtab,
+.navbar .navtab.navtab-on {
+  border-top: 0;
+}
+.navbar .navtab .icon {
+  box-sizing: content-box;
+  width: 24px;
+  height: 24px;
+  padding: var(--s1) var(--s4);
+  border-radius: var(--r-pill);
+  transition: background var(--motion);
+}
+.navbar .navtab-on {
+  color: var(--ink);
+}
+.navbar .navtab-on .icon {
+  color: var(--on-pen-container);
+  background: var(--tonal);
+}
+.more-sheet {
+  padding: var(--s3) var(--s2);
+  background: var(--surface);
+  border-top: 0;
+  border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+}
+.more-link {
+  border-bottom: 0;
+  border-radius: var(--r-btn);
+}
+.more-on {
+  background: var(--tonal);
+}
+
+/* A phone has one row for the app name and the signal: when the browser gives a speed, the pill shows
+   the icons and the number, and the words ("Online", "Good signal") stay for screen readers. */
+@media (max-width: 479px) {
+  .status-has-link .status-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .status-has-link .status-link {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+.pc-end {
+  margin-top: var(--s3);
+}
+
+/* Corners that were still square: the rehearsal log, the confidence meters, the AI-layers box, the board line. */
+.log,
+.layers {
+  border-radius: var(--r-card);
+}
+.meter {
+  overflow: hidden;
+  border-radius: var(--r-pill);
+}
+.slate {
+  border-radius: var(--r-chip);
 }

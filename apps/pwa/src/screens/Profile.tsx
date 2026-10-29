@@ -12,6 +12,7 @@ import { persistenceStatus, requestPersistence, type PersistenceStatus } from ".
 import { href } from "../lib/router";
 import { sendFeedback, type FeedbackKind } from "../lib/feedback";
 import { LANG_NAMES, LANGS, isLang } from "../i18n";
+import { InstallEntry } from "../components/install";
 import { useApp } from "../state";
 import { useConsent } from "../lib/useConsent";
 
@@ -376,6 +377,7 @@ export default function Profile() {
           ))}
         </select>
       </label>
+      <InstallEntry variant="row" />
       <Classes />
       <Storage />
       <DataUsed />

@@ -193,3 +193,20 @@ class ChatReply(BaseModel):
     answer: str | None = Field(default=None, max_length=1500)
     no_answer_reason: str | None = Field(default=None, max_length=200)
     citations: list[ChatCitation] = Field(default_factory=list, max_length=6)
+
+
+class AssistantCitation(BaseModel):
+    # S1, S2 ... for a document passage; R:<id> for a rubric row
+    source_id: str = Field(max_length=12)
+    quote: str = Field(max_length=300)  # a verbatim sentence or phrase from that source
+
+
+class AssistantAnswer(BaseModel):
+    """Call 14: an answer from the offered sources only, or no answer and why. The model writes the
+    answer and chooses which rubric rows it rests on; code derives every status label, the
+    how-to-check line and the limits from those rows."""
+
+    answer: str | None = Field(default=None, max_length=1200)
+    rubric_rows: list[str] = Field(default_factory=list, max_length=4)
+    citations: list[AssistantCitation] = Field(default_factory=list, max_length=6)
+    no_answer_reason: str | None = Field(default=None, max_length=200)

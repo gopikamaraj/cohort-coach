@@ -21,6 +21,10 @@ The demo is a judge-mode web app (no login, simulated data, every screen labelle
 2. In Telegram, send `/start judge` to the bot to run the same teacher flow there.
 3. Open the Practice Class and turn on the "AI layers" overlay to see each call, its guardrails and its checker verdict on a live turn.
 
+### The assistant
+
+Every screen has an "Ask the assistant" button that opens `#/assistant`. Its scope is set on the server by the signed-in role (teacher, mentor, coach, officer, judge) and cannot be widened by a question. The judge session (the demo, no sign-in) also has **View as** (see the teacher, mentor, coach or officer assistant on simulated data), an **About this product** tab that answers from the repository, the rubric map ([docs/RUBRIC_MAP.md](docs/RUBRIC_MAP.md)), the deck and the video script with file, slide and video-time citations, and a ten-minute test path. It is read-only. Suggested answers are pre-written from the docs and work offline; typed questions use call 14 and abstain when nothing is found. A live-model run of call 14 is still pending ([evals/assistant_eval.md](evals/assistant_eval.md), [docs/build/reports/ASSISTANT.md](docs/build/reports/ASSISTANT.md)). Tests: `python -m pytest tests/assistant` and, from `apps/pwa`, `npx playwright test e2e/assistant.spec.ts`. Rebuild the index after docs change: `python scripts/build_assistant_index.py`.
+
 ## What is built, cut, and still pending
 
 Statuses are the same as in [AI_USAGE.md](AI_USAGE.md) and [docs/build/PROGRESS.md](docs/build/PROGRESS.md). Nothing marked cut or pending is claimed anywhere else.
@@ -61,6 +65,7 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 | 11 | Sprite item author (offline) | `claude-sonnet-5-5` | offline authoring |
 | 12 | Chat question class | `claude-haiku-5-5` | when a teacher ticks AI help and sends a question |
 | 13 | Chat reply draft | `claude-sonnet-5-5` | when a teacher ticks AI help and the question is about teaching |
+| 14 | Assistant answer | `claude-sonnet-5-5` | when a user types a free-text question to the assistant (suggested questions are pre-written) |
 
 **Call 1: Child voices.** Say one short line as a simulated Grade 3 child in the Practice Class.
 
@@ -157,6 +162,14 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 - *guardrails*: Every citation must name a retrieved source and quote it word for word; code checks sums, personal data, class numbers, pilot items and scores; call 7 checks tone and fit; it is a draft until a person sends it. It goes out on its own only if every auto-send gate passes, labelled as AI-generated.
 - *evaluation*: Share of drafts sent as is, edited or discarded, and corrections after an automatic send, reported by code in docs/evidence/chat_metrics.json (simulated data in the demo).
 - *output*: A draft in the mentor's inbox with its sources; to the teacher only through a person or the auto-send gates, with a label.
+
+**Call 14: Assistant answer.** Answer one question for one role from the passages that role may read, with sources, or say there is no answer.
+
+- *input*: The question (wrapped as data), the role, the language, and up to six passages retrieved from the role's own namespaces, with rubric rows for the judge.
+- *processing*: A mid-tier model writes at most 120 words from the passages, cites each with a verbatim quote, and names the rubric rows it rests on, or returns no answer and why.
+- *guardrails*: The scope comes from the server, never the prompt; retrieval cannot reach another role's namespace; code checks every quote word for word, the rubric rows, length, personal data, scores, claims of action and pressure words; the status labels, how to check and limits come from the rubric map, not the model; any failure falls back to an extract from the passages or to no answer.
+- *evaluation*: evals/assistant_eval.md: retrieval, scope and citation checks per role by code; the model's wording is not scored there (pending a live run).
+- *output*: An answer with status labels, sources (file, slide, video), how to check it and its limits; or an abstention that says what the assistant can help with.
 
 Gates: code validators → rule-based pre-filter → output checker (call 7) → human approval (track content, method cards) → teacher flag. Badges: *Checked ✓* after the first two automatic gates, *Checked ✓ · Reviewed ✓* after a human approves too. Details: [docs/guardrails.md](docs/guardrails.md), [docs/architecture.md](docs/architecture.md). Live map: `GET /api/judge/ai-map`; audit trail: `GET /api/judge/audit`.
 <!-- AI-USED:END -->

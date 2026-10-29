@@ -1,0 +1,190 @@
+[
+ {
+  "id": "t01",
+  "text": {
+   "en": "What should I do today?",
+   "hi": "आज मुझे क्या करना चाहिए?",
+   "ta": "இன்று நான் என்ன செய்ய வேண்டும்?"
+  },
+  "screens": [
+   "home",
+   "programme"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what should I do today my programme step"
+ },
+ {
+  "id": "t02",
+  "text": {
+   "en": "What does this error card mean?",
+   "hi": "इस गलती कार्ड का क्या मतलब है?",
+   "ta": "இந்தப் பிழை அட்டையின் பொருள் என்ன?"
+  },
+  "screens": [
+   "cards"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what an error card means count children example"
+ },
+ {
+  "id": "t03",
+  "text": {
+   "en": "I'm stuck, what can I try?",
+   "hi": "मुझे समझ नहीं आ रहा, क्या आज़माऊँ?",
+   "ta": "எனக்குப் புரியவில்லை, என்ன முயல்வது?"
+  },
+  "screens": [
+   "cards",
+   "practice",
+   "programme"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "stuck what can I try bundles explain adding back"
+ },
+ {
+  "id": "t04",
+  "text": {
+   "en": "How is my class doing since the last check?",
+   "hi": "पिछली जाँच के बाद मेरी कक्षा कैसी है?",
+   "ta": "கடைசிச் சோதனைக்குப் பிறகு என் வகுப்பு எப்படி உள்ளது?"
+  },
+  "screens": [
+   "programme",
+   "home"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "class doing since the last check awaiting next check"
+ },
+ {
+  "id": "t05",
+  "text": {
+   "en": "Why was this audio chosen?",
+   "hi": "यह ऑडियो क्यों चुना गया?",
+   "ta": "இந்த ஒலிப்பதிவு ஏன் தேர்ந்தெடுக்கப்பட்டது?"
+  },
+  "screens": [
+   "programme"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "why was this audio lesson chosen badge reviewed"
+ },
+ {
+  "id": "t06",
+  "text": {
+   "en": "How do I enter the check?",
+   "hi": "जाँच कैसे भरूँ?",
+   "ta": "சோதனையை எப்படி உள்ளிடுவது?"
+  },
+  "screens": [
+   "check",
+   "home"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "enter check photograph sheets type answers"
+ },
+ {
+  "id": "t07",
+  "text": {
+   "en": "How does the Practice Class work?",
+   "hi": "अभ्यास कक्षा कैसे काम करती है?",
+   "ta": "பயிற்சி வகுப்பு எப்படி வேலை செய்கிறது?"
+  },
+  "screens": [
+   "practice"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "practice class simulated children rehearse feedback"
+ },
+ {
+  "id": "t08",
+  "text": {
+   "en": "Does it work without signal?",
+   "hi": "क्या यह बिना सिग्नल के चलता है?",
+   "ta": "சிக்னல் இல்லாமல் இது வேலை செய்யுமா?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "work without signal offline results sent"
+ },
+ {
+  "id": "t09",
+  "text": {
+   "en": "How do I keep the app on my phone?",
+   "hi": "ऐप को अपने फ़ोन में कैसे रखूँ?",
+   "ta": "செயலியை என் தொலைபேசியில் எப்படி வைத்திருப்பது?"
+  },
+  "screens": [
+   "home",
+   "profile"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "keep the app on my phone home screen install"
+ },
+ {
+  "id": "t10",
+  "text": {
+   "en": "Who can see my class?",
+   "hi": "मेरी कक्षा कौन देख सकता है?",
+   "ta": "என் வகுப்பை யார் பார்க்க முடியும்?"
+  },
+  "screens": [
+   "profile",
+   "cards"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "who can see my class privacy counts child name"
+ },
+ {
+  "id": "t11",
+  "text": {
+   "en": "What if a card looks wrong?",
+   "hi": "अगर कोई कार्ड गलत लगे तो?",
+   "ta": "ஒரு அட்டை தவறாகத் தெரிந்தால்?"
+  },
+  "screens": [
+   "cards"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "card looks wrong flag"
+ },
+ {
+  "id": "t12",
+  "text": {
+   "en": "Does the app score me?",
+   "hi": "क्या ऐप मुझे अंक देता है?",
+   "ta": "இந்தச் செயலி எனக்கு மதிப்பெண் தருமா?"
+  },
+  "screens": [
+   "practice",
+   "programme"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "does the app score a teacher never scored"
+ }
+]

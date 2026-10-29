@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ai.config import load_env, pilot_mode
+from services.api.assistant import router as assistant_router
 from services.api.channels.pwa import router as flow_router
 from services.api.channels.telegram.webhook import router as telegram_router
 from services.api.cohorts.routes import router as cohorts_router
@@ -80,6 +81,7 @@ def create_app(pilot: bool | None = None) -> FastAPI:
         app.include_router(pilot_router)
     else:
         app.include_router(judge_router)
+        app.include_router(assistant_router)
         app.include_router(lessons_router)
         app.include_router(cohorts_router)
         app.include_router(officer_router)

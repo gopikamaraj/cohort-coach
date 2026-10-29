@@ -1,0 +1,1571 @@
+{
+ "coach": [
+  {
+   "criteria": [],
+   "id": "c01",
+   "query": "what is waiting review queue age",
+   "rubric_rows": [],
+   "screens": [
+    "review",
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is waiting for me?",
+    "hi": "मेरे लिए क्या रुका है?",
+    "ta": "எனக்காக என்ன காத்திருக்கிறது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c02",
+   "query": "which drafts came from the AI",
+   "rubric_rows": [],
+   "screens": [
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Which drafts came from the AI?",
+    "hi": "कौन से ड्राफ़्ट एआई से आए?",
+    "ta": "எந்த வரைவுகள் AI-இடமிருந்து வந்தன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c03",
+   "query": "which cohorts have gone quiet",
+   "rubric_rows": [],
+   "screens": [
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Which cohorts have gone quiet?",
+    "hi": "कौन से समूह शांत हो गए हैं?",
+    "ta": "எந்தக் குழுக்கள் அமைதியாகிவிட்டன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c04",
+   "query": "how do I approve a document coach key",
+   "rubric_rows": [],
+   "screens": [
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How do I approve a document?",
+    "hi": "मैं दस्तावेज़ कैसे मंज़ूर करूँ?",
+    "ta": "ஒரு ஆவணத்தை எப்படி அங்கீகரிப்பது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c05",
+   "query": "reasons send back wrong maths culturally off tone",
+   "rubric_rows": [],
+   "screens": [
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What reasons can I give when I send something back?",
+    "hi": "कुछ वापस भेजते समय मैं कौन से कारण दे सकती हूँ?",
+    "ta": "ஒன்றைத் திருப்பி அனுப்பும்போது என்ன காரணங்கள் தரலாம்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c06",
+   "query": "automatic checks validators pre-filter output checker",
+   "rubric_rows": [],
+   "screens": [
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What do the automatic checks do?",
+    "hi": "स्वचालित जाँचें क्या करती हैं?",
+    "ta": "தானியங்கிச் சரிபார்ப்புகள் என்ன செய்கின்றன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c07",
+   "query": "see how one teacher is doing ranking",
+   "rubric_rows": [],
+   "screens": [
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Can I see how one teacher is doing?",
+    "hi": "क्या मैं देख सकती हूँ कि एक शिक्षक कैसा कर रहा है?",
+    "ta": "ஒரு ஆசிரியர் எப்படிச் செய்கிறார் என்று பார்க்கலாமா?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c08",
+   "query": "moderate the thread hide erase restore pin reported",
+   "rubric_rows": [],
+   "screens": [
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How do I moderate the thread?",
+    "hi": "मैं थ्रेड को कैसे मॉडरेट करूँ?",
+    "ta": "நூலை எப்படி நெறிப்படுத்துவது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c09",
+   "query": "officer key switches on version two keys",
+   "rubric_rows": [],
+   "screens": [
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is the officer's key for?",
+    "hi": "अधिकारी की चाबी किसलिए है?",
+    "ta": "அதிகாரியின் சாவி எதற்கு?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "c10",
+   "query": "coach time thirty minutes weekly batch",
+   "rubric_rows": [],
+   "screens": [
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How much time should this take?",
+    "hi": "इसमें कितना समय लगना चाहिए?",
+    "ta": "இதற்கு எவ்வளவு நேரம் ஆக வேண்டும்?"
+   }
+  }
+ ],
+ "judge": [
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j01",
+   "query": "who is the user teacher grade 3 primary",
+   "rubric_rows": [
+    "E1.1",
+    "E2.3"
+   ],
+   "screens": [
+    "landing",
+    "any"
+   ],
+   "steps": [
+    1
+   ],
+   "text": {
+    "en": "Who is the user?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy",
+    "ai"
+   ],
+   "id": "j02",
+   "query": "what is real and what is simulated",
+   "rubric_rows": [
+    "E1.1",
+    "E1.2",
+    "E1.5",
+    "I1.1"
+   ],
+   "screens": [
+    "landing",
+    "any"
+   ],
+   "steps": [
+    1,
+    9
+   ],
+   "text": {
+    "en": "What is real and what is simulated?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j03",
+   "query": "where AI is used calls registry layers",
+   "rubric_rows": [
+    "A1.1",
+    "A1.2"
+   ],
+   "screens": [
+    "aimap",
+    "any"
+   ],
+   "steps": [
+    5
+   ],
+   "text": {
+    "en": "Where is AI used?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j04",
+   "query": "how are wrong outputs stopped gates guardrails",
+   "rubric_rows": [
+    "A2.1",
+    "A2.2",
+    "A2.3",
+    "E4.3"
+   ],
+   "screens": [
+    "aimap",
+    "practice"
+   ],
+   "steps": [
+    4,
+    5
+   ],
+   "text": {
+    "en": "How are wrong outputs stopped?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j05",
+   "query": "how does it work offline queue results",
+   "rubric_rows": [
+    "E3.1",
+    "E3.2"
+   ],
+   "screens": [
+    "check",
+    "any"
+   ],
+   "steps": [
+    7
+   ],
+   "text": {
+    "en": "How does it work offline?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "efficacy"
+   ],
+   "id": "j06",
+   "query": "cost per teacher per track cents",
+   "rubric_rows": [
+    "A1.4"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does it cost per teacher?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j07",
+   "query": "how was it evaluated evals results bars",
+   "rubric_rows": [
+    "E4.3",
+    "I1.1",
+    "I1.2",
+    "A3.2"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How was it evaluated?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j08",
+   "query": "feedback user testing you said we changed",
+   "rubric_rows": [
+    "E4.2"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What did the education mentor say, and what changed?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy",
+    "ai"
+   ],
+   "id": "j09",
+   "query": "where is the code for this screen",
+   "rubric_rows": [
+    "E2.2",
+    "I1.1"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [
+    3,
+    4
+   ],
+   "text": {
+    "en": "Where is the code for this screen?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j10",
+   "query": "practice class simulated children hypothesis",
+   "rubric_rows": [
+    "I1.1"
+   ],
+   "screens": [
+    "practice"
+   ],
+   "steps": [
+    4
+   ],
+   "text": {
+    "en": "How does the Practice Class work, and is it proven?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation",
+    "ai"
+   ],
+   "id": "j11",
+   "query": "read answer sheets photo digits blind",
+   "rubric_rows": [
+    "I1.2"
+   ],
+   "screens": [
+    "check",
+    "tour"
+   ],
+   "steps": [
+    2
+   ],
+   "text": {
+    "en": "How does the app read answer sheets?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j12",
+   "query": "stage of breakdown most likely input core output",
+   "rubric_rows": [
+    "I1.3"
+   ],
+   "screens": [
+    "tour",
+    "cards"
+   ],
+   "steps": [
+    2
+   ],
+   "text": {
+    "en": "What is the stage of breakdown?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j13",
+   "query": "watch a rehearsal demo teacher AI label",
+   "rubric_rows": [
+    "I1.4"
+   ],
+   "screens": [
+    "practice",
+    "watch"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Can I watch an AI teacher run a session?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j14",
+   "query": "how are mentors chosen proven candidate",
+   "rubric_rows": [
+    "I2.1"
+   ],
+   "screens": [
+    "cohort",
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How are mentors chosen?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation",
+    "ai"
+   ],
+   "id": "j15",
+   "query": "cohort chat moderated pseudonymous child name refused",
+   "rubric_rows": [
+    "I2.2",
+    "I2.3"
+   ],
+   "screens": [
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How is the cohort chat kept safe?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j16",
+   "query": "pictures drawn by code sprites layout count",
+   "rubric_rows": [
+    "I2.4"
+   ],
+   "screens": [
+    "practice"
+   ],
+   "steps": [
+    4
+   ],
+   "text": {
+    "en": "How are the pictures made?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j17",
+   "query": "what makes this different grouping by error cohort mentor",
+   "rubric_rows": [
+    "E1.1",
+    "I2.1",
+    "I1.1"
+   ],
+   "screens": [
+    "landing",
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What makes this different from a training app?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j18",
+   "query": "AI map calls five layers",
+   "rubric_rows": [
+    "A1.1"
+   ],
+   "screens": [
+    "aimap"
+   ],
+   "steps": [
+    5
+   ],
+   "text": {
+    "en": "How does the AI map work?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j19",
+   "query": "which model each call uses tiering effort caching",
+   "rubric_rows": [
+    "A1.2"
+   ],
+   "screens": [
+    "aimap",
+    "audit"
+   ],
+   "steps": [
+    5
+   ],
+   "text": {
+    "en": "Which model does each call use, and why?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j20",
+   "query": "how are lessons drafted slots checked",
+   "rubric_rows": [
+    "A1.3",
+    "A2.3"
+   ],
+   "screens": [
+    "review"
+   ],
+   "steps": [
+    6
+   ],
+   "text": {
+    "en": "How are lessons drafted?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "efficacy"
+   ],
+   "id": "j21",
+   "query": "who approves AI written content two keys coach officer",
+   "rubric_rows": [
+    "A2.3"
+   ],
+   "screens": [
+    "review"
+   ],
+   "steps": [
+    6
+   ],
+   "text": {
+    "en": "Who approves AI-written content?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j22",
+   "query": "does the AI compute a number code computes slots",
+   "rubric_rows": [
+    "A2.2"
+   ],
+   "screens": [
+    "practice",
+    "cards"
+   ],
+   "steps": [
+    3,
+    4
+   ],
+   "text": {
+    "en": "Does the AI ever compute a number?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "efficacy"
+   ],
+   "id": "j23",
+   "query": "children privacy no names photos deleted",
+   "rubric_rows": [
+    "A2.4"
+   ],
+   "screens": [
+    "check",
+    "any"
+   ],
+   "steps": [
+    2
+   ],
+   "text": {
+    "en": "How is children's privacy protected?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j24",
+   "query": "audit trail metadata only",
+   "rubric_rows": [
+    "A2.5"
+   ],
+   "screens": [
+    "audit"
+   ],
+   "steps": [
+    5
+   ],
+   "text": {
+    "en": "What does the audit trail record?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j25",
+   "query": "deployed google cloud always on cold start",
+   "rubric_rows": [
+    "A3.1"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Is it deployed, and can it stay up?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j26",
+   "query": "practice class turn latency target",
+   "rubric_rows": [
+    "A3.2"
+   ],
+   "screens": [
+    "practice"
+   ],
+   "steps": [
+    4
+   ],
+   "text": {
+    "en": "How fast is a Practice Class turn?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "efficacy"
+   ],
+   "id": "j27",
+   "query": "tested low end phone slow 3G",
+   "rubric_rows": [
+    "A3.3",
+    "E3.1"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Has it been tested on a low-end phone and Slow 3G?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "roadmap"
+   ],
+   "id": "j28",
+   "query": "whatsapp channel stub",
+   "rubric_rows": [
+    "A3.4",
+    "E3.4"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Does WhatsApp work?"
+   }
+  },
+  {
+   "criteria": [
+    "roadmap"
+   ],
+   "id": "j29",
+   "query": "roadmap next pilot DIET WhatsApp literacy",
+   "rubric_rows": [
+    "R1.1",
+    "R1.2",
+    "R1.3"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is on the roadmap?"
+   }
+  },
+  {
+   "criteria": [
+    "roadmap"
+   ],
+   "id": "j30",
+   "query": "beyond grade 3 maths topic packs",
+   "rubric_rows": [
+    "R1.2"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Can it go beyond Grade 3 maths?"
+   }
+  },
+  {
+   "criteria": [
+    "roadmap"
+   ],
+   "id": "j31",
+   "query": "integration UDISE state assessment training records",
+   "rubric_rows": [
+    "R1.3"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How does it fit existing systems?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j32",
+   "query": "intuitive interface languages large targets install guide",
+   "rubric_rows": [
+    "E2.1",
+    "E2.2",
+    "E2.5"
+   ],
+   "screens": [
+    "landing",
+    "home"
+   ],
+   "steps": [
+    8
+   ],
+   "text": {
+    "en": "Is the interface easy for a teacher with little digital experience?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j33",
+   "query": "weak phone data budget voice text fallback",
+   "rubric_rows": [
+    "E3.2",
+    "E3.3",
+    "E3.1"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How does the app help a teacher on a weak phone?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j34",
+   "query": "telegram bot lessons two taps",
+   "rubric_rows": [
+    "E3.4"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Does it work in Telegram?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j35",
+   "query": "tested with users browser crawl feedback rounds",
+   "rubric_rows": [
+    "E4.1",
+    "E4.2"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How was it tested with users?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j36",
+   "query": "is the pilot real upload sheets approve audio",
+   "rubric_rows": [
+    "E1.3",
+    "E1.5"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Is the pilot real?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j37",
+   "query": "impact measured verdict comparison group interval",
+   "rubric_rows": [
+    "E1.2",
+    "E1.5"
+   ],
+   "screens": [
+    "officer"
+   ],
+   "steps": [
+    6
+   ],
+   "text": {
+    "en": "How does the impact get measured?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j38",
+   "query": "teacher time twenty minutes a week",
+   "rubric_rows": [
+    "E1.4"
+   ],
+   "screens": [
+    "programme",
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How much of a teacher's time does it take?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j39",
+   "query": "assistant scope role leak read-only",
+   "rubric_rows": [
+    "AS.1",
+    "AS.4"
+   ],
+   "screens": [
+    "assistant"
+   ],
+   "steps": [
+    9
+   ],
+   "text": {
+    "en": "Does this assistant know only what it should?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j40",
+   "query": "assistant cannot do data tools live model",
+   "rubric_rows": [
+    "AS.3",
+    "AS.4",
+    "AS.5",
+    "AS.6"
+   ],
+   "screens": [
+    "assistant"
+   ],
+   "steps": [
+    9
+   ],
+   "text": {
+    "en": "What can this assistant not do yet?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j41",
+   "query": "look consistent theme tokens easy to change Material",
+   "rubric_rows": [
+    "E2.4",
+    "E2.5"
+   ],
+   "screens": [
+    "any",
+    "landing"
+   ],
+   "steps": [
+    8
+   ],
+   "text": {
+    "en": "How is the app's look kept consistent and easy to change?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j42",
+   "query": "guide cites answers status slide video how to check",
+   "rubric_rows": [
+    "AS.2",
+    "AS.1"
+   ],
+   "screens": [
+    "assistant"
+   ],
+   "steps": [
+    9
+   ],
+   "text": {
+    "en": "How does this guide cite its answers and say how to check them?"
+   }
+  }
+ ],
+ "judge_path": {
+  "credentials": "Judge mode needs no sign-in and holds no real user's data. The staff pilot has its own sign-in, held by the team; judges do not need it.",
+  "minutes": 10,
+  "steps": [
+   {
+    "n": 1,
+    "questions": [
+     "j01",
+     "j02",
+     "j17",
+     "j32"
+    ],
+    "role": "Judge",
+    "route": "#/roles",
+    "sample_input": "Read the four role cards and the guided tour card",
+    "title": "Open the web app"
+   },
+   {
+    "n": 2,
+    "questions": [
+     "j11",
+     "j12",
+     "j23"
+    ],
+    "role": "Judge",
+    "route": "#/tour/1",
+    "sample_input": "The sample sheets are built in",
+    "title": "Run the guided tour at step 1"
+   },
+   {
+    "n": 3,
+    "questions": [
+     "j09",
+     "j22"
+    ],
+    "role": "Teacher",
+    "route": "#/judge, then #/cards",
+    "sample_input": "Load a simulated class",
+    "title": "Load a simulated class and open My class"
+   },
+   {
+    "n": 4,
+    "questions": [
+     "j10",
+     "j04",
+     "j16",
+     "j26"
+    ],
+    "role": "Teacher",
+    "route": "#/practice",
+    "sample_input": "Priya, what is 52 minus 29? Then: Tell me how you got that.",
+    "title": "Rehearse in the Practice Class"
+   },
+   {
+    "n": 5,
+    "questions": [
+     "j03",
+     "j18",
+     "j19",
+     "j24"
+    ],
+    "role": "Judge",
+    "route": "#/aimap, #/audit",
+    "sample_input": "Press the injection line in Try to break it",
+    "title": "Open the AI map, the audit trail and Try to break it"
+   },
+   {
+    "n": 6,
+    "questions": [
+     "j20",
+     "j21",
+     "j37"
+    ],
+    "role": "Coach, then Officer",
+    "route": "#/review, then #/officer",
+    "sample_input": "Choose Coach on the landing page, then Officer",
+    "title": "Open the review queue and the officer's results"
+   },
+   {
+    "n": 7,
+    "questions": [
+     "j05",
+     "j27"
+    ],
+    "role": "Teacher",
+    "route": "#/judge, then #/check",
+    "sample_input": "Simulate offline, then Enter check",
+    "title": "Simulate offline and enter a check"
+   },
+   {
+    "n": 8,
+    "questions": [
+     "j32",
+     "j33"
+    ],
+    "role": "Teacher",
+    "route": "landing page, then #/profile",
+    "sample_input": "Choose Hindi or Tamil in the top bar",
+    "title": "Switch to Hindi or Tamil"
+   },
+   {
+    "n": 9,
+    "questions": [
+     "j02",
+     "j39",
+     "j40"
+    ],
+    "role": "Judge, then view as Teacher",
+    "route": "#/assistant",
+    "sample_input": "What is real and what is simulated? Then View as Teacher and ask: Who can see my class?",
+    "title": "Ask this assistant"
+   }
+  ]
+ },
+ "mentor": [
+  {
+   "criteria": [],
+   "id": "m01",
+   "query": "record my method card how",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How do I record my method?",
+    "hi": "मैं अपनी विधि कैसे रिकॉर्ड करूँ?",
+    "ta": "என் முறையை எப்படிப் பதிவு செய்வது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m02",
+   "query": "my card states submitted awaiting coach approved in use",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What happened with my card?",
+    "hi": "मेरे कार्ड का क्या हुआ?",
+    "ta": "என் அட்டைக்கு என்ன ஆனது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m03",
+   "query": "what does the coach check",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does the coach check?",
+    "hi": "कोच क्या जाँचता है?",
+    "ta": "பயிற்சியாளர் எதைச் சரிபார்க்கிறார்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m04",
+   "query": "who is a mentor proven candidate",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Who is a mentor?",
+    "hi": "मेंटर कौन होता है?",
+    "ta": "வழிகாட்டி யார்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m05",
+   "query": "which teachers tried my card see counts",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Can I see which teachers tried my card?",
+    "hi": "क्या मैं देख सकती हूँ कि किन शिक्षकों ने मेरा कार्ड आज़माया?",
+    "ta": "என் அட்டையை எந்த ஆசிரியர்கள் முயன்றனர் என்று நான் பார்க்க முடியுமா?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m06",
+   "query": "mentor time thirty minutes a week",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How much time does this take?",
+    "hi": "इसमें कितना समय लगता है?",
+    "ta": "இதற்கு எவ்வளவு நேரம் ஆகும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m07",
+   "query": "answer a teacher question cohort thread",
+   "rubric_rows": [],
+   "screens": [
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Can I answer a teacher's question in the thread?",
+    "hi": "क्या मैं थ्रेड में शिक्षक के सवाल का जवाब दे सकती हूँ?",
+    "ta": "ஆசிரியரின் கேள்விக்கு நூலில் பதில் சொல்லலாமா?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m08",
+   "query": "cohort thread pseudonyms phone numbers child name",
+   "rubric_rows": [],
+   "screens": [
+    "cohort"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does the cohort thread show?",
+    "hi": "कोहॉर्ट थ्रेड में क्या दिखता है?",
+    "ta": "குழு நூலில் என்ன தெரியும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m09",
+   "query": "coach sends card back changes requested reason",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What happens if the coach sends my card back?",
+    "hi": "अगर कोच मेरा कार्ड वापस भेजे तो क्या होगा?",
+    "ta": "பயிற்சியாளர் என் அட்டையைத் திருப்பி அனுப்பினால் என்ன ஆகும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "m10",
+   "query": "when does my card reach teachers coach approves in use",
+   "rubric_rows": [],
+   "screens": [
+    "mentor"
+   ],
+   "steps": [],
+   "text": {
+    "en": "When does my card reach teachers?",
+    "hi": "मेरा कार्ड शिक्षकों तक कब पहुँचता है?",
+    "ta": "என் அட்டை ஆசிரியர்களை எப்போது அடையும்?"
+   }
+  }
+ ],
+ "officer": [
+  {
+   "criteria": [],
+   "id": "o01",
+   "query": "how to read a verdict working not working inconclusive interval",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How do I read this verdict?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o02",
+   "query": "why can't I see names aggregates only",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why can't I see names?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o03",
+   "query": "what does this chart not show",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does this chart not show?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o04",
+   "query": "how were cohorts formed eligibility waitlist",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How were cohorts formed?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o05",
+   "query": "funnel delivered tried practised changed sources",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does the funnel measure?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o06",
+   "query": "inconclusive fewer than fifteen classes",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does Inconclusive mean?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o07",
+   "query": "group hidden fewer than five classes",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why is a group hidden?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o08",
+   "query": "pilot scale extra fall McNemar",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How is the pilot measured differently?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o09",
+   "query": "is this real data simulated",
+   "rubric_rows": [],
+   "screens": [
+    "officer"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Is this real data?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "o10",
+   "query": "can I approve content coach officer key",
+   "rubric_rows": [],
+   "screens": [
+    "officer",
+    "review"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Can I approve content?"
+   }
+  }
+ ],
+ "teacher": [
+  {
+   "criteria": [],
+   "id": "t01",
+   "query": "what should I do today my programme step",
+   "rubric_rows": [],
+   "screens": [
+    "home",
+    "programme"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What should I do today?",
+    "hi": "आज मुझे क्या करना चाहिए?",
+    "ta": "இன்று நான் என்ன செய்ய வேண்டும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t02",
+   "query": "what an error card means count children example",
+   "rubric_rows": [],
+   "screens": [
+    "cards"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does this error card mean?",
+    "hi": "इस गलती कार्ड का क्या मतलब है?",
+    "ta": "இந்தப் பிழை அட்டையின் பொருள் என்ன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t03",
+   "query": "stuck what can I try bundles explain adding back",
+   "rubric_rows": [],
+   "screens": [
+    "cards",
+    "practice",
+    "programme"
+   ],
+   "steps": [],
+   "text": {
+    "en": "I'm stuck, what can I try?",
+    "hi": "मुझे समझ नहीं आ रहा, क्या आज़माऊँ?",
+    "ta": "எனக்குப் புரியவில்லை, என்ன முயல்வது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t04",
+   "query": "class doing since the last check awaiting next check",
+   "rubric_rows": [],
+   "screens": [
+    "programme",
+    "home"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How is my class doing since the last check?",
+    "hi": "पिछली जाँच के बाद मेरी कक्षा कैसी है?",
+    "ta": "கடைசிச் சோதனைக்குப் பிறகு என் வகுப்பு எப்படி உள்ளது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t05",
+   "query": "why was this audio lesson chosen badge reviewed",
+   "rubric_rows": [],
+   "screens": [
+    "programme"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why was this audio chosen?",
+    "hi": "यह ऑडियो क्यों चुना गया?",
+    "ta": "இந்த ஒலிப்பதிவு ஏன் தேர்ந்தெடுக்கப்பட்டது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t06",
+   "query": "enter check photograph sheets type answers",
+   "rubric_rows": [],
+   "screens": [
+    "check",
+    "home"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How do I enter the check?",
+    "hi": "जाँच कैसे भरूँ?",
+    "ta": "சோதனையை எப்படி உள்ளிடுவது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t07",
+   "query": "practice class simulated children rehearse feedback",
+   "rubric_rows": [],
+   "screens": [
+    "practice"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How does the Practice Class work?",
+    "hi": "अभ्यास कक्षा कैसे काम करती है?",
+    "ta": "பயிற்சி வகுப்பு எப்படி வேலை செய்கிறது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t08",
+   "query": "work without signal offline results sent",
+   "rubric_rows": [],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Does it work without signal?",
+    "hi": "क्या यह बिना सिग्नल के चलता है?",
+    "ta": "சிக்னல் இல்லாமல் இது வேலை செய்யுமா?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t09",
+   "query": "keep the app on my phone home screen install",
+   "rubric_rows": [],
+   "screens": [
+    "home",
+    "profile"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How do I keep the app on my phone?",
+    "hi": "ऐप को अपने फ़ोन में कैसे रखूँ?",
+    "ta": "செயலியை என் தொலைபேசியில் எப்படி வைத்திருப்பது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t10",
+   "query": "who can see my class privacy counts child name",
+   "rubric_rows": [],
+   "screens": [
+    "profile",
+    "cards"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Who can see my class?",
+    "hi": "मेरी कक्षा कौन देख सकता है?",
+    "ta": "என் வகுப்பை யார் பார்க்க முடியும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t11",
+   "query": "card looks wrong flag",
+   "rubric_rows": [],
+   "screens": [
+    "cards"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What if a card looks wrong?",
+    "hi": "अगर कोई कार्ड गलत लगे तो?",
+    "ta": "ஒரு அட்டை தவறாகத் தெரிந்தால்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "t12",
+   "query": "does the app score a teacher never scored",
+   "rubric_rows": [],
+   "screens": [
+    "practice",
+    "programme"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Does the app score me?",
+    "hi": "क्या ऐप मुझे अंक देता है?",
+    "ta": "இந்தச் செயலி எனக்கு மதிப்பெண் தருமா?"
+   }
+  }
+ ]
+}

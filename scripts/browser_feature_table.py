@@ -27,13 +27,37 @@ FEATURES: list[tuple[str, str, str, list[tuple[str, str]]]] = [
         "Entry",
         "Landing page: role cards, scope dialog, deep links, layout",
         "#/roles",
-        [("landing", ".")],
+        [("landing", "^(?!.*(install|offline:|signal estimate|Mode menu|above the fold))")],
     ),
     (
         "Entry",
         "Role and language chosen on the landing page only",
         "#/roles, all",
         [("app", "landing page only"), ("app", "each role has its own home")],
+    ),
+    (
+        "Entry",
+        "Install guide: card, plain steps in en / hi / ta, also in My profile",
+        "#/roles, #/profile",
+        [("landing", "install")],
+    ),
+    (
+        "Entry",
+        "Offline pill with icon and a note on what still works",
+        "all",
+        [("landing", "offline:")],
+    ),
+    (
+        "Entry",
+        "Signal estimate in the pill (only when the browser gives one; never offline)",
+        "all",
+        [("landing", "signal estimate|no speed is shown")],
+    ),
+    (
+        "Entry",
+        "Mode menu only where there is a second back end; tour card above the fold",
+        "#/roles",
+        [("landing", "Mode menu|above the fold")],
     ),
     (
         "Entry",

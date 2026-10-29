@@ -1,0 +1,66 @@
+{
+ "deck_pdf": false,
+ "forbidden": [],
+ "late": [],
+ "provisional": true,
+ "segments": {
+  "00:00": {
+   "end": 15,
+   "section": "Problem"
+  },
+  "00:15": {
+   "end": 35,
+   "section": "The idea"
+  },
+  "00:35": {
+   "end": 55,
+   "section": "Counts from code"
+  },
+  "00:55": {
+   "end": 75,
+   "section": "Cohorts and mentors"
+  },
+  "01:15": {
+   "end": 100,
+   "section": "Gates and review"
+  },
+  "01:40": {
+   "end": 120,
+   "section": "Lesson on Telegram"
+  },
+  "02:00": {
+   "end": 145,
+   "section": "Practice Class"
+  },
+  "02:25": {
+   "end": 165,
+   "section": "Results"
+  },
+  "02:45": {
+   "end": 175,
+   "section": "Close"
+  }
+ },
+ "slides": {
+  "1": "Title",
+  "10": "The pilot, built and live",
+  "11": "Honest statistics",
+  "12": "Roadmap (A)",
+  "13": "Roadmap (B)",
+  "14": "What we cut, and what we need",
+  "2": "The problem (five figures)",
+  "3": "The idea and the loop",
+  "4": "The assumption we have not proved",
+  "5": "AI in layers (the call table)",
+  "6": "Guardrails",
+  "7": "Real scenarios",
+  "8": "User inputs and testing (A)",
+  "9": "User inputs and testing (B)"
+ },
+ "video": {
+  "final": false,
+  "length_s": 175,
+  "note": "Set url to the public YouTube address and length_s to the real length once the video is uploaded; then set final to true and update video_script.md to the real times.",
+  "url": null
+ }
+}

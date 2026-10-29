@@ -642,7 +642,7 @@ export default function Practice() {
             ) : null}
           </>
         )}
-        <button type="button" className="btn btn-secondary" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
+        <button type="button" className="btn btn-secondary pc-end" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
           {tr("practice.end")}
         </button>
       </div>

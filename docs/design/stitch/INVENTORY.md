@@ -46,13 +46,14 @@ Built on 23 Oct 2026 from the repo (screens in `apps/pwa/src/screens/`, `docs/de
 | X27 | Materials tray and avatar expressions | Teacher | Phone first | apps/pwa/src/components/practice.tsx; apps/pwa/src/sprites/; docs/design/sprite-system.md | Tray tiles drawn as inline SVG, tool help text, avatar expression set and state tags, mouth open and closed, reduced motion |
 | X28 | Chat steps (same flows as the bot) | Teacher | Phone first | apps/pwa/src/screens/Flow.tsx:9; services/api/flows/ | The generic step renderer: message, choice, photo batch, number grid, voice, media, link, text |
 | R1 | Roadmap card: child twin | Teacher | Phone first | Named in the design brief; not defined anywhere in the repo | A locked roadmap card; definition to be confirmed (TODO-HUMAN(Gopi)) |
+| X29 | Assistant panel (one assistant, scoped by role) | Teacher | Phone first | apps/pwa/src/screens/Assistant.tsx; services/api/assistant.py; assistant_scopes.yaml | Role title, scope note, five suggested questions, free text, answer with sources, how to check and limits, commit footer; judge-only View as, About this product and the ten-minute test path |
 | R2 | Roadmap card: grade handoff | Teacher | Phone first | Named in the design brief; not defined anywhere in the repo | A locked roadmap card; definition to be confirmed (TODO-HUMAN(Gopi)) |
 | R3 | Roadmap card: names on this phone | Teacher | Phone first | Named in the design brief; not found in the repo | A locked roadmap card for an optional roll-to-name list kept on the phone only; definition to be confirmed (TODO-HUMAN(Gopi)) |
 | R4 | Roadmap card: beyond Grade 3 maths | Programme officer | Desktop first | docs/build/BUILD_PROMPTS.md (P16 step 10 and 11); docs/build/PARKING.md (2026-10-19) | A roadmap card for topic packs: new topics and grades as data, WhatsApp and lesson videos as later channels |
 
 ## Notes
 
-- Total: 45 screens (13 from the design doc, 28 added, 4 roadmap cards).
+- Total: 46 screens (13 from the design doc, 29 added, 4 roadmap cards).
 - Practice Class (T5) is already approved and is the style anchor for every other prompt.
 - Telegram is the primary teacher channel and is not a Stitch screen; see `TELEGRAM-MESSAGES.md`.
 - X28 renders the same flows as the bot in the web app; X8, X11 and X12 are parts of the teacher track and results flow that the design doc treats as part of T3 and T4.

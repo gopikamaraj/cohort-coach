@@ -16,6 +16,7 @@ permissions:
   programme.view_own: {key: roles.can.programme_own}
   judge.inspect: {key: roles.can.judge_inspect, judge_only: true}
   cohort.chat: {key: roles.can.cohort_chat}
+  assistant.ask: {key: roles.can.assistant_ask}
   mentor.record: {key: roles.can.mentor_record, planned: P11}
   mentor.items_view: {key: roles.can.mentor_items}
   coach.approve_items: {key: roles.can.coach_approve}
@@ -78,28 +79,28 @@ roles:
     holders: roles.holders.teacher
     data: roles.data.teacher
     also_on: [telegram]
-    can: [practice.rehearse, check.read_sheets, profile.sync, programme.view_own, cohort.chat, judge.inspect]
+    can: [assistant.ask, practice.rehearse, check.read_sheets, profile.sync, programme.view_own, cohort.chat, judge.inspect]
     cannot: [teacher.own_class_only, teacher.never_scored, role.no_client_elevation]
   mentor:
     card: roles.card.mentor
     holders: roles.holders.mentor
     data: roles.data.mentor
     also_on: [telegram]
-    can: [mentor.record, mentor.items_view, cohort.chat, content.mentor_approve]
+    can: [assistant.ask, mentor.record, mentor.items_view, cohort.chat, content.mentor_approve]
     cannot: [mentor.own_cohorts_only, mentor.no_class_numbers, role.no_client_elevation]
   coach:
     card: roles.card.coach
     holders: roles.holders.coach
     data: roles.data.coach
     also_on: []
-    can: [coach.approve_items, coach.moderate, library.view, pilot.audio_view, pilot.approve_audio, content.review_view, content.coach_approve, content.propose]
+    can: [assistant.ask, coach.approve_items, coach.moderate, library.view, pilot.audio_view, pilot.approve_audio, content.review_view, content.coach_approve, content.propose]
     cannot: [coach.assigned_only, coach.no_teacher_numbers, role.no_client_elevation]
   officer:
     card: roles.card.officer
     holders: roles.holders.officer
     data: roles.data.officer
     also_on: []
-    can: [officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, pilot.audio_view, content.review_view, content.officer_activate, content.propose]
+    can: [assistant.ask, officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, pilot.audio_view, content.review_view, content.officer_activate, content.propose]
     cannot: [officer.aggregates_only, officer.no_approval, role.no_client_elevation]
   # The pilot coordinator: receives answer-sheet photos from teachers and uploads them, then
   # generates and shares the intervention audio. Signs in with an account key (pilot mode only).

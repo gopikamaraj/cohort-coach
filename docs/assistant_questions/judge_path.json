@@ -1,0 +1,15 @@
+{
+  "minutes": 10,
+  "credentials": "Judge mode needs no sign-in and holds no real user's data. The staff pilot has its own sign-in, held by the team; judges do not need it.",
+  "steps": [
+    {"n": 1, "title": "Open the web app", "route": "#/roles", "role": "Judge", "sample_input": "Read the four role cards and the guided tour card", "questions": ["j01", "j02", "j17", "j32"]},
+    {"n": 2, "title": "Run the guided tour at step 1", "route": "#/tour/1", "role": "Judge", "sample_input": "The sample sheets are built in", "questions": ["j11", "j12", "j23"]},
+    {"n": 3, "title": "Load a simulated class and open My class", "route": "#/judge, then #/cards", "role": "Teacher", "sample_input": "Load a simulated class", "questions": ["j09", "j22"]},
+    {"n": 4, "title": "Rehearse in the Practice Class", "route": "#/practice", "role": "Teacher", "sample_input": "Priya, what is 52 minus 29? Then: Tell me how you got that.", "questions": ["j10", "j04", "j16", "j26"]},
+    {"n": 5, "title": "Open the AI map, the audit trail and Try to break it", "route": "#/aimap, #/audit", "role": "Judge", "sample_input": "Press the injection line in Try to break it", "questions": ["j03", "j18", "j19", "j24"]},
+    {"n": 6, "title": "Open the review queue and the officer's results", "route": "#/review, then #/officer", "role": "Coach, then Officer", "sample_input": "Choose Coach on the landing page, then Officer", "questions": ["j20", "j21", "j37"]},
+    {"n": 7, "title": "Simulate offline and enter a check", "route": "#/judge, then #/check", "role": "Teacher", "sample_input": "Simulate offline, then Enter check", "questions": ["j05", "j27"]},
+    {"n": 8, "title": "Switch to Hindi or Tamil", "route": "landing page, then #/profile", "role": "Teacher", "sample_input": "Choose Hindi or Tamil in the top bar", "questions": ["j32", "j33"]},
+    {"n": 9, "title": "Ask this assistant", "route": "#/assistant", "role": "Judge, then view as Teacher", "sample_input": "What is real and what is simulated? Then View as Teacher and ask: Who can see my class?", "questions": ["j02", "j39", "j40"]}
+  ]
+}

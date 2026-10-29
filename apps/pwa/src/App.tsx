@@ -8,7 +8,7 @@ import Practice from "./screens/Practice";
 import Judge from "./screens/Judge";
 import History from "./screens/History";
 import Programme from "./screens/Programme";
-import { StatusLine } from "./components/parts";
+import { OfflineNote, StatusLine } from "./components/parts";
 import { Icon } from "./components/icons";
 import { ToastProvider } from "./components/toast";
 import Admin from "./screens/Admin";
@@ -22,8 +22,11 @@ import Watch from "./screens/Watch";
 import Tour from "./screens/Tour";
 import Review from "./screens/Review";
 import Cohort from "./screens/Cohort";
+import Assistant, { AssistantLink } from "./screens/Assistant";
 import { useEffect, useState } from "react";
 import { go, href, useRoute, type Route } from "./lib/router";
+import { CAN_SWITCH_MODE, MODE } from "./lib/api";
+import { switchMode, type Mode } from "./lib/mode";
 import { AppProvider, ROLES, useApp, type Role } from "./state";
 
 const ROLE_HOME: Record<Role, Route> = {
@@ -37,7 +40,7 @@ const ROLE_HOME: Record<Role, Route> = {
 
 const ICONS: Record<string, string> = {
   "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check", "/cohort": "chat",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check", "/cohort": "chat", "/assistant": "info",
 };  // fmt: skip
 
 function Shell() {
@@ -114,6 +117,22 @@ function Shell() {
                 ))}
               </select>
             </label>
+            {CAN_SWITCH_MODE ? (
+              <label>
+                <span className="sr">{tr("mode.label")}</span>
+                <select
+                  value={MODE}
+                  data-testid="mode"
+                  onChange={(e) => {
+                    const next = e.target.value as Mode;
+                    if (next !== MODE) switchMode(next);
+                  }}
+                >
+                  <option value="judge">{tr("mode.judge")}</option>
+                  <option value="pilot">{tr("mode.pilot")}</option>
+                </select>
+              </label>
+            ) : null}
           </div>
         ) : null}
         <header className="top">
@@ -122,6 +141,7 @@ function Shell() {
           </a>
           <StatusLine />
         </header>
+        <OfflineNote />
         <main>
           {route === "/judge" ? <Judge /> : null}
           {route === "/home" ? <Home /> : null}
@@ -144,6 +164,8 @@ function Shell() {
           {route === "/review" ? <Review /> : null}
           {route === "/cohort" ? <Cohort /> : null}
           {route === "/officer" ? <Officer /> : null}
+          {route === "/assistant" ? <Assistant /> : null}
+          {route !== "/assistant" && route !== "/roles" && route !== "/tour" ? <AssistantLink from={route.slice(1)} /> : null}
         </main>
         {more ? (
           <>

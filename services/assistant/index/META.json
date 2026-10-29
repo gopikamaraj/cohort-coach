@@ -1,0 +1,18 @@
+{
+  "chunks": {
+    "coach_help": 8,
+    "coach_kb": 0,
+    "judge": 1171,
+    "mentor_help": 8,
+    "officer_help": 10,
+    "product_help": 22,
+    "teacher_kb": 0
+  },
+  "content_hash": "9b27ab09150308164d33a3c2a9eaf1c8d6b20c4025f1674c63b7d78e54ce9a1c",
+  "extras": [
+    "questions",
+    "rubric",
+    "submission"
+  ],
+  "source_commit": "67ba7da12220f297d962981bd8ef994bc95b3746"
+}

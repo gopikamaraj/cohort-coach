@@ -1,27 +1,39 @@
-# Design system (v1, P05)
+# Design system (v2, 29 Oct 2026: Material 3)
 
-Written before the screens. A compact token plan for a phone-first app used by primary teachers in sunlight, on cheap Android phones, in Tamil, Hindi and English.
+A compact token plan for a phone-first app used by primary teachers in sunlight, on cheap Android phones, in Tamil, Hindi and English. v1 (20 Oct) was a blue-ink notebook look; v2 follows the Stitch design file, `docs/design/stitch/DESIGN.md` ("Calm Institutional Material", which is Material 3), on every screen. The decision is logged in `docs/build/DECISIONS.md` (2026-10-29).
 
-## Where it comes from
+## How to change the look (quick changes)
 
-A government primary classroom: a ruled exercise notebook, blue ink, a red margin line, a slate board and chalk, and bundles of ten sticks tied with string for place value. The app borrows the notebook for its structure and the sticks for its one memorable element. It uses no photos and no illustrations beyond SVG.
+Everything lives in one file, `apps/pwa/src/theme.css`. `styles.css` and `pilot/pilot.css` hold layout and read the tokens; `tests/test_design_tokens.py` fails if a hex colour or an rgba() creeps back into `styles.css`, if a stylesheet uses a token that nothing defines, or if the manifest or icons drift from the primary colour.
+
+| To change | Edit | Notes |
+| --- | --- | --- |
+| The main colour | `--pen` (and `--pen-container`, `--on-pen-container`, `--tonal`) in `theme.css`; then `theme_color` in `vite.config.ts`, `<meta name="theme-color">` in `index.html`, `scripts/make_icons.py` and `icon.svg` | The test names any of these that no longer match |
+| Page, card and text colours | `--paper`, `--surface`, `--ink`, `--muted`, `--chalk` | Run `python tasks.py test`; it recomputes every contrast figure below |
+| Roundness | `--r-card`, `--r-btn`, `--r-field`, `--r-chip`, `--r-pill`, `--r-sheet` | One value each; every component reads them |
+| Hover, focus and press tint | `--state-hover`, `--state-press` | A fraction (0.08 is 8%) |
+| Body text size, spacing | `--fs-base`, `--fs-wide`, `--s1` to `--s6` | Never below 16 px for any text (the test checks) |
+| The whole look at once | Build with `VITE_THEME=classic` | The older blue-notebook palette and 2 px corners, for comparison; layout and components stay Material 3 |
+
+Not a token: the layout of the bottom bar, cards and sheets (in `styles.css`), and the audio and icon behaviour. A change there is a code change with a test.
 
 ## Colour tokens
 
-Five named colours plus two neutrals. Contrast ratios are computed against the paper colour (WCAG formula, recomputed from the CSS by `tests/test_design_tokens.py`); body text aims for 7:1 and nothing is below 4.5:1.
+Contrast ratios are computed against the paper colour (WCAG formula, recomputed from `theme.css` by `tests/test_design_tokens.py`); body text aims for 7:1 and nothing is below 4.5:1. The nine names below are the original ones; the other roles are listed in `theme.css`, each with what it is for.
 
 | Token | Hex | Used for | Contrast |
 | --- | --- | --- | --- |
-| `paper` | `#FBFCFD` | Page and card background (a cool white, with faint blue rules) | n/a |
-| `ink` | `#14201F` | Body text and headings | 16.3 on paper |
-| `muted` | `#4A5856` | Secondary text | 7.2 on paper |
-| `pen` | `#1B4F9C` | The one primary action per screen, links, focus ring | 7.7 on paper; white on pen 7.9 |
-| `margin` | `#B3261E` | "This is wrong" flag, errors, the simulated-data banner edge | 6.4 on paper; white on margin 6.5 |
-| `stick` | `#E8B93C` | The bundle-of-sticks marks, with `ink` text on top | ink on stick 9.1 |
-| `slate` | `#1F3A33` | Judge-mode strip and the phone frame bezel; chalk text `#F2F5F0` on it | 11.2 |
-| `rule` | `#9DB4D2` | Notebook rule lines and borders (decorative only, never text) | 2.1, so never carries meaning alone |
+| `paper` | `#F7FAFA` | Page background | n/a |
+| `ink` | `#191C1C` | Body text and headings | 16.3 on paper |
+| `muted` | `#3F4948` | Secondary text | 8.9 on paper |
+| `pen` | `#0B6B6B` | Primary: the one main action per screen, links, focus ring, selected states | 6.0 on paper; white on pen 6.3 |
+| `margin` | `#B3261E` | Error: "this is wrong", failures | 6.2 on paper; white on margin 6.5 |
+| `stick` | `#E8B93C` | The bundle-of-sticks marks and highlighted quotes, with `ink` text on top | ink on stick 9.3 |
+| `slate` | `#0F3B3B` | The dark strip, the board line and toasts; chalk text `#EEF4F3` on it | 11.0 |
+| `chalk` | `#EEF4F3` | Navigation bar, wells, light text on slate | n/a |
+| `rule` | `#BEC9C8` | Card outlines and dividers (decorative only, never text) | 1.6, so never carries meaning alone |
 
-Colour never carries meaning alone: every state also has a word or an icon.
+Containers carry meaning with an icon and a word as well, never colour alone: primary container for the focus (the guided tour, the scenario), tonal (secondary container) for neutral chips and the selected navigation item, tertiary (`warn`) container for what to watch and for offline, success container for what went well, error container for what failed. Buttons and fields that must be seen use `outline` (`#6F7979`, 4.3 on paper, above the 3:1 needed for non-text).
 
 ## Type
 
@@ -30,14 +42,15 @@ System fonts only, so nothing is downloaded and Android's Noto Devanagari and No
 | Role | Size and weight | Use |
 | --- | --- | --- |
 | Count numeral | 40 px, 700 | The "11" in "11 of 28 children" |
+| Headline | 28 px, 700 | Landing page title |
 | Title | 24 px, 700 | Screen title |
-| Card heading | 20 px, 700 | Error name on a card |
+| Card heading | 18 to 20 px, 700 | Error name on a card, role names |
 | Body | 18 px, 400, line height 1.5 | Everything else (Indic scripts need the room) |
 | Small | 16 px, 400 | Notes; never below 16 |
 
 ## Spacing and shape
 
-Scale in px: 4, 8, 12, 16, 24, 32. Tap targets are at least 48 × 48 px. Corners are square or 2 px, borders 1 px `rule`, no shadows. Cards are ruled-notebook rows: a 4 px `margin`-coloured left edge only where something needs attention, otherwise a plain 1 px border. Screens use one column at 360 px wide.
+Scale in px: 4, 8, 12, 16, 24, 32. Tap targets are at least 44 px, and primary buttons and fields 48 px or more. Corners follow Material 3: cards and tiles 16 px, buttons and fields 8 px, chips and notes 12 px, sheets 28 px, the signal pill a soft 16 px. No shadows except the one floating toast. Hover, focus and press show as a tint of the content colour over the control (a state layer), not a colour change. Screens use one column at 360 px wide.
 
 ## The one memorable element: tally bundles
 
@@ -45,31 +58,33 @@ Counts are drawn as sticks: a row of short vertical strokes, grouped in tens and
 
 ## Components
 
-- **Primary button:** `pen` fill, white text, 48 px high, full width on phones; one per screen.
-- **Secondary button:** 1 px `pen` border, `pen` text, same size.
+- **Filled button:** `pen` fill, white text, 48 px high, 8 px corners, full width on phones; one per screen.
+- **Outlined button:** 1 px `outline` border, `pen` text, same size. **Tonal button** (`m-btn-tonal`): `tonal` fill, used for the quieter choice beside a filled one.
+- **Navigation bar:** four tabs and More on `chalk`; the selected tab shows a `tonal` pill behind its icon and its label in `ink`. More opens a bottom sheet with 28 px top corners.
+- **Chips and notes:** `tonal` or a container colour, 12 px corners, an icon and a word.
 - **Keypad:** a 3 × 4 grid of 56 px keys (digits, backspace, "blank", "can't read"), because Indian phones' system keyboards switch scripts in the middle of entry.
-- **Banner:** the "Simulated data" strip, `margin` left edge, always visible when synthetic data shows, with the word "simulated" in the teacher's language.
-- **Status line:** an icon plus a word for online, offline and "will send when connected".
+- **Banner:** the "Simulated data" strip on `tonal`, always visible when synthetic data shows, with the word "simulated" in the teacher's language.
+- **Signal pill:** an icon plus a word for online, offline and "will send when connected". Offline uses the tertiary container with a cloud-off icon, and a note under the header says what still works.
 - **Focus ring:** 3 px `pen` outline with a 2 px offset on every interactive element.
 
 ## Motion
 
-None that carries meaning. Transitions are 120 ms opacity at most, and are removed under `prefers-reduced-motion`.
+None that carries meaning. State layers fade in 150 ms (`--motion`), and are removed under `prefers-reduced-motion`.
 
 ## Check against common generated-UI looks
 
-| Look | What the first idea was | Change made |
+| Look | What the risk is | What we did |
 | --- | --- | --- |
-| Cream background with terracotta accents | A warm paper and a clay red | Cool white paper with blue rules and blue ink; red kept only for "wrong" and errors |
-| Acid green on black | A chalkboard in neon chalk | Slate is used only for the judge strip and bezel, with soft chalk text, not for screens |
-| Identical rounded cards with soft shadows | A stack of equal cards | Square ruled rows, no shadows; cards differ by what they hold (a count, an example) |
+| Cream background with terracotta accents | A warm paper and a clay red | Cool white-teal paper; the warm colour is used only for "what to watch" and offline, never as the brand |
+| Acid green on black | A chalkboard in neon chalk | Slate is used only for the top strip, the board line and toasts, with soft chalk text |
+| Identical rounded cards with soft shadows | Material 3 makes every card the same rounded box | No shadows; cards differ by what they hold and carry meaning in their container colour (the tour is a filled primary container, the rest outlined); one filled card per screen |
 | All-caps eyebrow labels, monospace data labels | Small caps above each card, monospace counts | Sentence-case headings only; counts are large proportional numerals plus the stick drawing |
 | A gradient hero | A banner on Home | None: Home is one status sentence and one action |
 
 ## Accessibility
 
-Body contrast 16.3:1, secondary 7.2:1. Every control has a visible label; audio and icon-only controls have text names. The page language attribute follows the chosen language. Layout is checked at 360 px in the screenshots under `docs/evidence/screenshots/`.
+Body contrast 16.3:1, secondary 8.9:1. Every control has a visible label; audio and icon-only controls have text names. The page language attribute follows the chosen language. Layout is checked at 360 px in the screenshots under `docs/evidence/screenshots/`, and for sideways scrolling at 320, 360, 768 and 1280 px.
 
 ## Larger screens (2026-10-20)
 
-The phone frame is for phones only. From 768 px the app is a centred column (up to 820 px, 1000 px from 1200 px) with the same components; the bottom menu scrolls sideways when it does not fit. `apps/pwa/e2e/programme.spec.ts` checks for sideways scrolling at 320, 360, 768 and 1280 px.
+The phone frame is for phones only. From 768 px the app is a centred column (up to 820 px, 1000 px from 1200 px) with the same components. `apps/pwa/e2e/programme.spec.ts` checks for sideways scrolling at 320, 360, 768 and 1280 px.

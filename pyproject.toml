@@ -59,6 +59,12 @@ select = ["E", "F", "I", "UP", "B"]
 "scripts/make_synthetic_sheets.py" = ["E501"]  # the generated README text and spec tables read best on one line
 "scripts/eval_results.py" = ["E501"]  # the table rows read best on one line
 "scripts/browser_qa_report.py" = ["E501"]  # table rows and prose read best on one line
+"services/assistant/*" = ["E501"]  # help text, status words and docstrings read best on one line
+"services/api/assistant.py" = ["E501"]
+"tests/assistant/*" = ["E501"]
+"evals/runners/assistant_eval.py" = ["E501"]  # report table rows
+"scripts/extract_deck.py" = ["E501"]
+"tests/test_dockerfile.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

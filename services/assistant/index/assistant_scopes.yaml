@@ -1,0 +1,95 @@
+# The assistant's scope for each role, as data. The server reads this file and nothing else to decide
+# what an assistant may read, which data tools it may call, and which questions it offers
+# (services/assistant/scopes.py). A user cannot widen a scope by asking: the scope comes from the
+# authenticated role, or from "view as" which only a judge session may use.
+#
+# `actions` is empty for every role on purpose: the assistant is read-only. It never approves,
+# sends or deletes; approvals stay in the existing screens (tests/assistant/test_readonly.py).
+#
+# `data_tools` are the only places the assistant may read live data from. They are declared here
+# and registered in services/assistant/tools.py; a tool that is declared but not wired says so
+# when asked (status "roadmap"), and the scope's `cannot` line never promises it.
+#
+# `can` and `cannot` are the two plain-language lines the panel always shows. Hindi and Tamil are
+# first drafts for Seema and Shivani to review (docs/build/reports/ASSISTANT.md).
+
+version: 1
+min_count: 5   # any count the assistant states is hidden below this many classes
+namespaces: [judge, teacher_kb, coach_kb, product_help, mentor_help, coach_help, officer_help]
+
+roles:
+  teacher:
+    title: {en: Your assistant, hi: आपका सहायक, ta: உங்கள் உதவியாளர்}
+    answers_in: own
+    namespaces: [teacher_kb, product_help]
+    data_tools: [own_state, own_class_counts, own_track, next_step]
+    question_bank: docs/assistant_questions/teacher.json
+    actions: []
+    can:
+      en: How to use the app, what an error card means, what to try next, and what today's step is.
+      hi: ऐप कैसे इस्तेमाल करें, गलती कार्ड का मतलब, आगे क्या आज़माएँ और आज का कदम क्या है।
+      ta: செயலியை எப்படிப் பயன்படுத்துவது, பிழை அட்டையின் பொருள், அடுத்து என்ன முயல்வது, இன்றைய படி என்ன.
+    cannot:
+      en: Other teachers, drafts that are not approved, the repository, and any child's name. It never approves or sends anything.
+      hi: दूसरे शिक्षक, बिना मंज़ूरी के ड्राफ़्ट, रिपॉज़िटरी और किसी बच्चे का नाम। यह कुछ मंज़ूर या भेजता नहीं।
+      ta: மற்ற ஆசிரியர்கள், அங்கீகரிக்கப்படாத வரைவுகள், களஞ்சியம், எந்தக் குழந்தையின் பெயரும். இது எதையும் அங்கீகரிக்கவோ அனுப்பவோ செய்யாது.
+  mentor:
+    title: {en: Mentor assistant, hi: मेंटर सहायक, ta: வழிகாட்டி உதவியாளர்}
+    answers_in: own
+    namespaces: [teacher_kb, mentor_help]
+    data_tools: [own_method_card_counts]
+    question_bank: docs/assistant_questions/mentor.json
+    actions: []
+    can:
+      en: How to record your method, where your method card stands, and what the coach checks. Counts only, and only if at least 5.
+      hi: अपनी विधि कैसे रिकॉर्ड करें, आपका मेथड कार्ड कहाँ है और कोच क्या जाँचता है। सिर्फ़ गिनती, और वह भी कम से कम 5 हो तो।
+      ta: உங்கள் முறையை எப்படிப் பதிவு செய்வது, உங்கள் முறை அட்டை எங்கே உள்ளது, பயிற்சியாளர் எதைச் சரிபார்க்கிறார். எண்ணிக்கை மட்டும், குறைந்தது 5 இருந்தால் மட்டும்.
+    cannot:
+      en: Which teachers tried your card, any teacher's class, and any child's name. It never approves or sends anything.
+      hi: किन शिक्षकों ने आपका कार्ड आज़माया, किसी शिक्षक की कक्षा और किसी बच्चे का नाम। यह कुछ मंज़ूर या भेजता नहीं।
+      ta: உங்கள் அட்டையை எந்த ஆசிரியர்கள் முயன்றனர், எந்த ஆசிரியரின் வகுப்பு, எந்தக் குழந்தையின் பெயரும். இது எதையும் அங்கீகரிக்கவோ அனுப்பவோ செய்யாது.
+  coach:
+    title: {en: Review assistant, hi: समीक्षा सहायक, ta: மதிப்பாய்வு உதவியாளர்}
+    answers_in: own
+    namespaces: [coach_kb, coach_help]
+    data_tools: [review_queue, chat_inbox, cohort_counts]
+    question_bank: docs/assistant_questions/coach.json
+    actions: []
+    can:
+      en: What waits in the review queue and the chat inbox, which drafts came from the AI, which cohorts have gone quiet, and how approval works. Cohort counts only, at least 5.
+      hi: समीक्षा कतार और चैट इनबॉक्स में क्या रुका है, कौन से ड्राफ़्ट एआई से आए, कौन से समूह शांत हैं और मंज़ूरी कैसे होती है। सिर्फ़ समूह की गिनती, कम से कम 5।
+      ta: மதிப்பாய்வு வரிசையிலும் அரட்டைப் பெட்டியிலும் என்ன காத்திருக்கிறது, எந்த வரைவுகள் AI-இடமிருந்து வந்தன, எந்தக் குழுக்கள் அமைதியாக உள்ளன, ஒப்புதல் எப்படி நடக்கிறது. குழு எண்ணிக்கை மட்டும், குறைந்தது 5.
+    cannot:
+      en: Any one teacher's standing, any ranking of teachers, and any child's name. It cannot approve anything; approve in the review screen.
+      hi: किसी एक शिक्षक की स्थिति, शिक्षकों की कोई रैंकिंग और किसी बच्चे का नाम। यह कुछ मंज़ूर नहीं कर सकता; मंज़ूरी समीक्षा स्क्रीन में दें।
+      ta: எந்த ஒரு ஆசிரியரின் நிலை, ஆசிரியர்களின் எந்த வரிசைப்படுத்தலும், எந்தக் குழந்தையின் பெயரும். இது எதையும் அங்கீகரிக்க முடியாது; மதிப்பாய்வுத் திரையில் அங்கீகரியுங்கள்.
+  officer:
+    title: {en: Programme assistant, hi: Programme assistant, ta: Programme assistant}
+    answers_in: en
+    namespaces: [officer_help]
+    data_tools: [cohort_counts, block_counts, track_verdicts]
+    question_bank: docs/assistant_questions/officer.json
+    actions: []
+    can:
+      en: How to read a verdict, what a chart does not show, how cohorts were formed, and the caveats. Counts only, never fewer than 5 classes.
+      hi: How to read a verdict, what a chart does not show, how cohorts were formed, and the caveats. Counts only, never fewer than 5 classes.
+      ta: How to read a verdict, what a chart does not show, how cohorts were formed, and the caveats. Counts only, never fewer than 5 classes.
+    cannot:
+      en: Any teacher-level or child-level data. It cannot approve anything.
+      hi: Any teacher-level or child-level data. It cannot approve anything.
+      ta: Any teacher-level or child-level data. It cannot approve anything.
+  judge:
+    title: {en: Judge guide, hi: Judge guide, ta: Judge guide}
+    answers_in: en
+    namespaces: [judge, product_help]
+    data_tools: []
+    question_bank: docs/assistant_questions/judge.json
+    actions: []
+    can:
+      en: Where each rubric criterion is built, with its honest status, the code path, the deck slide and the video time. Use View as to see another role's assistant on demo data.
+      hi: Where each rubric criterion is built, with its honest status, the code path, the deck slide and the video time. Use View as to see another role's assistant on demo data.
+      ta: Where each rubric criterion is built, with its honest status, the code path, the deck slide and the video time. Use View as to see another role's assistant on demo data.
+    cannot:
+      en: Any real user's data. This demo has none. Everything here is simulated or labelled.
+      hi: Any real user's data. This demo has none. Everything here is simulated or labelled.
+      ta: Any real user's data. This demo has none. Everything here is simulated or labelled.

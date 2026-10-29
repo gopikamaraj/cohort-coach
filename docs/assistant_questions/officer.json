@@ -1,0 +1,133 @@
+[
+ {
+  "id": "o01",
+  "text": {
+   "en": "How do I read this verdict?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "how to read a verdict working not working inconclusive interval"
+ },
+ {
+  "id": "o02",
+  "text": {
+   "en": "Why can't I see names?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "why can't I see names aggregates only"
+ },
+ {
+  "id": "o03",
+  "text": {
+   "en": "What does this chart not show?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what does this chart not show"
+ },
+ {
+  "id": "o04",
+  "text": {
+   "en": "How were cohorts formed?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "how were cohorts formed eligibility waitlist"
+ },
+ {
+  "id": "o05",
+  "text": {
+   "en": "What does the funnel measure?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "funnel delivered tried practised changed sources"
+ },
+ {
+  "id": "o06",
+  "text": {
+   "en": "What does Inconclusive mean?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "inconclusive fewer than fifteen classes"
+ },
+ {
+  "id": "o07",
+  "text": {
+   "en": "Why is a group hidden?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "group hidden fewer than five classes"
+ },
+ {
+  "id": "o08",
+  "text": {
+   "en": "How is the pilot measured differently?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "pilot scale extra fall McNemar"
+ },
+ {
+  "id": "o09",
+  "text": {
+   "en": "Is this real data?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "is this real data simulated"
+ },
+ {
+  "id": "o10",
+  "text": {
+   "en": "Can I approve content?"
+  },
+  "screens": [
+   "officer",
+   "review"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "can I approve content coach officer key"
+ }
+]

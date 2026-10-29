@@ -1,0 +1,1065 @@
+[
+ {
+  "bullet": "Impact potential",
+  "claim": "Teachers are grouped for training by the specific error their pupils make, across schools, not by geography.",
+  "code": [
+   "engine/diagnosis.py",
+   "engine/grouping.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Officer · open #/officer and read the error map · simulated block",
+  "differs": [],
+  "feature": "Error diagnosis and cohort grouping",
+  "id": "E1.1",
+  "limit": "Shown on a simulated block; no real cohort has been formed yet.",
+  "slides": [
+   3
+  ],
+  "status": "Simulated",
+  "tests": [
+   "tests/engine/test_grouping.py",
+   "tests/engine/test_diagnosis.py"
+  ],
+  "video": [
+   "00:15",
+   "00:55"
+  ]
+ },
+ {
+  "bullet": "Impact potential",
+  "claim": "The next check says whether children improved against a comparison group, and a failed track counts against the track, never the teacher.",
+  "code": [
+   "engine/evaluation.py",
+   "services/api/officer.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Officer · #/officer, track results · simulated block",
+  "differs": [],
+  "feature": "Block-scale and pilot-scale verdicts",
+  "id": "E1.2",
+  "limit": "Every verdict shown comes from the simulated block (`docs/evidence/demo_verdicts.md`); no real term has run.",
+  "slides": [
+   11
+  ],
+  "status": "Simulated",
+  "tests": [
+   "tests/engine/test_evaluation_block.py",
+   "tests/engine/test_evaluation_pilot.py",
+   "evals/results.md"
+  ],
+  "video": [
+   "02:25"
+  ]
+ },
+ {
+  "bullet": "Impact potential",
+  "claim": "A pilot path is built and deployed: a coordinator uploads consented pre-test sheets, the system reads them, drafts lessons from the class counts, a coach approves, and the audio is shared.",
+  "code": [
+   "services/pilot/routes.py",
+   "services/pilot/sheets.py",
+   "services/pilot/lessons.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Staff sign-in on the pilot server · Upload sheets, then Intervention audio",
+  "differs": [],
+  "feature": "Pilot mode",
+  "id": "E1.3",
+  "limit": "Checked end to end with synthetic sheets (`docs/build/reports/PILOT-MODE.md`); no real class has used it yet.",
+  "slides": [
+   10
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/pilot/test_full_pass.py",
+   "tests/pilot/test_uploads.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Impact potential",
+  "claim": "A real class has been taught with it and the next check shows whether children improved.",
+  "code": [
+   "engine/evaluation.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "—",
+  "differs": [],
+  "feature": "Pilot results",
+  "id": "E1.5",
+  "limit": "The method (extra fall and exact McNemar) is built and tested; no real class result exists yet.",
+  "slides": [
+   11
+  ],
+  "status": "Roadmap",
+  "tests": [
+   "tests/engine/test_evaluation_pilot.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Impact potential",
+  "claim": "A teacher's time is capped at 20 minutes a week, and the cap is measured, not assumed.",
+  "code": [
+   "services/api/time_budget.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Teacher · My programme shows the week's lessons",
+  "differs": [],
+  "feature": "Time budget",
+  "id": "E1.4",
+  "limit": "The cap is a target from the design; real use has not been timed.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/flows/test_t4.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "Every teacher screen works in Tamil, Hindi and English, with one main action per screen and large tap targets.",
+  "code": [
+   "apps/pwa/src/i18n/index.ts",
+   "strings/en.json",
+   "strings/hi.json",
+   "strings/ta.json"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Teacher · My profile, Language, Tamil",
+  "differs": [],
+  "feature": "Three-language web app",
+  "id": "E2.1",
+  "limit": "Hindi and Tamil wording is a first draft awaiting native review.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/review.spec.ts",
+   "docs/evidence/browser_qa.md"
+  ],
+  "video": [
+   "01:40"
+  ]
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "Teachers see counts of children with a stick drawing, never percentages, and every card can be read aloud.",
+  "code": [
+   "apps/pwa/src/screens/Cards.tsx",
+   "apps/pwa/src/components/parts.tsx"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Teacher · Judge, Load a simulated class, then My class",
+  "differs": [],
+  "feature": "Error cards",
+  "id": "E2.2",
+  "limit": "The demo class is simulated.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/app.spec.ts"
+  ],
+  "video": [
+   "00:35"
+  ]
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "Judges start with role cards and a five-minute guided tour, with no login.",
+  "code": [
+   "apps/pwa/src/screens/Landing.tsx",
+   "apps/pwa/src/screens/Tour.tsx"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · open the web app, choose Guided tour",
+  "differs": [],
+  "feature": "Landing page and tour",
+  "id": "E2.3",
+  "limit": "Steps for later phases say they are pending.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/landing.spec.ts",
+   "apps/pwa/e2e/tour.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "One Material 3 look on every screen, kept in a single theme file so it can change quickly.",
+  "code": [
+   "apps/pwa/src/theme.css",
+   "apps/pwa/src/styles.css"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Any role · any screen",
+  "differs": [],
+  "feature": "Theme tokens",
+  "id": "E2.4",
+  "limit": "The Stitch exports have not been generated, so screens follow the design file, not the exports.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/test_design_tokens.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "A plain guide in her language explains what a web app is and how to keep it on the home screen.",
+  "code": [
+   "apps/pwa/src/components/install.tsx",
+   "apps/pwa/src/lib/install.ts"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Teacher · landing page, How to install",
+  "differs": [],
+  "feature": "Install guide",
+  "id": "E2.5",
+  "limit": "Not tried on a real low-end phone; the Install now button appears only where the browser offers it.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/landing.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "User constraints",
+  "claim": "Everything except the Practice Class works offline: checks and results queue and send when signal returns.",
+  "code": [
+   "apps/pwa/src/lib/sync.ts",
+   "apps/pwa/src/lib/queue.ts",
+   "docs/offline.md"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · #/judge, Simulate offline, then Enter check",
+  "differs": [],
+  "feature": "Offline outbox and cached shell",
+  "id": "E3.1",
+  "limit": "Slow 3G and a real low-end phone have not been measured.",
+  "slides": [
+   7
+  ],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/app.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "User constraints",
+  "claim": "Data per teacher per track is computed against a 10 MB budget: met with text practice, missed if every session uses voice.",
+  "code": [
+   "scripts/data_budget.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Read `docs/evidence/data_budget.json`",
+  "differs": [],
+  "feature": "Data budget",
+  "id": "E3.2",
+  "limit": "Computed from sizes, not measured on a phone.",
+  "slides": [
+   7
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/test_data_budget.py",
+   "docs/evidence/data_budget.json"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "User constraints",
+  "claim": "She can speak or type; after two voice failures, or on a 2G link, typing takes over by itself.",
+  "code": [
+   "apps/pwa/src/lib/voice.ts",
+   "services/speech/stt.py",
+   "services/speech/tts.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Teacher · #/practice, Use voice",
+  "differs": [],
+  "feature": "Voice with text fallback",
+  "id": "E3.3",
+  "limit": "Live voice turns are slower than the target (`evals/results.md`, Latency row; `docs/build/reports/P07-voice.md`).",
+  "slides": [
+   7
+  ],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/voice.spec.ts",
+   "tests/speech/test_voice_turn.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "User constraints",
+  "claim": "Teachers who live in chat get the same lessons and two taps in Telegram, from the same back end.",
+  "code": [
+   "services/api/channels/telegram",
+   "services/api/flows"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · Telegram, /start judge",
+  "differs": [],
+  "feature": "Telegram adapter",
+  "id": "E3.4",
+  "limit": "The cohort-thread relay and voice replies in Telegram were cut (`docs/build/PARKING.md`).",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/channels/test_t4_golden.py",
+   "tests/channels/test_golden.py"
+  ],
+  "video": [
+   "01:40"
+  ]
+ },
+ {
+  "bullet": "Proof of testing and refinement",
+  "claim": "Every page is tested in a real browser in three languages at phone and desktop size, and every feature has browser tests.",
+  "code": [
+   "apps/pwa/qa/crawl.mjs",
+   "scripts/browser_feature_table.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Read `docs/evidence/browser_features.md`",
+  "differs": [],
+  "feature": "Browser QA",
+  "id": "E4.1",
+  "limit": "One browser test fails in the latest run (the AI map count after calls were added); the table shows it. It is not on a slide yet.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "docs/evidence/browser_features.md",
+   "docs/evidence/browser_qa.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Proof of testing and refinement",
+  "claim": "Teacher feedback is logged as \"You said, we changed\", with the commit that changed the product.",
+  "code": [
+   "docs/feedback-log.md",
+   "scripts/feedback_table.py"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Read `docs/feedback-log.md`",
+  "differs": [],
+  "feature": "Feedback log",
+  "id": "E4.2",
+  "limit": "No feedback row is recorded yet; the round 3 script and results template exist (`docs/user-testing/`). The deck must say so.",
+  "slides": [
+   9
+  ],
+  "status": "Partly built",
+  "tests": [
+   "tests/test_feedback_table.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Proof of testing and refinement",
+  "claim": "A red team of unsafe, injected and off-topic prompts is run against the live models, and nothing unsafe reached a teacher.",
+  "code": [
+   "evals/runners/redteam.py",
+   "evals/sets/redteam.yaml"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Read `evals/results.md`, row 7",
+  "differs": [],
+  "feature": "Red team eval",
+  "id": "E4.3",
+  "limit": "Some human-rated evals are still pending (`evals/results.md`).",
+  "slides": [
+   6
+  ],
+  "status": "Built",
+  "tests": [
+   "evals/results.md"
+  ],
+  "video": [
+   "01:15"
+  ]
+ },
+ {
+  "bullet": "A novel AI-centred approach",
+  "claim": "Before using a fix on real children she rehearses with five simulated children who make her own class's mistakes; the engine decides each answer and the model only says it.",
+  "code": [
+   "engine/simulator.py",
+   "services/practice/session.py",
+   "ai/calls/c01_child_voice.py",
+   "ai/calls/c02_move_label.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Teacher · #/practice, Start · type: Priya, what is 52 minus 29?",
+  "differs": [],
+  "feature": "Practice Class",
+  "id": "I1.1",
+  "limit": "Simulated practice is a hypothesis: no source tests it and the pilot will. Realism ratings are pending.",
+  "slides": [
+   4
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/engine/test_simulator.py",
+   "tests/practice/test_session.py",
+   "evals/results.md"
+  ],
+  "video": [
+   "02:00"
+  ]
+ },
+ {
+  "bullet": "A novel AI-centred approach",
+  "claim": "Claude reads the digits a child wrote from a photo, blind to the answers; code does every count.",
+  "code": [
+   "ai/calls/c08_answer_reading.py",
+   "services/api/sheets.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Teacher · #/check, sample sheets",
+  "differs": [],
+  "feature": "Answer-sheet reading",
+  "id": "I1.2",
+  "limit": "The hand-keyed accuracy eval is pending (`evals/results.md`, row 9).",
+  "slides": [
+   5
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/api/test_sheets.py",
+   "apps/pwa/e2e/photo.spec.ts"
+  ],
+  "video": [
+   "00:15",
+   "00:35"
+  ]
+ },
+ {
+  "bullet": "A novel AI-centred approach",
+  "claim": "Each error card says where learning most likely broke down (input, core or output), as counts with a one-minute check.",
+  "code": [
+   "engine/stages.py",
+   "services/api/stages.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Teacher · Guided tour step 1",
+  "differs": [],
+  "feature": "Stage of breakdown",
+  "id": "I1.3",
+  "limit": "Stages are \"most likely\", never a cause, and never stored per child.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/engine/test_stages.py",
+   "apps/pwa/e2e/stages.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "A novel AI-centred approach",
+  "claim": "Judges can watch the same simulated class taught by an experienced or a struggling AI teacher, labelled as AI.",
+  "code": [
+   "services/practice/watch.py",
+   "ai/calls/c10_demo_teacher.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Judge · Home, Watch a rehearsal",
+  "differs": [],
+  "feature": "Watch a run (judge mode)",
+  "id": "I1.4",
+  "limit": "Judge mode only; not run as a scored eval.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/practice/test_watch.py",
+   "tests/practice/test_call_10.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Differentiation",
+  "claim": "Mentors are teachers whose classes fixed the same error, and their method becomes the next cohort's content.",
+  "code": [
+   "engine/mentors.py",
+   "services/api/cohorts/mentor_items.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Mentor · #/mentor",
+  "differs": [],
+  "feature": "Mentor selection",
+  "id": "I2.1",
+  "limit": "Selection rules are built; recording a method in the app and call 4 (method cards) are not built.",
+  "slides": [
+   3
+  ],
+  "status": "Partly built",
+  "tests": [
+   "tests/engine/test_mentors.py",
+   "tests/cohorts/test_cohort_space.py"
+  ],
+  "video": [
+   "00:55"
+  ]
+ },
+ {
+  "bullet": "Differentiation",
+  "claim": "Each cohort has a moderated, pseudonymous thread: no handles or phone numbers, a child's name is refused, and posts can be reported.",
+  "code": [
+   "services/api/cohorts/thread.py",
+   "services/api/cohorts/lifecycle.py",
+   "ai/validators/thread.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Teacher · #/cohort, join, post",
+  "differs": [],
+  "feature": "Cohort space",
+  "id": "I2.2",
+  "limit": "The Telegram relay of the thread was cut.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/cohorts/test_cohort_space.py",
+   "apps/pwa/e2e/cohort.spec.ts"
+  ],
+  "video": [
+   "00:55"
+  ]
+ },
+ {
+  "bullet": "Differentiation",
+  "claim": "A teacher's question to her mentor can get a draft answer from approved material only, which a person sends or replaces.",
+  "code": [
+   "ai/calls/c12_chat_classify.py",
+   "ai/calls/c13_chat_reply.py",
+   "services/chat/retrieve.py"
+  ],
+  "criterion": "Innovation",
+  "demo": "Coach · #/cohort",
+  "differs": [],
+  "feature": "Cohort chat drafts",
+  "id": "I2.3",
+  "limit": "Work in progress in this build: the scheduler and its tests are not finished.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/chat/test_draft.py",
+   "tests/chat/test_classify.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Differentiation",
+  "claim": "Every picture is drawn by code from data, and the number of units it shows comes from a layout function, never from AI.",
+  "code": [
+   "services/api/sprites",
+   "apps/pwa/src/sprites"
+  ],
+  "criterion": "Innovation",
+  "demo": "Teacher · #/practice, Materials",
+  "differs": [],
+  "feature": "Sprite system",
+  "id": "I2.4",
+  "limit": "Only one topic pack is enabled; the second exists as data only.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/sprites/test_layouts.py",
+   "tests/sprites/test_grammar.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Effective LLM use",
+  "claim": "Every model call is in one registry with its input, processing, guardrails, evaluation and output, and the README table is generated from it.",
+  "code": [
+   "ai/registry.py",
+   "scripts/gen_ai_usage.py",
+   "AI_USAGE.md"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Judge · #/aimap",
+  "differs": [],
+  "feature": "Call registry and AI map",
+  "id": "A1.1",
+  "limit": "Some calls are specified, not built; `AI_USAGE.md` gives each its status.",
+  "slides": [
+   5
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/test_ai_usage_doc.py",
+   "tests/ai/test_registry.py"
+  ],
+  "video": [
+   "02:45"
+  ]
+ },
+ {
+  "bullet": "Effective LLM use",
+  "claim": "Calls use the cheapest model that passes, structured outputs, prompt caching and the lowest effort that passes.",
+  "code": [
+   "ai/config.py",
+   "ai/client.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Judge · #/audit after one Practice turn",
+  "differs": [],
+  "feature": "Model tiering and client",
+  "id": "A1.2",
+  "limit": "—",
+  "slides": [
+   5
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/ai/test_client.py",
+   "docs/evidence/ai_usage_proof.json"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Effective LLM use",
+  "claim": "Lessons are drafted by the model with every class number as a slot that code fills, and every sum is checked by code.",
+  "code": [
+   "ai/calls/c05_track_draft.py",
+   "services/content/drafting.py",
+   "services/content/slots.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Coach · #/review",
+  "differs": [],
+  "feature": "Track drafting",
+  "id": "A1.3",
+  "limit": "The batch run and the cited \"why this move\" lines are parked; the acceptance eval waits for the coach's decisions.",
+  "slides": [
+   6
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/ai/test_c05_track_draft.py",
+   "tests/content/test_slots.py"
+  ],
+  "video": [
+   "01:15"
+  ]
+ },
+ {
+  "bullet": "Effective LLM use",
+  "claim": "The cost per teacher per track is measured from real calls and shown as a range.",
+  "code": [
+   "scripts/cost_per_teacher.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Read `docs/evidence/cost_per_teacher.md`",
+  "differs": [],
+  "feature": "Cost per teacher",
+  "id": "A1.4",
+  "limit": "Speech and hosting are not included; calls per teacher are an assumption.",
+  "slides": [
+   11
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/test_cost_per_teacher.py",
+   "docs/evidence/cost_per_teacher.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Nothing reaches a teacher before code validators, a rule-based pre-filter, a second-model check and, for content, a person.",
+  "code": [
+   "ai/guard/gates.py",
+   "ai/validators/prefilter.py",
+   "ai/calls/c07_checker.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Judge · #/aimap, Try to break it",
+  "differs": [],
+  "feature": "Gates and badges",
+  "id": "A2.1",
+  "limit": "—",
+  "slides": [
+   6
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/ai/test_guard.py",
+   "tests/ai/test_validators.py",
+   "evals/results.md"
+  ],
+  "video": [
+   "01:15"
+  ]
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Code computes every number; a number inside AI text is a slot filled by code and checked again.",
+  "code": [
+   "ai/validators/numbers.py",
+   "ai/validators/arithmetic.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Teacher · #/practice, Judge tab, Show AI layers",
+  "differs": [],
+  "feature": "Number validators",
+  "id": "A2.2",
+  "limit": "—",
+  "slides": [
+   6
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/ai/test_validators.py"
+  ],
+  "video": [
+   "00:35"
+  ]
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Content needs two keys: the coach approves, then the officer switches it on; neither alone publishes.",
+  "code": [
+   "services/content/review.py",
+   "services/content/versions.py",
+   "services/content/publish.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Coach · #/review, then Officer · #/review",
+  "differs": [],
+  "feature": "Review queue and versions",
+  "id": "A2.3",
+  "limit": "—",
+  "slides": [
+   6
+  ],
+  "status": "Built",
+  "tests": [
+   "tests/content/test_review_queue.py",
+   "tests/content/test_versions.py",
+   "apps/pwa/e2e/review-queue.spec.ts"
+  ],
+  "video": [
+   "01:15"
+  ]
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "No child name reaches a model, per-child answers stay on the phone, and sheet photos are deleted after reading.",
+  "code": [
+   "ai/validators/mask.py",
+   "ai/validators/pii.py",
+   "services/api/sheets.py",
+   "docs/privacy.md"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Teacher · #/check, sample sheets, then watch the network",
+  "differs": [],
+  "feature": "Privacy rules",
+  "id": "A2.4",
+  "limit": "Pilot mode keeps the pre-test photos privately, with consent and a retention period (`CLAUDE.md`, rule 2).",
+  "slides": [
+   6
+  ],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/stages.spec.ts",
+   "tests/practice/test_api.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Every AI call leaves one audit row with metadata only: never prompt text, teacher text or model output.",
+  "code": [
+   "ai/audit.py",
+   "services/api/judge.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Judge · #/audit",
+  "differs": [],
+  "feature": "Audit trail",
+  "id": "A2.5",
+  "limit": "Closed outside judge mode.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/ai/test_judge_api.py",
+   "apps/pwa/e2e/practice.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Working in real scenarios",
+  "claim": "The judge demo and the pilot run on Google Cloud behind one web address, with separate servers.",
+  "code": [
+   "docs/deploy.md"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Open the web app address in `README.md`",
+  "differs": [],
+  "feature": "Deployment",
+  "id": "A3.1",
+  "limit": "The servers can start cold unless the minimum instances is raised for the judging window.",
+  "slides": [
+   10
+  ],
+  "status": "Built",
+  "tests": [
+   "docs/evidence/live_qa/README.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Working in real scenarios",
+  "claim": "A Practice Class turn answers within the latency target.",
+  "code": [
+   "services/practice/session.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Teacher · #/practice, one turn",
+  "differs": [],
+  "feature": "Latency",
+  "id": "A3.2",
+  "limit": "The measured text-turn median is over the target (`evals/results.md`, Latency row).",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "evals/results.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Working in real scenarios",
+  "claim": "It has been checked on Slow 3G and on a real low-end Android phone.",
+  "code": [
+   "docs/offline.md"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "—",
+  "differs": [],
+  "feature": "Real-phone check",
+  "id": "A3.3",
+  "limit": "Not measured yet.",
+  "slides": [
+   7
+  ],
+  "status": "Roadmap",
+  "tests": [
+   "docs/build/PROGRESS.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Working in real scenarios",
+  "claim": "WhatsApp is a third channel on the same back end.",
+  "code": [
+   "services/api/channels/whatsapp"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "—",
+  "differs": [],
+  "feature": "WhatsApp adapter",
+  "id": "A3.4",
+  "limit": "A stub adapter only; the WhatsApp Cloud API is not connected.",
+  "slides": [
+   12
+  ],
+  "status": "Mock",
+  "tests": [
+   "tests/channels/test_golden.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Future roadmap",
+  "claim": "A one-block pilot with a DIET from January 2027, then a district; WhatsApp and IVR; literacy tracks.",
+  "code": [
+   "docs/roadmap.md"
+  ],
+  "criterion": "Future roadmap",
+  "demo": "Read `docs/roadmap.md`",
+  "differs": [],
+  "feature": "Roadmap",
+  "id": "R1.1",
+  "limit": "Needs a block, a DIET, schools, a coach and an officer.",
+  "slides": [
+   12,
+   14
+  ],
+  "status": "Roadmap",
+  "tests": [
+   "docs/roadmap.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Future roadmap",
+  "claim": "Topic packs take the same loop beyond Grade 3 maths.",
+  "code": [
+   "docs/roadmap.md",
+   "content/sprites/packs"
+  ],
+  "criterion": "Future roadmap",
+  "demo": "Read `docs/roadmap.md`, Topic packs",
+  "differs": [],
+  "feature": "Topic packs",
+  "id": "R1.2",
+  "limit": "One pack is enabled; others are data only.",
+  "slides": [
+   13
+  ],
+  "status": "Roadmap",
+  "tests": [
+   "tests/sprites/test_extensibility.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Future roadmap",
+  "claim": "Integration with state assessment data, UDISE+ identifiers and existing training records.",
+  "code": [
+   "docs/roadmap.md"
+  ],
+  "criterion": "Future roadmap",
+  "demo": "—",
+  "differs": [],
+  "feature": "Integrations",
+  "id": "R1.3",
+  "limit": "Not built.",
+  "slides": [
+   12
+  ],
+  "status": "Roadmap",
+  "tests": [
+   "docs/roadmap.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "One assistant whose scope is set on the server by the signed-in role; a question cannot widen it, and only a judge may view as another role.",
+  "code": [
+   "assistant_scopes.yaml",
+   "services/assistant/scopes.py",
+   "services/assistant/retrieve.py"
+  ],
+  "criterion": "This assistant",
+  "demo": "Judge · Assistant, View as Teacher",
+  "differs": [],
+  "feature": "Assistant scopes",
+  "id": "AS.1",
+  "limit": "Production has only the teacher role until real role assignment exists.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/assistant/test_scopes.py",
+   "tests/assistant/test_leaks.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Effective LLM use",
+  "claim": "The judge guide answers with the honest status, the code path, the deck slide and the video time, and says how to check.",
+  "code": [
+   "services/assistant/answer.py",
+   "services/assistant/cite.py",
+   "docs/RUBRIC_MAP.md"
+  ],
+  "criterion": "This assistant",
+  "demo": "Judge · Assistant, About this product",
+  "differs": [],
+  "feature": "Judge guide",
+  "id": "AS.2",
+  "limit": "Slide numbers and video times are provisional until the final deck and video exist.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/assistant/test_answer.py",
+   "tests/assistant/test_citations.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "User constraints",
+  "claim": "Each role's assistant can read its own data through read-only tools, with counts hidden under five classes.",
+  "code": [
+   "services/assistant/tools.py"
+  ],
+  "criterion": "This assistant",
+  "demo": "—",
+  "differs": [],
+  "feature": "Assistant data tools",
+  "id": "AS.3",
+  "limit": "Declared and filtered by scope, but no tool reads live data yet.",
+  "slides": [],
+  "status": "Roadmap",
+  "tests": [
+   "tests/assistant/test_scopes.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Free-text questions are answered by a model from retrieved text only; code checks every citation and quote and abstains otherwise.",
+  "code": [
+   "ai/calls/c14_assistant_answer.py",
+   "services/assistant/answer.py"
+  ],
+  "criterion": "This assistant",
+  "demo": "Judge · Assistant, type a question",
+  "differs": [],
+  "feature": "Assistant answering call",
+  "id": "AS.4",
+  "limit": "Tested with a stand-in model; no live run yet.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/assistant/test_answer.py",
+   "evals/assistant_eval.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "Every screen links to one assistant panel with a role title, a permanent scope note, five suggested questions, sources and a check line; the judge also gets View as and the ten-minute test path.",
+  "code": [
+   "apps/pwa/src/screens/Assistant.tsx",
+   "apps/pwa/src/lib/assistant.ts"
+  ],
+  "criterion": "This assistant",
+  "demo": "Judge · Assistant, View as Teacher",
+  "differs": [],
+  "feature": "Assistant panel",
+  "id": "AS.6",
+  "limit": "Not yet run on a real phone; Hindi and Tamil strings are drafts.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "apps/pwa/e2e/assistant.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "An intuitive interface",
+  "claim": "Teachers, mentors and coaches get suggested questions and answers in their own language.",
+  "code": [
+   "docs/assistant_questions/teacher.json",
+   "assistant_scopes.yaml"
+  ],
+  "criterion": "This assistant",
+  "demo": "Teacher · Assistant in Tamil",
+  "differs": [],
+  "feature": "Assistant languages",
+  "id": "AS.5",
+  "limit": "Help pages are in English; Hindi and Tamil questions are drafts for review.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/assistant/test_questions.py"
+  ],
+  "video": []
+ }
+]

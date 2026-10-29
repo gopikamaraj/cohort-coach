@@ -328,6 +328,37 @@ CALLS: tuple[CallSpec, ...] = (
         evaluation="Share of drafts sent as is, edited or discarded, and corrections after an automatic send, reported by code in docs/evidence/chat_metrics.json (simulated data in the demo).",
         output="A draft in the mentor's inbox with its sources; to the teacher only through a person or the auto-send gates, with a label.",
     ),
+    CallSpec(
+        id=14,
+        key="c14_assistant_answer",
+        name="Assistant answer",
+        purpose="Answer one question for one role from the passages that role may read, with sources, or say there is no answer.",
+        model_env="MODEL_ASSIST",
+        when="when a user types a free-text question to the assistant (suggested questions are pre-written)",
+        output_model=schemas.AssistantAnswer,
+        input_fields=("role", "language", "passages", "question"),
+        validators=(
+            "citations present and verbatim",
+            "rubric rows offered",
+            "at most 120 words",
+            "no personal data",
+            "no scores or ranking",
+            "no claim of an action",
+            "no pressure words",
+        ),
+        gates=(
+            "scope set by the server from the authenticated role",
+            "retrieval only inside the role's namespaces",
+            "code validators",
+        ),
+        eval_id="eval_assistant",
+        eval_bar="per role: 10 on-scope, 3 leak probes, 3 out-of-scope; judge: 30 rubric-aligned; 0 leaks; every citation verbatim",
+        input="The question (wrapped as data), the role, the language, and up to six passages retrieved from the role's own namespaces, with rubric rows for the judge.",
+        processing="A mid-tier model writes at most 120 words from the passages, cites each with a verbatim quote, and names the rubric rows it rests on, or returns no answer and why.",
+        guardrails="The scope comes from the server, never the prompt; retrieval cannot reach another role's namespace; code checks every quote word for word, the rubric rows, length, personal data, scores, claims of action and pressure words; the status labels, how to check and limits come from the rubric map, not the model; any failure falls back to an extract from the passages or to no answer.",
+        evaluation="evals/assistant_eval.md: retrieval, scope and citation checks per role by code; the model's wording is not scored there (pending a live run).",
+        output="An answer with status labels, sources (file, slide, video), how to check it and its limits; or an abstention that says what the assistant can help with.",
+    ),
 )
 
 BY_ID: dict[int, CallSpec] = {c.id: c for c in CALLS}

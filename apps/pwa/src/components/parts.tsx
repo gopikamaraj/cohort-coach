@@ -1,6 +1,8 @@
 // Small shared pieces: the simulated banner, the status line, and tally bundles.
 import type { ReactNode } from "react";
 import { useApp } from "../state";
+import { useLinkSpeed } from "../lib/net";
+import { Icon } from "./icons";
 
 /** Shown whenever synthetic data is on screen. */
 export function SimulatedBanner() {
@@ -12,20 +14,45 @@ export function SimulatedBanner() {
   );
 }
 
-/** Online, offline and waiting-to-send: an icon and a word, never colour alone. */
+/**
+ * Online, offline and waiting-to-send: an icon and a word, never colour alone. When the phone's
+ * browser can estimate the signal, its word and download speed follow (an estimate; no upload).
+ */
 export function StatusLine() {
   const { tr, online, forcedOffline, pending } = useApp();
+  const link = useLinkSpeed();
   const text = !online
     ? tr(forcedOffline ? "status.offline_forced" : "status.offline")
     : pending > 0
       ? tr("status.waiting", { n: pending })
       : tr("status.online");
+  const icon = !online ? "cloudoff" : pending > 0 ? "upload" : "cloud";
+  const showLink = online && link !== null;
   return (
-    <p className={online ? "status" : "status status-off"} role="status" data-testid="status">
-      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-        {online ? <circle cx="7" cy="7" r="5" fill="currentColor" /> : <rect x="2" y="2" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2" />}
-      </svg>
-      <span>{text}</span>
+    <p className={`${online ? "status" : "status status-off"}${showLink ? " status-has-link" : ""}`} role="status" data-testid="status" title={showLink ? tr("status.speed_note") : undefined}>
+      <Icon name={icon} size={18} />
+      <span className="status-word">{text}</span>
+      {showLink ? (
+        <span className="status-link" data-testid="status-speed">
+          <Icon name="signal" size={16} />
+          <span>
+            <span className="status-word">{tr(`status.signal_${link.signal}` as "status.signal_good")} · </span>
+            {tr("status.mbps", { n: link.mbps })}
+          </span>
+        </span>
+      ) : null}
+    </p>
+  );
+}
+
+/** Says what still works with no signal, in her language, under the header. */
+export function OfflineNote() {
+  const { tr, online } = useApp();
+  if (online) return null;
+  return (
+    <p className="offline-note" role="note" data-testid="offline-note">
+      <Icon name="info" size={20} />
+      <span>{tr("status.offline_note")}</span>
     </p>
   );
 }

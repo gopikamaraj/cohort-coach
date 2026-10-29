@@ -1,0 +1,827 @@
+[
+ {
+  "id": "j01",
+  "text": {
+   "en": "Who is the user?"
+  },
+  "screens": [
+   "landing",
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E1.1",
+   "E2.3"
+  ],
+  "steps": [
+   1
+  ],
+  "query": "who is the user teacher grade 3 primary"
+ },
+ {
+  "id": "j02",
+  "text": {
+   "en": "What is real and what is simulated?"
+  },
+  "screens": [
+   "landing",
+   "any"
+  ],
+  "criteria": [
+   "efficacy",
+   "ai"
+  ],
+  "rubric_rows": [
+   "E1.1",
+   "E1.2",
+   "E1.5",
+   "I1.1"
+  ],
+  "steps": [
+   1,
+   9
+  ],
+  "query": "what is real and what is simulated"
+ },
+ {
+  "id": "j03",
+  "text": {
+   "en": "Where is AI used?"
+  },
+  "screens": [
+   "aimap",
+   "any"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A1.1",
+   "A1.2"
+  ],
+  "steps": [
+   5
+  ],
+  "query": "where AI is used calls registry layers"
+ },
+ {
+  "id": "j04",
+  "text": {
+   "en": "How are wrong outputs stopped?"
+  },
+  "screens": [
+   "aimap",
+   "practice"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A2.1",
+   "A2.2",
+   "A2.3",
+   "E4.3"
+  ],
+  "steps": [
+   4,
+   5
+  ],
+  "query": "how are wrong outputs stopped gates guardrails"
+ },
+ {
+  "id": "j05",
+  "text": {
+   "en": "How does it work offline?"
+  },
+  "screens": [
+   "check",
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E3.1",
+   "E3.2"
+  ],
+  "steps": [
+   7
+  ],
+  "query": "how does it work offline queue results"
+ },
+ {
+  "id": "j06",
+  "text": {
+   "en": "What does it cost per teacher?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai",
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "A1.4"
+  ],
+  "steps": [],
+  "query": "cost per teacher per track cents"
+ },
+ {
+  "id": "j07",
+  "text": {
+   "en": "How was it evaluated?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "E4.3",
+   "I1.1",
+   "I1.2",
+   "A3.2"
+  ],
+  "steps": [],
+  "query": "how was it evaluated evals results bars"
+ },
+ {
+  "id": "j08",
+  "text": {
+   "en": "What did the education mentor say, and what changed?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E4.2"
+  ],
+  "steps": [],
+  "query": "feedback user testing you said we changed"
+ },
+ {
+  "id": "j09",
+  "text": {
+   "en": "Where is the code for this screen?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy",
+   "ai"
+  ],
+  "rubric_rows": [
+   "E2.2",
+   "I1.1"
+  ],
+  "steps": [
+   3,
+   4
+  ],
+  "query": "where is the code for this screen"
+ },
+ {
+  "id": "j10",
+  "text": {
+   "en": "How does the Practice Class work, and is it proven?"
+  },
+  "screens": [
+   "practice"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "I1.1"
+  ],
+  "steps": [
+   4
+  ],
+  "query": "practice class simulated children hypothesis"
+ },
+ {
+  "id": "j11",
+  "text": {
+   "en": "How does the app read answer sheets?"
+  },
+  "screens": [
+   "check",
+   "tour"
+  ],
+  "criteria": [
+   "innovation",
+   "ai"
+  ],
+  "rubric_rows": [
+   "I1.2"
+  ],
+  "steps": [
+   2
+  ],
+  "query": "read answer sheets photo digits blind"
+ },
+ {
+  "id": "j12",
+  "text": {
+   "en": "What is the stage of breakdown?"
+  },
+  "screens": [
+   "tour",
+   "cards"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "I1.3"
+  ],
+  "steps": [
+   2
+  ],
+  "query": "stage of breakdown most likely input core output"
+ },
+ {
+  "id": "j13",
+  "text": {
+   "en": "Can I watch an AI teacher run a session?"
+  },
+  "screens": [
+   "practice",
+   "watch"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "I1.4"
+  ],
+  "steps": [],
+  "query": "watch a rehearsal demo teacher AI label"
+ },
+ {
+  "id": "j14",
+  "text": {
+   "en": "How are mentors chosen?"
+  },
+  "screens": [
+   "cohort",
+   "any"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "I2.1"
+  ],
+  "steps": [],
+  "query": "how are mentors chosen proven candidate"
+ },
+ {
+  "id": "j15",
+  "text": {
+   "en": "How is the cohort chat kept safe?"
+  },
+  "screens": [
+   "cohort"
+  ],
+  "criteria": [
+   "innovation",
+   "ai"
+  ],
+  "rubric_rows": [
+   "I2.2",
+   "I2.3"
+  ],
+  "steps": [],
+  "query": "cohort chat moderated pseudonymous child name refused"
+ },
+ {
+  "id": "j16",
+  "text": {
+   "en": "How are the pictures made?"
+  },
+  "screens": [
+   "practice"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "I2.4"
+  ],
+  "steps": [
+   4
+  ],
+  "query": "pictures drawn by code sprites layout count"
+ },
+ {
+  "id": "j17",
+  "text": {
+   "en": "What makes this different from a training app?"
+  },
+  "screens": [
+   "landing",
+   "any"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "E1.1",
+   "I2.1",
+   "I1.1"
+  ],
+  "steps": [],
+  "query": "what makes this different grouping by error cohort mentor"
+ },
+ {
+  "id": "j18",
+  "text": {
+   "en": "How does the AI map work?"
+  },
+  "screens": [
+   "aimap"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A1.1"
+  ],
+  "steps": [
+   5
+  ],
+  "query": "AI map calls five layers"
+ },
+ {
+  "id": "j19",
+  "text": {
+   "en": "Which model does each call use, and why?"
+  },
+  "screens": [
+   "aimap",
+   "audit"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A1.2"
+  ],
+  "steps": [
+   5
+  ],
+  "query": "which model each call uses tiering effort caching"
+ },
+ {
+  "id": "j20",
+  "text": {
+   "en": "How are lessons drafted?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A1.3",
+   "A2.3"
+  ],
+  "steps": [
+   6
+  ],
+  "query": "how are lessons drafted slots checked"
+ },
+ {
+  "id": "j21",
+  "text": {
+   "en": "Who approves AI-written content?"
+  },
+  "screens": [
+   "review"
+  ],
+  "criteria": [
+   "ai",
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "A2.3"
+  ],
+  "steps": [
+   6
+  ],
+  "query": "who approves AI written content two keys coach officer"
+ },
+ {
+  "id": "j22",
+  "text": {
+   "en": "Does the AI ever compute a number?"
+  },
+  "screens": [
+   "practice",
+   "cards"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A2.2"
+  ],
+  "steps": [
+   3,
+   4
+  ],
+  "query": "does the AI compute a number code computes slots"
+ },
+ {
+  "id": "j23",
+  "text": {
+   "en": "How is children's privacy protected?"
+  },
+  "screens": [
+   "check",
+   "any"
+  ],
+  "criteria": [
+   "ai",
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "A2.4"
+  ],
+  "steps": [
+   2
+  ],
+  "query": "children privacy no names photos deleted"
+ },
+ {
+  "id": "j24",
+  "text": {
+   "en": "What does the audit trail record?"
+  },
+  "screens": [
+   "audit"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A2.5"
+  ],
+  "steps": [
+   5
+  ],
+  "query": "audit trail metadata only"
+ },
+ {
+  "id": "j25",
+  "text": {
+   "en": "Is it deployed, and can it stay up?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A3.1"
+  ],
+  "steps": [],
+  "query": "deployed google cloud always on cold start"
+ },
+ {
+  "id": "j26",
+  "text": {
+   "en": "How fast is a Practice Class turn?"
+  },
+  "screens": [
+   "practice"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A3.2"
+  ],
+  "steps": [
+   4
+  ],
+  "query": "practice class turn latency target"
+ },
+ {
+  "id": "j27",
+  "text": {
+   "en": "Has it been tested on a low-end phone and Slow 3G?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai",
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "A3.3",
+   "E3.1"
+  ],
+  "steps": [],
+  "query": "tested low end phone slow 3G"
+ },
+ {
+  "id": "j28",
+  "text": {
+   "en": "Does WhatsApp work?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai",
+   "roadmap"
+  ],
+  "rubric_rows": [
+   "A3.4",
+   "E3.4"
+  ],
+  "steps": [],
+  "query": "whatsapp channel stub"
+ },
+ {
+  "id": "j29",
+  "text": {
+   "en": "What is on the roadmap?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "roadmap"
+  ],
+  "rubric_rows": [
+   "R1.1",
+   "R1.2",
+   "R1.3"
+  ],
+  "steps": [],
+  "query": "roadmap next pilot DIET WhatsApp literacy"
+ },
+ {
+  "id": "j30",
+  "text": {
+   "en": "Can it go beyond Grade 3 maths?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "roadmap"
+  ],
+  "rubric_rows": [
+   "R1.2"
+  ],
+  "steps": [],
+  "query": "beyond grade 3 maths topic packs"
+ },
+ {
+  "id": "j31",
+  "text": {
+   "en": "How does it fit existing systems?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "roadmap"
+  ],
+  "rubric_rows": [
+   "R1.3"
+  ],
+  "steps": [],
+  "query": "integration UDISE state assessment training records"
+ },
+ {
+  "id": "j32",
+  "text": {
+   "en": "Is the interface easy for a teacher with little digital experience?"
+  },
+  "screens": [
+   "landing",
+   "home"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E2.1",
+   "E2.2",
+   "E2.5"
+  ],
+  "steps": [
+   8
+  ],
+  "query": "intuitive interface languages large targets install guide"
+ },
+ {
+  "id": "j33",
+  "text": {
+   "en": "How does the app help a teacher on a weak phone?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E3.2",
+   "E3.3",
+   "E3.1"
+  ],
+  "steps": [],
+  "query": "weak phone data budget voice text fallback"
+ },
+ {
+  "id": "j34",
+  "text": {
+   "en": "Does it work in Telegram?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E3.4"
+  ],
+  "steps": [],
+  "query": "telegram bot lessons two taps"
+ },
+ {
+  "id": "j35",
+  "text": {
+   "en": "How was it tested with users?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E4.1",
+   "E4.2"
+  ],
+  "steps": [],
+  "query": "tested with users browser crawl feedback rounds"
+ },
+ {
+  "id": "j36",
+  "text": {
+   "en": "Is the pilot real?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E1.3",
+   "E1.5"
+  ],
+  "steps": [],
+  "query": "is the pilot real upload sheets approve audio"
+ },
+ {
+  "id": "j37",
+  "text": {
+   "en": "How does the impact get measured?"
+  },
+  "screens": [
+   "officer"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E1.2",
+   "E1.5"
+  ],
+  "steps": [
+   6
+  ],
+  "query": "impact measured verdict comparison group interval"
+ },
+ {
+  "id": "j38",
+  "text": {
+   "en": "How much of a teacher's time does it take?"
+  },
+  "screens": [
+   "programme",
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E1.4"
+  ],
+  "steps": [],
+  "query": "teacher time twenty minutes a week"
+ },
+ {
+  "id": "j39",
+  "text": {
+   "en": "Does this assistant know only what it should?"
+  },
+  "screens": [
+   "assistant"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "AS.1",
+   "AS.4"
+  ],
+  "steps": [
+   9
+  ],
+  "query": "assistant scope role leak read-only"
+ },
+ {
+  "id": "j40",
+  "text": {
+   "en": "What can this assistant not do yet?"
+  },
+  "screens": [
+   "assistant"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "AS.3",
+   "AS.4",
+   "AS.5",
+   "AS.6"
+  ],
+  "steps": [
+   9
+  ],
+  "query": "assistant cannot do data tools live model"
+ },
+ {
+  "id": "j41",
+  "text": {
+   "en": "How is the app's look kept consistent and easy to change?"
+  },
+  "screens": [
+   "any",
+   "landing"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E2.4",
+   "E2.5"
+  ],
+  "steps": [
+   8
+  ],
+  "query": "look consistent theme tokens easy to change Material"
+ },
+ {
+  "id": "j42",
+  "text": {
+   "en": "How does this guide cite its answers and say how to check them?"
+  },
+  "screens": [
+   "assistant"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "AS.2",
+   "AS.1"
+  ],
+  "steps": [
+   9
+  ],
+  "query": "guide cites answers status slide video how to check"
+ }
+]

@@ -33,6 +33,7 @@ FALLBACKS: dict[int, str] = {
     11: "no draft: nothing is shown; the author is told which rule failed",
     12: "class unclear: no draft is made and a person answers",
     13: "no draft: the mentor or coach answers without one",
+    14: "an extract from the retrieved passages, or no answer and where to look",
 }
 
 

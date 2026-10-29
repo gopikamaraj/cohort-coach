@@ -1,9 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { API_BASE } from "./lib/api";
+import "./lib/install"; // listens from the first moment: the browser offers installing only once, early
 import { installMeter } from "./lib/meter";
 import { detectPilot } from "./pilot/mode";
+import "./theme.css"; // the look: every colour, corner and size (docs/design-system.md)
 import "./styles.css";
+
+document.documentElement.dataset["theme"] = (import.meta.env["VITE_THEME"] as string | undefined) ?? "m3";
 
 installMeter(API_BASE);
 
