@@ -51,11 +51,10 @@ def _hit(token: str, name: str, script: str) -> bool:
     return token == name
 
 
-def check_thread_post(text: str, language: str) -> list[Violation]:
-    """Violations that stop a post; an empty list means it may be posted."""
+def check_personal(text: str) -> list[Violation]:
+    """Personal data in text: phone, email, ID number, roll number, a relative of a child, or a
+    first name from the list. Used by the posting check and on what the chat drafts."""
     out: list[Violation] = []
-    if len(text) > MAX_CHARS:
-        out.append(Violation("too_long", f"{len(text)} characters, limit {MAX_CHARS}"))
     out.extend(check_pii(text))
     if _ROLL.search(text):
         out.append(Violation("roll_number", "a roll-number phrase"))
@@ -64,6 +63,15 @@ def check_thread_post(text: str, language: str) -> list[Violation]:
     toks = tokens(text)
     if any(_hit(t, n, script) for t in toks for n, script in _names()):
         out.append(Violation("child_name", "a first name from the list"))
+    return out
+
+
+def check_thread_post(text: str, language: str) -> list[Violation]:
+    """Violations that stop a post; an empty list means it may be posted."""
+    out: list[Violation] = []
+    if len(text) > MAX_CHARS:
+        out.append(Violation("too_long", f"{len(text)} characters, limit {MAX_CHARS}"))
+    out.extend(check_personal(text))
     out.extend(check_prefilter(text, language, max_chars=MAX_CHARS))
     seen: set[str] = set()
     unique: list[Violation] = []

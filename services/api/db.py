@@ -587,3 +587,91 @@ class MentorItem(Base):
     in_use_version_id: Mapped[str | None] = mapped_column(String(40))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ChatThread(Base):
+    """One teacher's private question thread inside a cohort: she, the cohort's mentors and its
+    coach. Not the shared cohort thread. The teacher id is never returned by any API."""
+
+    __tablename__ = "chat_threads"
+    __table_args__ = (UniqueConstraint("cohort_id", "teacher_id"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), index=True)
+    teacher_id: Mapped[str] = mapped_column(String(18))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ChatMessage(Base):
+    """A question, an answer or a correction. The body holds masked text only (names, roll numbers
+    and phone numbers are replaced when the question is posted) and is emptied by retention."""
+
+    __tablename__ = "chat_messages"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    thread_id: Mapped[str] = mapped_column(ForeignKey("chat_threads.id"), index=True)
+    cohort_id: Mapped[str] = mapped_column(String(40), index=True)
+    reply_to: Mapped[str | None] = mapped_column(String(32), index=True)
+    kind: Mapped[str] = mapped_column(String(10))  # question | answer | correction
+    author_role: Mapped[str] = mapped_column(String(8))  # teacher | mentor | coach | ai
+    author_label: Mapped[str] = mapped_column(String(24))  # "Teacher 3", "Mentor", "Coach", "AI"
+    body: Mapped[str | None] = mapped_column(Text)
+    language: Mapped[str] = mapped_column(String(4), default="en")
+    # question: pending | ai_draft_ready | answered_by_human | ai_sent | corrected
+    # answer or correction: sent (an AI answer is ai_sent, then corrected)
+    status: Mapped[str] = mapped_column(String(18), default="pending", index=True)
+    ai_assisted: Mapped[bool] = mapped_column(Boolean, default=False)
+    ai_consent: Mapped[bool] = mapped_column(Boolean, default=False)
+    question_class: Mapped[str | None] = mapped_column(String(24))
+    flag: Mapped[str | None] = mapped_column(String(16))  # safety
+    escalated: Mapped[bool] = mapped_column(Boolean, default=False)
+    alert_reason: Mapped[str | None] = mapped_column(String(30))
+    alerted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    ai_due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    seen: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class AiReplyDraft(Base):
+    """The AI's draft for one question, with the approved sources it cited and what the checks
+    found. It reaches the teacher only through a person, or through the auto-send gates."""
+
+    __tablename__ = "ai_reply_drafts"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    message_id: Mapped[str] = mapped_column(ForeignKey("chat_messages.id"), unique=True)
+    draft_text: Mapped[str | None] = mapped_column(Text)
+    sources: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    question_class: Mapped[str | None] = mapped_column(String(24))
+    checker_result: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    model: Mapped[str | None] = mapped_column(String(40))
+    tokens_in: Mapped[int] = mapped_column(Integer, default=0)
+    tokens_out: Mapped[int] = mapped_column(Integer, default=0)
+    # drafted | sent_as_is | edited_and_sent | discarded | auto_sent
+    status: Mapped[str] = mapped_column(String(16), default="drafted")
+    edited_text: Mapped[str | None] = mapped_column(Text)
+    edit_reason_tags: Mapped[list[str]] = mapped_column(JSON, default=list)
+    decided_by: Mapped[str | None] = mapped_column(String(40))
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    quality: Mapped[str | None] = mapped_column(String(8))  # good | not_good
+    no_reply_reason: Mapped[str | None] = mapped_column(String(60))
+    held_codes: Mapped[list[str]] = mapped_column(JSON, default=list)
+    ai_call_id: Mapped[int | None] = mapped_column(Integer)
+    reply_message_id: Mapped[str | None] = mapped_column(String(32))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ChatConfig(Base):
+    """The coach's settings for how long a question waits for a person, and whether the AI may
+    answer when nobody does. `global` is the default; a cohort's own row beats it."""
+
+    __tablename__ = "chat_config"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True)  # "global" or a cohort id
+    scope: Mapped[str] = mapped_column(String(8))
+    cohort_id: Mapped[str | None] = mapped_column(String(40))
+    ai_timeout_hours: Mapped[int] = mapped_column(Integer, default=24)
+    ai_auto_send_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    set_by: Mapped[str] = mapped_column(String(40))
+    set_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)

@@ -163,3 +163,33 @@ class SpriteItemDraft(BaseModel):
     topics: list[str] = Field(max_length=6)
     parts: list[SpritePart] = Field(max_length=14)
     note: str = Field(default="", max_length=200)
+
+
+ChatClassLabel = Literal[
+    "content_question",
+    "child_specific",
+    "safety_or_welfare",
+    "discipline_or_personal",
+    "off_topic",
+    "unclear",
+]
+
+
+class ChatClass(BaseModel):
+    """Call 12: what kind of question a teacher asked her mentor. Low confidence means unclear."""
+
+    label: ChatClassLabel
+    confidence: float = Field(ge=0.0, le=1.0)
+
+
+class ChatCitation(BaseModel):
+    source_id: str = Field(max_length=40)
+    quote: str = Field(max_length=300)  # a verbatim sentence or phrase from that source
+
+
+class ChatReply(BaseModel):
+    """Call 13: a short reply from approved sources only, or no answer and why."""
+
+    answer: str | None = Field(default=None, max_length=1500)
+    no_answer_reason: str | None = Field(default=None, max_length=200)
+    citations: list[ChatCitation] = Field(default_factory=list, max_length=6)

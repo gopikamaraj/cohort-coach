@@ -33,6 +33,7 @@ class ContentType(StrEnum):
     METHOD_CARD = "method_card"
     TRACK_DRAFT = "track_draft"
     DIGEST = "digest"
+    CHAT_REPLY = "chat_reply"  # a draft answer to a teacher's question (CHAT-AI)
 
 
 # Track content and method cards also need human approval (reviewer, then mentor).
@@ -43,6 +44,7 @@ AUDIENCE = {
     ContentType.METHOD_CARD: "teacher",
     ContentType.TRACK_DRAFT: "teacher",
     ContentType.DIGEST: "teacher",
+    ContentType.CHAT_REPLY: "teacher",
 }
 CHILD_LINE_MAX_WORDS = 30
 
@@ -80,6 +82,8 @@ class GateInput:
     # through slots, and no Form A or Form B item may appear. Pilot scripts are built by code from
     # real counts and leave this off.
     slots_mode: bool = False
+    # A chat reply: no slots, but no class numbers or percentages and no Form A or B item either.
+    chat_mode: bool = False
 
 
 @dataclass
@@ -102,6 +106,9 @@ def gate1(inp: GateInput) -> list[ValidatorResult]:
     results: list[ValidatorResult] = []
     child = inp.content_type is ContentType.CHILD_LINE
     raw_text = inp.text
+    if inp.chat_mode:
+        results.append(ValidatorResult("class_numbers", tuple(literal_class_counts(raw_text))))
+        results.append(ValidatorResult("check_items", tuple(check_items(raw_text))))
     if inp.slots_mode:
         results.append(ValidatorResult("slots", tuple(check_slots(raw_text))))
         results.append(ValidatorResult("class_numbers", tuple(literal_class_counts(raw_text))))

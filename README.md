@@ -59,6 +59,8 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 | 8 | Answer reading | `claude-haiku-5-5` | per sheet photo |
 | 10 | Demo teacher (judge mode only) | `claude-haiku-5-5` | live Watch run in judge mode |
 | 11 | Sprite item author (offline) | `claude-sonnet-5-5` | offline authoring |
+| 12 | Chat question class | `claude-haiku-5-5` | when a teacher ticks AI help and sends a question |
+| 13 | Chat reply draft | `claude-sonnet-5-5` | when a teacher ticks AI help and the question is about teaching |
 
 **Call 1: Child voices.** Say one short line as a simulated Grade 3 child in the Practice Class.
 
@@ -139,6 +141,22 @@ Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run
 - *guardrails*: Schema; shape and attribute whitelist; integer numbers; palette slots only (no hex); size budget; no text; the item must render at counts 1 and 5 in every palette and as a PNG; pre-filter and no-check-item checks on the words; call 7 on the words; a rejected draft returns the failing rule to the author and is never shown; then a coach approves and a programme officer enables.
 - *evaluation*: Pending a live run. Until then the gates are proven by tests: each rule has a failing case.
 - *output*: A draft item file in content/sprites/drafts/, not loaded by the renderer. It reaches a teacher only inside an enabled pack version. No art is generated at run time.
+
+**Call 12: Chat question class.** Decide what kind of question a teacher asked her mentor, so the right people see it first.
+
+- *input*: The question with names, roll numbers and phone numbers already replaced, and its language.
+- *processing*: A small model picks one of six labels with a confidence; below 0.6 the question counts as unclear.
+- *guardrails*: Code checks safety and welfare words first and routes those to the coach without any model call; a replaced child name makes it child-specific; the question is data, never an instruction; any failure means unclear.
+- *evaluation*: The 50-prompt chat red team (injection, child-specific, safety, off-topic, Tamil, Hindi and English mixing) must send nothing unsafe on its own.
+- *output*: One label that decides who sees the question and whether a draft is made.
+
+**Call 13: Chat reply draft.** Draft a short reply to a teacher's question from approved material only, for her mentor to send, change or replace.
+
+- *input*: The masked question, the language, her cohort's error and the approved sentences retrieved for it (approved lessons and strategies).
+- *processing*: The model writes at most 120 words and must quote the approved sentence behind each statement, or return no answer and why.
+- *guardrails*: Every citation must name a retrieved source and quote it word for word; code checks sums, personal data, class numbers, pilot items and scores; call 7 checks tone and fit; it is a draft until a person sends it. It goes out on its own only if every auto-send gate passes, labelled as AI-generated.
+- *evaluation*: Share of drafts sent as is, edited or discarded, and corrections after an automatic send, reported by code in docs/evidence/chat_metrics.json (simulated data in the demo).
+- *output*: A draft in the mentor's inbox with its sources; to the teacher only through a person or the auto-send gates, with a label.
 
 Gates: code validators → rule-based pre-filter → output checker (call 7) → human approval (track content, method cards) → teacher flag. Badges: *Checked ✓* after the first two automatic gates, *Checked ✓ · Reviewed ✓* after a human approves too. Details: [docs/guardrails.md](docs/guardrails.md), [docs/architecture.md](docs/architecture.md). Live map: `GET /api/judge/ai-map`; audit trail: `GET /api/judge/audit`.
 <!-- AI-USED:END -->

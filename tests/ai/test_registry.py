@@ -9,7 +9,7 @@ from ai.registry import BY_ID, CALLS, LAYERS, get_call
 
 
 def test_registry_lists_all_eight_calls_with_all_five_layers() -> None:
-    assert [c.id for c in CALLS] == [1, 2, 3, 4, 5, 6, 7, 8, 10, 11]
+    assert [c.id for c in CALLS] == [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13]
     for call in CALLS:
         for layer in LAYERS:
             assert len(call.layers[layer]) > 20, (call.key, layer)

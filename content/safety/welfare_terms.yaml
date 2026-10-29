@@ -1,0 +1,32 @@
+# Words that route a teacher's question to a person before any model sees it (the chat, CHAT-AI).
+# safety: a child may be hurt, afraid, hungry or in danger: the coach is told, nothing is drafted.
+# discipline: a child's behaviour or the teacher's own work life: a draft may be made for the
+# mentor only and is never sent on its own.
+# Matching is by whole word (Tamil: the word plus an ending) or, for entries with a space, by
+# phrase. These lists are a first draft and err towards sending a question to a person.
+# TODO-HUMAN(Shivani, Seema): read and extend these in Hindi and Tamil with someone who knows how
+# teachers write about a child in trouble. Words like "stick" and "scared" are left out on purpose:
+# bundles of sticks are how we teach, and a child scared of maths is not a welfare case.
+safety:
+  en: [hit, hits, hitting, beat, beats, beating, beaten, abuse, abused, abusing, hurt, hurts,
+    hurting, bleeding, blood, injured, injury, faint, fainted, unconscious, starving, starve,
+    hungry, bruise, bruises, bruised, molest, molested, assault, assaulted, harass, harassed,
+    harassment, suicide, suicidal, violence, violent, trafficked, trafficking, kidnapped,
+    "not eating", "does not eat", "no food", "kill himself", "kill herself", "self harm",
+    "run away", "ran away", "child labour", "touches her", "touched her", "touches him",
+    "afraid to go home", "afraid of his father", "afraid of her father"]
+  hi: [मारना, मारता, मारती, मारा, पीटा, पिटाई, पीटता, चोट, खून, बेहोश, भूखा, भूखी, भूखे, दुर्व्यवहार,
+    शोषण, यौन, छेड़छाड़, आत्महत्या, हिंसा, तस्करी, अपहरण, "बाल मजदूरी", "घर से भाग", "खाना नहीं खाता",
+    "खाना नहीं खाती", "डर के मारे घर"]
+  ta: [அடிக்கிறார், அடித்தார், அடிக்கிறாங்க, துன்புறுத்தல், துன்புறுத்தப்பட, வன்முறை, பசி, பசியால்,
+    இரத்தம், ரத்தம், மயக்கம், மயங்கி, காயம், தற்கொலை, பாலியல், கடத்தல், "குழந்தைத் தொழிலாளர்",
+    "வீட்டை விட்டு ஓடி", "சாப்பிடுவதில்லை"]
+discipline:
+  en: [punish, punished, punishment, scold, scolded, scolding, slap, slapped, cane, caned,
+    naughty, misbehave, misbehaves, misbehaving, rude, disrespect, disrespectful, bully, bullying,
+    bullied, fight, fights, fighting, lazy, salary, transfer, promotion, leave, resign, complaint,
+    complain, headmaster, principal, husband, "talks back", "my job", "my boss"]
+  hi: [सज़ा, सजा, डाँट, डांट, डांटना, थप्पड़, शरारती, बदतमीज़, बदतमीजी, झगड़ा, झगड़ता, आलसी, तनख्वाह,
+    वेतन, तबादला, छुट्टी, इस्तीफ़ा, शिकायत, प्रिंसिपल, हेडमास्टर, "मेरी नौकरी"]
+  ta: [தண்டனை, திட்டு, திட்டினேன், குறும்பு, சண்டை, சோம்பேறி, சம்பளம், இடமாற்றம், விடுமுறை,
+    புகார், தலைமையாசிரியர், "என் வேலை"]
