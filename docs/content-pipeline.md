@@ -49,4 +49,15 @@ Held drafts are not lost: they sit in the queue as `held_by_checker`, and a coac
 
 ## Not built (cut up front)
 
-Tamil lessons (the track file declares `ta` but nothing is drafted), the citations pass 2 ("why this move" lines with citations), stage routines, and a live Message Batches run (the request builder is built and tested on recorded data). The model run (T12) is in `docs/build/tasks/P09.md`.
+Tamil lessons (the track file declares `ta` but nothing is drafted), the citations pass 2 ("why this move" lines with citations), stage routines, and a live Message Batches run (the request builder is built and tested on recorded data). The model run (T12) was built on 29 Oct; see "The model run" below.
+
+## The model run
+
+`services/content/model_run.py`. About three minutes of the track's move done well, with the same five simulated children, for a teacher to hear before she rehearses.
+
+1. **Render.** From an *approved* model-lesson script only. The teacher's lines are the script's teacher lines (slots filled with the engine's worked example, tags stripped), nothing else. The move for each line is assigned by code from the track's strategy order (pose the problem, the strategies, praise), and the Practice Class engine and call 1 answer as the children, so every number a child says is the engine's. A fixed seed freezes it.
+2. **Review.** It becomes a review item of type `model_run`; the coach approves or returns it (gate 3, audited). The same script version is never rendered twice: a new render needs a new approved script version.
+3. **Voice.** Only after approval, once: an adult voice (`ritu`) for the teacher and each child's own stock voice, joined as OGG/Opus mono at 16 kbps (12 kbps if it would pass 0.35 MB per three minutes). The file is named by a hash of its words and voices.
+4. **Publish.** The track manifest lists it as a `model_run` part with a caption that says simulated.
+
+Routes (coach renders, approves and returns; officer voices): `/api/review/model-runs`. Not built: a screen for it in the review queue (the routes and tests exist), and a live render with call 1 (the tests use the offline stub client).

@@ -27,7 +27,7 @@ A SUB-SFL track can now go from a model draft to a published manifest: call 5 dr
 | One lesson goes draft, checks, review, approve, audio, manifest, in hi and en | `tests/content/test_publish.py`, `test_review_api.py`, `test_versions.py` (stubbed model and speech) | A version both keys switched on is published, each lesson voiced once per language, manifest complete | 🟡 proven in tests and by the live drafts; **not run on a staging URL** |
 | P3 shows the automated check results; a rejected example appears in the next call 7 prompt | `apps/pwa/e2e/review-queue.spec.ts` (API mocked), `tests/content/test_rejection_loop.py` | Checks shown per item; promote moves a rejection into the next call 7 system prompt; the audit row records the example-set version | ✅ |
 | Audio at most about 0.6 MB per 5 minutes | `tests/content/test_publish.py` (real ffmpeg OGG/Opus at 16 kbps) | Under 600 KB per 5 minutes | ✅ |
-| The SUB-SFL model run goes render, review, approve, audio, manifest, at about 0.35 MB | none | T12 not started | ❌ cut (last on the phase's own list; P10 to P16 are untouched with 4 days left) |
+| The SUB-SFL model run goes render, review, approve, audio, manifest, at about 0.35 MB | `tests/content/test_model_run.py`, an API test, real ffmpeg size test | built 29 Oct: render, review, approve, voice, manifest; under 350 KB per 3 minutes. Voiced and listened to live: not yet; hi and en use the stub children until a live render | 🟡 |
 
 ## Tests and evals
 

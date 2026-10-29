@@ -33,6 +33,7 @@ class Track:
     lessons: tuple[Lesson, ...]
     model_strategies: tuple[str, ...]
     model_minutes: int
+    example: tuple[int, int] = (52, 29)
 
 
 @dataclass(frozen=True)
@@ -75,6 +76,7 @@ def load_track(track_id: str) -> Track:
         lessons=lessons,
         model_strategies=tuple(model.get("strategies", ())),
         model_minutes=int(model.get("minutes", 12)),
+        example=(int(raw.get("example", [52, 29])[0]), int(raw.get("example", [52, 29])[1])),
     )
 
 

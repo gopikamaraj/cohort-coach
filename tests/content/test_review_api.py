@@ -313,3 +313,50 @@ def test_a_reject_note_or_a_trimmed_example_with_a_phone_number_is_refused(
 def test_pending_rejections_are_never_committed() -> None:
     root = Path(__file__).resolve().parents[2]
     assert "content/rejections/pending/" in (root / ".gitignore").read_text(encoding="utf-8")
+
+
+def test_a_model_run_is_rendered_approved_and_voiced_over_http(
+    api: tuple[TestClient, Session], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from services.content import model_run
+    from services.pilot.storage import LocalBlobStore, get_audio_store
+    from services.practice.stub_client import StubClient
+    from services.speech.service import SpeechService
+    from tests.content.test_model_run import SCRIPT, approved_script, fake_join
+
+    client, db = api
+    monkeypatch.setattr(model_run, "join_to_file", fake_join)
+    app = client.app  # type: ignore[attr-defined]
+    store = LocalBlobStore(b"audio")
+    speech = SpeechService("stub")
+    speech.synthesize = lambda text, lang, voice: b"clip"  # type: ignore[method-assign]
+    app.dependency_overrides[get_audio_store] = lambda: store
+    app.dependency_overrides[practice_api.get_speech] = lambda: speech
+    app.dependency_overrides[practice_api.get_ai_context] = lambda: CallContext(
+        mode="stub", client=StubClient()
+    )
+    script = approved_script(db, SCRIPT)
+    made = client.post(
+        "/api/review/model-runs", json={"source_item_id": script.item_id}, headers=h("coach")
+    )
+    assert made.status_code == 200 and made.json()["simulated"] is True
+    run = made.json()["item_id"]
+    assert (
+        client.post(f"/api/review/model-runs/{run}/voice", headers=h("officer")).status_code == 409
+    )
+    assert (
+        client.post(f"/api/review/model-runs/{run}/approve", headers=h("officer")).status_code
+        == 403
+    )
+    assert (
+        client.post(f"/api/review/model-runs/{run}/approve", headers=h("coach")).status_code == 200
+    )
+    assert client.post(f"/api/review/model-runs/{run}/voice", headers=h("coach")).status_code == 403
+    voiced = client.post(f"/api/review/model-runs/{run}/voice", headers=h("officer"))
+    assert voiced.status_code == 200 and voiced.json()["audio"]["key"] in store.keys()
+    again = client.post(
+        "/api/review/model-runs", json={"source_item_id": script.item_id}, headers=h("coach")
+    )
+    assert again.status_code == 409 and "new approved script version" in again.json()["detail"]
+    listed = client.get("/api/review/model-runs", headers=h("officer")).json()
+    assert [r["item_id"] for r in listed] == [run]

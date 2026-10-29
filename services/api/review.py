@@ -22,7 +22,7 @@ from services.api.db import ContentAudit, ContentVersion
 from services.api.practice import AI_CONTEXT, SPEECH
 from services.api.profiles import SESSION
 from services.api.roles import require
-from services.content import configurable, publish, rejections, review, versions
+from services.content import configurable, model_run, publish, rejections, review, versions
 from services.content.track import load_track
 from services.pilot.storage import BlobStore, get_audio_store
 
@@ -366,3 +366,65 @@ def manifests(version_id: str, _: str = VIEW, db: Session = SESSION) -> list[dic
         ]
         out.append(body)
     return out
+
+
+# ---- the model run (simulated, voiced only after the coach approves it) -----------------------
+
+
+class RenderIn(BaseModel):
+    source_item_id: str = Field(max_length=40)
+    seed: int = Field(default=7, ge=1, le=2**31 - 1)
+
+
+def _run_json(row: Any) -> dict[str, Any]:
+    return {"item_id": row.item_id, "status": row.status, "badge": row.badge, **row.content}
+
+
+@router.get("/model-runs")
+def model_runs(_: str = VIEW, db: Session = SESSION) -> list[dict[str, Any]]:
+    from services.api.db import ReviewItem
+
+    rows = db.execute(
+        select(ReviewItem)
+        .where(ReviewItem.content_type == model_run.CONTENT_TYPE)
+        .order_by(ReviewItem.created_at)
+    ).scalars()
+    return [_run_json(r) for r in rows]
+
+
+@router.post("/model-runs")
+def model_run_render(
+    body: RenderIn, role: str = COACH, db: Session = SESSION, ctx: CallContext = AI_CONTEXT
+) -> dict[str, Any]:
+    """Render a model run from an approved model-lesson script and freeze it for review."""
+    row = _call(
+        model_run.render, db, body.source_item_id, seed=body.seed, context=ctx,
+        actor=_actor(role), role=role,
+    )  # fmt: skip
+    return _run_json(row)
+
+
+@router.post("/model-runs/{item_id}/approve")
+def model_run_approve(item_id: str, role: str = COACH, db: Session = SESSION) -> dict[str, Any]:
+    return _run_json(_call(model_run.approve, db, item_id, _actor(role), role))
+
+
+@router.post("/model-runs/{item_id}/reject")
+def model_run_reject(
+    item_id: str, body: RejectIn, role: str = COACH, db: Session = SESSION
+) -> dict[str, Any]:
+    return _run_json(
+        _call(model_run.reject, db, item_id, _actor(role), role, reason=body.reason, note=body.note)
+    )
+
+
+@router.post("/model-runs/{item_id}/voice")
+def model_run_voice(
+    item_id: str,
+    _: str = OFFICER,
+    db: Session = SESSION,
+    store: BlobStore = AUDIO,
+    speech: Any = SPEECH,
+) -> dict[str, Any]:
+    """Voice an approved run once and publish the file (the officer's step, like publishing)."""
+    return dict(_call(model_run.voice, db, item_id, store=store, speech=speech))

@@ -102,7 +102,7 @@ def encode(clips: list[bytes]) -> tuple[bytes, float]:
     return data, seconds
 
 
-def _checked_text(script: str, values: Mapping[str, str], part: str) -> str:
+def checked_text(script: str, values: Mapping[str, str], part: str) -> str:
     """Fill the slots, check the filled text, and return what is said (tags removed)."""
     try:
         filled = normalise_child_tags(slots.fill(script, values, keep_tags=True))
@@ -151,7 +151,7 @@ def publish_version(
                 "track.error_name": error_name(track.error, language),
                 "track.day": str(day),
             }
-            spoken = _checked_text(
+            spoken = checked_text(
                 str(item.content["script"]), part_values, f"{part_key} ({language})"
             )
             planned.append(
@@ -207,6 +207,35 @@ def publish_version(
                 "sha256": digest,
                 "script": p["text"],
                 "badge": p["item"].badge,
+            }
+        )
+    # the model run, if the coach approved one and it has been voiced: listed, never voiced here
+    scripts = {
+        p["id"]: p for p in parts if p["kind"] == "model_lesson"
+    }  # a run is built from exactly this script version
+    for run in db.execute(
+        select(ReviewItem).where(
+            ReviewItem.content_type == "model_run", ReviewItem.status == "approved"
+        )
+    ).scalars():
+        script = scripts.get(run.content.get("source_item_id"))
+        audio = run.content.get("audio")
+        if script is None or not audio:
+            continue
+        parts.append(
+            {
+                "id": run.item_id,
+                "kind": "model_run",
+                "day": 0,
+                "language": run.language,
+                "audio_key": audio["key"],
+                "mime": audio["mime"],
+                "bytes": audio["bytes"],
+                "seconds": audio["seconds"],
+                "sha256": audio["sha256"],
+                "script": "",
+                "caption": run.content["caption"],
+                "badge": run.badge,
             }
         )
     manifest = {

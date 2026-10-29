@@ -152,7 +152,7 @@ Spec: `docs/design/addendum-v3.1.md`; synthetic sheets: `docs/build/synthetic-sh
 | 2026-10-27 | P12: role assignment (A8), cohort approval screen, visit brief, content library, officer stage view, Advance to Term 2 | Time | PARKING.md |
 | 2026-10-27 | P11: Telegram relay of the thread, voice and notifications, mentor recording flow (M1), call 4, call 6 digest, mentor pages | Time | PARKING.md |
 | 2026-10-27 | P10: call 9 reflection pointer, voice reflections, biweekly prompts, offline lesson replay in the web app, CPD export | Time; the phase's own "If behind" list | PARKING.md |
-| 2026-10-27 | P09: model run (T12), Tamil lessons, citations pass 2, stage routines F-e, a live Batches run | Time: P09 started 26 Oct; P10 to P16 untouched | PARKING.md |
+| 2026-10-27 | P09: Tamil lessons, citations pass 2, stage routines F-e, a live Batches run | Time: P09 started 26 Oct; P10 to P16 untouched | PARKING.md |
 
 ## Browser QA (27 Oct)
 

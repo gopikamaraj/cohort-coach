@@ -27,7 +27,7 @@ The tray materials, item pictures, mats and avatars for the Practice Class are n
 | 2026-10-27 | Tamil lessons for SUB-SFL v1 (the track declares `ta`; nothing is drafted) | P09 cut up front, 5 days to submission | Gopi |
 | 2026-10-27 | Citations pass 2 for call 5 ("Why this move" lines with page citations from the evidence digest, C5-2 to C5-4) | P09 cut up front | Gopi |
 | 2026-10-27 | Stage routines F-e (a routine of at most 60 s per lesson when a stage affects 25% of children checked) | P09 cut list | Seema |
-| 2026-10-27 | SUB-SFL model run (T12): render, review, approve, voice, manifest, at most about 0.35 MB per 3 minutes | P09 cut: attempted last, no time; P10 to P16 untouched | Gopi |
+| 2026-10-27 (built 29 Oct) | SUB-SFL model run (T12): render, review, approve, voice, manifest, at most about 0.35 MB per 3 minutes | P09 cut: attempted last, no time; P10 to P16 untouched | Gopi |
 | 2026-10-27 | One live Message Batches run for call 5 (the request builder is built and tested on recorded data) | P09: drafting was run synchronously | Gopi |
 | 2026-10-27 | Call 9 reflection pointer, voice reflections and the biweekly "Still using it?" prompts (P10 cut) | P10 "If behind" list | Gopi |
 | 2026-10-27 | Offline replay of a downloaded lesson in the web app (cache the lesson audio like the pilot's audio) | P10 cut | Gopi **Done 2026-10-27: a Save tap keeps the audio in Cache Storage and it plays with no signal (`apps/pwa/src/lib/lessonAudio.ts`, `e2e/lesson-audio.spec.ts`).** |
