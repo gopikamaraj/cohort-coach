@@ -1,0 +1,470 @@
+{
+  "explanations": {
+    "ADD-NOCARRY": {
+      "first": {
+        "en": "Add with bundles. When ten loose sticks appear, tie them into a new bundle and move it to the tens."
+      },
+      "spot": {
+        "en": "A total that is ten too small, with the right digit in the ones place."
+      },
+      "what": {
+        "en": "When the ones add up to ten or more, the child forgets to carry the ten to the tens column."
+      },
+      "why": {
+        "en": "She adds each column alone and writes down only the ones digit. The extra ten is lost."
+      }
+    },
+    "ADD-WHOLE-ONES": {
+      "first": {
+        "en": "Ask her to add with bundles and loose sticks, then tie ten loose sticks into a bundle before she writes the answer."
+      },
+      "spot": {
+        "en": "A long number made of two sums joined together."
+      },
+      "what": {
+        "en": "The child adds the tens and the ones separately and writes both totals side by side."
+      },
+      "why": {
+        "en": "She is adding correctly column by column but does not yet combine the two totals into one number."
+      }
+    },
+    "PV-HEARD": {
+      "first": {
+        "en": "Build the number with bundles of ten and loose sticks, then write it under the bundles."
+      },
+      "spot": {
+        "en": "A number with too many digits, or a zero in the middle, for a number you dictated."
+      },
+      "what": {
+        "en": "The child writes a number the way it sounds. She writes the tens, then the ones, as two numbers side by side."
+      },
+      "why": {
+        "en": "In speech we say \"forty\" and \"three\" separately. The child writes each part down in full instead of putting the digits in their places."
+      }
+    },
+    "PV-REVERSE": {
+      "first": {
+        "en": "Ask her to build the number with bundles. Count the bundles first, then the loose sticks."
+      },
+      "spot": {
+        "en": "The right digits in the wrong places, such as a number written back to front."
+      },
+      "what": {
+        "en": "The child writes the tens digit and the ones digit the wrong way round."
+      },
+      "why": {
+        "en": "Some number words say the ones first, so the child writes the digits in the order she hears them."
+      }
+    },
+    "SUB-NODEC": {
+      "first": {
+        "en": "Use bundles. Each time a bundle is opened, move one bundle off the tens side before subtracting."
+      },
+      "spot": {
+        "en": "The ones column is right, and the tens column is one too big."
+      },
+      "what": {
+        "en": "The child borrows a ten for the ones column but does not take one away from the tens column."
+      },
+      "why": {
+        "en": "She has learned to add ten to the ones, but the step of reducing the tens digit by one is missing."
+      }
+    },
+    "SUB-SFL": {
+      "first": {
+        "en": "Show the sum with bundles. When there are too few loose sticks, open one bundle and count again."
+      },
+      "spot": {
+        "en": "Every column has an answer, but the answer is bigger than it should be. No column has a borrow mark."
+      },
+      "what": {
+        "en": "In each column the child takes the smaller digit from the larger one, even when the smaller digit is on top."
+      },
+      "why": {
+        "en": "She treats each column on its own and wants a positive answer, so she turns the sum round. She does not yet see that a ten can be opened to make ten more ones."
+      }
+    }
+  },
+  "names": {
+    "ADD-NOCARRY": {
+      "en": "forgetting the carried ten",
+      "hi": "हासिल की दहाई भूल जाना",
+      "ta": "கைமாற்றிய பத்தை விட்டுவிடுதல்"
+    },
+    "PV-HEARD": {
+      "en": "writing a number the way it is said",
+      "hi": "संख्या को जैसे बोला जाता है वैसे लिखना",
+      "ta": "எண்ணைச் சொல்வது போலவே எழுதுதல்"
+    },
+    "PV-REVERSE": {
+      "en": "swapping tens and ones",
+      "hi": "दहाई और इकाई की अदला-बदली",
+      "ta": "பத்து ஒன்று இடம் மாறுதல்"
+    },
+    "SUB-NODEC": {
+      "en": "borrowing a ten but not reducing the tens digit",
+      "hi": "दहाई उधार लेकर दहाई का अंक कम न करना",
+      "ta": "பத்தைக் கடன் வாங்கி பத்தின் இலக்கத்தைக் குறைக்காமல் விடுதல்"
+    },
+    "SUB-SFL": {
+      "en": "taking the smaller digit from the larger",
+      "hi": "हर स्तंभ में छोटे अंक को बड़े में से घटाना",
+      "ta": "ஒவ்வொரு நிரலிலும் சிறிய இலக்கத்தைப் பெரியதிலிருந்து கழித்தல்"
+    }
+  },
+  "pack": {
+    "errors": {
+      "ADD-NOCARRY": {
+        "at_home": {
+          "en": [
+            "Ask a child to count 20 stones in two piles, put them together, and say how many tens and ones."
+          ]
+        },
+        "if_not_improving": {
+          "en": "Practise \"ten ones make one ten\" with sticks alone before any written sum. Then add the written sum afterwards, with the sticks beside it."
+        },
+        "teaching_mistakes": {
+          "en": [
+            "Showing the carry as a small written digit without showing where the ten comes from.",
+            "Only giving sums that carry, so children carry every time."
+          ]
+        },
+        "ten_minute_activity": {
+          "en": "Small group with bundles and loose sticks. Build the first number, add the second number's sticks, and tie ten loose sticks into a bundle before writing the answer. Do four sums that carry and two that do not."
+        },
+        "two_minute_check": {
+          "en": "Give one addition where the ones add to more than ten. Ask the child to add it with bundles and sticks. Notice whether she ties ten loose sticks into a new bundle."
+        }
+      },
+      "PV-HEARD": {
+        "at_home": {
+          "en": [
+            "Ask a child to make a number from sticks or stones in bundles of ten and write it on the ground or a slate.",
+            "Ask her to read a house number or a price aloud and say how many tens and ones it has."
+          ]
+        },
+        "if_not_improving": {
+          "en": "Go back to building and reading two-digit numbers only, and add place-value cards (tens card laid over the ones card) before writing."
+        },
+        "teaching_mistakes": {
+          "en": [
+            "Dictating many numbers fast, so children copy the sound and not the place.",
+            "Marking only the final answer and not asking how the child wrote it."
+          ]
+        },
+        "ten_minute_activity": {
+          "en": "Small group with bundles of ten and loose sticks. Say a number, the group builds it, one child writes it under the sticks, and the group reads the written number back aloud. Do six numbers, two of them with a zero in the ones place."
+        },
+        "two_minute_check": {
+          "en": "Say \"sixty-two\" to three children, one at a time, and ask each to write it. Then ask each to build it with bundles and say how many bundles and loose sticks. Notice who writes 602."
+        }
+      },
+      "PV-REVERSE": {
+        "at_home": {
+          "en": [
+            "Ask a child to find two numbers made from the same two digits and say which is bigger and why."
+          ]
+        },
+        "if_not_improving": {
+          "en": "Spend a week on reading numbers aloud tens first, always with bundles in front of the child, before any writing."
+        },
+        "teaching_mistakes": {
+          "en": [
+            "Reading a number ones-first while writing it tens-first, without saying so."
+          ]
+        },
+        "ten_minute_activity": {
+          "en": "Small group with place-value cards. Build a number with bundles, lay the tens card and the ones card to match, then swap the cards to make the reversed number and compare the two with the sticks."
+        },
+        "two_minute_check": {
+          "en": "Show a number built from 3 bundles and 6 loose sticks. Ask three children to write it. Notice who writes the ones digit first."
+        }
+      },
+      "SUB-NODEC": {
+        "at_home": {
+          "en": [
+            "Ask a child to open one bundle of ten sticks and say how many bundles and how many loose sticks she has now."
+          ]
+        },
+        "if_not_improving": {
+          "en": "Add the check by adding back to every sum, so a missing step shows at once."
+        },
+        "teaching_mistakes": {
+          "en": [
+            "Writing the small \"1\" next to the ones digit but not crossing out the tens digit."
+          ]
+        },
+        "ten_minute_activity": {
+          "en": "Small group with bundles. Every time a bundle is opened, the child moves one bundle from the tens side to the ones side and says \"one ten fewer\". Do four sums, then check each one by adding back."
+        },
+        "two_minute_check": {
+          "en": "Give one subtraction that needs borrowing. Ask the child to show it with bundles and tell you what happens to the tens after she opens a bundle."
+        }
+      },
+      "SUB-SFL": {
+        "at_home": {
+          "en": [
+            "Ask a child to take 8 sticks away from a bundle and 3 loose sticks, and tell how she did it."
+          ]
+        },
+        "if_not_improving": {
+          "en": "Try subtracting in parts or subtracting a nearby ten (see the other strategies), or practise one step at a time - open a bundle, count the ones, count the tens."
+        },
+        "teaching_mistakes": {
+          "en": [
+            "Teaching \"borrow\" as a rule to follow without showing a bundle being opened.",
+            "Giving only sums that need borrowing, so children stop checking whether they need it."
+          ]
+        },
+        "ten_minute_activity": {
+          "en": "Small group with bundles. Build the top number, say \"I need more ones\", open a bundle into ten loose sticks, then take away. The group says each step aloud. Do four sums that need an opened bundle and two that do not."
+        },
+        "two_minute_check": {
+          "en": "Write a subtraction where the ones digit on top is smaller. Ask one child \"is 2 take away 6 the same as 6 take away 2?\" and listen. Then ask her to do the whole sum with bundles."
+        }
+      }
+    },
+    "extra_strategies": {
+      "PV-REVERSE": [
+        {
+          "description": {
+            "en": "Say a number tens first, build it with bundles, then write the tens digit and then the ones digit."
+          },
+          "id": "say_build_write",
+          "label": {
+            "en": "Say it, build it, write it"
+          },
+          "materials": {
+            "en": "Bundles of ten sticks, loose sticks, place-value cards"
+          },
+          "steps": {
+            "en": [
+              "Say the number tens first (\"six tens and one\").",
+              "Build it with bundles and loose sticks.",
+              "Write the tens digit, then the ones digit, under the sticks."
+            ]
+          }
+        }
+      ]
+    },
+    "source": "Written by the build from the strategy library; not yet reviewed by a person",
+    "status": "draft",
+    "strategy_details": {
+      "ask_explain": {
+        "materials": {
+          "en": "None"
+        },
+        "steps": {
+          "en": [
+            "Ask \"How did you get that?\"",
+            "Listen all the way through before saying whether it is right.",
+            "Ask her to show the same step with sticks."
+          ]
+        }
+      },
+      "check_back": {
+        "materials": {
+          "en": "Slate or notebook"
+        },
+        "steps": {
+          "en": [
+            "Add the answer to the number taken away.",
+            "It must give the first number back.",
+            "If it does not, find the step that changed it."
+          ]
+        }
+      },
+      "compensation": {
+        "materials": {
+          "en": "A number line drawn on the ground or slate"
+        },
+        "steps": {
+          "en": [
+            "Choose a number close to a ten.",
+            "Take away the ten, then give back what you took too much."
+          ]
+        }
+      },
+      "decomposition": {
+        "materials": {
+          "en": "Bundles of ten sticks, loose sticks"
+        },
+        "steps": {
+          "en": [
+            "Take away the tens first.",
+            "Take away the ones in two steps, through the next ten.",
+            "Say the whole sum aloud at the end."
+          ]
+        }
+      },
+      "exchange_ten": {
+        "materials": {
+          "en": "Bundles of ten sticks, loose sticks"
+        },
+        "steps": {
+          "en": [
+            "Build the top number.",
+            "Ask \"can I take this many from the loose sticks?\"",
+            "If not, open one bundle into ten loose sticks and count again."
+          ]
+        }
+      },
+      "order_probe": {
+        "materials": {
+          "en": "None"
+        },
+        "steps": {
+          "en": [
+            "Ask one child \"is 2 take away 6 the same as 6 take away 2?\"",
+            "Listen for why. Do not correct her yet."
+          ]
+        }
+      },
+      "show_bundles": {
+        "materials": {
+          "en": "Bundles of ten sticks, loose sticks, a cloth or mat"
+        },
+        "steps": {
+          "en": [
+            "Build the number with bundles and loose sticks.",
+            "Ask the child to say how many tens and how many ones.",
+            "Do the sum with the sticks, then write it."
+          ]
+        }
+      }
+    }
+  },
+  "status": "draft",
+  "strategies": {
+    "ask_explain": {
+      "description": {
+        "en": "The teacher asks \"How did you get that?\" and listens before saying whether it is right."
+      },
+      "fits": [
+        "PV-HEARD",
+        "ADD-NOCARRY",
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "label": {
+        "en": "Ask the child to explain her steps",
+        "hi": "बच्चे से अपने कदम समझाने को कहना",
+        "ta": "குழந்தையிடம் தன் படிகளை விளக்கச் சொல்லுதல்"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "Ask: how did you get 38 for 62 - 29? The child says: 9 minus 2 is 7."
+      ]
+    },
+    "check_back": {
+      "description": {
+        "en": "After a subtraction, add the answer to the smaller number. It must give the bigger number. A dropped borrow shows up at once."
+      },
+      "fits": [
+        "ADD-NOCARRY",
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "label": {
+        "en": "Check by adding back",
+        "hi": "जोड़कर जाँचना",
+        "ta": "கூட்டிச் சரிபார்த்தல்"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "72 - 38 = 34, check: 34 + 38 = 72."
+      ]
+    },
+    "compensation": {
+      "description": {
+        "en": "For a number close to a ten, subtract the ten, then give back what was taken too much."
+      },
+      "fits": [
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "label": {
+        "en": "Subtract a nearby ten, then adjust (compensation)",
+        "hi": "पास की दहाई घटाकर ठीक करना",
+        "ta": "அருகிலுள்ள பத்தைக் கழித்துச் சரிசெய்தல்"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "63 - 29: take away 30 (63 - 30 = 33), then give 1 back, so 63 - 29 = 34."
+      ]
+    },
+    "decomposition": {
+      "description": {
+        "en": "Subtract the tens, then the ones, bridging through a ten, shown with bundles."
+      },
+      "fits": [
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "label": {
+        "en": "Subtract in parts (decomposition)",
+        "hi": "हिस्सों में घटाना",
+        "ta": "பகுதிகளாகக் கழித்தல்"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "63 - 28: take away 2 bundles (63 - 20 = 43), then 8 sticks in two steps: 3 to reach 40, then 5 more, so 63 - 28 = 35."
+      ]
+    },
+    "exchange_ten": {
+      "description": {
+        "en": "When there are not enough loose sticks to take away, the teacher opens one bundle. One bundle fewer, ten more loose sticks."
+      },
+      "fits": [
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "label": {
+        "en": "Open a bundle to get ten loose sticks",
+        "hi": "एक गड्डी खोलकर दस खुली तीलियाँ लेना",
+        "ta": "ஒரு கட்டைப் பிரித்துப் பத்து தனிக்குச்சிகள் எடுத்தல்"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "91 - 56 = 35: 1 loose stick is too few to take 6; open a bundle, now 11 loose sticks and 8 bundles."
+      ]
+    },
+    "order_probe": {
+      "description": {
+        "en": "One question that shows whether a child thinks the smaller digit can be taken from the bigger one in any order. Use it with one child, not the whole class."
+      },
+      "fits": [
+        "SUB-SFL"
+      ],
+      "label": {
+        "en": "Order probe (is 2 - 6 the same as 6 - 2?)",
+        "hi": "क्रम की जाँच (क्या 2 - 6 और 6 - 2 एक ही हैं?)",
+        "ta": "வரிசைச் சோதனை (2 - 6 என்பதும் 6 - 2 என்பதும் ஒன்றா?)"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "Ask: is 2 - 6 the same as 6 - 2? Listen for why."
+      ]
+    },
+    "show_bundles": {
+      "description": {
+        "en": "The teacher builds the number with bundles of ten sticks and loose sticks, so the child sees tens and ones as things she can hold."
+      },
+      "fits": [
+        "PV-HEARD",
+        "ADD-NOCARRY",
+        "SUB-SFL",
+        "SUB-NODEC"
+      ],
+      "label": {
+        "en": "Show it with bundles of ten",
+        "hi": "दस की गड्डियों से दिखाना",
+        "ta": "பத்து கட்டுகளால் காட்டுதல்"
+      },
+      "status": "draft",
+      "worked_examples": [
+        "83 - 47 = 36: 8 bundles and 3 loose sticks; take away 4 bundles and 7 sticks."
+      ]
+    }
+  }
+}

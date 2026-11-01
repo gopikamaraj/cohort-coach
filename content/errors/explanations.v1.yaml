@@ -1,0 +1,63 @@
+# What each error means, in plain words, for a teacher reading her class's result.
+# The worked example is NOT here: the app computes it from the answer key of the class's own
+# question (the engine's bug function wrote the wrong answers), so no number is typed in this file.
+# status: draft until a coach approves it; the app shows a Draft label until then.
+# TODO-HUMAN(Seema): review every line. TODO-HUMAN(Shivani): Hindi. TODO-HUMAN(Gopi): Tamil.
+# Hindi and Tamil text does not exist yet: the app shows English with a note (nothing is machine-translated).
+version: 1
+status: draft
+errors:
+  PV-HEARD:
+    what:
+      en: The child writes a number the way it sounds. She writes the tens, then the ones, as two numbers side by side.
+    why:
+      en: In speech we say "forty" and "three" separately. The child writes each part down in full instead of putting the digits in their places.
+    spot:
+      en: A number with too many digits, or a zero in the middle, for a number you dictated.
+    first:
+      en: Build the number with bundles of ten and loose sticks, then write it under the bundles.
+  PV-REVERSE:
+    what:
+      en: The child writes the tens digit and the ones digit the wrong way round.
+    why:
+      en: Some number words say the ones first, so the child writes the digits in the order she hears them.
+    spot:
+      en: The right digits in the wrong places, such as a number written back to front.
+    first:
+      en: Ask her to build the number with bundles. Count the bundles first, then the loose sticks.
+  ADD-NOCARRY:
+    what:
+      en: When the ones add up to ten or more, the child forgets to carry the ten to the tens column.
+    why:
+      en: She adds each column alone and writes down only the ones digit. The extra ten is lost.
+    spot:
+      en: A total that is ten too small, with the right digit in the ones place.
+    first:
+      en: Add with bundles. When ten loose sticks appear, tie them into a new bundle and move it to the tens.
+  SUB-SFL:
+    what:
+      en: In each column the child takes the smaller digit from the larger one, even when the smaller digit is on top.
+    why:
+      en: She treats each column on its own and wants a positive answer, so she turns the sum round. She does not yet see that a ten can be opened to make ten more ones.
+    spot:
+      en: Every column has an answer, but the answer is bigger than it should be. No column has a borrow mark.
+    first:
+      en: Show the sum with bundles. When there are too few loose sticks, open one bundle and count again.
+  SUB-NODEC:
+    what:
+      en: The child borrows a ten for the ones column but does not take one away from the tens column.
+    why:
+      en: She has learned to add ten to the ones, but the step of reducing the tens digit by one is missing.
+    spot:
+      en: The ones column is right, and the tens column is one too big.
+    first:
+      en: Use bundles. Each time a bundle is opened, move one bundle off the tens side before subtracting.
+  ADD-WHOLE-ONES:
+    what:
+      en: The child adds the tens and the ones separately and writes both totals side by side.
+    why:
+      en: She is adding correctly column by column but does not yet combine the two totals into one number.
+    spot:
+      en: A long number made of two sums joined together.
+    first:
+      en: Ask her to add with bundles and loose sticks, then tie ten loose sticks into a bundle before she writes the answer.
