@@ -16,6 +16,7 @@ from services.api.channels.telegram.webhook import router as telegram_router
 from services.api.cohorts.routes import router as cohorts_router
 from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
+from services.api.lesson_audio_api import router as lesson_audio_router
 from services.api.lessons import router as lessons_router
 from services.api.officer import router as officer_router
 from services.api.papers import router as papers_router
@@ -33,6 +34,7 @@ from services.media.api import router as media_router
 from services.papers_hub.api import router as paper_hub_router
 from services.pilot_demo.api import router as pilot_demo_router
 from services.sheets_keep.api import router as sheet_keep_router
+from services.speech.chain import startup_warning as speech_startup_warning
 from services.tester import tester_stats_enabled
 
 load_env()
@@ -57,6 +59,8 @@ async def _tester_lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     check_child_model()  # a bad SIMULATOR_MODEL (or, in bayesian mode, BAYES_PARAMS) stops the API
+    if os.environ.get("SPEECH_MODE", "live") != "stub":
+        speech_startup_warning()  # log only: Bodhan first before its gates pass (never blocks)
     app = FastAPI(
         title="Cohort Coach API",
         version=VERSION,
@@ -98,6 +102,7 @@ def create_app() -> FastAPI:
     app.include_router(profiles_router)
     app.include_router(programme_router)
     app.include_router(review_router)
+    app.include_router(lesson_audio_router)
     app.include_router(papers_router)
     app.include_router(paper_rules_router)
     app.include_router(paper_hub_router)

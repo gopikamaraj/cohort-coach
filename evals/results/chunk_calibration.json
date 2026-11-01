@@ -1,0 +1,56 @@
+{
+  "source": "scripts/calibrate_chunks.py",
+  "date": "2026-11-01",
+  "style": "educational lecture",
+  "rows": [
+    {
+      "language": "en",
+      "voice": "Kavya",
+      "chars_per_second": 11.77,
+      "max_chars_under_28s": 329,
+      "samples": 3
+    },
+    {
+      "language": "en",
+      "voice": "Amit",
+      "chars_per_second": 11.22,
+      "max_chars_under_28s": 314,
+      "samples": 3
+    },
+    {
+      "language": "hi",
+      "voice": "Kavya",
+      "chars_per_second": 10.94,
+      "max_chars_under_28s": 306,
+      "samples": 2
+    },
+    {
+      "language": "hi",
+      "voice": "Suhani",
+      "chars_per_second": 10.58,
+      "max_chars_under_28s": 296,
+      "samples": 3
+    },
+    {
+      "language": "hi",
+      "voice": "Amit",
+      "chars_per_second": 8.88,
+      "max_chars_under_28s": 248,
+      "samples": 3
+    },
+    {
+      "language": "ta",
+      "voice": "Anitha",
+      "chars_per_second": 12.67,
+      "max_chars_under_28s": 354,
+      "samples": 3
+    },
+    {
+      "language": "ta",
+      "voice": "Arun",
+      "chars_per_second": 12.99,
+      "max_chars_under_28s": 363,
+      "samples": 3
+    }
+  ]
+}

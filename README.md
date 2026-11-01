@@ -242,7 +242,7 @@ When the server runs with `TESTER_STATS=1`, the web app asks a new visitor once 
 ## Guardrails, offline and privacy in brief
 
 - **Guardrails** ([docs/guardrails.md](docs/guardrails.md)): code computes every number; nothing AI-written reaches a teacher before code checks, a rule-based pre-filter and the output checker; lessons also need a coach and then an officer. Rejection reasons feed the checker.
-- **Offline and low data** ([docs/offline.md](docs/offline.md)): only the Practice Class needs a live connection and it falls back to text; uploads and lessons queue offline. Data per track is computed in [docs/evidence/data_budget.json](docs/evidence/data_budget.json) (inside the 10 MB target with text practice, over it if every session is voice).
+- **Offline and low data** ([docs/offline.md](docs/offline.md)): only the Practice Class needs a live connection and it falls back to text; uploads and lessons queue offline. Data per track is computed in [docs/evidence/data_budget.json](docs/evidence/data_budget.json): since lessons became MP3 48 kbps (1 Nov, branch `speech-bodhan`), the worst case at the 5-minute lesson cap is over the 10 MB target even with text practice (14.73 MB computed; it was within it at OGG 16 kbps). Shorter lessons cost proportionally less; a measured figure per track comes from the speech evaluation.
 - **Privacy** ([docs/privacy.md](docs/privacy.md)): no child names, faces or voices; sheet photos are deleted after reading; teachers see counts, never percentages; officers see aggregates only.
 
 ## Setup
@@ -257,6 +257,7 @@ python tasks.py seed     # the simulated block
 
 Copy `.env.example` to `.env`. Without keys the app runs on recorded fixtures. `AI_MODE` is `live`, `recorded` (answers replayed from `ai/fixtures/recorded/`; the header says **AI: recorded answers** and each replayed answer says **Recorded AI answer**) or `off` (every call fails as if the service were unreachable; the header says **AI: off**, and each AI feature says so and offers its non-AI path: Auto-fill or typing for sheets, the code template for lessons, a person for chat questions, Generate from rules for papers). QA with the AI offline: [docs/build/reports/QA-DEMO.md](docs/build/reports/QA-DEMO.md). There is one app and one back end; the pilot runs in the same flow (Papers, then Enter check).
 
+**External speech services** (not Claude). Speech goes through one provider layer (`services/speech/chain.py`): **Bodhan AI** first (`indic-transcribe` for speech to text, `indic-speak` for text to speech; keys `BODHAN_SPEAK_API_KEY` and `BODHAN_TRANSCRIBE_API_KEY`, each falling back to `BODHAN_API_KEY`), **Sarvam** as the fallback (`SARVAM_API_KEY`). The order is set by `SPEECH_TTS_PROVIDERS` and `SPEECH_STT_PROVIDERS`; a provider with no key is skipped. Check the Bodhan keys with `python scripts/check_bodhan.py --no-live` (configuration only) or without the flag (two small paid calls; the estimate is printed first). Audio conversion needs **ffmpeg** on PATH (installed in the Dockerfile; WinGet, apt or brew locally). Lessons are voiced in chunks of one or two sentences, checked by transcribing each back, and stitched into one MP3 (mono, 48 kbps) with a timing map; a coach can listen, regenerate a sentence and approve on the review screen. `python tasks.py lessons-pregen` voices and caches every published demo lesson (prints the cost; `--yes` to spend). Bodhan's default limit is about 8 requests a minute per model, so requests are paced. Before Bodhan may be first in a deployment it must pass two gates recorded by a person (`docs/evidence/speech_gates.md`: a blinded listening test, `python tasks.py speech-eval-pack`, and a speech-to-text test on team members' recordings, `python tasks.py speech-eval-stt`); both are pending, and the rollout stages are in `docs/build/SPEECH-ROLLOUT.md`. Speech cost per lesson and per session: `docs/evidence/speech_cost.md` (unverified prices). Voices and speech recognition: Bodhan AI / AI4Bharat (Indic-Speak, Indic-Transcribe). Details: [SPEECH-LAYER](docs/build/reports/SPEECH-LAYER.md), [SPEECH-LESSONS](docs/build/reports/SPEECH-LESSONS.md), [SPEECH-PRACTICE](docs/build/reports/SPEECH-PRACTICE.md), [SPEECH-ROLLOUT](docs/build/reports/SPEECH-ROLLOUT.md).
 
 ## Architecture
 
@@ -268,7 +269,7 @@ flowchart LR
   F --> E[Engine: all numbers]
   F --> G[AI gates: validators, pre-filter, call 7]
   G --> H[Human review: coach, officer]
-  F --> S[Speech: Sarvam]
+  F --> S[Speech: Bodhan first, Sarvam fallback]
 ```
 
 Details: [docs/architecture.md](docs/architecture.md).
@@ -281,7 +282,7 @@ Details: [docs/architecture.md](docs/architecture.md).
 | `ai/` | The Claude calls: registry, client, prompts, validators, guardrails |
 | `services/api/` | FastAPI routes, flow engine, channels (web; Telegram adapter built, roadmap), review queue, cohorts, officer views |
 | `services/media/` | Lesson audio storage and voice settings |
-| `services/speech/` | Sarvam speech client |
+| `services/speech/` | Speech provider layer: Bodhan (first) and Sarvam (fallback) adapters, fallback chain, audio helpers, costs |
 | `apps/pwa/` | React PWA: teacher, cohort, officer, review, pilot and judge screens |
 | `content/` | Scenarios, rubrics, move lists, personas, tracks (data, owned by Seema) |
 | `evals/` | Eval sets, runners, generated `results.md` |

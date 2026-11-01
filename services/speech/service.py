@@ -1,4 +1,6 @@
-"""The speech service the API uses: live Sarvam or a stub, behind a circuit breaker.
+"""The speech service the API uses: live speech through the provider chain (Bodhan first, Sarvam as
+the fallback; services.speech.chain), a single Sarvam client behind a circuit breaker (the older
+path, still used when a client is passed in), or a stub.
 
 `SPEECH_MODE=stub` returns scripted transcripts and a generated tone, for tests and demos. It is
 not speech recognition and says so in its `mode`. Every request writes one metadata-only row to
@@ -8,8 +10,11 @@ not speech recognition and says so in its `mode`. Every request writes one metad
 from __future__ import annotations
 
 import itertools
+import logging
 import os
+import threading
 import time
+from collections import deque
 from collections.abc import Callable
 from datetime import date
 from functools import cache
@@ -20,7 +25,9 @@ import yaml
 from sqlalchemy.orm import sessionmaker
 
 from services.api.db import Base, SpeechCall, make_engine
-from services.speech import audio, stt, tts
+from services.speech import audio, costs, stt, textnorm, tts
+from services.speech.bodhan import DEFAULT_VOICE as BODHAN_DEFAULT_VOICE
+from services.speech.chain import ProviderChain
 from services.speech.health import CircuitBreaker
 from services.speech.sarvam import SarvamClient, SpeechError
 from services.speech.voices import Voice
@@ -39,6 +46,7 @@ STUB_LINES = {
     "ta": ["கட்டுகளால் காட்டு", "எப்படி செய்தாய் சொல்", "கூட்டி சரிபார்", "நன்றாகச் செய்தாய்"],
 }
 _counter = itertools.count()
+log = logging.getLogger(__name__)
 
 
 def speech_mode() -> str:
@@ -53,8 +61,16 @@ class SpeechService:
         breaker: CircuitBreaker | None = None,
         log: Callable[..., None] | None = None,
         budget_inr_daily: float | None = None,
+        providers: ProviderChain | None = None,
+        cache_store: Any = None,
     ) -> None:
         self.mode = mode
+        self.chain = providers
+        # A private store for synthesized lines (practice-pregen fills it with the engine's
+        # template lines), so a repeated line is free even after a restart. None: memory only.
+        self.cache_store = cache_store
+        self._shadow_times: deque[float] = deque()
+        self._shadow_lock = threading.Lock()
         self.budget_inr_daily = (
             budget_inr_daily
             if budget_inr_daily is not None
@@ -76,6 +92,8 @@ class SpeechService:
             return False
         if self.mode == "stub":
             return True
+        if self.chain is not None:
+            return self.chain.available("stt") or self.chain.available("tts")
         return self.client.configured and self.breaker.state != "open"
 
     def _emit(self, **fields: Any) -> None:
@@ -88,7 +106,11 @@ class SpeechService:
         elif err is not None and err.kind != "bad_request":
             self.breaker.failure()
 
-    def transcribe(self, recording: bytes, lang: str) -> str:
+    def transcribe(
+        self, recording: bytes, lang: str, budget: costs.SessionSpeechBudget | None = None
+    ) -> str:
+        if self.mode != "stub" and self.chain is not None:
+            return self._chain_transcribe(recording, lang, budget)
         t0 = time.monotonic()
         seconds, err = 0.0, None
         try:
@@ -118,7 +140,36 @@ class SpeechService:
                 error_kind=err.kind if err else None,
             )
 
-    def synthesize(self, text: str, lang: str, voice: Voice) -> bytes:
+    def synthesize(
+        self,
+        text: str,
+        lang: str,
+        voice: Voice,
+        budget: costs.SessionSpeechBudget | None = None,
+        style: str | None = None,
+        bodhan_voice: str | None = None,
+        order: list[str] | None = None,
+    ) -> bytes:
+        return self.synthesize_ex(text, lang, voice, budget, style, bodhan_voice, order)[0]
+
+    def synthesize_ex(
+        self,
+        text: str,
+        lang: str,
+        voice: Voice,
+        budget: costs.SessionSpeechBudget | None = None,
+        style: str | None = None,
+        bodhan_voice: str | None = None,
+        order: list[str] | None = None,
+    ) -> tuple[bytes, str]:
+        """(OGG/Opus bytes, who made it: a provider name, "cache", "stub" or "sarvam")."""
+        if self.mode != "stub" and self.chain is not None:
+            return self._chain_synthesize(text, lang, voice, budget, style, bodhan_voice, order)
+        return self._legacy_synthesize(
+            text, lang, voice
+        ), self.mode if self.mode == "stub" else "sarvam"
+
+    def _legacy_synthesize(self, text: str, lang: str, voice: Voice) -> bytes:
         t0 = time.monotonic()
         err, cached, size = None, False, 0
         try:
@@ -153,6 +204,190 @@ class SpeechService:
                 error_kind=err.kind if err else None,
             )
 
+    # --- The provider chain (Bodhan first, Sarvam as the fallback) --------------------------------
+
+    def _chain_transcribe(
+        self, recording: bytes, lang: str, budget: costs.SessionSpeechBudget | None
+    ) -> str:
+        """Any phone format -> 16 kHz mono WAV -> trim silence -> pieces of at most 28 s -> the
+        chain -> one transcript joined with spaces. The audio is never kept."""
+        assert self.chain is not None
+        t0 = time.monotonic()
+        seconds, cost, err = 0.0, 0.0, None
+        try:
+            wav = audio.to_wav_16k_mono(recording)
+            if audio.wav_seconds(wav) > stt.MAX_SECONDS:
+                raise SpeechError("bad_request", 0, "too_long")
+            wav = audio.trim_silence(wav)
+            heard = audio.wav_seconds(wav)
+            if heard == 0.0:
+                return ""  # nothing but silence: nothing sent, nothing paid
+            if budget is not None and not budget.allows_stt(heard):
+                raise SpeechError("rate", 0, "session_cap")
+            texts = []
+            parts = audio.split_for_stt(wav)
+            used = ""
+            for part in parts:
+                got = self.chain.transcribe(part, lang)
+                seconds += got.seconds_billed
+                cost += costs.cost_inr(got.provider, "stt", seconds=got.seconds_billed)
+                texts.append(got.text)
+                used = got.provider
+            if budget is not None:
+                budget.charge_stt(seconds)
+            text = " ".join(t for t in texts if t)
+            self._shadow(parts, lang, text, used, heard, budget)
+            return text
+        except SpeechError as exc:
+            err = exc
+            raise
+        finally:
+            self._emit(
+                stage="stt",
+                mode=self.mode,
+                language=lang,
+                latency_ms=int((time.monotonic() - t0) * 1000),
+                audio_bytes=len(recording),
+                seconds=seconds,
+                cost_inr=cost,
+                error_kind=err.kind if err else None,
+            )
+
+    def _shadow(
+        self,
+        parts: list[bytes],
+        lang: str,
+        text: str,
+        primary: str,
+        seconds: float,
+        budget: costs.SessionSpeechBudget | None,
+    ) -> threading.Thread | None:
+        """Shadow mode (SPEECH_SHADOW_PROVIDER, off by default): the same audio goes to a second
+        provider after the first has answered, in the background, and only a similarity score
+        (1 - character error rate between the two transcripts) and its latency are logged, never
+        either text. Rate-limited (SPEECH_SHADOW_PER_MINUTE, default 4) and counted in the
+        session's speech allowance."""
+        name = os.environ.get("SPEECH_SHADOW_PROVIDER", "").strip().lower()
+        if not name or self.chain is None or name == primary:
+            return None
+        provider = self.chain.providers.get(name)
+        if provider is None or not provider.configured_for("stt"):
+            return None
+        if budget is not None and not budget.allows_stt(seconds):
+            return None
+        now = time.monotonic()
+        limit = int(os.environ.get("SPEECH_SHADOW_PER_MINUTE", "4") or 4)
+        with self._shadow_lock:
+            while self._shadow_times and now - self._shadow_times[0] >= 60:
+                self._shadow_times.popleft()
+            if len(self._shadow_times) >= limit:
+                return None
+            self._shadow_times.append(now)
+        if budget is not None:
+            budget.charge_stt(seconds)
+
+        def run() -> None:
+            t0 = time.monotonic()
+            try:
+                other = " ".join(provider.transcribe(p, lang).text for p in parts)
+            except SpeechError as exc:
+                log.info("speech shadow stt provider=%s failed=%s", name, exc.kind)
+                return
+            similarity = max(0.0, 1.0 - textnorm.cer(text, other, lang)) if text else 0.0
+            log.info(
+                "speech shadow stt provider=%s primary=%s similarity=%.3f latency_ms=%d",
+                name,
+                primary,
+                similarity,
+                int((time.monotonic() - t0) * 1000),
+            )
+
+        th = threading.Thread(target=run, daemon=True)
+        th.start()
+        return th
+
+    def _chain_synthesize(
+        self,
+        text: str,
+        lang: str,
+        voice: Voice,
+        budget: costs.SessionSpeechBudget | None,
+        style: str | None,
+        bodhan_voice: str | None = None,
+        order: list[str] | None = None,
+    ) -> tuple[bytes, str]:
+        """One line through the chain -> OGG/Opus, pitch-shifted for a child's voice. Cached (in
+        memory and, when there is one, in the private store) by text, language, voice and style, so
+        a repeated line costs nothing."""
+        assert self.chain is not None
+        t0 = time.monotonic()
+        err, cached, size, cost = None, False, 0, 0.0
+        bodhan = bodhan_voice or BODHAN_DEFAULT_VOICE.get(lang, "Kavya")
+        key = tts.cache_key(text, lang, voice, f"chain:{style or ''}:{bodhan}")
+        stored = f"line-cache/{key}.ogg"
+        try:
+            hit = tts.CACHE.get(key)
+            if hit is None and self.cache_store is not None and self.cache_store.size(stored):
+                hit = self.cache_store.get(stored)
+                tts.CACHE.put(key, hit)
+            if hit is not None:
+                cached, size = True, len(hit)
+                return hit, "cache"
+            if budget is not None and not budget.allows_tts(len(text)):
+                raise SpeechError("rate", 0, "session_cap")
+
+            def voice_for(provider: str) -> str:
+                return bodhan if provider == "bodhan" else voice.speaker
+
+            got = self.chain.synthesize(text, lang, voice_for, style, order=order)
+            cost = costs.cost_inr(got.provider, "tts", chars=got.chars_billed)
+            if budget is not None:
+                budget.charge_tts(got.chars_billed)
+            out = audio.to_ogg_opus(got.data, pitch_ratio=voice.pitch, input_rate=got.sample_rate)
+            tts.CACHE.put(key, out)
+            if self.cache_store is not None:
+                self.cache_store.put(stored, out, "audio/ogg")
+            size = len(out)
+            return out, got.provider
+        except SpeechError as exc:
+            err = exc
+            raise
+        finally:
+            self._emit(
+                stage="tts",
+                mode=self.mode,
+                language=lang,
+                latency_ms=int((time.monotonic() - t0) * 1000),
+                audio_bytes=size,
+                characters=len(text),
+                cost_inr=cost,
+                from_cache=cached,
+                error_kind=err.kind if err else None,
+            )
+
+
+def default_chain(*, live: bool = True) -> ProviderChain:
+    """Bodhan and Sarvam with keys from the environment, in the SPEECH_*_PROVIDERS order.
+
+    `live` (the API: a teacher is waiting) lets a Bodhan call wait for its rate allowance at most
+    BODHAN_LIVE_PACE_MAX_WAIT_S (2 s) before the chain moves to Sarvam; batch work (lessons,
+    pre-generation) waits up to BODHAN_PACE_MAX_WAIT_S (90 s)."""
+    from services.speech.bodhan import BodhanClient, BodhanProvider, _float_env
+    from services.speech.provider import SarvamProvider
+
+    wait = _float_env("BODHAN_LIVE_PACE_MAX_WAIT_S", 2.0) if live else None
+    client = BodhanClient(pace_max_wait_s=wait)
+    return ProviderChain({"bodhan": BodhanProvider(client), "sarvam": SarvamProvider()})
+
+
+def _audio_store_or_none() -> Any:
+    from services.media.storage import StorageNotConfigured, audio_store
+
+    try:
+        return audio_store()
+    except StorageNotConfigured:
+        return None
+
 
 def _sql_log() -> Callable[..., None]:
     engine = make_engine()
@@ -172,4 +407,7 @@ def default_service() -> SpeechService:
     from ai import config
 
     config.load_env()
-    return SpeechService(speech_mode(), log=_sql_log())
+    mode = speech_mode()
+    chain = default_chain() if mode != "stub" else None
+    store = _audio_store_or_none() if mode != "stub" else None
+    return SpeechService(mode, log=_sql_log(), providers=chain, cache_store=store)

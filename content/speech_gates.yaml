@@ -1,0 +1,14 @@
+# The gates Bodhan must pass before it is first for a function (Prompt 4). Defaults from the prompt.
+# TODO-HUMAN(Gopi, Seema): confirm every threshold before a gate is recorded.
+version: 1
+tts:
+  # mean naturalness (1-5) no more than this far below Sarvam's
+  naturalness_within: 0.3
+  # share of clips whose "correct numbers" score is at or below `numbers_wrong_at_or_below`
+  numbers_wrong_max_share: 0.05
+  numbers_wrong_at_or_below: 2
+stt:
+  # character error rate (percentage points) no more than this much worse than Sarvam's
+  cer_worse_max_points: 5
+  # share of the key maths terms (borrow, regroup, ten, bundle...) heard correctly
+  key_term_accuracy_min: 0.90

@@ -116,6 +116,17 @@ def _lesson_build(ctx: Any) -> Step:
         copy="t4.lesson",
         params={"day": day, "total": len(lessons), "script": str(part["script"])},
         audio=audio_url(m.id, part) if m is not None else None,
+        audio_info=(
+            {
+                "bytes": int(part.get("bytes", 0)),
+                "seconds": float(part.get("seconds", 0.0)),
+                "sentences": list(part.get("sentences", [])),
+                "timing": list(part.get("timing", [])),
+                "ai_voice": bool(part.get("ai_voice", False)),
+            }
+            if part.get("audio_key")
+            else None
+        ),
         badge="lesson.badge" if part.get("badge") == "checked_reviewed" else None,
         simulated=_simulated(ctx),
     )

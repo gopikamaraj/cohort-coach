@@ -224,10 +224,10 @@ def test_the_officer_publishes_an_active_version_for_a_cohort(
     from services.content import publish
     from services.media.storage import LocalBlobStore, get_audio_store
     from services.speech.service import SpeechService
-    from tests.content.test_publish import approve_all, fake_join
+    from tests.content.test_publish import approve_all, fake_mp3
 
     client, db = api
-    monkeypatch.setattr(publish, "join_to_file", fake_join)
+    monkeypatch.setattr(publish.lessons, "encode_mp3", fake_mp3)
     store = LocalBlobStore(b"audio")
     speech = SpeechService("stub")
     speech.synthesize = lambda text, lang, voice: b"clip"  # type: ignore[method-assign]

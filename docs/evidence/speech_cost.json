@@ -1,0 +1,87 @@
+{
+ "source": "scripts/speech_cost.py",
+ "date": "2026-11-01",
+ "lesson_source": "the lesson drafts in the local database, filled with a 9-class cohort's numbers",
+ "teacher_seconds_per_turn_assumed": 6.0,
+ "simulated_sessions": 36,
+ "prices_verified": {
+  "bodhan": {
+   "tts": false,
+   "stt": false
+  },
+  "sarvam": {
+   "tts": false,
+   "stt": false
+  }
+ },
+ "rows": [
+  {
+   "what": "lesson",
+   "provider": "bodhan",
+   "language": "en",
+   "lessons_measured": 6,
+   "chars": 3196,
+   "speech_seconds": 271.5,
+   "tts_inr": 1.917,
+   "round_trip_stt_inr": 0.453,
+   "total_inr": 2.37
+  },
+  {
+   "what": "lesson",
+   "provider": "bodhan",
+   "language": "hi",
+   "lessons_measured": 6,
+   "chars": 2790,
+   "speech_seconds": 255.0,
+   "tts_inr": 1.673,
+   "round_trip_stt_inr": 0.425,
+   "total_inr": 2.098
+  },
+  {
+   "what": "practice session (voice)",
+   "provider": "bodhan",
+   "language": "all",
+   "turns": 31.0,
+   "child_lines": 60.1,
+   "chars": 1796,
+   "teacher_speech_seconds": 186,
+   "tts_inr": 1.078,
+   "stt_inr": 0.31,
+   "total_inr": 1.388
+  },
+  {
+   "what": "lesson",
+   "provider": "sarvam",
+   "language": "en",
+   "lessons_measured": 6,
+   "chars": 3196,
+   "speech_seconds": 271.5,
+   "tts_inr": 9.585,
+   "round_trip_stt_inr": 2.263,
+   "total_inr": 11.848
+  },
+  {
+   "what": "lesson",
+   "provider": "sarvam",
+   "language": "hi",
+   "lessons_measured": 6,
+   "chars": 2790,
+   "speech_seconds": 255.0,
+   "tts_inr": 8.367,
+   "round_trip_stt_inr": 2.125,
+   "total_inr": 10.492
+  },
+  {
+   "what": "practice session (voice)",
+   "provider": "sarvam",
+   "language": "all",
+   "turns": 31.0,
+   "child_lines": 60.1,
+   "chars": 1796,
+   "teacher_speech_seconds": 186,
+   "tts_inr": 5.388,
+   "stt_inr": 1.55,
+   "total_inr": 6.938
+  }
+ ]
+}

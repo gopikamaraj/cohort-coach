@@ -104,18 +104,13 @@ def _practice_speed_switches_off_for_the_suite(monkeypatch: pytest.MonkeyPatch) 
 
 @pytest.fixture(autouse=True)
 def _developer_switches_out_of_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The same for the switches added on 1 Nov: the child model and the testing shortcuts. The
-    suite tests the defaults; a test of a switch sets it itself."""
+    """The same for the switches added on 1 Nov: speech provider keys and order, the child model and
+    the testing shortcuts. The suite tests the defaults; a test of a switch sets it itself."""
     for name in (
-        "SIMULATOR_MODEL",
+        "BODHAN_API_KEY", "BODHAN_SPEAK_API_KEY", "BODHAN_TRANSCRIBE_API_KEY", "BODHAN_BASE_URL",
+        "SPEECH_TTS_PROVIDERS", "SPEECH_STT_PROVIDERS", "SIMULATOR_MODEL", "DEV_TESTING",
+        "BAYES_PRIOR_CONCENTRATION", "BAYES_RESPONSIVENESS_SCALE", "BAYES_RESPONSIVENESS_SHAPE",
+        "BAYES_LEARN_CAP", "BAYES_EFFECT_SCALE", "BAYES_GUESS", "BAYES_SLIP",
         "BAYES_PARAMS",
-        "DEV_TESTING",
-        "BAYES_PRIOR_CONCENTRATION",
-        "BAYES_RESPONSIVENESS_SCALE",
-        "BAYES_RESPONSIVENESS_SHAPE",
-        "BAYES_LEARN_CAP",
-        "BAYES_EFFECT_SCALE",
-        "BAYES_GUESS",
-        "BAYES_SLIP",
     ):  # fmt: skip
         monkeypatch.delenv(name, raising=False)

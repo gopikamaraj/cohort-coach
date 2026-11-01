@@ -1,0 +1,192 @@
+{
+  "source": "scripts/practice_voice_latency.py",
+  "date": "2026-11-01",
+  "mode": "live",
+  "turns": 9,
+  "ok_turns": 9,
+  "failed_turns": [],
+  "by_provider": {
+    "bodhan": {
+      "turns": 6,
+      "stt_ms": {
+        "median": 1250,
+        "p95": 1280
+      },
+      "label_ms": {
+        "median": 1172,
+        "p95": 1719
+      },
+      "engine_ms": {
+        "median": 0,
+        "p95": 0
+      },
+      "child_ms": {
+        "median": 2266,
+        "p95": 2422
+      },
+      "tts_ms": {
+        "median": 7758,
+        "p95": 12812
+      },
+      "first_audio_ms": {
+        "median": 14742,
+        "p95": 17780
+      }
+    },
+    "sarvam": {
+      "turns": 3,
+      "stt_ms": {
+        "median": 1391,
+        "p95": 1422
+      },
+      "label_ms": {
+        "median": 1140,
+        "p95": 2093
+      },
+      "engine_ms": {
+        "median": 0,
+        "p95": 0
+      },
+      "child_ms": {
+        "median": 2164,
+        "p95": 2344
+      },
+      "tts_ms": {
+        "median": 2202,
+        "p95": 3672
+      },
+      "first_audio_ms": {
+        "median": 7905,
+        "p95": 8282
+      }
+    }
+  },
+  "rows": [
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 19390,
+      "stt_ms": 1250,
+      "label_ms": 1719,
+      "engine_ms": 0,
+      "child_ms": 2265,
+      "check_ms": null,
+      "tts_ms": 7734,
+      "first_audio_ms": 17062,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 19937,
+      "stt_ms": 1265,
+      "label_ms": 1219,
+      "engine_ms": 0,
+      "child_ms": 2422,
+      "check_ms": null,
+      "tts_ms": 12812,
+      "first_audio_ms": 17780,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 9890,
+      "stt_ms": 1202,
+      "label_ms": 1045,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 5813,
+      "first_audio_ms": 8094,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 9250,
+      "stt_ms": 1218,
+      "label_ms": 2093,
+      "engine_ms": 0,
+      "child_ms": 2344,
+      "check_ms": null,
+      "tts_ms": 2202,
+      "first_audio_ms": 7905,
+      "tts_provider": "sarvam",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 9609,
+      "stt_ms": 1422,
+      "label_ms": 1140,
+      "engine_ms": 0,
+      "child_ms": 1984,
+      "check_ms": null,
+      "tts_ms": 3672,
+      "first_audio_ms": 8282,
+      "tts_provider": "sarvam",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 5890,
+      "stt_ms": 1391,
+      "label_ms": 1092,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 1827,
+      "first_audio_ms": 4327,
+      "tts_provider": "sarvam",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 14093,
+      "stt_ms": 1250,
+      "label_ms": 1562,
+      "engine_ms": 0,
+      "child_ms": 1765,
+      "check_ms": null,
+      "tts_ms": 7782,
+      "first_audio_ms": 12422,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 18967,
+      "stt_ms": 1250,
+      "label_ms": 1125,
+      "engine_ms": 0,
+      "child_ms": 2266,
+      "check_ms": null,
+      "tts_ms": 12437,
+      "first_audio_ms": 17187,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 10516,
+      "stt_ms": 1280,
+      "label_ms": 1125,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 6265,
+      "first_audio_ms": 8702,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    }
+  ]
+}

@@ -3341,4 +3341,41 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
 .finding-lines {
   margin: 0 0 var(--s3);
   padding-left: var(--s5);
+/* Lesson audio: the script follows the voice (teacher player and coach review) */
+.say-along {
+  margin: var(--s2) 0;
+  line-height: 1.7;
+}
+.say {
+  border-radius: var(--r-btn);
+  padding: 0 2px;
+}
+.say-on {
+  background: var(--warn-container);
+}
+.laudio-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  margin: var(--s1) 0;
+}
+.laudio-sentences li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1);
+  margin: var(--s1) 0;
+}
+.ai-voice {
+  font-size: 16px;
+}
+.row-warn-icon {
+  color: var(--warn);
+  display: inline-flex;
+}
+.rec-timer {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
 }

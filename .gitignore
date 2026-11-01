@@ -52,3 +52,6 @@ e2e-imports/
 apps/pwa/e2e-imports/
 e2e-imports-off/
 data/autopilot-screens/
+audition/
+evals/speech-eval/
+data/speech-eval/

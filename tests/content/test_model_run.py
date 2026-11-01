@@ -219,7 +219,7 @@ def test_the_track_manifest_lists_the_voiced_run_labelled_simulated(
     from tests.content.test_publish import approve_all, switched_on
 
     monkeypatch.setattr(model_run, "join_to_file", fake_join)
-    monkeypatch.setattr(publish, "join_to_file", fake_join)
+    monkeypatch.setattr(publish.lessons, "encode_mp3", lambda wav, kbps: b"ID3" + wav[:64])
     v = switched_on(db)
     track = load_track("sub-sfl.v1")
     manifest = publish.publish_version(

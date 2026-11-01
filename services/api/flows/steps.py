@@ -54,6 +54,9 @@ class Step(BaseModel):
     lines: list[Line] = Field(default_factory=list)  # extra lines under the main text
     link: LinkSpec | None = None
     audio: str | None = None  # media: a published audio URL
+    # media: what the web player shows about the audio: size in bytes, seconds, the sentences and
+    # their timing (to highlight the text as it plays), and whether the voice is AI-generated
+    audio_info: dict[str, Any] | None = None
     badge: str | None = None  # string key, e.g. "Checked"
     explanation_copy: str | None = None
     simulated: bool = False

@@ -8,6 +8,10 @@ Open the review screen. It lists what waits for your decision, with how long eac
 
 Open the item in the review screen and read its checks. You can edit it; an edit that fails the checks is not saved and says why. To send it back, choose one reason: wrong maths, culturally off, too complex for the medium, tone issue, or factually shaky. To approve, use the coach's key. Approving is gate three of four. Your approval alone does not publish anything: the programme officer's key then switches the version on.
 
+## Checking a lesson's audio
+
+Each published lesson is voiced by an AI voice (Bodhan AI first, Sarvam if Bodhan cannot). Open the review screen and scroll to Lesson audio. Each lesson shows whether you have approved it and how many sentences passed the check: every sentence was turned back into text and compared with the script, and a sentence marked with a warning sign is one to listen to. Open a lesson to play it; the sentence being said is highlighted. If one sentence sounds wrong, press Regenerate this sentence (the button shows about what it costs): only that sentence is made again. Regenerate the lesson makes the whole lesson again. Teachers keep hearing the version you last approved until you approve a new one; approving replaces the old file. A lesson from a cohort of fewer than 5 classes is listed but hidden, because its script and audio carry the counts of those classes. The programme officer can listen but not regenerate or approve. Listening is optional: a lesson is published whether or not you have listened to it. Every voice is AI-generated (Bodhan AI / AI4Bharat, or Sarvam AI).
+
 ## Which drafts came from the AI
 
 Track lessons are drafted by the AI model offline, with every class number as a slot that code fills. The review screen shows each draft with its checks. A draft that failed a code check or the second-model check is held back and marked, and the reason is shown. Reply drafts in the cohort chat are marked as drafts for a person to send or replace.

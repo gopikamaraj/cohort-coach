@@ -201,6 +201,15 @@ def cmd_export_keys(args: list[str]) -> int:
     return run([venv_python(), "scripts/export_keys.py", *args])
 
 
+def script(path: str) -> Callable[[list[str]], int]:
+    """A command that runs one script with the project's Python (live scripts ask for --yes)."""
+
+    def _run(args: list[str]) -> int:
+        return run([venv_python(), path, *args])
+
+    return _run
+
+
 def deferred(phase: str) -> Callable[[list[str]], int]:
     def _run(args: list[str]) -> int:
         print(f"available after {phase}")
@@ -238,6 +247,26 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
         "before a deploy: rebuild the assistant index, check its questions",
     ),
     "readme": (cmd_readme, "regenerate README 'Where AI is used' [--check]"),
+    "lessons-pregen": (
+        script("scripts/lessons_pregen.py"),
+        "voice and cache every published demo lesson (prints the cost; --yes to spend)",
+    ),
+    "practice-pregen": (
+        script("scripts/practice_pregen.py"),
+        "cache the Practice Class template lines (prints counts and cost; --yes [--limit N])",
+    ),
+    "speech-eval-pack": (
+        script("scripts/speech_eval_pack.py"),
+        "blinded listening pack, Bodhan and Sarvam (prints the cost; --yes to spend)",
+    ),
+    "speech-eval-stt": (
+        script("scripts/speech_eval_stt.py"),
+        "speech-to-text eval on data/speech-eval/ (prints the cost; --yes) [--record NAME]",
+    ),
+    "speech-latency": (
+        script("scripts/speech_latency.py"),
+        "speech latency per function and provider, live and capped (prints the cost; --yes)",
+    ),
 }
 
 

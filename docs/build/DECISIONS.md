@@ -761,3 +761,69 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Hook.** Commits on this branch skip the pre-commit hook: `tasks.py check` already fails at lint on the base commit (`tools/check_anthropic_api_key.py`). Ruff, mypy and the relevant tests were run on every change instead.
 
 **Confirmed by.** Build prompt run by Gopi, 2026-11-01. The standing instruction "go with the recommended approach" covers the resolutions above; every parameter is a build default awaiting review (`TODO-HUMAN(Seema)` in `content/bayes/*.yaml`).
+
+## 2026-11-01 · Speech behind one provider layer, Bodhan AI first, Sarvam as the fallback (branch `speech-bodhan`)
+
+**Decision.** All live speech goes through `services/speech/chain.py`: Bodhan AI first for speech to text (`indic-transcribe`) and text to speech (`indic-speak`), Sarvam as the fallback, a mock for tests. The order is configurable (`SPEECH_TTS_PROVIDERS`, `SPEECH_STT_PROVIDERS`, with per-language overrides). Built from Prompt 1 of `docs/build/bodhan-speech-prompts.md`, on branch `speech-bodhan`; not merged into the evaluated version (1 Nov freeze).
+
+**Choices where the prompt left room.**
+1. *A 401 falls back.* The prompt says a 4xx request error does not fall back. A 401 or 403 is a key problem at that provider, not a fault in our request, so the next provider is tried. 400, 415 and 422 do not fall back.
+2. *Bodhan voices.* Until the cast in `content/voices.yaml` (Prompts 2 and 3), Bodhan uses one voice per language (Hindi Kavya, Tamil Anitha, English Kavya; `TODO-HUMAN(Seema)`), pitch-shifted per child exactly as the Sarvam voices are.
+3. *An explicit Sarvam client keeps the old path.* `SpeechService(client=SarvamClient(...))` behaves as before, so existing tests and scripts are unchanged; the chain is used by `default_service()` and wherever a chain is passed.
+4. *`split_for_stt` cuts at the limit when there is no silence*, as the prompt says. The older `split_at_silences` (the quietest frame even in speech) is kept for its existing callers.
+5. *The converted WAV carries its true length.* ffmpeg writing to a pipe leaves the WAV size fields unset; the Bodhan mock (which measures the header) refused such a file as over 30 s. `to_wav_16k_mono` rewrites the header. Bodhan meters by duration, so this matters for the real service.
+6. *Per-session caps* (`SPEECH_SESSION_MAX_STT_SECONDS`, `SPEECH_SESSION_MAX_TTS_CHARS`) are built and tested in the speech service. Wiring them to Practice Class sessions and the "voice is off" message is Prompt 3.
+7. *Prices.* `content/speech_prices.yaml`, every paid value `verified: false` (Bodhan's from an unverified article; the API page shows none).
+
+**Not done in Prompt 1.** Lessons (Prompt 2), Practice Class recording and voices (Prompt 3), evaluation and gates (Prompt 4). The startup warning fires until `docs/evidence/speech_gates.md` records both gates passed.
+
+**Confirmed by.** Gopi, 2026-11-01 ("start the development", Prompt 1).
+
+## 2026-11-01 · Lesson audio with the speech layer (Prompt 2, branch `speech-bodhan`)
+
+**Decisions (Gopi, 2026-11-01, answering the questions asked before Prompts 2 to 4).**
+1. *Lessons are MP3 mono 48 kbps*, as the prompt says (was OGG/Opus 16 kbps). Gopi was told this breaks the 10 MB per-track budget and chose it. Computed worst case at the 5-minute lesson cap (`scripts/data_budget.py`, `docs/evidence/data_budget.json`): 14.73 MB per track with text practice, against the 10 MB target (6 lessons at the cap are 10.8 MB). No new target number was set, so `tests/test_data_budget.py::test_the_track_fits_the_target_with_text_practice_and_not_with_voice_every_time` now fails and is left failing until a person sets the target (or changes the format). `CLAUDE.md` section 9, the README and `docs/RUBRIC_MAP.md` E3.2 say so.
+2. *Coach audio review is after publishing and optional.* Publishing voices each lesson by itself; the coach can listen, regenerate a sentence or the lesson, and approve; teachers keep the approved version until a new one is approved. Unapproved audio is labelled "Not yet approved" on the review screen.
+3. *Live calls*: Gopi chose to run the live scripts. Run on 1 Nov: `scripts/calibrate_chunks.py --yes` (evals/results/chunk_calibration.json) and a live smoke run of two lesson texts through the pipeline into the local store (`MEDIA_LOCAL_STORE=1`; the real audio bucket was not written from a local run).
+4. *Commits*: one per prompt on `speech-bodhan`, `--no-verify` (the full check is not green; failures listed in each commit message).
+
+**Choices where the prompt left room.**
+- *Small cohorts.* A filled lesson and its audio carry the pooled counts of the cohort's classes, so the coach review screen hides a lesson whose cohort has fewer than 5 classes (rule 3; the manifests view already hides scripts). Records carry `cohort_id` and `cohort_classes`.
+- *Demo pre-generation* reads the newest published manifest of each track. The local database had none (all 14 drafts were held by the output checker, so nothing could be published without re-drafting with call 5, a Claude spend outside this prompt); `lessons-pregen` is built and tested but had nothing to voice.
+- *Telegram* sends a lesson as a voice note, which Telegram accepts as OGG/Opus only. With MP3 lessons the roadmap bot would need `sendAudio`; not changed (Telegram is not deployed).
+- *Timing inside a two-sentence chunk* is split by characters: an estimate, since no provider returns timestamps.
+- *Number words* for the round-trip check (`services/speech/textnorm.py`): English 0 to 999 999; Hindi and Tamil 0 to 100 plus hundreds and thousands, a first draft (`TODO-HUMAN`: Seema for Hindi, Gopi for Tamil).
+
+**Found live (1 Nov) and fixed.** Bodhan's default rate limit is about 8 requests per minute per model (`x-bodhan-rate-limit-source: default`, with Retry-After on the 429). Three chunks in parallel hit it, the one retry waited only 0.5 to 1 s (and capped Retry-After at 10 s), so every lesson fell back to Sarvam. Now requests are paced to `BODHAN_REQUESTS_PER_MINUTE` (8) per model and Retry-After is honoured up to 60 s; a wait longer than `BODHAN_PACE_MAX_WAIT_S` (90) fails at once so the chain falls back. After the fix, a 1 161-character section was voiced by Bodhan with no fallback (13 chunks, 101 s, 24 of 26 sentences passed the round trip). Ask Bodhan to raise the limit before any live use: at 8 a minute a whole lesson takes about 10 minutes, and a Practice Class turn cannot wait.
+
+## 2026-11-01 · Practice Class speech through the speech layer (Prompt 3, branch `speech-bodhan`)
+
+**Decisions (choices where the prompt left room).**
+1. *Voice by gender.* Each child keeps one Bodhan voice for the session, taken in seat order from the list for the persona's gender (`content/voices.yaml`), distinct from the lesson narrator; the Sarvam fallback is the child's existing speaker and pitch.
+2. *A failure, for the two-failure switch,* is a turn with no audio or one where the first provider failed and a fallback answered.
+3. *Live turns wait at most 2 s* (`BODHAN_LIVE_PACE_MAX_WAIT_S`) for Bodhan's rate allowance before Sarvam speaks; batch work still waits up to 90 s.
+4. *The silence message* keeps the prompt's sentence and adds the existing hint ("I didn't catch that. Try again: hold the button while you speak."), so the existing browser test stays unchanged.
+5. *Per-stage timing* is a new `layers.evaluation.timing` key; the existing `stages` keys are unchanged.
+6. *A child's line is at most 120 characters* (a gate check); recorded and template lines already fit, so no replay changes.
+7. *Masking before calls 1 to 3 was already in place* and tested; not changed.
+
+**Found live (1 Nov).** Bodhan's first audio took a median of 14.7 s in a live turn (Sarvam 7.9 s; target 5 s), and its default allowance runs out within two or three turns. Bodhan is not fit for live Practice Class use until Bodhan raises the limit; the chain falls back to Sarvam meanwhile (`evals/results/practice_voice_latency_live.json`).
+
+**Process note.** A new latency script was first written over the existing tracked `scripts/practice_latency.py` (the text-turn latency eval); it was restored from git unchanged and the new script is `scripts/practice_voice_latency.py`.
+
+**Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).
+
+## 2026-11-01 · Speech evaluation, gates and rollout (Prompt 4, branch `speech-bodhan`)
+
+**Decisions (choices where the prompt left room).**
+1. *"Numbers wrong"* in the listening test is a "correct numbers" score of 1 or 2 (of 5) (`content/speech_gates.yaml`, `numbers_wrong_at_or_below`).
+2. *Gate thresholds* are the prompt's defaults, marked `TODO-HUMAN(Gopi, Seema): confirm`: text to speech, Bodhan's naturalness within 0.3 of Sarvam's and under 5% numbers wrong; speech to text, a character error rate at most 5 points worse than Sarvam's and key-term accuracy at least 90%.
+3. *Key terms are matched as whole words* on text without the number conversion ("ten" is a term and a number; "tens" and "tents" are not "ten").
+4. *Shadow mode* runs in the background after the main transcript, so it adds no wait for the teacher; it logs `provider`, `primary`, `similarity` and `latency_ms` only.
+5. *The About screen* is the assistant panel's "About this product" tab; the attribution sits there and in the README. The Practice Class voice controls say the children's voices are AI-generated.
+6. *Cost evidence* (`docs/evidence/speech_cost.md`) is generated from measured inputs (lesson drafts, calibration, engine-simulated sessions); the teacher's speech per turn (6 s) is a stated assumption; every paid price stays `verified: false` until Gopi confirms them on the consoles.
+7. *No slide edited.* `docs/build/reports/SPEECH-ROLLOUT.md` lists the deck sentences to change once the gates pass.
+
+**State on 1 Nov.** Both gates `pending`: the listening pack is made (live) but has no ratings yet, and the speech-to-text test needs team members' recordings (`docs/evidence/speech-eval/PROTOCOL.md`). Rollout stage 1 (`docs/build/SPEECH-ROLLOUT.md`).
+
+**Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).
