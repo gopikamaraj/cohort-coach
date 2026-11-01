@@ -2,13 +2,15 @@
 // their class counts were sent, her rehearsals and the observations she sent. Per-child answers stay here.
 import { useEffect, useState } from "react";
 import { listChecks, type CheckSummary } from "../lib/history";
+import { formatDate, kindName, type CheckKind } from "../lib/checks";
 import { db } from "../lib/db";
 import { href } from "../lib/router";
 import { BLANK, UNREADABLE } from "../lib/check";
 import { useApp } from "../state";
+import { SimulatedBanner } from "../components/parts";
 
 export default function History() {
-  const { tr, lang } = useApp();
+  const { tr, lang, klass } = useApp();
   const [checks, setChecks] = useState<CheckSummary[] | null>(null);
   const [rehearsals, setRehearsals] = useState(0);
   const [observations, setObservations] = useState({ total: 0, waiting: 0 });
@@ -31,6 +33,7 @@ export default function History() {
   return (
     <section aria-labelledby="hi-title" data-testid="history">
       <h1 id="hi-title">{tr("history.title")}</h1>
+      {klass?.simulated ? <SimulatedBanner /> : null}
       <p className="muted">{tr("history.private")}</p>
 
       <h2>{tr("history.checks")}</h2>
@@ -41,8 +44,14 @@ export default function History() {
           {checks.map((c) => (
             <li key={c.id} className="card" data-testid="history-check">
               <p>
-                <strong>{tr("history.check_line", { term: c.term, form: c.formKey, n: c.children })}</strong>
+                <strong>{tr("history.check_line", { term: c.term, form: c.paperCode ?? tr("check.form_n", { f: c.formKey }), n: c.children })}</strong>
               </p>
+              {c.kind ? (
+                <p data-testid="history-kind">
+                  {kindName(tr, c.kind as CheckKind)}
+                  {c.checkDate ? ` · ${formatDate(c.checkDate, lang)}` : ""}
+                </p>
+              ) : null}
               <p className="muted">{when(c.updatedAt)}</p>
               <p className="muted">{c.viaPhoto > 0 ? tr("history.photo_n", { n: c.viaPhoto }) : tr("history.typed")}</p>
               <p data-testid="history-state">{tr(`history.state.${c.state}` as "history.state.sent")}</p>

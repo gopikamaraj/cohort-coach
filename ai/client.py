@@ -6,7 +6,8 @@ bounds with the violations stated, falls back deterministically, checks the budg
 one audit row.
 
 Modes (AI_MODE): `recorded` reads ai/fixtures/recorded/<call>/<hash>.json (tests, CI, demos),
-`live` calls the API, `record` calls the API and saves the answer as a fixture. With
+`live` calls the API, `record` calls the API and saves the answer as a fixture, `off` fails every
+call as if the service were unreachable (reason `api_error`), so each caller's fallback runs. With
 ANTHROPIC_API_KEY unset the client refuses `live` and `record`.
 """
 
@@ -123,7 +124,18 @@ def input_hash(
             "extra_system": extra_system,
             "trusted": inp.trusted,
             "untrusted": inp.untrusted,
-            "images": [(mt, hashlib.sha256(d.encode()).hexdigest()) for mt, d in inp.images],
+            # A picture read from a file the caller hashed (trusted "file_sha256") is keyed by
+            # that hash:
+            # the shrunk copy differs from one browser to the next, the original file does not.
+            "images": [
+                (
+                    mt,
+                    "by-file"
+                    if "file_sha256" in inp.trusted
+                    else hashlib.sha256(d.encode()).hexdigest(),
+                )
+                for mt, d in inp.images
+            ],
         },
         ensure_ascii=False,
         sort_keys=True,
@@ -226,8 +238,12 @@ def run_call(
     fixture = _read_fixture(spec, digest) if mode == "recorded" else None
     if mode == "recorded" and fixture is None:
         reason = "no_recording"
+    if mode == "off":  # the service is unreachable: nothing is sent, every caller's fallback runs
+        reason = "api_error"
 
-    attempts = 0 if (mode == "recorded" and fixture is None) else policy.max_retries + 1
+    attempts = (
+        0 if (mode == "off" or (mode == "recorded" and fixture is None)) else policy.max_retries + 1
+    )
     for attempt in range(attempts):
         retries = attempt
         parsed: BaseModel | None = None

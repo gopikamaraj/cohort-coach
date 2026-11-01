@@ -270,7 +270,9 @@ def post_voice_turn(
     audio_b64, tts_wait_ms = None, 0
     if result.child_text:
         t1 = time.monotonic()
-        released = result.badge != "none"  # an AI line that passed gates 1 and 2
+        # An AI line that was released (it passed gates 1 and 2, or call 7 is switched off): its
+        # speech was started in parallel and can be used. Template lines are spoken from here.
+        released = result.source == "ai"
         try:
             if released and "f" in pending:
                 data = pending["f"].result(timeout=20)
@@ -280,6 +282,18 @@ def post_voice_turn(
         except Exception:  # noqa: BLE001 - the text is already there; audio is a bonus
             audio_b64 = None
         tts_wait_ms = int((time.monotonic() - t1) * 1000)
+    # The other children who spoke: their template lines are spoken in parallel, one clip each.
+    spoken = [
+        (o, _POOL.submit(_synth, speech, o["child_text"], session, o["speaker"]))
+        for o in out.get("others", [])
+        if o["child_text"]
+    ]
+    for o, fut in spoken:
+        try:
+            o["audio"] = base64.b64encode(fut.result(timeout=20)).decode()
+            o["audio_mime"] = "audio/ogg"
+        except Exception:  # noqa: BLE001 - the text is there; audio is a bonus
+            o["audio"], o["audio_mime"] = None, None
     for f in pending.values():  # a candidate that was not released is dropped
         if not f.done():
             f.cancel()

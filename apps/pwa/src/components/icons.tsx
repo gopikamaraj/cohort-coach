@@ -11,6 +11,12 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M9 4h6v3H9zM9 14l2 2 4-4" />
     </>
   ),
+  papers: (
+    <>
+      <path d="M7 3h7l5 5v13H7z" />
+      <path d="M14 3v5h5M10 13h6M10 17h6" />
+    </>
+  ),
   cards: (
     <>
       <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -74,6 +80,21 @@ const PATHS: Record<string, ReactNode> = {
     </>
   ),
   flag: <path d="M6 21V4M6 5h11l-2 4 2 4H6" />,
+  warning: (
+    <>
+      <path d="M12 3l10 18H2z" />
+      <path d="M12 10v5M12 18h.01" />
+    </>
+  ),
+  image: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <circle cx="9" cy="10" r="1.8" />
+      <path d="M21 16l-5-5-8 9" />
+    </>
+  ),
+  folder: <path d="M3 6.5A1.5 1.5 0 014.5 5h4.2l2 2.5h8.8A1.5 1.5 0 0121 9v9.5a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 18.5z" />,
+  rotate: <path d="M20 12a8 8 0 11-2.6-5.9M20 4v5h-5" />,
   camera: (
     <>
       <path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z" />
@@ -167,6 +188,7 @@ const PATHS: Record<string, ReactNode> = {
     </>
   ),
   close: <path d="M6 6l12 12M18 6L6 18" />,
+  shuffle: <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />,
   chevron: <path d="M9 5l7 7-7 7" />,
   wifi: (
     <>

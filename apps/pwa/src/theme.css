@@ -1,6 +1,6 @@
 /* THE LOOK OF THE APP, IN ONE PLACE.
-   Every colour, corner, spacing step, type size and state layer comes from this file. styles.css and
-   pilot/pilot.css hold layout only and read these tokens (tests/test_design_tokens.py fails if a hex
+   Every colour, corner, spacing step, type size and state layer comes from this file. styles.css holds
+   layout only and reads these tokens (tests/test_design_tokens.py fails if a hex
    colour or an rgba() creeps back into styles.css). To change the look, change a value here:
 
      colour     the palette block (Material 3 roles; each name says what it is for)

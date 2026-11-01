@@ -13,7 +13,7 @@ Start at the landing page (`#/roles`) and press **Guided tour (5 min)**, or open
 | 4 | `#/tour/4` | Teacher | 2 min | Press "Hear it done well"; watch an experienced and a struggling run, side by side; then try with hints; switch on "Show the machinery" | AI use in layers: what code decided, which AI call ran, which validators passed | P06, P07, P08 | built: Watch (two styles, recorded runs), hints, machinery panel; the model run arrives in P09 |
 | 5 | `#/tour/5` | Officer | 45 s | "Advance to Term 2"; read the funnel and the track verdicts; read the stage mix | Evaluation: honest statistics and source labels; a failed track counts against the track | P12 | pending |
 | 6 | `#/tour/6` | Teacher | 30 s | Open the AI map and the audit trail; press "Try to break it" chips | Ten calls, five layers; adversarial lines stopped, with the reason | P06, P08 | built: AI map, audit trail, Try to break it |
-| Extra | | Teacher | | Run the same teacher flow in Telegram with `/start judge` | One back end, two channels | P05, P10 | Telegram onboarding and T1 built; check and lessons pending |
+| Extra | | Teacher | | Telegram is on the roadmap: there is no bot in the demo | One back end; a second channel is an adapter plus contract tests | P05, P10 | roadmap (adapter built, not deployed) |
 
 ## Added 27 Oct: screens from P09 to P12
 

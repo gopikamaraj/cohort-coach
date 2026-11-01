@@ -27,11 +27,29 @@ class Tool:
     fn: Callable[..., Any] | None = None
 
 
-# Nothing here is wired to live data yet: class numbers live on the teacher's phone, and the
+def _paper_status(scope: Scope, *, db: Any, who: Any, paper_id: str) -> dict[str, Any]:
+    """What became of one paper, read-only, for a paper inside this person's own scope. The same
+    function the Papers page uses; it changes nothing."""
+    from services.papers.models import PaperRow
+    from services.papers_hub import api as hub
+
+    row = db.get(PaperRow, paper_id)
+    if row is None or not hub._visible(db, who, row):
+        return {"found": False, "why": "no such paper in your scope"}
+    return {"found": True, **hub.paper_status(db, row)}
+
+
+# Most tools below are not wired to live data yet: class numbers live on the teacher's phone, and the
 # officer and coach aggregates are read from their own screens. The assistant points to the screen.
 TOOLS: dict[str, Tool] = {
     t.name: t
     for t in (
+        Tool(
+            "paper_status",
+            "built",
+            "A paper's status, frozen reason, source, review state, cohort status and its reason (read-only, inside her scope).",
+            _paper_status,
+        ),
         Tool("own_state", "roadmap", "Where this teacher is in her track (her own state only)."),
         Tool("own_class_counts", "roadmap", "Counts of children by error in her own class."),
         Tool("own_track", "roadmap", "The track her cohort follows and the current lesson."),

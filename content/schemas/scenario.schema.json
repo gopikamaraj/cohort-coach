@@ -36,6 +36,13 @@
     }
   },
   "properties": {
+    "chorus_max": {
+      "default": 1,
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Chorus Max",
+      "type": "integer"
+    },
     "consecutive_correct_to_finish": {
       "minimum": 1,
       "title": "Consecutive Correct To Finish",
@@ -67,6 +74,13 @@
     "movelist": {
       "title": "Movelist",
       "type": "string"
+    },
+    "overhear": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Overhear",
+      "type": "number"
     },
     "problems": {
       "items": {

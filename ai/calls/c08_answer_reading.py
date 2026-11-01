@@ -17,7 +17,7 @@ from typing import Literal
 
 from ai import config
 from ai.client import CallContext, CallInput, CallResult, run_call
-from ai.schemas import SheetRead
+from ai.schemas import SheetHeader, SheetRead
 from ai.validators import ValidatorResult, Violation
 from engine.bugs import answer_codes, correct_answer, untracked_signatures
 from engine.model import Form
@@ -40,6 +40,7 @@ class SheetOutcome:
     cells: list[Cell]
     retried: bool
     runs: list[CallResult]
+    header: SheetHeader | None = None
 
 
 def plausible_answers(form: Form, n: int) -> set[str]:
@@ -92,11 +93,17 @@ def read_sheet(
     form: Form,
     *,
     context: CallContext | None = None,
+    file_sha256: str | None = None,
 ) -> SheetOutcome | None:
     """Read one sheet. Returns None when neither model gave a usable answer (she types)."""
     n = len(form.items)
     base = context or CallContext()
-    payload = CallInput(trusted={"boxes": n}, images=[(media_type, image_b64)])
+    # The hash of the original file (before it was shrunk) lets recorded mode replay one answer
+    # per file.
+    trusted: dict[str, object] = {"boxes": n}
+    if file_sha256:
+        trusted["file_sha256"] = file_sha256
+    payload = CallInput(trusted=trusted, images=[(media_type, image_b64)])
     runs: list[CallResult] = []
     for retried, model in ((False, base.model), (True, config.model_for("MODEL_READ_RETRY"))):
         ctx = replace(base, validators=_validators(n), fallback=lambda: _empty(n), model=model)
@@ -104,6 +111,9 @@ def read_sheet(
         runs.append(run)
         if run.ok and isinstance(run.output, SheetRead):
             return SheetOutcome(
-                classify(form, run.output.reads, run.output.confidences), retried, runs
+                classify(form, run.output.reads, run.output.confidences),
+                retried,
+                runs,
+                run.output.header,
             )
     return None

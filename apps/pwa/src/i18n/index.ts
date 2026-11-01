@@ -28,7 +28,7 @@ export function t(lang: Lang, key: Key, params: Record<string, string | number> 
   let text = tables[lang][key];
   if (text === undefined || text === "") {
     missing.add(`${lang}:${key}`);
-    text = en[key];
+    text = en[key] ?? key; // a string that is missing shows its key; it never blanks the screen
   }
   return text.replace(/\{(\w+)\}/g, (whole, name: string) =>
     name in params ? String(params[name]) : whole,

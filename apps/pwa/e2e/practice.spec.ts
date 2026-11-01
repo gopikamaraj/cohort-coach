@@ -38,9 +38,7 @@ async function rehearse(page: Page, turns: TurnJson[]) {
   for (const line of LINES) {
     n += 1;
     if (line.startsWith("/tap ")) {
-      await page.getByTestId("sec-materials").click();
       await page.getByTestId(`tap-${line.slice(5)}`).click();
-      await expect(page.getByTestId("sec-class")).toHaveAttribute("aria-selected", "true"); // back to the class to hear the answer
     } else {
       await page.getByTestId("say").fill(line);
       await page.getByTestId("send").click();
@@ -52,7 +50,8 @@ async function rehearse(page: Page, turns: TurnJson[]) {
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
+    localStorage.clear();
+    localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });
 });
@@ -90,11 +89,11 @@ test("a rehearsal of 7 turns with a material tap ends in two strengths with her 
   );
   expect(stored.turns).toHaveLength(7);
   expect(stored.ended).toBe(true);
-  for (const r of requests.filter((x) => !x.url().endsWith("/api/roles"))) {
+  for (const r of requests.filter((x) => !x.url().endsWith("/api/roles") && !x.url().endsWith("/api/tester/config") && !x.url().endsWith("/api/health"))) {
     expect(r.method()).toBe("POST");
     expect(r.url()).toMatch(/\/api\/practice\/sessions(\/[^/]+\/(turns|end))?$/);
   }
-  // the only other call is the server's answer to "is this the judge demo?" (no teacher data)
+  // the only other calls are the tester-stats switch (a GET with no data) and the server's answer to "is this the judge demo?" (no teacher data)
   for (const r of requests.filter((x) => x.url().endsWith("/api/roles"))) expect(r.method()).toBe("GET");
   expect(turns).toHaveLength(7);
 });
@@ -103,10 +102,9 @@ test("the AI-layers overlay matches the API trace, for judges only", async ({ pa
   const turns: TurnJson[] = [];
   await rehearse(page, turns);
   await expect(page.getByTestId("layers-panel")).toHaveCount(0);
-  await page.getByTestId("sec-judge").click();
+  await page.getByTestId("side-judge").click();
   await page.getByTestId("layers-toggle").click();
-  await page.getByTestId("sec-class").click();
-  const panel2 = page.getByTestId("turn-2").getByTestId("layers-panel");
+  const panel2 = page.getByTestId("trace-2").getByTestId("layers-panel");
   const t2 = turns[1]!;
   await expect(panel2.getByTestId("layer-input")).toHaveText("Tell me how you got that.");
   await expect(panel2.getByTestId("layer-label")).toContainText(t2.layers.processing.label.move_id);
@@ -119,7 +117,6 @@ test("the AI-layers overlay matches the API trace, for judges only", async ({ pa
   await page.goto("/#/practice?seed=5");
   await page.getByTestId("start-practice").click();
   await expect(page.getByTestId("layers-toggle")).toHaveCount(0); // not for teachers
-  await expect(page.getByTestId("sec-judge")).toHaveCount(0);
 });
 
 test("the server request log holds no transcript text (application logs: tests/practice/test_api.py)", async ({ page }) => {
@@ -163,7 +160,7 @@ test("a class's own counts seat the children, and a slow reply is explained", as
   await page.getByTestId("say").fill("Who can tell me 52 minus 29?");
   await page.getByTestId("send").click();
   await expect(page.getByTestId("reply-1")).toBeVisible();
-  await expect(page.getByText("The AI model is not switched on here, so a simple reply was used.")).toBeVisible();
+  await expect(page.getByText("The AI model is not switched on here, so a simple reply was used.").first()).toBeVisible();
 });
 
 test("when practice is paused the teacher can watch a recorded sample", async ({ page }) => {
@@ -188,13 +185,13 @@ test("offline, practice says so and sends nothing; everything else still opens",
   await expect(page.getByTestId("practice-state")).toContainText("Practice needs a connection");
   expect(calls).toHaveLength(0);
   await page.goto("/#/check");
-  await expect(page.getByTestId("form-A")).toBeVisible();
+  await expect(page.getByTestId("start-check")).toBeVisible();
 });
 
 test("the AI map shows 10 calls by 5 layers and the audit trail shows metadata only", async ({ page }) => {
   await rehearse(page, []);
   await page.goto("/#/aimap");
-  await expect(page.getByTestId("ai-map").locator("tbody tr")).toHaveCount(10); // calls 1 to 8, 10 and 11 (call 9 arrives in P10)
+  await expect(page.getByTestId("ai-map").locator("tbody tr")).toHaveCount(15); // calls 1 to 8 and 10 to 16 (call 9 is not built)
   await expect(page.getByTestId("ai-map").locator("thead th")).toHaveCount(6);
   await page.goto("/#/audit");
   await expect(page.getByTestId("audit-table")).toBeVisible();
@@ -246,14 +243,74 @@ test("feedback thumbs stay on the phone, the flag goes to the team; sharing is o
   expect(kept.flags).toBe(0); // it went to the team, not into the phone queue
 });
 
+test("each child shows how they look right now, in words, under the name", async ({ page }) => {
+  await page.goto("/#/practice?seed=5");
+  await page.getByTestId("start-practice").click();
+  for (let i = 0; i < 5; i++) {
+    const mood = page.getByTestId(`kid-mood-${i}`);
+    await expect(mood).toBeVisible();
+    await expect(mood).toHaveText(/^(Confused|Distracted|Got it|Listening|Shy|Thinking|Unsure)$/);
+  }
+  await expect(page.getByTestId("board")).toHaveCount(0); // no problem posed yet
+});
+
+test("the side panel is tabs: your turn, coaching and, for judges, the judge panel", async ({ page }) => {
+  await page.goto("/#/practice?seed=5");
+  await page.getByTestId("start-practice").click();
+  await expect(page.getByTestId("side-turn")).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByTestId("say")).toBeVisible();
+  await page.getByTestId("side-coach").click();
+  await expect(page.getByTestId("say")).toBeHidden();
+  await expect(page.getByTestId("coaching")).toBeVisible();
+  await page.getByTestId("side-judge").click();
+  await expect(page.getByTestId("layers-toggle")).toBeVisible();
+  await expect(page.getByTestId("tab-practise")).toHaveAttribute("aria-selected", "true");
+});
+
+test("on a wide screen the pages are a side rail; on a phone a bottom bar", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/#/practice");
+  const wide = await page.locator("nav.navbar").boundingBox();
+  expect(wide!.x).toBe(0);
+  expect(wide!.width).toBeLessThan(160);
+  expect(wide!.height).toBeGreaterThan(600);
+  await page.setViewportSize({ width: 390, height: 800 });
+  const narrow = await page.locator("nav.navbar").boundingBox();
+  expect(narrow!.width).toBeGreaterThan(300);
+  expect(narrow!.height).toBeLessThan(120);
+});
+
 test("the screen says what she is practising and lists the moves to try", async ({ page }) => {
   await page.goto("/#/practice?seed=5");
   await expect(page.getByTestId("goal-intro")).toContainText("take the smaller digit from the larger");
   await page.getByTestId("start-practice").click();
-  await expect(page.getByTestId("goal")).toBeHidden(); // its own section, so the class comes first
-  await page.getByTestId("sec-goal").click();
   await expect(page.getByTestId("goal")).toBeVisible();
   await expect(page.getByTestId("goal")).toContainText("What to practise");
   expect(await page.getByTestId("goal").locator("li").count()).toBeGreaterThanOrEqual(3);
   await expect(page.getByTestId("goal")).toContainText(/bundle/i);
+});
+
+test("other children join in on some turns, and the log shows each by name", async ({ page }) => {
+  const turns: (TurnJson & { others?: { speaker: string; child_text: string }[] })[] = [];
+  await rehearse(page, turns);
+  const joined = turns.filter((t) => (t.others ?? []).length > 0);
+  expect(joined.length).toBeGreaterThan(0); // one to three children speak; over 7 turns some turns have more than one
+  const t = joined[0]!;
+  for (const [i, o] of (t.others ?? []).entries()) {
+    const line = page.getByTestId(`other-${t.turn}-${i}`);
+    await expect(line).toContainText(o.speaker);
+    await expect(line).toContainText(o.child_text);
+  }
+  for (const x of turns) expect(x.layers.output.source).toBe("ai"); // the first speaker is still the AI's line
+});
+
+test("every child who spoke is highlighted, and the log shows the newest turn first with its time", async ({ page }) => {
+  const turns: (TurnJson & { speaker: string | null; others?: { speaker: string }[] })[] = [];
+  await rehearse(page, turns);
+  const last = turns[turns.length - 1]!;
+  const spoke = [last.speaker, ...(last.others ?? []).map((o) => o.speaker)].filter(Boolean);
+  await expect(page.locator(".kid[data-speaking='true']")).toHaveCount(spoke.length);
+  for (const name of spoke) await expect(page.locator(".kid[data-speaking='true']", { hasText: name! })).toHaveCount(1);
+  await expect(page.getByTestId("log").locator(".exchange").first()).toHaveAttribute("data-testid", `turn-${last.turn}`);
+  await expect(page.getByTestId(`turn-time-${last.turn}`)).toHaveText(/\d/);
 });

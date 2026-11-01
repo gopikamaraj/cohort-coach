@@ -96,7 +96,8 @@ def test_the_recorded_rehearsal_replays_through_the_cli() -> None:
         [sys.executable, "scripts/practice_cli.py", "--scenario", "sub-sfl", "--lang", "en",
          "--seed", "5", "--recorded", "--script", str(SCRIPT)],
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
-        env={**os.environ, "DATABASE_URL": "sqlite:///:memory:", "PYTHONIOENCODING": "utf-8"},
+        env={**os.environ, "DATABASE_URL": "sqlite:///:memory:", "PYTHONIOENCODING": "utf-8",
+             "PRACTICE_SKIP_CHECKER": "0", "PRACTICE_AI_INTENTS": "all"},  # not her .env
     )  # fmt: skip
     assert done.returncode == 0, done.stderr
     assert done.stdout.count("checked]") == 7  # one badge per turn

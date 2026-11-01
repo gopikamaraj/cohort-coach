@@ -1,0 +1,229 @@
+{
+  "eval": "sim_model_compare",
+  "source": "evals/runners/sim_model_compare.py",
+  "date": "2026-11-01",
+  "protocol": "docs/build/reports/BAYESIAN-CHECK.md section 2.10 (SUB-SFL, round = pose_problem then the move, round the four children with an error, cap 40 turns)",
+  "seeds": 200,
+  "bayesian_params": {
+    "prior_concentration": 20.0,
+    "responsiveness_scale": 2.0,
+    "responsiveness_shape": 4.0,
+    "learn_cap": 0.6,
+    "effect_scale": null,
+    "guess": 0.05,
+    "slip": 0.05
+  },
+  "legacy": [
+    {
+      "move": "decomposition",
+      "effect": -0.3,
+      "mean_turns": 13.6,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "exchange_ten",
+      "effect": -0.3,
+      "mean_turns": 13.6,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "show_bundles",
+      "effect": -0.3,
+      "mean_turns": 13.6,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "compensation",
+      "effect": -0.25,
+      "mean_turns": 14.6,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "ask_explain",
+      "effect": -0.2,
+      "mean_turns": 22.2,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "check_back",
+      "effect": -0.2,
+      "mean_turns": 22.2,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "order_probe",
+      "effect": -0.2,
+      "mean_turns": 22.2,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0
+    },
+    {
+      "move": "tell_rule",
+      "effect": -0.05,
+      "mean_turns": 39.8,
+      "two_right_share": 0.055,
+      "turn_cap_share": 0.945
+    },
+    {
+      "move": "repeat_rule_louder",
+      "effect": -0.02,
+      "mean_turns": 40.0,
+      "two_right_share": 0.0,
+      "turn_cap_share": 1.0
+    }
+  ],
+  "bayesian": [
+    {
+      "move": "decomposition",
+      "effect": -0.3,
+      "mean_turns": 16.1,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0,
+      "learn_probability": 0.6,
+      "mean_belief_gain": 0.845,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "exchange_ten",
+      "effect": -0.3,
+      "mean_turns": 16.1,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0,
+      "learn_probability": 0.6,
+      "mean_belief_gain": 0.845,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "show_bundles",
+      "effect": -0.3,
+      "mean_turns": 16.1,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0,
+      "learn_probability": 0.6,
+      "mean_belief_gain": 0.845,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "compensation",
+      "effect": -0.25,
+      "mean_turns": 17.2,
+      "two_right_share": 1.0,
+      "turn_cap_share": 0.0,
+      "learn_probability": 0.5,
+      "mean_belief_gain": 0.824,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "ask_explain",
+      "effect": -0.2,
+      "mean_turns": 26.8,
+      "two_right_share": 0.925,
+      "turn_cap_share": 0.075,
+      "learn_probability": 0.4,
+      "mean_belief_gain": 0.849,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "check_back",
+      "effect": -0.2,
+      "mean_turns": 26.8,
+      "two_right_share": 0.925,
+      "turn_cap_share": 0.075,
+      "learn_probability": 0.4,
+      "mean_belief_gain": 0.849,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "order_probe",
+      "effect": -0.2,
+      "mean_turns": 26.8,
+      "two_right_share": 0.925,
+      "turn_cap_share": 0.075,
+      "learn_probability": 0.4,
+      "mean_belief_gain": 0.849,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "tell_rule",
+      "effect": -0.05,
+      "mean_turns": 39.4,
+      "two_right_share": 0.095,
+      "turn_cap_share": 0.905,
+      "learn_probability": 0.1,
+      "mean_belief_gain": 0.633,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    },
+    {
+      "move": "repeat_rule_louder",
+      "effect": -0.02,
+      "mean_turns": 40.0,
+      "two_right_share": 0.005,
+      "turn_cap_share": 0.995,
+      "learn_probability": 0.04,
+      "mean_belief_gain": 0.356,
+      "start_belief": {
+        "mean": 0.097,
+        "sd": 0.061,
+        "min": 0.001,
+        "max": 0.458
+      }
+    }
+  ],
+  "check_baseline_mean_turns": {
+    "decomposition": 13.6,
+    "exchange_ten": 13.6,
+    "show_bundles": 13.6,
+    "compensation": 14.6,
+    "ask_explain": 22.2,
+    "check_back": 22.2,
+    "order_probe": 22.2,
+    "tell_rule": 39.8,
+    "repeat_rule_louder": 40.0
+  }
+}

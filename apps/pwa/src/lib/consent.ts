@@ -12,9 +12,10 @@ export interface KV {
 }
 
 export const CONSENT_VERSION = 1;
-export const SCOPES = ["core", "counts", "practice_ai", "share_rehearsal", "feedback"] as const;
+export const SCOPES = ["core", "counts", "practice_ai", "share_rehearsal", "feedback", "keep_sheets"] as const;
 export type Scope = (typeof SCOPES)[number];
-export type Choices = Record<Scope, boolean>;
+// keep_sheets (keep my approved answer sheets for 60 days) is optional, so choices saved before it existed still fit
+export type Choices = Record<Exclude<Scope, "keep_sheets">, boolean> & { keep_sheets?: boolean };
 export interface Consent extends Choices {
   v: number;
   at: number;

@@ -130,6 +130,10 @@ class Scenario(BaseModel):
     max_turns: int = Field(ge=1, le=200)
     consecutive_correct_to_finish: int = Field(ge=1)
     quiet_turns: int = Field(ge=0)
+    # The class shares one room (see engine.simulator.ScenarioConfig): the share of a move's effect
+    # the children it was not aimed at overhear, and how many children may speak in one turn.
+    overhear: float = Field(0.0, ge=0.0, le=1.0)
+    chorus_max: int = Field(1, ge=1, le=3)
     problems: list[ProblemDef] = Field(min_length=3)
     materials: list[str]
     material_moves: dict[str, str]
@@ -216,6 +220,8 @@ def load_scenario(error: str) -> LoadedScenario:
         max_turns=scenario.max_turns,
         finish_streak=scenario.consecutive_correct_to_finish,
         quiet_turns=scenario.quiet_turns,
+        overhear=scenario.overhear,
+        chorus_max=scenario.chorus_max,
         problems=tuple(Problem(p.kind, p.a, p.b) for p in scenario.problems),  # type: ignore[arg-type]
         moves={
             m.id: MoveEffect(m.behaviour, m.strength, m.engagement, m.quiet) for m in movelist.moves

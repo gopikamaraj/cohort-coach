@@ -39,6 +39,7 @@ namespaces:
       - docs/help/judge.md
       - evals/results.md
       - evals/assistant_eval.md
+      - docs/evidence/user_testing_snapshot.md
   judge_deck:
     into: judge
     kind: slides

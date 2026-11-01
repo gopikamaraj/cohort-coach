@@ -1,6 +1,7 @@
 // Voice for the Practice Class: when to use it, how a recording is sent, how a reply is played.
 // Only the recording of her own voice goes out (to be turned into text and dropped); nothing
 // is stored. Two failures in a row, or a 2g connection, switch her to typing without asking.
+import { track } from "./tester";
 import { API_BASE } from "./api";
 import { PracticeError, type TurnResponse } from "./practice";
 
@@ -101,6 +102,7 @@ export async function postVoiceTurn(
 
 /** Play a base64 reply. Resolves when it ends; a blocked or broken play resolves too (the text is there). */
 export function playReply(b64: string, mime: string): Promise<void> {
+  track("feature_used", { feature_id: "voice_play" });
   return new Promise((resolve) => {
     const audio = new Audio(`data:${mime};base64,${b64}`);
     audio.onended = () => resolve();

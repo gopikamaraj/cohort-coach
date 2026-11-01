@@ -2,6 +2,7 @@
 // this file sends them anywhere. The sync queue holds class-level counts only.
 import type { Difference } from "./observation";
 import Dexie, { type Table } from "dexie";
+import { legacyFields } from "./checkMigrate";
 
 export interface ClassRow {
   id: string;
@@ -15,6 +16,9 @@ export interface ClassRow {
  * Rows are in roll order; only this phone knows which row is which child. */
 import type { StageCounts } from "./stagecalc";
 
+export type CheckKind = "pre" | "post" | "termly";
+export type CheckStatus = "draft" | "entering" | "approved" | "closed";
+
 export interface CheckRow {
   id: string;
   classId: string;
@@ -26,6 +30,19 @@ export interface CheckRow {
   missed?: number[]; // older whole-sheet tag: children she tagged "missed the teaching" (stays on this phone)
   missedConcepts?: Record<number, string[]>; // per child, the concepts she tagged "missed the teaching on this"
   absent?: number[]; // roll numbers she skipped because the child was away
+  approved?: number[]; // roll numbers whose answers she has checked and approved (absent rolls count as approved)
+  // What this check is. Checks saved before these existed get them from the version 2 upgrade (confirm: true).
+  kind?: CheckKind;
+  round?: number; // 1, 2, 3 within the term; round 1 keeps the id classId:term
+  checkDate?: string; // YYYY-MM-DD
+  paperVersion?: string; // which printed paper (the answer keys hash, or "legacy")
+  trackId?: string | null; // a post-test: the track it evaluates; a pre-test: the track it starts
+  expectedChildren?: number | null;
+  status?: CheckStatus;
+  notes?: string;
+  paperId?: string | null; // the Paper Studio paper this check uses (pilot papers only, for now)
+  paperCode?: string | null; // its printed check code, e.g. "PRE · 3A · T1"
+  confirm?: boolean; // the label was guessed from older data: ask her to confirm it
 }
 
 /** The class-level result: how many children showed each error. No child appears here. */
@@ -104,6 +121,18 @@ export class CohortDb extends Dexie {
       outbox: "++id, classId",
       settings: "key",
     });
+    // Version 2: every check says what it is (pre-test, post-test or termly, its date). Checks saved
+    // before this get a guessed label, marked confirm: true; their sheets are not touched.
+    this.version(2)
+      .stores({ checks: "id, classId, checkDate" })
+      .upgrade(async (tx) => {
+        const checks = (await tx.table("checks").toArray()) as CheckRow[];
+        const withResult = new Set(((await tx.table("profiles").toArray()) as ProfileRow[]).map((p) => p.id));
+        for (const c of checks) {
+          const add = legacyFields(c, checks, withResult);
+          if (Object.keys(add).length > 0) await tx.table("checks").update(c.id, add);
+        }
+      });
   }
 }
 

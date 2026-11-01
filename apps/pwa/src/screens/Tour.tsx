@@ -1,7 +1,7 @@
 // The guided tour (judge mode): six steps, each a real screen, switching roles as it goes. A progress
 // bar, a "What to notice" line naming the judging criterion, Skip and Back, and a deep link per step.
 // Steps whose feature is built in a later phase say so plainly instead of pretending.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SimulatedBanner } from "../components/parts";
 import type { Key } from "../i18n";
 import { go, href, useHash, type Route } from "../lib/router";
@@ -13,6 +13,11 @@ import Cards from "./Cards";
 import Check from "./Check";
 import Programme from "./Programme";
 import Watch from "./Watch";
+import TestingEvidence from "./TestingEvidence";
+import { track } from "../lib/tester";
+import { activeClass } from "../lib/db";
+import { samplePaper } from "../lib/papers";
+import { fetchPaperKey } from "../lib/paperKeys";
 
 function Pending({ phase, children }: { phase: string; children?: React.ReactNode }) {
   const { tr } = useApp();
@@ -25,11 +30,30 @@ function Pending({ phase, children }: { phase: string; children?: React.ReactNod
 }
 
 export default function Tour() {
-  const { tr, setRole, term, advanceTerm, profile } = useApp();
+  const { tr, lang, setRole, term, advanceTerm, profile, reload } = useApp();
+  const [paperTick, setPaperTick] = useState(0);
+  const [paperBusy, setPaperBusy] = useState(false);
+  // Enter check chooses a paper that exists; on the tour the judge makes the standard one first.
+  const makeStandardPaper = async () => {
+    setPaperBusy(true);
+    try {
+      const cls = await activeClass(false);
+      const p = await samplePaper(`${cls.id}:${term}`, "pre", "3A", term, lang);
+      await fetchPaperKey(p.id, { role: "teacher", classId: cls.id });
+      await reload();
+      setPaperTick((n) => n + 1);
+    } finally {
+      setPaperBusy(false);
+    }
+  };
   const judge = useJudge();
   const n = stepFromHash(useHash()) ?? 1;
   const step = TOUR[n - 1]!;
   const [checked, setChecked] = useState(false);
+  useEffect(() => {
+    if (n === 1) track("tour_started", { tour_id: "main" });
+    track("tour_step_viewed", { tour_id: "main", step_id: String(n) });
+  }, [n]);
   const goStep = (k: number) => {
     const next = TOUR[k - 1];
     if (!next) return;
@@ -65,7 +89,17 @@ export default function Tour() {
 
       {step.screen === "check" ? (
         <>
-          {showCards ? null : <Check onDone={() => setChecked(true)} />}
+          {showCards ? null : (
+            <>
+              <div className="card stack" data-testid="tour-paper">
+                <p className="muted">{tr("tour.paper_note")}</p>
+                <button type="button" className="btn btn-secondary" onClick={() => void makeStandardPaper()} disabled={paperBusy} data-testid="tour-standard-paper">
+                  {tr("tour.paper_button")}
+                </button>
+              </div>
+              <Check key={paperTick} onDone={() => setChecked(true)} />
+            </>
+          )}
           {showCards ? <Cards /> : null}
         </>
       ) : null}
@@ -90,15 +124,21 @@ export default function Tour() {
         </>
       ) : null}
       {step.screen === "hood" ? <AiMap /> : null}
+      {step.screen === "testing" ? <TestingEvidence embedded /> : null}
 
       <div className="row">
         <button type="button" className="btn btn-secondary" onClick={() => goStep(n - 1)} disabled={n === 1} data-testid="tour-back">
           {tr("tour.back")}
         </button>
-        <button type="button" className="btn btn-primary" onClick={() => (n === TOUR.length ? go("/roles") : goStep(n + 1))} data-testid="tour-next">
+        <button type="button" className="btn btn-primary" onClick={() => {
+            if (n === TOUR.length) {
+              track("tour_completed", { tour_id: "main" });
+              go("/roles");
+            } else goStep(n + 1);
+          }} data-testid="tour-next">
           {n === TOUR.length ? tr("tour.finish") : tr("tour.skip")}
         </button>
-        <a className="btn btn-secondary" href={href("/roles")} data-testid="tour-leave">
+        <a className="btn btn-secondary" href={href("/roles")} data-testid="tour-leave" onClick={() => track("tour_skipped", { tour_id: "main", step_id: String(n) })}>
           {tr("tour.leave")}
         </a>
       </div>

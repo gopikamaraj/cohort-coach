@@ -58,7 +58,7 @@ export default function OfficerCohorts() {
         data-testid="cohort-form"
       >
         <h3>{tr("officer.cohort_new")}</h3>
-        <label>
+        <label className="field">
           {tr("officer.cohort_error")}
           <select value={error} onChange={(e) => setError(e.target.value)} data-testid="cohort-error">
             {ERRORS.map((x) => (
@@ -66,15 +66,15 @@ export default function OfficerCohorts() {
             ))}
           </select>
         </label>
-        <label>
+        <label className="field">
           {tr("officer.cohort_coach")}
           <input value={coach} onChange={(e) => setCoach(e.target.value)} maxLength={30} data-testid="cohort-coach" />
         </label>
-        <label>
+        <label className="field">
           {tr("officer.cohort_schools")}
-          <input type="number" inputMode="numeric" min={0} max={500} value={schools} onChange={(e) => setSchools(e.target.value)} data-testid="cohort-schools" />
+          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} autoComplete="off" value={schools} onChange={(e) => setSchools(e.target.value.replace(/\D/g, ""))} data-testid="cohort-schools" />
         </label>
-        <button type="submit" className="btn" disabled={!coach.trim()} data-testid="cohort-create">
+        <button type="submit" className="btn btn-primary" disabled={!coach.trim()} data-testid="cohort-create">
           {tr("officer.cohort_create")}
         </button>
       </form>

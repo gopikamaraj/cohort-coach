@@ -1,5 +1,7 @@
 # Channels: one back end, thin adapters
 
+> **Status (30 Oct 2026): the web app is the only channel in the demo and the pilot. Telegram is on the roadmap.** The Telegram adapter below is built and covered by golden-transcript tests, but no bot is deployed and nothing in the app points to it. WhatsApp stays a stub.
+
 Every teacher flow is defined once in `services/api/flows/` as steps (message, choice, link now;
 photo batch, number grid, voice, media, text as their phases land). A channel adapter only renders
 a step and returns the answer. It never computes a number, decides what comes next, or calls a model.

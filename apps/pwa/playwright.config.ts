@@ -15,6 +15,10 @@ const venvPython = ["Scripts/python.exe", "bin/python"]
 const python = process.env["PYTHON"] ?? venvPython ?? "python";
 // A port of its own, so the tests never meet a dev server someone left running on 8000.
 const apiPort = "8011";
+// A second API with the AI switched off (AI_MODE=off: every call fails as if the service were
+// unreachable) and a second preview pointed at it, for e2e/demo-path-ai-off.spec.ts.
+const offApiPort = "8012";
+const SERVER_ENV = { SHEETS_LOCAL_STORE: "1", PILOT_MODE: "0", SPEECH_MODE: "stub", ADMIN_OPEN: "1", JUDGE_MODE: "1", RATE_LIMIT_PRACTICE_SESSION_PER_MIN: "0", RATE_LIMIT_PRACTICE_TURN_PER_MIN: "0", RATE_LIMIT_PRACTICE_VOICE_PER_MIN: "0", RATE_LIMIT_PRACTICE_WATCH_PER_MIN: "0", RATE_LIMIT_SHEETS_READ_PER_MIN: "0", RATE_LIMIT_ASSISTANT_PER_MIN: "0", RETRIEVAL: "off", PRACTICE_SKIP_CHECKER: "0", PRACTICE_AI_INTENTS: "all", PILOT_DEMO: "0", DEV_TESTING: "0", SIMULATOR_MODEL: "legacy" };
 
 export default defineConfig({
   testDir: "e2e",
@@ -44,7 +48,22 @@ export default defineConfig({
       url: `http://localhost:${apiPort}/api/health`,
       reuseExistingServer: true,
       timeout: 60_000,
-      env: { PILOT_MODE: "0", AI_MODE: "recorded", SPEECH_MODE: "stub", ADMIN_OPEN: "1", JUDGE_MODE: "1", DATABASE_URL: "sqlite:///./e2e.sqlite", RATE_LIMIT_PRACTICE_SESSION_PER_MIN: "0", RATE_LIMIT_PRACTICE_TURN_PER_MIN: "0", RATE_LIMIT_PRACTICE_VOICE_PER_MIN: "0", RATE_LIMIT_PRACTICE_WATCH_PER_MIN: "0", RATE_LIMIT_SHEETS_READ_PER_MIN: "0" },
+      env: { ...SERVER_ENV, AI_MODE: "recorded", DATABASE_URL: "sqlite:///./e2e.sqlite", PAPER_IMPORT_DIR: "./e2e-imports" },
+    },
+    {
+      command: `"${python}" -m uvicorn services.api.main:app --port ${offApiPort} --log-level warning > e2e-api-off.log 2>&1`,
+      cwd: "../..",
+      url: `http://localhost:${offApiPort}/api/health`,
+      reuseExistingServer: true,
+      timeout: 60_000,
+      env: { ...SERVER_ENV, AI_MODE: "off", DATABASE_URL: "sqlite:///./e2e-off.sqlite", PAPER_IMPORT_DIR: "./e2e-imports-off" },
+    },
+    {
+      command: "npx vite preview --port 4174 --strictPort",
+      url: "http://localhost:4174",
+      reuseExistingServer: true,
+      timeout: 60_000,
+      env: { API_PORT: offApiPort },
     },
   ],
 });

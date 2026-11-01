@@ -31,7 +31,7 @@ def world(
         with factory() as s:
             yield s
 
-    app = create_app(pilot=False)
+    app = create_app()
     app.dependency_overrides[get_session] = session
     yield TestClient(app), factory
 

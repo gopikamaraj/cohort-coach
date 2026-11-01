@@ -22,7 +22,7 @@ roles:
     title: {en: Your assistant, hi: आपका सहायक, ta: உங்கள் உதவியாளர்}
     answers_in: own
     namespaces: [teacher_kb, product_help]
-    data_tools: [own_state, own_class_counts, own_track, next_step]
+    data_tools: [own_state, own_class_counts, own_track, next_step, paper_status]
     question_bank: docs/assistant_questions/teacher.json
     actions: []
     can:
@@ -37,7 +37,7 @@ roles:
     title: {en: Mentor assistant, hi: मेंटर सहायक, ta: வழிகாட்டி உதவியாளர்}
     answers_in: own
     namespaces: [teacher_kb, mentor_help]
-    data_tools: [own_method_card_counts]
+    data_tools: [own_method_card_counts, paper_status]
     question_bank: docs/assistant_questions/mentor.json
     actions: []
     can:
@@ -52,7 +52,7 @@ roles:
     title: {en: Review assistant, hi: समीक्षा सहायक, ta: மதிப்பாய்வு உதவியாளர்}
     answers_in: own
     namespaces: [coach_kb, coach_help]
-    data_tools: [review_queue, chat_inbox, cohort_counts]
+    data_tools: [review_queue, chat_inbox, cohort_counts, paper_status]
     question_bank: docs/assistant_questions/coach.json
     actions: []
     can:

@@ -3,11 +3,15 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { isLang, t as translate, type Key, type Lang } from "./i18n";
 import { activeClass, clearPhone, db, getSetting, setSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
-import { demoChildren, DEMO_FORM } from "./lib/demo";
+import { demoPair } from "./lib/demo";
+import { fetchPaperKey } from "./lib/paperKeys";
+import { samplePaper } from "./lib/papers";
+import { keys } from "./lib/diagnosis";
 import { finishCheck } from "./lib/check";
 import { pendingCount } from "./lib/sync";
 import { flushAllowed } from "./lib/sendnow";
 import { requestPersistence } from "./lib/storage";
+import { track } from "./lib/tester";
 import { isOnline, setForcedOffline, useForcedOffline, useOnline } from "./lib/net";
 
 export type Role = "teacher" | "coach" | "mentor" | "officer" | "admin" | "judge";
@@ -100,15 +104,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadDemo = useCallback(async () => {
+    track("sample_input_run", { value: { sample: "demo_class" } });
     const row = await activeClass(true);
     const termNow = await getSetting("term", 1);
-    const rows = demoChildren(termNow);
-    await db.checks.put({ id: `${row.id}:${termNow}`, classId: row.id, term: termNow, formKey: DEMO_FORM, children: rows, updatedAt: Date.now() });
-    await finishCheck(row.id, termNow, DEMO_FORM, rows, true);
+    // A pre-test and, from term 2, its post-test with the same children in the same order, so the
+    // before-and-after view has something to show. All of it is made up. Each check is on a real paper
+    // (the sample paper and its twin, stored on the server and keyed like any paper); with no
+    // connection the same numbers are used from the phone's built-in copy.
+    const { pre, post } = demoPair();
+    const day = 86_400_000;
+    const paperFor = async (kind: "pre" | "post", term: number): Promise<{ id: string; code: string | null }> => {
+      try {
+        const p = await samplePaper(`${row.id}:${term}`, kind, "Demo", term, lang);
+        await fetchPaperKey(p.id, { role: "teacher", classId: row.id });
+        return { id: p.id, code: p.check_code };
+      } catch {
+        return { id: kind === "post" ? "B" : "A", code: null };
+      }
+    };
+    const put = async (term: number, kind: "pre" | "post", rows: string[][], at: number) => {
+      const paper = await paperFor(kind, term);
+      const form = paper.id;
+      await db.checks.put({
+        id: `${row.id}:${term}`, classId: row.id, term, formKey: form, children: rows, updatedAt: at,
+        kind, round: 1, checkDate: new Date(at).toISOString().slice(0, 10), paperVersion: keys.content_hash,
+        trackId: null, expectedChildren: rows.length, status: "closed", paperId: form.startsWith("P-") ? form : null, paperCode: paper.code,
+      });
+      const result = await finishCheck(row.id, term, form, rows, true);
+      if (result.track) await db.checks.update(`${row.id}:${term}`, { trackId: result.track });
+    };
+    if (termNow >= 2) {
+      if (!(await db.checks.get(`${row.id}:1`))) await put(1, "pre", pre, Date.now() - 21 * day);
+      await put(termNow, "post", post, Date.now());
+      const first = await db.profiles.get(`${row.id}:1`);
+      await db.checks.update(`${row.id}:${termNow}`, { trackId: first?.track ?? null });
+    } else await put(termNow, "pre", pre, Date.now());
     await reload();
     await flushAllowed(isOnline());
     setPending(await pendingCount());
-  }, [reload]);
+  }, [reload, lang]);
 
   const advanceTerm = useCallback(async () => {
     await setSetting("term", 2);

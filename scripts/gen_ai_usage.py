@@ -34,6 +34,8 @@ FALLBACKS: dict[int, str] = {
     12: "class unclear: no draft is made and a person answers",
     13: "no draft: the mentor or coach answers without one",
     14: "an extract from the retrieved passages, or no answer and where to look",
+    16: "the teacher types the items in; nothing is guessed",
+    15: "the sheet goes to the human review list; nothing is guessed or blacked out silently",
 }
 
 

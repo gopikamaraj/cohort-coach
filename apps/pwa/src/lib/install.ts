@@ -3,6 +3,7 @@
 // dialog. Browsers that never fire it (iPhone Safari, or Chrome after install) get the written steps
 // only. Installing is optional: nothing in the app depends on it.
 import { useSyncExternalStore } from "react";
+import { track } from "./tester";
 
 interface InstallEvent extends Event {
   prompt: () => Promise<void>;
@@ -66,7 +67,10 @@ export async function promptInstall(): Promise<boolean> {
   await e.prompt();
   const { outcome } = await e.userChoice;
   deferred = null; // the browser allows one prompt per event
-  if (outcome === "accepted") installed = true;
+  if (outcome === "accepted") {
+    installed = true;
+    track("install_accepted");
+  }
   notify();
   return outcome === "accepted";
 }

@@ -117,6 +117,31 @@ def test_missing_recording_falls_back_and_without_fallback_needs_human(sink: Sql
     assert result.output is None and result.fallback_used == "needs_human:no_recording"
 
 
+def test_off_mode_fails_like_an_unreachable_service_and_never_calls_the_api(
+    sink: SqlAuditSink, write_recording: Callable[..., Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Even with a recording and a key present, `off` reads nothing and contacts nothing.
+    write_recording("c01_child_voice", INP, [{"text": "It is 37."}])
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    fake = FakeClient([ChildLine(text="It is 37.")])
+    result = run_call(1, INP, context=ctx(sink, mode="off", client=fake))
+    assert result.fallback_used == "template:api_error" and not result.ok
+    assert fake.messages.calls == []
+    assert result.cost_usd == 0.0 and sink.recent(1)[0].mode == "off"
+    no_fallback = run_call(1, INP, context=ctx(sink, mode="off", fallback=None))
+    assert no_fallback.output is None and no_fallback.fallback_used == "needs_human:api_error"
+
+
+def test_ai_mode_accepts_off_and_rejects_unknown_values(monkeypatch: pytest.MonkeyPatch) -> None:
+    from ai import config
+
+    monkeypatch.setenv("AI_MODE", "off")
+    assert config.ai_mode() == "off"
+    monkeypatch.setenv("AI_MODE", "offline")
+    with pytest.raises(ValueError):
+        config.ai_mode()
+
+
 def test_live_mode_is_refused_without_a_key(
     sink: SqlAuditSink, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -248,3 +273,27 @@ def test_input_hash_is_keyed_when_a_salt_is_set(monkeypatch: pytest.MonkeyPatch)
     two = input_hash(spec, prompt, "m", inp)
     assert len({plain, one, two}) == 3 and all(len(h) == 64 for h in (plain, one, two))
     assert input_hash(spec, prompt, "m", inp) == two  # stable for the same salt
+
+
+def test_a_picture_with_a_file_hash_is_keyed_by_the_file_not_the_shrunk_copy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from ai.client import CallInput, input_hash
+    from ai.prompt_loader import load_prompt
+    from ai.registry import CALLS
+
+    monkeypatch.delenv("AUDIT_HASH_SALT", raising=False)
+    spec = next(c for c in CALLS if c.key == "c08_answer_reading")
+    prompt = load_prompt(spec.key)
+
+    def key(image: str, sha: str | None) -> str:
+        trusted: dict[str, object] = {"boxes": 10}
+        if sha:
+            trusted["file_sha256"] = sha
+        return input_hash(
+            spec, prompt, "m", CallInput(trusted=trusted, images=[("image/jpeg", image)])
+        )
+
+    assert key("AAAA", "ab" * 32) == key("BBBB", "ab" * 32)  # the same file, shrunk differently
+    assert key("AAAA", "ab" * 32) != key("AAAA", "cd" * 32)  # another file
+    assert key("AAAA", None) != key("BBBB", None)  # without a hash the image itself is the key

@@ -1,4 +1,5 @@
 // T1: this term's status and the one next action. One primary action per screen.
+import { track } from "../lib/tester";
 import { href } from "../lib/router";
 import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
@@ -6,11 +7,13 @@ import type { Key } from "../i18n";
 import { Icon } from "../components/icons";
 import { useConsent } from "../lib/useConsent";
 import { useJudge } from "../lib/roles";
+import { AssignedToYou, useHubIdentity } from "../components/PaperHubParts";
 
 export default function Home() {
   const { tr, term, klass, profile } = useApp();
   const consent = useConsent();
   const judge = useJudge();
+  const who = useHubIdentity();
   const errorName = profile?.track ? tr(`err.${profile.track}` as Key) : null;
   return (
     <section aria-labelledby="home-title">
@@ -28,11 +31,12 @@ export default function Home() {
           </a>
         </div>
       ) : null}
+      {who.classId ? <AssignedToYou who={who} showEmpty testId="assigned-home" /> : null}
       {profile ? (
         <>
           <p data-testid="home-status">{tr("home.status.checked", { n: profile.childrenChecked })}</p>
           <p>{errorName ? tr("home.status.track", { error: errorName }) : tr("home.status.no_track")}</p>
-          <a className="btn btn-primary" href={href("/cards")} data-testid="home-action">
+          <a className="btn btn-primary" href={href("/cards")} data-testid="home-action" onClick={() => track("feature_used", { feature_id: "next_step_tap" })}>
             {tr("home.action.cards")}
           </a>
           <div className="tiles">
@@ -61,7 +65,7 @@ export default function Home() {
       ) : (
         <>
           <p data-testid="home-status">{tr("home.status.none")}</p>
-          <a className="btn btn-primary" href={href("/check")} data-testid="home-action">
+          <a className="btn btn-primary" href={href("/check")} data-testid="home-action" onClick={() => track("feature_used", { feature_id: "next_step_tap" })}>
             {tr("home.action.check")}
           </a>
           <p className="muted">{tr("home.demo_hint")}</p>

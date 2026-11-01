@@ -44,9 +44,8 @@ def test_a_turn_gives_every_child_a_registered_face_and_marks_the_speaker(
     ).json()
     kids = res["children"]
     assert {k["expression"] for k in kids} <= EXPRESSIONS
-    assert [k["name"] for k in kids if k["speaking"]] == (
-        [res["speaker"]] if res["speaker"] else []
-    )
+    said = [res["speaker"], *[o["speaker"] for o in res["others"]]] if res["speaker"] else []
+    assert sorted(k["name"] for k in kids if k["speaking"]) == sorted(said)  # everyone who spoke
     assert all(k["persona"] in personas() for k in kids)
 
 
@@ -59,7 +58,7 @@ def test_a_wrong_answer_shows_a_wrong_answer_face_and_the_face_is_not_a_number(
         f"/api/practice/sessions/{s['session_id']}/turns",
         json={"text": f"{name}, what is 52 minus 29?"},
     ).json()
-    speaker = next(k for k in res["children"] if k["speaking"])
+    speaker = next(k for k in res["children"] if k["name"] == res["speaker"])
     assert res["intent"] == "answer"
     assert speaker["expression"] in {"wrong_answer", "got_it"}
     assert (speaker["expression"] == "wrong_answer") == (

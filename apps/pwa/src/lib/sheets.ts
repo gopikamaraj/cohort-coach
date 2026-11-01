@@ -3,6 +3,7 @@
 // suggestions: boxes the model was unsure of are marked, and the teacher checks every box anyway.
 import { API_BASE } from "./api";
 import { BLANK } from "./check";
+import type { Header } from "./folder";
 
 export type CellStatus = "ok" | "check" | "blank";
 
@@ -11,7 +12,7 @@ export interface SheetCell {
   status: CellStatus;
 }
 
-export type SheetFail = "offline" | "typing" | "bad_photo" | "other";
+export type SheetFail = "offline" | "typing" | "bad_photo" | "paused" | "cancelled" | "other";
 
 export class SheetError extends Error {
   constructor(public kind: SheetFail) {
@@ -19,7 +20,7 @@ export class SheetError extends Error {
   }
 }
 
-const MAX_EDGE = 1200;
+const MAX_EDGE = 1600;
 const JPEG_QUALITY = 0.7;
 const TIMEOUT_MS = 30_000;
 
@@ -42,7 +43,7 @@ export function applyReads(cells: SheetCell[], items: number): { row: string[]; 
   return { row, flagged };
 }
 
-/** Shrink to about 1200 px on the long edge as a JPEG (about 80 KB), so it uploads on a weak signal. */
+/** Shrink to about 1600 px on the long edge as a JPEG (about 150 KB), so it uploads on a weak signal. */
 export async function downscale(file: Blob): Promise<Blob> {
   try {
     const bitmap = await createImageBitmap(file);
@@ -62,22 +63,41 @@ export async function downscale(file: Blob): Promise<Blob> {
   }
 }
 
-export async function readSheet(photo: Blob, form: string, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<SheetCell[]> {
+export interface SheetRead {
+  cells: SheetCell[];
+  header: Header | null;
+}
+
+/** Read one sheet. `sha256` is the hash of the original file, so a recording can be replayed by file. */
+export async function readSheetFull(photo: Blob, form: string, opts: { sha256?: string; signal?: AbortSignal; fetchFn?: typeof fetch } = {}): Promise<SheetRead> {
+  const fetchFn = opts.fetchFn ?? ((...a: Parameters<typeof fetch>) => fetch(...a));
   const body = new FormData();
   body.append("image", photo, "sheet.jpg");
   body.append("form", form);
+  if (opts.sha256) body.append("sha256", opts.sha256);
   const ctrl = new AbortController();
+  opts.signal?.addEventListener("abort", () => ctrl.abort());
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   let res: Response;
   try {
     res = await fetchFn(`${API_BASE}/api/sheets/read`, { method: "POST", body, signal: ctrl.signal });
   } catch {
-    throw new SheetError("offline");
+    throw new SheetError(opts.signal?.aborted ? "cancelled" : "offline");
   } finally {
     clearTimeout(timer);
   }
-  if (res.ok) return ((await res.json()) as { cells: SheetCell[] }).cells;
-  if (res.status === 503) throw new SheetError("typing");
+  if (res.ok) {
+    const out = (await res.json()) as { cells: SheetCell[]; header?: Header | null };
+    return { cells: out.cells, header: out.header ?? null };
+  }
+  if (res.status === 503) {
+    const detail = ((await res.json().catch(() => ({}))) as { detail?: { message?: string } }).detail;
+    throw new SheetError(detail?.message === "Reading is paused." ? "paused" : "typing");
+  }
   if (res.status === 413 || res.status === 422) throw new SheetError("bad_photo");
   throw new SheetError("other");
+}
+
+export async function readSheet(photo: Blob, form: string, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<SheetCell[]> {
+  return (await readSheetFull(photo, form, { fetchFn })).cells;
 }

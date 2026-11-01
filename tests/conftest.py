@@ -91,3 +91,30 @@ def _rate_limits_off_for_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
         "practice_session", "practice_turn", "practice_voice", "practice_watch", "sheets_read",
     ):  # fmt: skip
         monkeypatch.setenv(f"RATE_LIMIT_{name.upper()}_PER_MIN", "0")
+
+
+@pytest.fixture(autouse=True)
+def _practice_speed_switches_off_for_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A developer's .env may turn the Practice Class speed switches on, and the app reads .env at
+    start-up without overriding what is set. The suite tests the defaults; the tests of a switch
+    set it themselves."""
+    monkeypatch.setenv("PRACTICE_SKIP_CHECKER", "0")
+    monkeypatch.setenv("PRACTICE_AI_INTENTS", "all")
+
+
+@pytest.fixture(autouse=True)
+def _developer_switches_out_of_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The same for the switches added on 1 Nov: the child model and the testing shortcuts. The suite
+    tests the defaults; a test of a switch sets it itself."""
+    for name in (
+        "SIMULATOR_MODEL",
+        "DEV_TESTING",
+        "BAYES_PRIOR_CONCENTRATION",
+        "BAYES_RESPONSIVENESS_SCALE",
+        "BAYES_RESPONSIVENESS_SHAPE",
+        "BAYES_LEARN_CAP",
+        "BAYES_EFFECT_SCALE",
+        "BAYES_GUESS",
+        "BAYES_SLIP",
+    ):  # fmt: skip
+        monkeypatch.delenv(name, raising=False)

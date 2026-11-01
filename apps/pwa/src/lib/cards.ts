@@ -1,7 +1,7 @@
 // What the class gets wrong, as cards. Counts only: a teacher is never shown a percentage.
 import { enteredChildren, readRow } from "./check";
 import type { ProfileRow } from "./db";
-import { diagnoseChild, keys } from "./diagnosis";
+import { diagnoseChild, formOf, keys } from "./diagnosis";
 
 export const UNTRACKED_PATTERN = "ADD-WHOLE-ONES";
 
@@ -26,7 +26,7 @@ export interface CardsView {
 /** "52 − 29 → 37": the first child who showed this error, and the answer she wrote. */
 export function exampleFor(formKey: string, code: string, rows: string[][] | null): string | null {
   if (!rows) return null;
-  const form = keys.forms[formKey];
+  const form = formOf(formKey);
   if (!form) return null;
   for (const row of enteredChildren(rows)) {
     const readings = readRow(row);

@@ -71,6 +71,10 @@ class ChildDiagnosis:
     blank_count: int
     unreadable_count: int
     untracked: Mapping[str, int] = field(default_factory=dict)
+    # Errors seen on one question only, where that question is the paper's only item of its
+    # skill (engine.diagnosis.single_probe_items). Never part of `shows`: a pilot or demo setting
+    # may count them, labelled "Based on one question per child".
+    possible: frozenset[ErrorCode] = frozenset()
 
 
 @dataclass(frozen=True)
@@ -82,3 +86,5 @@ class ClassProfile:
     track: ErrorCode | None
     anchor_wrong_count: int
     untracked: Mapping[str, int]
+    # Children with the error on a single-skill question only (never in `counts`).
+    possible_counts: Mapping[ErrorCode, int] = field(default_factory=dict)

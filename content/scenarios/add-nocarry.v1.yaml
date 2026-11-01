@@ -10,6 +10,8 @@ start_engagement: 0.6
 max_turns: 40
 consecutive_correct_to_finish: 2
 quiet_turns: 2
+overhear: 0.5 # the children it was not aimed at hear half of a move's effect on them
+chorus_max: 3 # one to three children speak each turn, the named child first
 problems:
 - kind: add
   a: 47

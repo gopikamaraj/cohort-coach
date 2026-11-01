@@ -16,7 +16,7 @@ from ai.schemas import TrackPart
 from services.api.db import ContentAudit, TrackManifest
 from services.content import drafting, publish, review, versions
 from services.content.track import load_track
-from services.pilot.storage import LocalBlobStore
+from services.media.storage import LocalBlobStore
 from services.speech import audio as speech_audio
 from tests.ai.test_c05_track_draft import GOOD, PASS
 from tests.support_ai import FakeClient

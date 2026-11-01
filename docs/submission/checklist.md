@@ -6,7 +6,7 @@ Status as of 27 Oct. A box is ticked only with evidence. Human-owned items name 
 
 - [ ] **Judge-mode demo deployed and open logged out on desktop and phone.** Not deployed: only the pilot is live on Google Cloud (`docs/deploy.md`). Recipe: "Judge-mode demo deployment" in `docs/deploy.md`. Owner: Gopi.
 - [ ] Run `JUDGE_MODE=1 python scripts/seed_demo_track.py --languages en --cohort` once on that deployment. Owner: Gopi.
-- [ ] `/start judge` works on the bot (needs the Telegram token and the webhook). Owner: Gopi.
+- [x] Telegram is roadmap (30 Oct): no bot in the demo, so nothing to deploy; the README, deck and video say so.
 - [ ] Cloud Run minimum instances set to 1 on every service before 1 Nov. Owner: Gopi.
 - [ ] Uptime monitor on. Owner: Gopi.
 

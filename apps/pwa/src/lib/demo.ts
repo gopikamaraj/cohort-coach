@@ -67,3 +67,30 @@ export function demoChildren(term: number, formKey: string = DEMO_FORM): string[
   while (rows.length < DEMO_SIZE) rows.push([...correct]);
   return rows;
 }
+
+/**
+ * The same 28 children before the track (Form A) and after it (Form B), in the same roll order, so
+ * the two can be paired child by child. Each error falls to its term 2 count: the first few children
+ * of an error group keep it, the rest are clear after. Made up, like everything in this file.
+ */
+export function demoPair(): { pre: string[][]; post: string[][] } {
+  const pre = demoChildren(1, "A");
+  const post: string[][] = [];
+  const after = DEMO_COUNTS[2] ?? {};
+  for (const code of keys.error_order) {
+    const n = DEMO_COUNTS[1]?.[code] ?? 0;
+    for (let i = 0; i < n; i++) post.push(i < (after[code] ?? 0) ? childShowing("B", code) : cleanRow("B"));
+  }
+  const rest = pre.length - post.length;
+  const untracked = DEMO_UNTRACKED[1] ?? 0;
+  const anchor = DEMO_ANCHOR_WRONG[1] ?? 0;
+  for (let i = 0; i < rest; i++) {
+    post.push(i < untracked ? childWithUntracked("B") : i < untracked + anchor ? childWrongAnchor("B") : cleanRow("B"));
+  }
+  return { pre, post };
+}
+
+function cleanRow(formKey: string): string[] {
+  return (keys.forms[formKey]?.items ?? []).map((item) => String(item.correct));
+}
+

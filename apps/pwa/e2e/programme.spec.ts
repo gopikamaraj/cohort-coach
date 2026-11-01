@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { startSample } from "./sample";
 
 // My programme, What I entered (history), the classroom observation, and the layout at several
 // screen sizes. The API runs in recorded mode; none of these screens makes a paid call.
@@ -8,7 +9,8 @@ const LINES = ["Priya, what is 52 minus 29?", "Tell me how you got that."];
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
+    localStorage.clear();
+    localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
     localStorage.setItem("cc.voice", "0");
   });
 });
@@ -61,8 +63,7 @@ test("a child filled from a photo is recorded as such in the history", async ({ 
   const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFUlEQVR4nGP88OEDAzbAhFV00EoAADQGAuBmG04kAAAAAElFTkSuQmCC", "base64");
   const cells = Array.from({ length: 10 }, (_, i) => ({ text: String(30 + i), status: "ok" }));
   await page.route("**/api/sheets/read", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ form: "A", retried: false, cells }) }));
-  await page.goto("/#/check");
-  await page.getByTestId("form-A").click();
+  await startSample(page, { size: 2 });
   await page.getByTestId("photo-input").setInputFiles({ name: "s.png", mimeType: "image/png", buffer: PNG });
   await expect(page.getByTestId("photo-note")).toContainText("Filled in from the photo");
   await page.goto("/#/history");
@@ -111,7 +112,6 @@ for (const size of SIZES) {
     await loadDemo(page);
     for (const route of ["home", "check", "cards", "practice", "programme", "history", "judge"]) {
       await page.goto(`/#/${route}`);
-      if (route === "check" && (await page.getByTestId("form-A").count()) > 0) await page.getByTestId("form-A").click();
       if (route === "practice") {
         await page.getByTestId("start-practice").click();
         await expect(page.getByTestId("pc-top")).toBeVisible();
@@ -130,13 +130,11 @@ for (const size of SIZES) {
   });
 }
 
-test("on a wide screen teacher screens sit in a phone-sized column and coach screens use the width", async ({ page }) => {
+test("on a wide screen teacher and coach screens both use the width", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/#/home");
   const box = (await page.locator(".frame").boundingBox())!;
-  expect(box.width).toBeGreaterThan(300);
-  expect(box.width).toBeLessThanOrEqual(460);
-  expect(Math.abs(box.x + box.width / 2 - 640)).toBeLessThan(2);
+  expect(box.width).toBeGreaterThan(1000); // full width since 30 Oct (the old 440 px column was dropped on request)
   await page.evaluate(() => localStorage.setItem("cc.role", "coach"));
   await page.goto("/#/coach");
   await page.reload();

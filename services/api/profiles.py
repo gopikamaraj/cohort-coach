@@ -12,7 +12,7 @@ import re
 from collections.abc import Iterator
 from functools import cache
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -38,7 +38,7 @@ class ProfileIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     term: str = Field(pattern=r"^T[0-9]{1,2}$")
-    form: Literal["A", "B"]
+    form: str = Field(pattern=r"^(A|B|P-[0-9a-f]{12})$")
     children_checked: int = Field(ge=0, le=200)
     counts: dict[str, int]
     anchor_wrong_count: int = Field(ge=0, le=200)

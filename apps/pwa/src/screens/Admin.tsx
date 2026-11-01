@@ -25,6 +25,16 @@ interface Observation {
   differences: string[];
   created_at: string;
 }
+interface TesterView {
+  devices: number;
+  events: number;
+  feedback: { rating: number; tags: string[]; comment: string | null; role: string | null; screen: string | null; at: string }[];
+}
+interface DataView {
+  scopes: Record<string, { rows: number }>;
+}
+const SCOPES = ["feedback", "observations", "testers", "demo", "all"] as const;
+
 interface Summary {
   feedback: { new: number; reviewed: number };
   by_kind: Record<string, number>;
@@ -43,6 +53,10 @@ export default function Admin() {
   const [obs, setObs] = useState<Observation[]>([]);
   const [sum, setSum] = useState<Summary | null>(null);
   const [error, setError] = useState("");
+  const [testers, setTesters] = useState<TesterView | null>(null);
+  const [data, setData] = useState<DataView | null>(null);
+  const [confirmText, setConfirmText] = useState<Record<string, string>>({});
+  const [deleted, setDeleted] = useState("");
 
   const headers = useCallback((): HeadersInit => (key ? { "X-Admin-Key": key } : {}), [key]);
   const load = useCallback(async () => {
@@ -51,10 +65,12 @@ export default function Admin() {
       const q = new URLSearchParams();
       if (kind) q.set("kind", kind);
       if (status) q.set("status", status);
-      const [f, o, s] = await Promise.all([
+      const [f, o, s, t, d] = await Promise.all([
         fetch(`${API_BASE}/api/admin/feedback?${q}`, { headers: headers() }),
         fetch(`${API_BASE}/api/admin/observations`, { headers: headers() }),
         fetch(`${API_BASE}/api/admin/summary`, { headers: headers() }),
+        fetch(`${API_BASE}/api/admin/testers`, { headers: headers() }),
+        fetch(`${API_BASE}/api/admin/data`, { headers: headers() }),
       ]);
       if (f.status === 401) {
         setError("auth");
@@ -67,6 +83,8 @@ export default function Admin() {
       setItems(((await f.json()) as { items: Item[] }).items);
       setObs(((await o.json()) as { items: Observation[] }).items);
       setSum((await s.json()) as Summary);
+      if (t.ok) setTesters((await t.json()) as TesterView);
+      if (d.ok) setData((await d.json()) as DataView);
     } catch {
       setError("offline");
     }
@@ -75,6 +93,18 @@ export default function Admin() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  const wipe = async (scope: string) => {
+    const r = await fetch(`${API_BASE}/api/admin/data/${scope}`, { method: "DELETE", headers: { "Content-Type": "application/json", ...headers() }, body: JSON.stringify({ confirm: confirmText[scope] ?? "" }) });
+    if (!r.ok) {
+      setDeleted("");
+      return;
+    }
+    const out = (await r.json()) as { deleted: Record<string, number> };
+    setDeleted(tr("admin.deleted", { n: Object.values(out.deleted).reduce((a, b) => a + b, 0) }));
+    setConfirmText({});
+    await load();
+  };
 
   const review = async (it: Item, next: "new" | "reviewed") => {
     const note = next === "reviewed" ? (window.prompt(tr("admin.note"), it.note ?? "") ?? it.note ?? "") : "";
@@ -195,6 +225,67 @@ export default function Admin() {
           </tbody>
         </table>
       </div>
+
+      <h2>
+        <Icon name="profile" /> {tr("admin.testers_title")}
+      </h2>
+      {testers ? (
+        <div className="stack" data-testid="admin-testers">
+          <p>{tr("admin.testers_counts", { d: testers.devices, e: testers.events })}</p>
+          {testers.feedback.length === 0 ? <p data-testid="admin-testers-none">{tr("admin.testers_none")}</p> : null}
+          <ul className="plain stack">
+            {testers.feedback.map((f, i) => (
+              <li key={i} className="card" data-testid="admin-tester-fb">
+                <p>
+                  <span className="chip chip-positive">{"★".repeat(f.rating)}</span> {f.role ? <span className="chip">{f.role}</span> : null} {f.screen ? <span className="chip">{f.screen}</span> : null}
+                  {f.tags.map((t) => (
+                    <span key={t} className="chip">
+                      {t}
+                    </span>
+                  ))}
+                </p>
+                {f.comment ? <p>{f.comment}</p> : null}
+                <p className="muted">{new Date(f.at).toLocaleString()}</p>
+              </li>
+            ))}
+          </ul>
+          <a className="btn btn-secondary" href="#/testing" data-testid="admin-testing-link">
+            {tr("admin.testers_link")}
+          </a>
+        </div>
+      ) : null}
+
+      <h2>
+        <Icon name="admin" /> {tr("admin.data_title")}
+      </h2>
+      <p>{tr("admin.data_intro")}</p>
+      {deleted ? (
+        <p role="status" data-testid="admin-deleted">
+          {deleted}
+        </p>
+      ) : null}
+      <ul className="plain stack" data-testid="admin-data">
+        {SCOPES.map((sc) => {
+          const rows = sc === "all" ? Object.values(data?.scopes ?? {}).reduce((a, b) => a + b.rows, 0) : (data?.scopes[sc]?.rows ?? 0);
+          const ok = (confirmText[sc] ?? "") === "DELETE";
+          return (
+            <li key={sc} className="card stack" data-testid={`admin-scope-${sc}`}>
+              <p>
+                <strong>{tr(`admin.scope.${sc}` as "admin.scope.all")}</strong> · <span data-testid={`admin-rows-${sc}`}>{tr("admin.data_rows", { n: rows })}</span>
+              </p>
+              <label className="field">
+                <span>{tr("admin.delete_label")}</span>
+                <input value={confirmText[sc] ?? ""} onChange={(e) => setConfirmText({ ...confirmText, [sc]: e.target.value })} autoComplete="off" data-testid={`admin-confirm-${sc}`} />
+              </label>
+              <button type="button" className="btn btn-secondary" disabled={!ok || rows === 0} onClick={() => void wipe(sc)} data-testid={`admin-delete-${sc}`}>
+                {tr("admin.delete")}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="muted">{tr("admin.kept_audit")}</p>
+      <p className="muted">{tr("admin.kept_cache")}</p>
     </section>
   );
 }

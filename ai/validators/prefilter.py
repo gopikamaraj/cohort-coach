@@ -1,7 +1,7 @@
 """Gate 1b: the rule-based pre-filter. Cheap, deterministic, runs before call 7.
 
-Checks profanity and harsh words (en, hi, ta and romanised), PII patterns, off-topic and
-injection markers, malformed output, length, and script mismatch.
+Checks profanity and harsh words (en, hi, ta and romanised), remarks that put a child down, PII
+patterns, off-topic and injection markers, malformed output, length, and script mismatch.
 """
 
 from __future__ import annotations
@@ -29,6 +29,19 @@ def _profanity_words() -> list[tuple[str, int]]:
     return out
 
 
+def _demeaning_patterns() -> list[re.Pattern[str]]:
+    data = load_yaml("safety/demeaning.yaml")
+    return [re.compile(str(p), re.IGNORECASE) for pats in data.values() for p in pats]
+
+
+def check_demeaning(text: str) -> list[Violation]:
+    """Remarks that put someone down without a swear word ("you are not clever")."""
+    plain = text.replace("’", "'").replace("‘", "'")
+    if any(p.search(plain) for p in _demeaning_patterns()):
+        return [Violation("demeaning", "a remark that puts a child or person down")]
+    return []
+
+
 def check_prefilter(
     text: str,
     lang: str,
@@ -46,6 +59,7 @@ def check_prefilter(
     toks = tokens(text)
     if any(token_matches(t, w, suffix=s) for t in toks for w, s in _profanity_words()):
         out.append(Violation("profanity", "word from the profanity or harsh list"))
+    out.extend(check_demeaning(text))
     lowered = text.casefold()
     markers = load_yaml("safety/offtopic.yaml")
     if any(str(m).casefold() in lowered for m in markers.get("injection", [])):

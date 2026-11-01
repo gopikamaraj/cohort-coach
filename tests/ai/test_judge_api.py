@@ -27,7 +27,7 @@ def api(sink: SqlAuditSink):  # type: ignore[no-untyped-def]
 def test_ai_map_lists_all_calls_and_layers(api: TestClient) -> None:
     body = api.get("/api/judge/ai-map").json()
     assert body["layers"] == list(LAYERS)
-    assert [c["id"] for c in body["calls"]] == [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14]
+    assert [c["id"] for c in body["calls"]] == [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]
     for call in body["calls"]:
         assert set(call["layers"]) == set(LAYERS)
         assert call["prompt_version"] >= 1 and call["model"].startswith("claude-")
@@ -115,7 +115,7 @@ def test_try_to_break_it_runs_the_prepared_line_through_the_real_prefilter(
     assert body["line"]
 
 
-def test_try_to_break_it_takes_no_free_text_and_speaks_her_language() -> None:
+def test_try_to_break_it_speaks_her_language_and_refuses_bad_input() -> None:
     client = TestClient(app)
     assert client.post("/api/judge/try-break", json={"kind": "anything else"}).status_code == 422
     hi = client.post("/api/judge/try-break", json={"kind": "phone", "language": "hi"}).json()
@@ -124,6 +124,17 @@ def test_try_to_break_it_takes_no_free_text_and_speaks_her_language() -> None:
         client.post("/api/judge/try-break", json={"kind": "phone", "language": "fr"}).status_code
         == 422
     )
+
+
+def test_a_typed_line_is_checked_and_a_clean_one_is_said_to_pass() -> None:
+    client = TestClient(app)
+    bad = client.post("/api/judge/try-break", json={"text": "Call me on 98765 43210"}).json()
+    assert bad["blocked"] and "pii_phone" in bad["codes"] and bad["kind"] == "typed"
+    assert bad["line"] == "Call me on 98765 43210"
+    ok = client.post("/api/judge/try-break", json={"text": "Show the bundle of ten sticks"}).json()
+    assert ok["blocked"] is False and ok["codes"] == [] and ok["explanation"].startswith("Passed")
+    assert client.post("/api/judge/try-break", json={}).status_code == 422
+    assert client.post("/api/judge/try-break", json={"text": "x" * 201}).status_code == 422
 
 
 def test_try_to_break_it_is_judge_mode_only(monkeypatch: pytest.MonkeyPatch) -> None:

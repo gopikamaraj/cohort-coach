@@ -1,0 +1,44 @@
+{
+  "call": "c08_answer_reading",
+  "model": "claude-haiku-5-5",
+  "outputs": [
+    {
+      "confidences": [
+        0.95,
+        0.95,
+        0.95,
+        0.93,
+        0.94,
+        0.93,
+        0.93,
+        0.92,
+        0.93,
+        0.94
+      ],
+      "header": {
+        "class_code": "SO-3A",
+        "confidence": 0.8,
+        "roll_number": 4
+      },
+      "reads": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "42",
+        "34",
+        "57",
+        "66"
+      ]
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 1583,
+    "cache_write_tokens": 0,
+    "input_tokens": 2531,
+    "output_tokens": 108
+  }
+}

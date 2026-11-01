@@ -67,6 +67,17 @@ export interface Layers {
   output: { child_line: string; source: string; badge: string };
 }
 
+export interface OtherChild {
+  speaker: string;
+  child_text: string;
+  child_text_en: string;
+  intent: string;
+  answer: number | null;
+  written: number | null;
+  audio?: string | null;
+  audio_mime?: string | null;
+}
+
 export interface TurnResponse {
   turn: number;
   speaker: string | null;
@@ -83,6 +94,8 @@ export interface TurnResponse {
   child_text_en?: string;
   written?: number | null;
   answer?: number | null;
+  /** The other children who spoke in the same turn (the engine's template lines). */
+  others?: OtherChild[];
   move?: { id: string; label: string; quality: string; strategy: boolean };
   children?: {
     name: string;

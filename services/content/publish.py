@@ -36,8 +36,8 @@ from services.api.db import ContentAudit, ContentVersion, ReviewItem, TrackManif
 from services.content import slots, versions
 from services.content.lessons_view import MAX_LESSON_SECONDS
 from services.content.track import load_track
-from services.pilot.audio import chunks
-from services.pilot.storage import BlobStore
+from services.media.storage import BlobStore
+from services.media.voice import chunks
 from services.speech.audio import join_to_file
 from services.speech.voices import Voice
 
@@ -46,7 +46,7 @@ FORMAT = "ogg"  # OGG/Opus: what Telegram plays as a voice note
 KBPS = 16
 FALLBACK_KBPS = 12
 BUDGET_BYTES_PER_5_MIN = 600_000  # CLAUDE.md section 9: ~0.6 MB per 5 minutes
-LESSON_VOICE = "ritu"  # the default teacher voice (content/voices/pilot.v1.yaml)
+LESSON_VOICE = "ritu"  # the default teacher voice (content/voices/lessons.v1.yaml)
 MIME = "audio/ogg"
 
 

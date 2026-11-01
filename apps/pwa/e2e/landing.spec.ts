@@ -9,8 +9,12 @@ test.beforeEach(async ({ page }) => {
 
 test("a fresh browser lands on four role cards and the guided tour", async ({ page }) => {
   await expect(page.getByTestId("card-tour")).toBeVisible();
-  await expect(page.getByTestId("card-tour")).toContainText("Start here if you're judging");
-  for (const r of ["teacher", "mentor", "coach", "officer"]) await expect(page.getByTestId(`card-${r}`)).toBeVisible();
+  await expect(page.getByTestId("card-tour")).toContainText("Start here");
+  for (const r of ["teacher", "mentor", "coach", "officer", "judge", "admin"]) await expect(page.getByTestId(`card-${r}`)).toBeVisible();
+  await page.getByTestId("card-judge").click(); // the judge card enters judge mode
+  await expect(page).toHaveURL(/#\/judge/);
+  await expect(page.getByTestId("role-chip")).toHaveText("Viewing as Judge");
+  await page.goto("/#/roles");
   await expect(page.getByTestId("card-coach")).toContainText("DIET");
   await expect(page.getByTestId("card-officer")).toContainText("programme staff");
 });
@@ -32,10 +36,10 @@ test("picking a role shows what it can and cannot do, then enters the dashboard 
   await expect(page).toHaveURL(/#\/officer/);
 });
 
-test("the teacher dialog says what is on Telegram and the weekly cap, with no percentage", async ({ page }) => {
+test("the teacher dialog says the weekly cap, with no percentage and no mention of Telegram", async ({ page }) => {
   await page.getByTestId("card-teacher").click();
   const dialog = page.getByTestId("role-dialog");
-  await expect(dialog).toContainText("Telegram");
+  await expect(dialog).not.toContainText("Telegram");
   await expect(dialog).toContainText("At most 20 minutes a week");
   await expect(dialog).not.toContainText("%");
 });
@@ -85,7 +89,7 @@ test("the install card opens plain steps in her language, and closes again", asy
 test("the install steps read in Hindi and Tamil, with no English words", async ({ page }) => {
   for (const [lang, title] of [["hi", "यह क्या है?"], ["ta", "இது என்ன?"]] as const) {
     await page.goto("/#/roles");
-    await page.getByTestId("lang").selectOption(lang);
+    await page.getByTestId(`lang-${lang}`).click();
     await page.getByTestId("install-open").click();
     const sheet = page.getByTestId("install-dialog");
     await expect(sheet).toContainText(title);
@@ -139,12 +143,13 @@ test("no speed is shown when the browser gives no estimate", async ({ page }) =>
   await expect(page.getByTestId("status-speed")).toHaveCount(0);
 });
 
-test("the Mode menu needs a second back end; without one the page shows only the mode chip", async ({ page }) => {
-  // This test build has one back end, so there is nothing to switch to (the deployed site has two).
+test("there is one app: no Mode menu, no mode chip and no pilot switch on the landing page", async ({ page }) => {
   await expect(page.getByTestId("mode")).toHaveCount(0);
-  await expect(page.getByTestId("mode-banner")).toContainText("Judge demo");
+  await expect(page.getByTestId("mode-banner")).toHaveCount(0); // the role is in the title bar, not here
+  await expect(page.getByTestId("role-chip")).toHaveCount(0); // and not on the picker itself
   await expect(page.getByTestId("card-tour")).toBeVisible();
   await expect(page.getByRole("button", { name: /Open the pilot/ })).toHaveCount(0);
+  await expect(page.getByText(/pilot/i)).toHaveCount(0);
 });
 
 test("the tour card sits in the first screen of a phone, above the fold", async ({ page }) => {
@@ -152,4 +157,44 @@ test("the tour card sits in the first screen of a phone, above the fold", async 
   await page.reload();
   const tour = (await page.getByTestId("card-tour").boundingBox())!;
   expect(tour.y + tour.height).toBeLessThanOrEqual(640 - 56); // above the bottom bar
+});
+
+test("the title bar shows the page and what it is for, the connection, a language switch and the role", async ({ page }) => {
+  await page.goto("/#/roles");
+  await expect(page.locator(".strip")).toHaveCount(0); // no role or language dropdowns under the bar
+  await expect(page.getByTestId("role")).toHaveCount(0);
+  await expect(page.getByTestId("top-title")).toHaveText("Choose your role");
+  await expect(page.getByTestId("top-sub")).not.toBeEmpty();
+  await expect(page.getByTestId("status")).toBeVisible();
+  await expect(page.getByTestId("role-chip")).toHaveCount(0); // the picker is where the role is chosen
+  await expect(page.getByTestId("lang-en")).toHaveAttribute("aria-pressed", "true");
+  await page.goto("/#/papers");
+  await expect(page.getByTestId("top-title")).toHaveText("Papers");
+  await expect(page.getByTestId("top-sub")).toContainText("check paper");
+  await expect(page.getByTestId("role-chip")).toHaveText("Viewing as Teacher");
+  await page.getByTestId("lang-hi").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "hi");
+  await expect(page.getByTestId("lang-hi")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("top-title")).toHaveText("पेपर");
+  await expect(page.getByTestId("role-chip")).toContainText("शिक्षक");
+  await page.getByTestId("lang-ta").click();
+  await expect(page.getByTestId("top-title")).toHaveText("தாள்கள்");
+  await page.getByTestId("role-chip").click(); // the role leads back to the role picker
+  await expect(page).toHaveURL(/#\/roles/);
+});
+
+test("the title bar fits a phone and a laptop without sideways scrolling, in every language", async ({ page }) => {
+  for (const [w, h] of [[360, 700], [1280, 800]]) {
+    await page.setViewportSize({ width: w, height: h });
+    for (const lang of ["en", "hi", "ta"]) {
+      await page.goto("/#/practice");
+      await page.getByTestId(`lang-${lang}`).click();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+      for (const id of ["lang-en", "lang-hi", "lang-ta", "role-chip"]) {
+        const box = (await page.getByTestId(id).boundingBox())!;
+        expect(box.height).toBeGreaterThanOrEqual(43.5);
+        expect(box.x + box.width).toBeLessThanOrEqual(w + 1);
+      }
+    }
+  }
 });

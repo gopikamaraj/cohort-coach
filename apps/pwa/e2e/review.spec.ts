@@ -18,7 +18,8 @@ const LINES = [
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
+    localStorage.clear();
+    localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
     localStorage.setItem("cc.voice", "0");
   });
 });
@@ -31,7 +32,6 @@ async function rehearse(page: Page, count = LINES.length) {
   for (const line of LINES.slice(0, count)) {
     n += 1;
     if (line.startsWith("/tap ")) {
-      await page.getByTestId("sec-materials").click();
       await page.getByTestId(`tap-${line.slice(5)}`).click();
     } else {
       await page.getByTestId("say").fill(line);
@@ -125,7 +125,6 @@ test("the language switch changes the practice screen, and the next rehearsal is
 
   await chooseLanguage(page, "ta");
   await page.getByTestId("start-practice").click();
-  await page.getByTestId("sec-goal").click();
   await expect(page.getByTestId("goal")).toContainText("என்ன பயிற்சி செய்ய வேண்டும்");
   expect(created).toEqual(["hi", "ta"]);
 });
@@ -137,27 +136,24 @@ test("teacher screens show no English words in Hindi or Tamil", async ({ page })
     for (const route of ["home", "check", "practice", "programme", "history"]) {
       await page.goto("/");
       await page.evaluate((l) => {
-        (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}'));
+        localStorage.clear();
+        localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
         localStorage.setItem("cc.lang", l);
         localStorage.setItem("cc.voice", "0");
       }, lang);
       await page.goto(route === "practice" ? "/#/practice?seed=5" : `/#/${route}`);
       await page.reload();
       if (route === "check") {
-        // the second language finds the check already started: wait for either screen, then choose a form if it asks
-        await page.getByTestId("form-A").or(page.getByTestId("child-title")).first().waitFor();
-        if ((await page.getByTestId("form-A").count()) > 0) await page.getByTestId("form-A").click({ timeout: 3000 }).catch(() => undefined);
+        await page.getByTestId("start-check").or(page.getByTestId("child-title")).first().waitFor();
       }
       let text = "";
       if (route === "practice") {
         await page.getByTestId("start-practice").click();
         await page.getByTestId("cue-toggle").click();
         text += await page.evaluate(() => document.body.innerText);
-        // the other sections of a running rehearsal, one tab at a time
-        await page.getByTestId("sec-materials").click();
+        // the rest of a running rehearsal sits on the same page
         await expect(page.getByTestId("tap-bundles")).toBeVisible();
         text += await page.evaluate(() => document.body.innerText);
-        await page.getByTestId("sec-goal").click();
         await expect(page.getByTestId("goal")).toBeVisible();
       }
       text += await page.evaluate(() => document.body.innerText);

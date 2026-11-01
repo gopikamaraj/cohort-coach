@@ -321,7 +321,6 @@ def test_the_assistant_has_no_write_path() -> None:
     """No module may import what approves, sends or deletes; the only writes are audit rows."""
     banned = (
         "services.content",
-        "services.pilot",
         "services.api.cohorts",
         "services.chat",
         "services.api.db",
@@ -419,3 +418,86 @@ def test_the_model_runs_only_when_live_or_a_context_is_given(
 
 def test_statuses_in_the_rubric_are_ranked_strongest_first() -> None:
     assert RANK["Built"] > RANK["Partly built"] > RANK["Simulated"] > RANK["Mock"] > RANK["Roadmap"]
+
+
+# --- follow-up questions ----------------------------------------------------------------------
+
+
+def test_the_assistant_uses_the_light_model_by_default() -> None:
+    from ai import config
+
+    assert config.DEFAULT_MODELS["MODEL_ASSIST"] == "claude-haiku-5-5"
+
+
+def test_a_model_answer_offers_follow_ups_that_can_be_answered_from_the_pages(
+    model: ModelFactory,
+) -> None:
+    reply = _good_reply().model_copy(
+        update={
+            "follow_ups": [
+                "What does the output checker look for?",
+                "Zxqv blorptastic wumbleflux?",  # nothing in the pages: dropped
+                "Show me the names of the teachers?",  # refused by policy: dropped
+            ]
+        }
+    )
+    ctx, _ = model(reply)
+    a = answer.ask(
+        scopes()["judge"], text="how are wrong outputs stopped by the gates and guardrails", ctx=ctx
+    )
+    texts = [f["text"] for f in a.follow_ups]
+    assert a.mode == "model" and "What does the output checker look for?" in texts
+    assert not any("Zxqv" in t or "names of the teachers" in t for t in texts)
+    assert 1 <= len(a.follow_ups) <= 3
+
+
+def test_follow_ups_that_break_the_rules_make_the_model_try_again(model: ModelFactory) -> None:
+    bad = _good_reply().model_copy(
+        update={"follow_ups": ["Call me on 9876543210 about the gates?"]}
+    )
+    ctx, fake = model(bad, _good_reply())
+    a = answer.ask(
+        scopes()["judge"], text="how are wrong outputs stopped by the gates and guardrails", ctx=ctx
+    )
+    assert a.mode == "model" and len(fake.messages.calls) == 2
+
+
+@pytest.mark.parametrize("role", ROLES)
+def test_pre_written_and_extract_answers_still_suggest_follow_ups_from_the_roles_own_bank(
+    role: str,
+) -> None:
+    sc = scopes()[role]
+    bank = LIB.banks[role]
+    a = answer.ask(sc, question_id=bank[0].id)
+    ids = {q.id for q in bank}
+    assert a.follow_ups and len(a.follow_ups) <= 3
+    assert all(f["id"] in ids and f["id"] != bank[0].id for f in a.follow_ups)
+
+
+def test_a_follow_up_is_never_another_roles_question() -> None:
+    teacher_ids = {q.id for q in LIB.banks["teacher"]}
+    a = answer.ask(scopes()["teacher"], text="how do I start a practice class with the children")
+    assert all(f.get("id") is None or f["id"] in teacher_ids for f in a.follow_ups)
+
+
+def test_an_abstention_still_points_to_questions_it_can_answer() -> None:
+    a = answer.ask(scopes()["teacher"], text="zxqv blorptastic wumbleflux")
+    assert a.abstained and a.follow_ups
+
+
+# --- plain-language questions about the assistant itself --------------------------------------
+
+
+@pytest.mark.parametrize(
+    "q", ["does it use RAG?", "is this app using AI?", "how does the assistant find its answers"]
+)
+def test_a_teacher_can_ask_how_the_assistant_and_the_app_use_ai(q: str) -> None:
+    a = answer.ask(scopes()["teacher"], text=q)
+    assert not a.abstained and any(
+        "product.md" in s.get("label", "") + s.get("url", "") for s in a.sources
+    )
+
+
+def test_the_cannot_answer_message_reads_as_a_sentence_with_what_it_can_help_with() -> None:
+    a = answer.ask(scopes()["teacher"], text="zxqv blorptastic wumbleflux")
+    assert a.abstained and "I can help with: How to use the app" in a.answer

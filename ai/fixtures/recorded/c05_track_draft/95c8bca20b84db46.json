@@ -1,0 +1,18 @@
+{
+  "call": "c05_track_draft",
+  "model": "claude-opus-5-5",
+  "outputs": [
+    {
+      "day": 2,
+      "kind": "lesson",
+      "script": "Hello again. This is day {{track.day}} of {{track.total_days}}. Today is about one small habit: asking the child to explain before we say right or wrong. Why does this matter? In the classes of your cohort, {{class.count_showing}} of {{class.children_checked}} children made this mistake: {{track.error_name}}. When we hear how a child thinks, we can see this mistake clearly. And so can she.\n\nLet me tell you how it sounds from the child's side. The sum is {{class.example_a}} take away {{class.example_b}}. The child writes {{class.example_wrong_answer}}. The right answer is {{class.example_correct_answer}}. If you ask her, she might say: \"Ma'am, I can't take the big one from the small one, so I take the small one from the big one.\" In her mind, that is a rule. She is being careful. She is following a rule she believes.\n\nHere is another one. 62 - 29. She writes 62 - 29 = [child: 47]. She says: \"9 minus 2 is 7. 6 minus 2 is 4. So 47.\" The right answer is 62 - 29 = 33.\n\nNow the move for today. Many of us already do this sometimes: we ask the child to explain her steps. Today we make it a habit. Here is how it goes, step by step.\n\nStep 1. When she gives an answer, do not say right or wrong yet. Keep your face calm. Just ask, \"How did you get that?\"\n\nStep 2. Listen to the end. Do not finish her sentence for her. Count to 3 in your head if it helps. Often the child says the mistake out loud herself: \"9 minus 2 is 7.\"\n\nStep 3. Say her words back to her. \"So you said 9 minus 2.\" This tells her you heard her. It also lets her hear her own step.\n\nStep 4. Now bring out the bundles of ten sticks. Ask her to show 62: 6 bundles of ten and 2 loose sticks. Then ask, \"We need to take away 9 loose sticks. Can you take 9 from here?\" She looks at the loose sticks. She sees there are only 2. Often a child stops right here and says, \"There are not 9.\" That moment, when she sees it for herself, matters more than any correction from us.\n\nStep 5. Stop there for today. You do not need to teach the whole regrouping step yet. That comes later in the track. Today the goal is only this: she explains, you listen, and the sticks show what her words missed.\n\nOne more thing. Ask \"How did you get that?\" when the answer is right, too. If we ask only when the answer is wrong, children quickly learn that the question means \"you made a mistake.\" Then they stop talking. If we ask every time, the question simply means \"I am interested in your thinking.\"\n\nHere is a two-line script you can use in class.\nTo ask: \"How did you get that? Tell me your steps.\"\nTo respond: \"Thank you. Now show me with the sticks.\"\n\nTry tomorrow. Pick one child. Give her one sum without regrouping, for example 47 - 23. She will probably get it right, because 47 - 23 = 24 has no regrouping. Ask her anyway: \"How did you get that?\" Listen to all her steps. Say her words back to her. That is all. You are practising the habit on an easy sum, so it feels natural for both of you when a harder sum comes.\n\nNow, one thing to think about. When a child explained her steps to you, what did you hear that you did not expect? If you like, send a short voice note about it. There is no right or wrong answer here. I would love to hear what you noticed. Talk to you on the next day."
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 1660,
+    "cache_write_tokens": 0,
+    "input_tokens": 1195,
+    "output_tokens": 3510
+  }
+}

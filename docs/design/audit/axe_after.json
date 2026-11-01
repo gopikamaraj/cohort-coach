@@ -1,0 +1,38 @@
+[
+ {
+  "route": "styleguide",
+  "w": 360,
+  "scheme": "light",
+  "id": "svg-img-alt",
+  "impact": "serious",
+  "nodes": 5,
+  "help": "<svg> elements with an img role must have an alternative text"
+ },
+ {
+  "route": "styleguide",
+  "w": 1280,
+  "scheme": "light",
+  "id": "svg-img-alt",
+  "impact": "serious",
+  "nodes": 5,
+  "help": "<svg> elements with an img role must have an alternative text"
+ },
+ {
+  "route": "styleguide",
+  "w": 360,
+  "scheme": "dark",
+  "id": "svg-img-alt",
+  "impact": "serious",
+  "nodes": 5,
+  "help": "<svg> elements with an img role must have an alternative text"
+ },
+ {
+  "route": "styleguide",
+  "w": 1280,
+  "scheme": "dark",
+  "id": "svg-img-alt",
+  "impact": "serious",
+  "nodes": 5,
+  "help": "<svg> elements with an img role must have an alternative text"
+ }
+]

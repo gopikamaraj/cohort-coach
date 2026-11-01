@@ -1,0 +1,64 @@
+{
+  "feedback": {
+    "strengths": [
+      {
+        "comment": "This simple question let the child say her steps out loud, and it showed you exactly where her thinking went wrong.",
+        "quote": "Tell me how you got that."
+      },
+      {
+        "comment": "You gave a clear next step when there were not enough loose sticks, and the child could then carry on and find the new answer herself.",
+        "quote": "Open a bundle to exchange it for ten sticks."
+      }
+    ],
+    "try_next": {
+      "suggestion": "You could also try building 52 with bundles of ten and loose sticks, and saying aloud what the child sees: 5 bundles and 2 sticks. Then she can see why 2 minus 9 does not work before you ask her to open a bundle."
+    }
+  },
+  "language": "en",
+  "scenario": "SUB-SFL",
+  "source": "docs/evidence/practice_session_live.json",
+  "turns": [
+    {
+      "child": "37, Miss.",
+      "speaker": "Priya",
+      "teacher": "Priya, what is 52 minus 29?",
+      "turn": 1
+    },
+    {
+      "child": "I can't do 2 minus 9, Miss. So I did 9 minus 2, that is 7. Then 5 minus 2 is 3. So 37.",
+      "speaker": "Priya",
+      "teacher": "Tell me how you got that.",
+      "turn": 2
+    },
+    {
+      "child": "I can't do 2 minus 9, Miss, so I did 9 minus 2, that is 7. Then 5 minus 2 is 3. That makes 37.",
+      "speaker": "Priya",
+      "teacher": "[tapped bundles]",
+      "turn": 3
+    },
+    {
+      "child": "I opened a bundle, Miss! Now 4 bundles and 12 sticks. 12 minus 9 is 3, and 4 minus 2 is 2. So it is 23!",
+      "speaker": "Priya",
+      "teacher": "Priya, you only have 2 loose ones. Open a bundle to exchange it for ten sticks.",
+      "turn": 4
+    },
+    {
+      "child": "Miss, 23 plus 29 is 52. But we started with 52, so it should be right... why does it feel funny? I'm not sure, Miss.",
+      "speaker": "Arun",
+      "teacher": "Let us check by adding back. What is 23 plus 29?",
+      "turn": 5
+    },
+    {
+      "child": "28, Miss! I think it is 28.",
+      "speaker": "Priya",
+      "teacher": "Priya, now try 74 minus 46.",
+      "turn": 6
+    },
+    {
+      "child": "Thank you, Miss! I liked trying it.",
+      "speaker": "Priya",
+      "teacher": "Well done, thank you for trying.",
+      "turn": 7
+    }
+  ]
+}

@@ -14,7 +14,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 THEME = (ROOT / "apps/pwa/src/theme.css").read_text(encoding="utf-8")
 CSS = (ROOT / "apps/pwa/src/styles.css").read_text(encoding="utf-8")
-PILOT_CSS = (ROOT / "apps/pwa/src/pilot/pilot.css").read_text(encoding="utf-8")
 DOC = (ROOT / "docs/design-system.md").read_text(encoding="utf-8")
 
 
@@ -87,13 +86,10 @@ COLOUR_LITERAL = re.compile(r"#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(")
 def test_styles_hold_no_colour_literal_so_the_look_changes_in_one_file() -> None:
     found = COLOUR_LITERAL.findall(CSS)
     assert not found, f"colour literals in styles.css (move them to theme.css): {found[:5]}"
-    pilot_names = [line for line in PILOT_CSS.splitlines() if line.strip().startswith("--p-")]
-    reads_theme = all("var(--" in line for line in pilot_names)
-    assert pilot_names and reads_theme, "pilot tokens must read theme.css"
 
 
 def test_every_token_a_stylesheet_uses_is_defined() -> None:
-    sheets = THEME + CSS + PILOT_CSS
+    sheets = THEME + CSS
     defined = set(re.findall(r"(--[a-z0-9-]+)\s*:", sheets))
     used = set(re.findall(r"var\((--[a-z0-9-]+)\s*\)", sheets))  # a var() with a fallback is exempt
     assert not (used - defined), f"tokens used but not defined: {sorted(used - defined)}"

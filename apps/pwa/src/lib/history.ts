@@ -8,6 +8,9 @@ export interface CheckSummary {
   id: string;
   term: number;
   formKey: string;
+  paperCode?: string | null;
+  kind?: string;
+  checkDate?: string;
   children: number;
   viaPhoto: number;
   updatedAt: number;
@@ -26,6 +29,9 @@ export async function listChecks(store: CohortDb = db): Promise<CheckSummary[]> 
         id: c.id,
         term: c.term,
         formKey: c.formKey,
+        paperCode: c.paperCode,
+        kind: c.kind,
+        checkDate: c.checkDate,
         children: rows.length,
         viaPhoto: (c.viaPhoto ?? []).filter((i) => c.children[i] && hasAnswers(c.children[i]!)).length,
         updatedAt: c.updatedAt,

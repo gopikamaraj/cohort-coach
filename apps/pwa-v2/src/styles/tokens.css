@@ -1,0 +1,190 @@
+/* THE LOOK OF THE APP, IN ONE PLACE (v2 re-skin: docs/design/STYLEGUIDE.md).
+   Every colour, corner, spacing step, type size and state layer comes from this file. styles.css and
+   pilot/pilot.css hold layout only and read these tokens (tests/test_design_tokens.py fails if a hex
+   colour or an rgba() creeps back into styles.css). To change the look, change a value here:
+
+     colour     the palette block (Material 3 roles; each name says what it is for)
+     corners    --r-card, --r-btn, --r-field, --r-chip, --r-pill, --r-sheet
+     states     --state-hover, --state-press (the tint on hover, focus and press)
+     size       --s1 to --s6 (spacing), --text-sm to --text-2xl (type scale)
+     look       build with VITE_THEME=classic for the older blue-notebook palette and 2 px corners
+                (the bottom bar and cards keep their Material 3 layout; only values change)
+
+   Three more places carry the primary colour because they sit outside CSS: theme_color and
+   background_color in vite.config.ts, <meta name="theme-color"> in index.html, and the PNG icons
+   (scripts/make_icons.py). tests/test_design_tokens.py checks that they match --pen and --paper.
+   Contrast figures are computed from the values below and quoted in docs/design-system.md. */
+
+:root {
+  /* ---- palette: Material 3 roles, "Calm Institutional Material" (docs/design/stitch/DESIGN.md) ---- */
+  /* the nine original names, kept because the docs and the contrast test use them */
+  --paper: #f7fafa; /* page background (M3 background) */
+  --ink: #191c1c; /* body text and headings (on surface) */
+  --muted: #3f4948; /* secondary text (on surface variant) */
+  --pen: #0b6b6b; /* primary: the one main action per screen, links, focus ring */
+  --margin: #b3261e; /* error: "this is wrong", failures */
+  --stick: #e8b93c; /* the bundle-of-sticks marks and highlighted quotes, with ink on top */
+  --slate: #0f3b3b; /* dark strip, board and toasts, with chalk text on top */
+  --chalk: #eef4f3; /* surface container: bars, wells, light text on slate */
+  --rule: #bec9c8; /* outline for cards and dividers (decorative, never text) */
+
+  /* the rest of the roles */
+  --on-pen: #ffffff; /* text and icons on a primary fill */
+  --pen-container: #bdeeee; /* focus cards: the guided tour, the scenario */
+  --on-pen-container: #00201f;
+  --tonal: #cce8e7; /* secondary container: chips, tonal buttons, selected nav item */
+  --warn: #a04a00; /* tertiary: what to watch */
+  --warn-container: #ffdcc4;
+  --on-warn-container: #331200;
+  --good: #1b6d2f; /* success: what went well */
+  --good-container: #b4f2bc;
+  --on-good-container: #002106;
+  --margin-container: #ffdad6;
+  --on-margin-container: #410002;
+  --surface: #ffffff; /* cards, sheets, fields */
+  --line: #d6dfde; /* outline variant: quiet borders inside a card */
+  --outline: #6f7979; /* outline: edges of buttons and fields that must be seen (3:1) */
+  --scrim: rgba(25, 28, 28, 0.4); /* dim behind a sheet */
+  --on-slate-line: rgba(238, 244, 243, 0.3); /* hairlines on slate */
+  --stage-bg: #e6eceb; /* the page around the app column on a laptop */
+  --frame-ruling: none; /* the ruled-notebook lines behind the app; classic turns them on */
+  --bad: var(--margin);
+
+  /* ---- shape ---- */
+  --r-card: 16px; /* cards, tiles, panels */
+  --r-btn: 8px; /* buttons, tabs */
+  --r-field: 8px; /* text fields and selects */
+  --r-chip: 12px; /* chips, notes, banners */
+  --r-pill: 999px; /* the signal pill and tiny tags */
+  --r-sheet: 28px; /* bottom sheets and dialogs */
+  --radius: var(--r-card);
+
+  /* ---- state layers and motion (M3: a tint of the content colour on hover, focus and press) ---- */
+  --state-hover: 0.08;
+  --state-press: 0.12;
+  --motion: 0.15s;
+  --elev-float: 0 4px 16px rgba(0, 0, 0, 0.25); /* the one floating element: the toast */
+
+  /* ---- spacing ---- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+
+  /* ---- type: five sizes, in rem so text scales to 200%; system fonts, so nothing is downloaded ---- */
+  --text-sm: 1rem; /* labels, captions, nav (never below 16px) */
+  --text-md: 1.125rem; /* body */
+  --text-lg: 1.25rem; /* section titles */
+  --text-xl: 1.5rem; /* page titles */
+  --text-2xl: 2rem; /* the one big number or hero line */
+  --lh-tight: 1.25;
+  --lh-body: 1.5;
+  --font: system-ui, "Noto Sans Devanagari", "Noto Sans Tamil", sans-serif;
+
+  /* ---- elevation: flat cards with a border; only floating things lift ---- */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.12); /* raised card on hover */
+  --elev-2: 0 4px 16px rgba(0, 0, 0, 0.25); /* toast, sheet, dialog */
+
+  /* ---- motion: 200 ms or less, none when the person asks for none ---- */
+  --dur-fast: 0.1s;
+  --dur: 0.15s;
+  --dur-slow: 0.2s;
+
+  /* ---- layout ---- */
+  --rail-w: 15rem;
+  --content-max: 72rem;
+  --touch: 44px;
+  --touch-primary: 48px;
+
+  font-family: var(--font);
+  font-size: 100%;
+  line-height: var(--lh-body);
+  color: var(--ink);
+  color-scheme: light dark;
+}
+
+/* Dark: the same roles, same names. Follows the phone unless the person picked light on My profile. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --paper: #0f1414;
+    --ink: #e1e3e3;
+    --muted: #bfc8c7;
+    --pen: #7fd3d2;
+    --margin: #ffb4ab;
+    --slate: #0a2a2a;
+    --chalk: #1a2121;
+    --rule: #3f4948;
+    --on-pen: #003737;
+    --pen-container: #004f4f;
+    --on-pen-container: #bdeeee;
+    --tonal: #2b4a49;
+    --warn: #ffb77c;
+    --warn-container: #5a2c00;
+    --on-warn-container: #ffdcc4;
+    --good: #98d6a0;
+    --good-container: #0f5223;
+    --on-good-container: #b4f2bc;
+    --margin-container: #93000a;
+    --on-margin-container: #ffdad6;
+    --surface: #151b1b;
+    --line: #2f3a3a;
+    --outline: #899392;
+    --scrim: rgba(0, 0, 0, 0.6);
+    --stage-bg: #0a0e0e;
+  }
+}
+:root[data-mode="dark"] {
+  --paper: #0f1414;
+  --ink: #e1e3e3;
+  --muted: #bfc8c7;
+  --pen: #7fd3d2;
+  --margin: #ffb4ab;
+  --slate: #0a2a2a;
+  --chalk: #1a2121;
+  --rule: #3f4948;
+  --on-pen: #003737;
+  --pen-container: #004f4f;
+  --on-pen-container: #bdeeee;
+  --tonal: #2b4a49;
+  --warn: #ffb77c;
+  --warn-container: #5a2c00;
+  --on-warn-container: #ffdcc4;
+  --good: #98d6a0;
+  --good-container: #0f5223;
+  --on-good-container: #b4f2bc;
+  --margin-container: #93000a;
+  --on-margin-container: #ffdad6;
+  --surface: #151b1b;
+  --line: #2f3a3a;
+  --outline: #899392;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --stage-bg: #0a0e0e;
+}
+
+/* The older blue-notebook look, for comparison or a quick switch back: VITE_THEME=classic. */
+[data-theme="classic"] {
+  --paper: #fbfcfd;
+  --ink: #14201f;
+  --muted: #4a5856;
+  --pen: #1b4f9c;
+  --slate: #1f3a33;
+  --chalk: #f2f5f0;
+  --rule: #9db4d2;
+  --pen-container: #dbe6f6;
+  --on-pen-container: #0b2447;
+  --tonal: #e2e8f0;
+  --line: #d5dde6;
+  --outline: #5f6b7a;
+  --stage-bg: #e9edf1;
+  --frame-ruling: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(157, 180, 210, 0.35) 31px, rgba(157, 180, 210, 0.35) 32px);
+  --r-card: 12px;
+  --r-btn: 2px;
+  --r-field: 2px;
+  --r-chip: 2px;
+  --r-sheet: 2px;
+}
+
+

@@ -48,7 +48,7 @@ Most of the app works with no signal. Entering a check, opening saved lessons an
 
 ## Keeping the app on your phone
 
-You can save the app on your phone's home screen like any other app. On the first screen, tap How to install and follow the steps. Saving it is optional: it also works in the browser and in Telegram.
+You can save the app on your phone's home screen like any other app. On the first screen, tap How to install and follow the steps. Saving it is optional: it also works in the browser.
 
 ## Your privacy
 
@@ -57,3 +57,10 @@ No child's name, face or voice is collected. Per-child answers stay on your phon
 ## What the assistant can and cannot do
 
 The assistant answers questions about how to use the app and what its screens mean, using only these help pages. It cites the page it used and tells you how to check. It cannot approve, send or delete anything, it cannot see other teachers, and it will say so when it does not know.
+
+## Does the app use AI, and how does the assistant find its answers?
+
+Yes, in a few places, and always with checks. In the Practice Class an AI plays the pretend children and labels the move you made, and after you finish it gives feedback that quotes your own words. Every number about a class is worked out by the app's own code, never by the AI.
+
+The assistant uses retrieval-augmented generation, often called RAG. It first searches these help pages for passages about your question, matching both the words and the meaning. Then a small AI model writes a short answer using only those passages, and the app checks that every quote really is on the page before it shows you the answer. If the pages do not cover your question, the assistant says so instead of guessing, and each answer lists the page it came from.
+

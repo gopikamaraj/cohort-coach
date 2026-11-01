@@ -1,18 +1,18 @@
 {
   "chunks": {
-    "coach_help": 8,
+    "coach_help": 30,
     "coach_kb": 0,
-    "judge": 1171,
-    "mentor_help": 8,
+    "judge": 1379,
+    "mentor_help": 21,
     "officer_help": 10,
-    "product_help": 22,
+    "product_help": 47,
     "teacher_kb": 0
   },
-  "content_hash": "9b27ab09150308164d33a3c2a9eaf1c8d6b20c4025f1674c63b7d78e54ce9a1c",
+  "content_hash": "b52fb5bfcc38291c82e76e24579187a9e15e92c3758041c15136c69d2f1846ac",
   "extras": [
     "questions",
     "rubric",
     "submission"
   ],
-  "source_commit": "67ba7da12220f297d962981bd8ef994bc95b3746"
+  "source_commit": "8b0f87f6ba73687e1c1dfcf760ea5774802de235"
 }

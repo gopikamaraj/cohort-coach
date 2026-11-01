@@ -4,11 +4,13 @@ Guards: the label set is fixed by the JSON schema (an enum built from the scenar
 low confidence becomes `other`, which changes nothing; a line that looks like an instruction to
 the system is forced to `off_task` by code whatever the model says; a posed problem must use
 numbers that are in her line and be a valid two-digit problem, or it is dropped (the scenario's
-next problem is used instead); the line is cut at 600 characters.
+next problem is used instead); the line is cut at 600 characters. If the call fails, the move is
+`other` and code still finds the one child she named, so that child answers.
 """
 
 from __future__ import annotations
 
+import re
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from typing import Literal
@@ -63,6 +65,14 @@ def _posed(label: BaseModel, teacher_text: str) -> Problem | None:
     return problem if valid_problem(problem) else None
 
 
+def named_by_code(text: str, children: Sequence[str]) -> str | None:
+    """The one child whose name appears in her line as a whole word, else None (used only when the
+    call failed, so the child she spoke to still answers)."""
+    low = text.casefold()
+    found = [c for c in children if re.search(rf"(?<!\w){re.escape(c.casefold())}(?!\w)", low)]
+    return found[0] if len(found) == 1 else None
+
+
 def label_move(
     teacher_text: str,
     *,
@@ -91,6 +101,8 @@ def label_move(
     confidence = float(getattr(label, "confidence"))  # noqa: B009
     named = str(getattr(label, "addressed_child"))  # noqa: B009
     forced: str | None = "fallback" if run.fallback_used else None
+    if forced == "fallback":
+        named = named_by_code(text, children) or named
     if any(v.code == "injection_marker" for v in check_prefilter(text, language)):
         move_id, forced = "off_task", "injection"
     elif move_id not in ("off_task",) and confidence < CONFIDENCE_BAR:

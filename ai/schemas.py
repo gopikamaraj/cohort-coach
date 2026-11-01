@@ -117,11 +117,56 @@ class Verdict(BaseModel):
     reason_for_user: str
 
 
+class SheetHeader(BaseModel):
+    """What is printed or written in the sheet's header: the class code and the roll number."""
+
+    class_code: str | None = None
+    roll_number: int | None = None
+    confidence: float = 0.0
+
+
 class SheetRead(BaseModel):
     """Call 8: digits a child wrote. Never told the expected answers."""
 
     reads: list[str]
     confidences: list[float]
+    header: SheetHeader | None = None
+
+
+class PilotSheetScan(BaseModel):
+    """Call 15 (offline, pilot demo ingest): the printed header, and where a person's name is."""
+
+    class_code: str | None = None
+    roll: int | None = None
+    name_present: bool
+    box1_words: str | None = None  # number words a child wrote in dictation box 1
+    box2_words: str | None = None
+    name_boxes: list[list[float]] = []  # [x0, y0, x1, y1] as fractions of the image, 0 to 1
+
+
+class ReadPaperItem(BaseModel):
+    """One printed question, as printed. No handwriting, no name."""
+
+    n: int
+    operation: Literal["dictate", "add", "subtract", "other"]
+    a: int | None = None  # first number printed (None for a dictated item: the number is spoken)
+    b: int | None = None
+    prompt_text: str = ""
+    box_pct: list[float] = []  # answer box [x, y, w, h] as a percentage of the page
+    printed_answer: str | None = None  # only if the sheet prints a key; never handwriting
+    unsure: bool = False
+
+
+class PaperRead(BaseModel):
+    """Call 16 (Papers page): what is printed on a paper, read from a blank paper, a key or an
+    answered sheet. The caller computes every answer; this never carries one it worked out."""
+
+    form_letter: str | None = None
+    check_code: str | None = None
+    class_code: str | None = None
+    language: Literal["en", "hi", "ta", "other"] = "en"
+    contains_handwritten_answers: bool = False
+    items: list[ReadPaperItem] = []
 
 
 SpriteSlot = Literal[
@@ -210,3 +255,6 @@ class AssistantAnswer(BaseModel):
     rubric_rows: list[str] = Field(default_factory=list, max_length=4)
     citations: list[AssistantCitation] = Field(default_factory=list, max_length=6)
     no_answer_reason: str | None = Field(default=None, max_length=200)
+    follow_ups: list[str] = Field(
+        default_factory=list, max_length=3
+    )  # short next questions the pages could answer

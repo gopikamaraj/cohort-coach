@@ -11,6 +11,7 @@ interface Call {
   model: string;
   when: string;
   prompt_version: number;
+  built?: boolean;
   layers: Record<string, string>;
 }
 interface MapData {
@@ -39,7 +40,7 @@ export default function AiMap() {
       {!online || failed ? <p role="alert">{tr("aimap.offline")}</p> : null}
       {online && !data && !failed ? <p>{tr("aimap.loading")}</p> : null}
       {data ? (
-        <div className="scroll">
+        <div className="scroll" tabIndex={0} role="region" aria-label={tr("aimap.title")}>
           <table className="grid" data-testid="ai-map">
             <thead>
               <tr>
@@ -56,6 +57,14 @@ export default function AiMap() {
                 <tr key={c.id}>
                   <th scope="row">
                     {c.id}. {c.name}
+                    {c.built === false ? (
+                      <>
+                        <br />
+                        <span className="chip" data-testid={`aimap-planned-${c.id}`}>
+                          {tr("aimap.planned")}
+                        </span>
+                      </>
+                    ) : null}
                     <br />
                     <span className="muted">
                       {c.model} · v{c.prompt_version}

@@ -2,7 +2,44 @@
 import type { ReactNode } from "react";
 import { useApp } from "../state";
 import { useLinkSpeed } from "../lib/net";
+import { isAiOff, isRecorded, useAiMode } from "../lib/aiMode";
 import { Icon } from "./icons";
+
+/** In the header when the server's AI is not live: "AI: recorded answers" or "AI: off". */
+export function AiModeBadge() {
+  const { tr } = useApp();
+  const mode = useAiMode();
+  if (!isRecorded(mode) && !isAiOff(mode) && mode !== "stub") return null;
+  const key = isRecorded(mode) ? "ai.mode.recorded" : isAiOff(mode) ? "ai.mode.off" : "ai.mode.stub";
+  return (
+    <p className={isAiOff(mode) ? "status status-off ai-badge" : "status ai-badge"} title={tr(`${key}_tip` as "ai.mode.recorded_tip")} data-testid="ai-mode-badge" data-mode={mode}>
+      <span className="status-word">{tr(key as "ai.mode.recorded")}</span>
+    </p>
+  );
+}
+
+/** Next to any AI answer on screen when the server replays recordings: "Recorded AI answer". */
+export function RecordedChip({ testId }: { testId?: string }) {
+  const { tr } = useApp();
+  const mode = useAiMode();
+  if (!isRecorded(mode)) return null;
+  return (
+    <span className="chip" data-testid={testId ?? "recorded-chip"}>
+      {tr("ai.recorded")}
+    </span>
+  );
+}
+
+/** One line saying an AI feature is off and what still works (shown only when the AI is off). */
+export function AiOffNote({ text, testId }: { text: string; testId?: string }) {
+  const mode = useAiMode();
+  if (!isAiOff(mode)) return null;
+  return (
+    <p className="banner banner-warn" role="status" data-testid={testId ?? "ai-off-note"}>
+      {text}
+    </p>
+  );
+}
 
 /** Shown whenever synthetic data is on screen. */
 export function SimulatedBanner() {

@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from services.api.db import TrackManifest
 from services.api.flows.links import verify
 from services.api.profiles import SESSION
-from services.pilot.storage import BlobStore, get_audio_store
+from services.media.storage import BlobStore, get_audio_store
 
 router = APIRouter(prefix="/api/lessons", tags=["lessons"])
 AUDIO = Depends(get_audio_store)

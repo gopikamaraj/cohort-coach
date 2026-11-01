@@ -214,3 +214,40 @@ def test_prefilter_clean_lines_pass() -> None:
 
 def test_prefilter_does_not_flag_words_that_only_contain_a_listed_word() -> None:
     assert check_prefilter("The dumbbell is not here", "en") == []
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "you are not clever",
+        "You're not smart enough for this",
+        "you are so lazy",
+        "You will never learn this",
+        "what is wrong with you",
+        "good for nothing child",
+        "shut up and sit down",
+        "तुम होशियार नहीं हो",
+        "tumse nahi hoga",
+        "நீ புத்திசாலி இல்லை",
+    ],
+)
+def test_prefilter_stops_remarks_that_put_a_child_down(line: str) -> None:
+    from ai.validators.prefilter import check_prefilter
+
+    assert "demeaning" in [v.code for v in check_prefilter(line, "en")], line
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "You are clever and you worked this out yourself",
+        "you are right, 52 minus 29 is 23",
+        "Not clever tricks, just bundles of ten",
+        "Tell me how you got that.",
+        "I am not sure, Miss.",
+    ],
+)
+def test_prefilter_lets_praise_and_ordinary_lines_through(line: str) -> None:
+    from ai.validators.prefilter import check_prefilter
+
+    assert "demeaning" not in [v.code for v in check_prefilter(line, "en")], line

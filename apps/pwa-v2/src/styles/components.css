@@ -1,0 +1,1042 @@
+/* v2 components and app shell. Layout rules and tokens only; the colours live in tokens.css. */
+
+/* =========================================================================================
+   App shell: a bottom bar on phones, a side rail from 900 px up.
+   ========================================================================================= */
+.navtab-rest {
+  display: none;
+}
+@media (min-width: 900px) {
+  .stage,
+  .stage-narrow,
+  .stage-wide {
+    display: block;
+    padding: 0;
+    background: var(--paper);
+  }
+  .frame,
+  .stage-narrow .frame,
+  .stage-wide .frame {
+    display: grid;
+    grid-template-columns: var(--rail-w) minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .frame > .strip,
+  .frame > .top,
+  .frame > .offline-note,
+  .frame > main {
+    grid-column: 2;
+  }
+  .frame > .strip {
+    grid-row: 1;
+  }
+  .frame > .top {
+    grid-row: 2;
+  }
+  .frame > .offline-note {
+    grid-row: 3;
+  }
+  .frame > main {
+    grid-row: 4;
+    padding: var(--s5) var(--s6);
+  }
+  .frame > main > * {
+    max-width: var(--content-max);
+    margin-inline: auto;
+  }
+  /* the rail */
+  .frame > .navbar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    flex-direction: column;
+    gap: var(--s1);
+    padding: var(--s4) var(--s3);
+    overflow-y: auto;
+    border-top: 0;
+    border-inline-end: 1px solid var(--line);
+    background: var(--chalk);
+  }
+  .frame > .navbar .navtab {
+    flex: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--s3);
+    min-height: var(--touch-primary);
+    padding: 0 var(--s4);
+    border: 0;
+    border-radius: var(--r-pill);
+    text-align: start;
+  }
+  .frame > .navbar .navtab:hover {
+    background: var(--tonal);
+  }
+  .frame > .navbar .navtab.navtab-on {
+    background: var(--tonal);
+    color: var(--on-pen-container);
+    font-weight: 700;
+  }
+  .navtab-rest {
+    display: flex;
+  }
+  .navtab-morebtn {
+    display: none !important;
+  }
+  .more-backdrop,
+  .more-sheet {
+    display: none;
+  }
+}
+/* the rail shows the app name above the first tab; on a phone the header already does */
+.navbar .rail-brand {
+  display: none;
+}
+@media (min-width: 900px) {
+  .navbar .rail-brand {
+    display: block;
+    padding: var(--s2) var(--s4) var(--s4);
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--pen);
+  }
+  .frame > .top .brand {
+    display: none;
+  }
+}
+
+/* phones: the bar labels wrap to two lines instead of being cut ("Enter c...") */
+@media (max-width: 899px) {
+  .navtab span {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.15;
+    font-size: var(--text-sm);
+  }
+  .navtab {
+    padding-block: var(--s1);
+  }
+}
+
+/* =========================================================================================
+   Component set (src/ui). Every state: default, hover, focus, pressed, disabled, loading.
+   ========================================================================================= */
+
+/* ---- Button ---- */
+.ui-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--touch-primary);
+  padding: var(--s2) var(--s5);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: var(--r-btn);
+  cursor: pointer;
+  overflow: hidden;
+}
+.ui-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--dur) ease;
+  pointer-events: none;
+}
+.ui-btn:hover:not(:disabled)::after {
+  opacity: var(--state-hover);
+}
+.ui-btn:active:not(:disabled)::after {
+  opacity: var(--state-press);
+}
+.ui-btn--block {
+  display: flex;
+  width: 100%;
+}
+.ui-btn--filled {
+  background: var(--pen);
+  color: var(--on-pen);
+}
+.ui-btn--tonal {
+  background: var(--tonal);
+  color: var(--on-pen-container);
+}
+.ui-btn--outlined {
+  background: transparent;
+  color: var(--pen);
+  border-color: var(--outline);
+}
+.ui-btn--text {
+  background: transparent;
+  color: var(--pen);
+  padding-inline: var(--s3);
+}
+.ui-btn--danger {
+  background: transparent;
+  color: var(--margin);
+  border-color: var(--margin);
+}
+.ui-btn:disabled,
+.ui-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+.ui-btn[aria-busy="true"] {
+  cursor: progress;
+}
+.ui-spin {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: ui-spin 0.8s linear infinite;
+}
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Card ---- */
+.ui-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  overflow-wrap: anywhere;
+}
+.ui-card--focus {
+  background: var(--pen-container);
+  color: var(--on-pen-container);
+  border-color: transparent;
+}
+.ui-card h2,
+.ui-card h3 {
+  margin: 0;
+}
+.ui-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+.ui-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.ui-grid {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+/* ---- Chip, StatusPill ---- */
+.ui-chip,
+.ui-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  min-height: 32px;
+  padding: 0 var(--s3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--r-pill);
+  background: var(--tonal);
+  color: var(--on-pen-container);
+  border: 0;
+}
+button.ui-chip {
+  min-height: var(--touch);
+  cursor: pointer;
+}
+.ui-chip[aria-pressed="true"] {
+  background: var(--pen);
+  color: var(--on-pen);
+}
+.ui-pill--good {
+  background: var(--good-container);
+  color: var(--on-good-container);
+}
+.ui-pill--warn {
+  background: var(--warn-container);
+  color: var(--on-warn-container);
+}
+.ui-pill--bad {
+  background: var(--margin-container);
+  color: var(--on-margin-container);
+}
+
+/* ---- TextField, Select, Toggle ---- */
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  margin: 0 0 var(--s3);
+}
+.ui-field__help {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  margin: 0;
+}
+.ui-field__error {
+  font-size: var(--text-sm);
+  color: var(--margin);
+  margin: 0;
+  display: flex;
+  gap: var(--s1);
+  align-items: center;
+}
+.ui-form {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  align-items: end;
+}
+.ui-form .ui-field {
+  margin: 0;
+}
+.ui-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--touch);
+  font-weight: 400;
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+.ui-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.ui-toggle__track {
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  border: 2px solid var(--outline);
+  background: var(--chalk);
+  transition: background-color var(--dur) ease;
+}
+.ui-toggle__track::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  inset-inline-start: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--outline);
+  transition: transform var(--dur) ease, background-color var(--dur) ease;
+}
+.ui-toggle input:checked + .ui-toggle__track {
+  background: var(--pen);
+  border-color: var(--pen);
+}
+.ui-toggle input:checked + .ui-toggle__track::after {
+  transform: translateX(20px);
+  background: var(--on-pen);
+}
+.ui-toggle input:focus-visible + .ui-toggle__track {
+  outline: 3px solid var(--pen);
+  outline-offset: 2px;
+}
+.ui-toggle input:disabled + .ui-toggle__track {
+  opacity: 0.5;
+}
+
+/* ---- Segmented control ---- */
+.ui-seg {
+  display: flex;
+  border: 1px solid var(--outline);
+  border-radius: var(--r-btn);
+  overflow: hidden;
+}
+.ui-seg button {
+  flex: 1 1 0;
+  min-height: var(--touch-primary);
+  padding: 0 var(--s3);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-inline-start: 1px solid var(--outline);
+  cursor: pointer;
+}
+.ui-seg button:first-child {
+  border-inline-start: 0;
+}
+.ui-seg button[aria-pressed="true"] {
+  background: var(--tonal);
+  color: var(--on-pen-container);
+}
+.ui-seg button:hover {
+  background: var(--chalk);
+}
+.ui-seg button[aria-pressed="true"]:hover {
+  background: var(--tonal);
+}
+
+/* ---- ListRow ---- */
+.ui-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.ui-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 56px;
+  padding: var(--s2) var(--s4);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.ui-list > li:last-child > .ui-row {
+  border-bottom: 0;
+}
+a.ui-row:hover,
+button.ui-row:hover {
+  background: var(--chalk);
+}
+.ui-row__text {
+  flex: 1;
+  min-width: 0;
+}
+.ui-row__title {
+  font-weight: 600;
+  font-size: var(--text-md);
+}
+.ui-row__sub {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+button.ui-row {
+  width: 100%;
+  font: inherit;
+  text-align: start;
+  background: transparent;
+  border-inline: 0;
+  border-top: 0;
+  cursor: pointer;
+}
+
+/* ---- BigNumber, ProgressMeter ---- */
+.ui-bignum {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+.ui-bignum__value {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  color: var(--pen);
+}
+.ui-bignum__label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.ui-meter {
+  display: grid;
+  gap: var(--s1);
+}
+.ui-meter__track {
+  height: 12px;
+  border-radius: var(--r-pill);
+  background: var(--tonal);
+  overflow: hidden;
+}
+.ui-meter__fill {
+  height: 100%;
+  background: var(--pen);
+  border-radius: var(--r-pill);
+  transition: width var(--dur-slow) ease;
+}
+.ui-meter__text {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+/* ---- Callout ---- */
+.ui-callout {
+  display: flex;
+  gap: var(--s3);
+  align-items: flex-start;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-chip);
+  background: var(--tonal);
+  color: var(--on-pen-container);
+  font-size: var(--text-sm);
+}
+.ui-callout .icon {
+  flex: none;
+  margin-top: 2px;
+}
+.ui-callout p {
+  margin: 0;
+}
+.ui-callout--warning {
+  background: var(--warn-container);
+  color: var(--on-warn-container);
+}
+.ui-callout--success {
+  background: var(--good-container);
+  color: var(--on-good-container);
+}
+.ui-callout--error {
+  background: var(--margin-container);
+  color: var(--on-margin-container);
+}
+
+/* ---- EmptyState, Skeleton ---- */
+.ui-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--s3);
+  padding: var(--s6) var(--s4);
+  text-align: center;
+  color: var(--muted);
+}
+.ui-empty svg.ui-empty__art {
+  width: 96px;
+  height: 96px;
+  color: var(--pen);
+}
+.ui-empty h3 {
+  margin: 0;
+  color: var(--ink);
+}
+.ui-skel {
+  display: block;
+  height: 1em;
+  border-radius: var(--r-btn);
+  background: linear-gradient(90deg, var(--chalk), var(--tonal), var(--chalk));
+  background-size: 200% 100%;
+  animation: ui-skel 1.2s ease-in-out infinite;
+}
+@keyframes ui-skel {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ---- Dialog and BottomSheet (native dialog element: focus trap and Escape come with it) ---- */
+.ui-dialog {
+  width: min(92vw, 32rem);
+  padding: 0;
+  color: var(--ink);
+  background: var(--surface);
+  border: 0;
+  border-radius: var(--r-sheet);
+  box-shadow: var(--elev-2);
+}
+.ui-dialog::backdrop {
+  background: var(--scrim);
+}
+.ui-dialog--sheet {
+  width: 100%;
+  max-width: none;
+  margin: auto 0 0;
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+@media (min-width: 900px) {
+  .ui-dialog--sheet {
+    width: min(92vw, 32rem);
+    margin: auto;
+    border-radius: var(--r-sheet);
+  }
+}
+.ui-dialog__body {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s5);
+}
+.ui-dialog__body h2 {
+  margin: 0;
+}
+
+/* ---- Avatar (the child sprites) ---- */
+.ui-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--tonal);
+  color: var(--on-pen-container);
+  font-weight: 700;
+  overflow: hidden;
+}
+.ui-avatar svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- AudioPlayer: the script is always there as text ---- */
+.ui-audio {
+  display: grid;
+  gap: var(--s3);
+}
+.ui-audio audio {
+  width: 100%;
+  min-height: var(--touch-primary);
+}
+.ui-audio details {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s2);
+}
+.ui-audio summary {
+  min-height: var(--touch);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--pen);
+}
+
+/* ---- BarChart: inline SVG plus a text alternative ---- */
+.ui-bars {
+  display: grid;
+  gap: var(--s2);
+}
+.ui-bars__row {
+  display: grid;
+  grid-template-columns: minmax(5rem, 9rem) 1fr auto;
+  gap: var(--s3);
+  align-items: center;
+  font-size: var(--text-sm);
+}
+.ui-bars__track {
+  height: 16px;
+  border-radius: var(--r-btn);
+  background: var(--chalk);
+  overflow: hidden;
+}
+.ui-bars__bar {
+  height: 100%;
+  background: var(--pen);
+  border-radius: var(--r-btn);
+}
+.ui-bars__val {
+  font-weight: 700;
+  min-width: 2ch;
+  text-align: end;
+}
+
+/* ---- StepFlow: icons joined by arrows ---- */
+.ui-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ui-steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.ui-step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-chip);
+  background: var(--tonal);
+  color: var(--on-pen-container);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.ui-step[aria-current="step"] {
+  background: var(--pen);
+  color: var(--on-pen);
+}
+.ui-steps .icon-arrow {
+  color: var(--muted);
+}
+
+/* ---- Table: a real table on wide screens, stacked cards on phones ---- */
+.ui-table {
+  width: 100%;
+}
+@media (max-width: 599px) {
+  .ui-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .ui-table,
+  .ui-table tbody,
+  .ui-table tr,
+  .ui-table td {
+    display: block;
+  }
+  .ui-table tr {
+    margin-bottom: var(--s3);
+    padding: var(--s2) var(--s3);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+  }
+  .ui-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s3);
+    border: 0;
+    padding: var(--s1) 0;
+  }
+  .ui-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--muted);
+  }
+}
+
+/* ---- TopBar bits ---- */
+.ui-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s3);
+}
+.ui-topbar__title {
+  margin: 0;
+  font-size: var(--text-xl);
+}
+.ui-topbar__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+/* =========================================================================================
+   Existing screen classes, refined to match the set (markup unchanged).
+   ========================================================================================= */
+.btn {
+  min-height: var(--touch-primary);
+  font-size: var(--text-sm);
+  border-radius: var(--r-btn);
+}
+.panel,
+.card,
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--elev-0);
+}
+.tile:hover {
+  border-color: var(--outline);
+}
+.banner {
+  border: 0;
+  border-radius: var(--r-chip);
+  background: var(--tonal);
+  color: var(--on-pen-container);
+  border-inline-start: 4px solid var(--pen);
+}
+.status {
+  font-size: var(--text-sm);
+}
+.top .brand {
+  font-size: var(--text-lg);
+}
+.panel > h2,
+.card > h2 {
+  margin-top: 0;
+}
+.panel + .panel,
+.card + .card,
+.panel + .card,
+.card + .panel {
+  margin-top: var(--s4);
+}
+
+/* buttons keep their natural width on wide screens instead of stretching edge to edge */
+@media (min-width: 900px) {
+  main .btn:not(.btn-icon) {
+    display: inline-flex;
+    width: auto;
+    min-width: 12rem;
+  }
+  main .row .btn,
+  main .sheet-actions .btn {
+    flex: 1;
+  }
+}
+/* a field and its button on one line (Profile: add a class) */
+.inline-form {
+  align-items: flex-end;
+}
+.inline-form input {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+.inline-form .btn {
+  flex: none;
+  width: auto;
+}
+
+/* a checkbox is small; its whole label is the 44 px tap target */
+label:has(> input[type="checkbox"], > input[type="radio"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--touch);
+  font-weight: 400;
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+
+/* =========================================================================================
+   Practice Class, after docs/design/reference/practice-class-v3.html: the class on the left,
+   "your turn" on the right; one column on a phone. Presentation only.
+   ========================================================================================= */
+.pc-scenario {
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: var(--s3);
+}
+.pc-scenario .icon {
+  margin-top: 2px;
+}
+.pc-scenario__meta {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.pc-scenario__line {
+  margin: var(--s1) 0 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.pc-cols {
+  display: grid;
+  gap: var(--s4);
+}
+.pc-main,
+.pc-side {
+  min-width: 0;
+}
+/* the children: each one a small card, the speaker lifted with a ring */
+.kids {
+  flex-wrap: wrap;
+  gap: var(--s3);
+}
+.kid {
+  flex: 1 1 5.5rem;
+  padding: var(--s3) var(--s2);
+  background: var(--chalk);
+  border: 1px solid var(--line);
+  border-radius: var(--r-chip);
+}
+.kid-on {
+  background: var(--surface);
+  border: 2px solid var(--pen);
+  box-shadow: var(--elev-1);
+}
+.kid-shy {
+  margin-top: var(--s1);
+  padding: 0 var(--s2);
+  border-radius: var(--r-pill);
+  background: var(--tonal);
+  color: var(--on-pen-container);
+  font-size: var(--text-sm);
+}
+/* the conversation: what she said as a tonal pill, the child's reply as a warm bubble */
+.log {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: grid;
+  gap: var(--s3);
+}
+.exchange {
+  display: grid;
+  gap: var(--s2);
+  margin: 0;
+}
+.said {
+  justify-self: end;
+  max-width: 85%;
+  margin: 0;
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-chip);
+  background: var(--tonal);
+  color: var(--on-pen-container);
+}
+.reply {
+  justify-self: start;
+  max-width: 85%;
+  margin: 0;
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-chip);
+  background: var(--warn-container);
+  color: var(--on-warn-container);
+}
+.slate {
+  background: var(--chalk);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--r-chip);
+}
+/* your turn */
+.pc-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.pc-side > .btn,
+.pc-side > button {
+  align-self: stretch;
+}
+.compose textarea {
+  border-color: var(--outline);
+  background: var(--surface);
+  border-radius: var(--r-field);
+}
+.btn-talk {
+  min-height: 72px;
+  border-radius: var(--r-pill);
+}
+
+@media (min-width: 1024px) {
+  .pc-cols {
+    grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 1fr);
+    align-items: start;
+  }
+  .pc-side {
+    position: sticky;
+    top: 0;
+  }
+  /* on a wide screen nothing needs to stick: the two columns already fit */
+  .pc-top {
+    position: static;
+    margin: 0 0 var(--s3);
+    padding: var(--s4);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+  }
+  .compose-dock {
+    position: static;
+    margin: 0;
+    padding: 0;
+    border-top: 0;
+    background: transparent;
+  }
+}
+@media (max-width: 1023px) {
+  .pc-side {
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+}
+
+/* Practice Class, second pass of the screenshot loop */
+.pc-count {
+  margin: var(--s3) 0 var(--s2);
+}
+@media (max-width: 599px) {
+  .kids {
+    flex-wrap: nowrap;
+    gap: var(--s1);
+  }
+  .kid {
+    flex: 1 1 0;
+    padding: var(--s2) var(--s1);
+  }
+  .kid-shy {
+    padding: 0;
+    background: transparent;
+  }
+}
+@media (min-width: 1024px) {
+  .pc-side form.compose-dock {
+    grid-template-columns: 1fr;
+  }
+  .pc-side .compose-dock textarea {
+    min-height: calc(var(--touch-primary) * 2);
+    resize: vertical;
+  }
+}
+
+/* Landing and tour have no tabs: no empty rail, and the role and language menus keep a sane width */
+@media (min-width: 900px) {
+  .frame.frame-bare {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .frame.frame-bare > .navbar {
+    display: none;
+  }
+  .frame.frame-bare > .strip,
+  .frame.frame-bare > .top,
+  .frame.frame-bare > .offline-note,
+  .frame.frame-bare > main {
+    grid-column: 1;
+  }
+  .frame.frame-bare > .top .brand {
+    display: inline-flex;
+  }
+  .strip {
+    padding-inline: var(--s6);
+  }
+  .strip label,
+  html:not([lang="en"]) .strip label {
+    flex: 0 1 16rem;
+  }
+}
+
+/* the header strip lines up with the page column on very wide screens */
+@media (min-width: 900px) {
+  .frame > .top,
+  .frame > .strip,
+  .frame > .offline-note {
+    padding-inline: max(var(--s6), calc((100% - var(--content-max)) / 2));
+  }
+}
+
+/* tablets: main has wider padding than the phone's, so the sticky strips must not reach past it */
+@media (min-width: 600px) {
+  .pc-top,
+  .compose-dock {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}

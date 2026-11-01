@@ -4,8 +4,10 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
 
-# ffmpeg encodes the pilot's lesson audio (services/speech/audio.py needs it on PATH).
+# ffmpeg encodes the lesson audio (services/speech/audio.py needs it on PATH).
+# Pango and HarfBuzz let WeasyPrint shape Devanagari and Tamil for the check papers (Paper Studio).
 RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+    libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Only what the API needs: the engine, the AI layer, the services, the content files and the
@@ -20,9 +22,13 @@ COPY strings ./strings
 COPY assistant_scopes.yaml ./assistant_scopes.yaml
 # The pilot forms the item validator checks scripts against (read at run time).
 COPY docs/design/pilot_forms.golden.json ./docs/design/pilot_forms.golden.json
+COPY docs/YOU_SAID_WE_CHANGED.md ./docs/YOU_SAID_WE_CHANGED.md
 COPY data/__init__.py ./data/__init__.py
 # The simulated block only: never raw pilot files.
 COPY data/synthetic ./data/synthetic
+# Demo Studio (judge deployment): the demo scenario, and the photo effects the demo sheets reuse.
+COPY demo ./demo
+COPY scripts/__init__.py scripts/make_synthetic_sheets.py ./scripts/
 RUN pip install --no-cache-dir ".[prod]"
 
 EXPOSE 8000

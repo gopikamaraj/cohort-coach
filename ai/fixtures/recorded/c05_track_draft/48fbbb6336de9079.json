@@ -1,0 +1,18 @@
+{
+  "call": "c05_track_draft",
+  "model": "claude-opus-5-5",
+  "outputs": [
+    {
+      "day": 1,
+      "kind": "lesson",
+      "script": "Hello, and welcome. This is lesson {{track.day}} of {{track.total_days}}. Today is about one thing. We listen before we correct. The mistake is {{track.error_name}}. In the classes of your cohort, {{class.count_showing}} of {{class.children_checked}} children made this mistake. So you are not alone with it.\n\nLet me tell you how it sounds. Think of the sum {{class.example_a}} minus {{class.example_b}}. A child writes {{class.example_wrong_answer}}. The right answer is {{class.example_correct_answer}}. Ask her how she did it. She says something like this. \"In the ones, I can't take the big one from the small one. So I turned it around. I took the small one from the big one.\" Then she does the tens the usual way. To her, this feels fair. She knows you take small from big. She is following a rule. It is just the wrong rule for this place.\n\nHere is one more sum to keep in your head. 53 - 28 = [child: 35]. In the ones, she did 8 take away 3. The right answer is 53 - 28 = 25.\n\nNotice something. The child is not careless. She is thinking. Her steps make sense to her. That is good news. A rule can change once we hear it.\n\nNow the move for today. We call it \"ask the child to explain.\" You may already do this. Today we slow it down.\n\nStep 1. When you see a wrong answer, do not say right or wrong yet. Keep your face calm.\n\nStep 2. Ask, \"How did you get that?\" Then wait. Count to 5 in your head. Children need time.\n\nStep 3. Hand her the bundles of ten sticks. Ask her to show the top number. For 53, she puts down 5 bundles and 3 loose sticks.\n\nStep 4. Ask her to take away the ones of the bottom number. She needs 8 loose sticks. She has only 3. Watch her here. Does she look stuck? Does she say, \"I'll just do 8 take away 3\"?\n\nStep 5. Listen to her words. Write down one sentence she says. Just one.\n\nThat is all. Do not fix it today. The next lessons will help with that. Today, your only job is to hear the rule she is using.\n\nIf you have a moment more, add one question. Ask only this one child, not the class. \"Is 2 - 6 the same as 6 - 2?\" Then ask, \"Why?\" Some children say yes. That tells you a lot. They think the order does not matter.\n\nHere is a two-line script to use in class.\n\nYou ask: \"How did you get that? Show me with the sticks.\"\n\nWhen she answers, you say: \"Thank you. I can see how you were thinking.\"\n\nThese lines keep her talking. They tell her that her thinking matters.\n\nNow, try tomorrow. Pick one child. Just one. Give her a sum without regrouping, like 47 - 23 = 24. She may well get it right. Ask her anyway. \"How did you get that?\" Let her show it with bundles and loose sticks. Listen to how she talks about the ones and the tens. You are practising too. You learn to ask and wait, even when the answer is right. Then the question feels normal when the answer is wrong.\n\nLast, a question to think about. When the child explained her steps, what surprised you? Was there a word she used that you did not expect? If you like, send a short voice note with what you heard. There is no right answer here. We are learning to listen together.\n\nThank you for listening. See you in the next lesson."
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 1660,
+    "cache_write_tokens": 1660,
+    "input_tokens": 2674,
+    "output_tokens": 7279
+  }
+}

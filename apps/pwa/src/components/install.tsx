@@ -92,6 +92,7 @@ export function InstallEntry({ variant }: { variant: "card" | "row" }) {
           <div className="l-install-text">
             <strong>{tr("install.card_title")}</strong>
             <span className="muted">{tr("install.card_hint")}</span>
+            <span className="muted">{tr("install.card_note")}</span>
           </div>
           <button type="button" className="m-btn m-btn-tonal" onClick={() => setOpen(true)} data-testid="install-open">
             {tr("install.open")}

@@ -1,0 +1,169 @@
+/* v2 base layer: raw HTML elements get the design system's look, so a form control that has no
+   class still matches the rest of the app. Tokens only: no colour or size literal below. */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  font-family: var(--font);
+  font-size: var(--text-md);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background: var(--paper);
+}
+h1 {
+  font-size: var(--text-xl);
+}
+h2 {
+  font-size: var(--text-lg);
+}
+h3 {
+  font-size: var(--text-md);
+  margin: var(--s3) 0 var(--s2);
+  line-height: var(--lh-tight);
+}
+small,
+.muted,
+.hint {
+  font-size: var(--text-sm);
+}
+a {
+  color: var(--pen);
+  text-underline-offset: 0.2em;
+}
+
+/* ---- form controls: one look for every input, select, textarea and button ---- */
+label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]),
+select,
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--touch-primary);
+  padding: var(--s2) var(--s3);
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--r-field);
+  transition: border-color var(--dur) ease, box-shadow var(--dur) ease;
+}
+textarea {
+  resize: vertical;
+  min-height: calc(var(--touch-primary) * 2);
+}
+select {
+  appearance: none;
+  padding-inline-end: var(--s6);
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 55%, calc(100% - 14px) 55%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+[dir="rtl"] select {
+  background-position: 20px 55%, 14px 55%;
+}
+input:hover:not(:disabled),
+select:hover:not(:disabled),
+textarea:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  background: var(--chalk);
+}
+input[type="checkbox"],
+input[type="radio"] {
+  width: 24px;
+  height: 24px;
+  accent-color: var(--pen);
+  flex: none;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+[aria-invalid="true"] {
+  border-color: var(--margin);
+}
+
+/* Buttons without a class still look like buttons (a class refines them). */
+button {
+  font: inherit;
+  font-size: var(--text-sm);
+  min-height: var(--touch);
+}
+button:not([class]) {
+  min-height: var(--touch-primary);
+  padding: var(--s2) var(--s4);
+  font-weight: 600;
+  color: var(--pen);
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--r-btn);
+  cursor: pointer;
+}
+button:not([class]):hover:not(:disabled) {
+  background: var(--tonal);
+}
+button:disabled {
+  cursor: default;
+}
+
+/* ---- focus: a visible ring on everything that can take it ---- */
+:focus-visible {
+  outline: 3px solid var(--pen);
+  outline-offset: 2px;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-offset: 0;
+  border-color: var(--pen);
+}
+
+/* ---- tables never run off the screen ---- */
+table {
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+th {
+  text-align: start;
+  font-weight: 700;
+  color: var(--muted);
+}
+th,
+td {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---- motion: soft, short, and none on request ---- */
+.btn,
+.m-btn,
+.navtab,
+.tile,
+.card,
+.panel,
+.chip {
+  transition: background-color var(--dur) ease, border-color var(--dur) ease, box-shadow var(--dur) ease, transform var(--dur-fast) ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

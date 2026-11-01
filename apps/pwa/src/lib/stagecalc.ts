@@ -4,6 +4,7 @@
 // leave the phone; only the class counts are kept. A stage is always "most likely".
 import rawKeys from "../generated/answer_keys.json";
 import { keys, type Reading } from "./diagnosis";
+import { registeredForm } from "./paperKeys";
 
 interface StageRules {
   min_hits: number;
@@ -54,8 +55,8 @@ export interface StageCounts {
 export const CONCEPTS: Record<string, number[]> = rules.concepts;
 
 export function classifyChild(formKey: string, readings: Reading[], tags: Tags = {}): StageResult {
-  const form = stageKeys.forms[formKey];
-  if (!form || readings.length !== form.items.length) throw new Error("expected ten answers on a known form");
+  const form = stageKeys.forms[formKey] ?? (registeredForm(formKey) as unknown as StageKeys["forms"][string] | undefined);
+  if (!form || readings.length !== form.items.length) throw new Error("expected the answers of a known paper");
   const missed = new Set(tags.missed ? Object.keys(CONCEPTS) : (tags.missed_concepts ?? []));
   for (const name of missed) if (!(name in CONCEPTS)) throw new Error(`unknown concept ${name}`);
   const hits = new Map<string, number>();

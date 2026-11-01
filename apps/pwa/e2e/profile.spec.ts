@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { chooseRole } from "./switch";
 
 // My profile (classes, storage and backup, data used, privacy), the privacy notice and consent, feedback to
@@ -12,11 +12,6 @@ test.beforeEach(async ({ page }) => {
     localStorage.setItem("cc.voice", "0");
   });
 });
-
-async function chooseAll(page: Page) {
-  await page.goto("/#/profile");
-  for (const s of ["counts", "practice_ai", "feedback"]) await page.getByTestId(`consent-${s}`).check();
-}
 
 test("nothing is on by default, the notice is readable, and choices are recorded with a version", async ({ page }) => {
   const records: string[] = [];

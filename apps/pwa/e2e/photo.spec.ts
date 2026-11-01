@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { startSample } from "./sample";
 
 // Photo of a sheet in the Check page. The reading API is mocked here (the model call itself is
 // tested in tests/api/test_sheets.py with a fake model); this proves the phone's side: the photo
@@ -27,8 +28,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function begin(page: Page) {
-  await page.goto("/#/check");
-  await page.getByTestId("form-A").click();
+  await startSample(page, { size: 3 }); // the check has started on the standard test paper
 }
 
 test("a photo fills the boxes, marks the unsure ones, and she corrects and moves on", async ({ page }) => {
@@ -37,7 +37,7 @@ test("a photo fills the boxes, marks the unsure ones, and she corrects and moves
     const req = route.request();
     const body = req.postDataBuffer()?.toString("latin1") ?? "";
     sent = {
-      form: /name="form"\r\n\r\n(\w+)/.exec(body)?.[1] ?? null,
+      form: /name="form"\r\n\r\n([\w-]+)/.exec(body)?.[1] ?? null,
       fields: [...body.matchAll(/name="(\w+)"/g)].map((m) => m[1] ?? ""),
       type: /Content-Type: (image\/[\w+]+)/.exec(body)?.[1],
       size: body.length,
@@ -65,9 +65,9 @@ test("a photo fills the boxes, marks the unsure ones, and she corrects and moves
   await expect(page.getByTestId("child-title")).toContainText("2");
   await expect(page.getByTestId("input-1")).toHaveValue("");
 
-  // what went to the server: the form id and an image, nothing else, and a JPEG (shrunk)
-  expect(sent?.form).toBe("A");
-  expect(sent?.fields.sort()).toEqual(["form", "image"]);
+  // what went to the server: the paper's id and an image, nothing else, and a JPEG (shrunk)
+  expect(sent?.form).toMatch(/^P-[0-9a-f]{12}$/);
+  expect(sent?.fields.sort()).toEqual(["form", "image", "sha256"]); // the hash of the original file, so a recording can be replayed by file
   expect(sent?.type).toBe("image/jpeg");
 
   // nothing from the photo is kept on the phone
@@ -109,7 +109,7 @@ test("when reading fails she is told to type, and her typing still works", async
   await expect(page.getByTestId("input-1")).toHaveValue("3");
 });
 
-test("offline, the photo is not sent and she is told to type", async ({ page, context }) => {
+test("offline, the photo is not sent: the button is disabled with the reason and typing stays", async ({ page, context }) => {
   let calls = 0;
   await page.route("**/api/sheets/read", async (route) => {
     calls += 1;
@@ -117,8 +117,11 @@ test("offline, the photo is not sent and she is told to type", async ({ page, co
   });
   await begin(page);
   await context.setOffline(true);
-  await page.getByTestId("photo-input").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: PNG });
-  await expect(page.getByTestId("photo-note")).toContainText("needs a connection");
+  await page.evaluate(() => window.dispatchEvent(new Event("offline")));
+  await expect(page.getByTestId("photo-input")).toBeDisabled();
+  await expect(page.getByTestId("add-blocked")).toContainText("needs a connection");
+  await page.getByTestId("input-1").fill("3");
+  await expect(page.getByTestId("input-1")).toHaveValue("3");
   expect(calls).toBe(0);
   await context.setOffline(false);
 });
@@ -148,4 +151,35 @@ test("it only asks before replacing when the child already has digits written", 
   await page.getByTestId("photo-input").setInputFiles(photo); // now digits are there: she is asked
   await expect.poll(() => asked.length).toBe(1);
   expect(asked[0]).toContain("Replace them");
+});
+
+const READ_OK = (route: import("@playwright/test").Route) =>
+  route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ form: "A", retried: false, cells: CELLS }) });
+
+test("each roll keeps its own picture in memory, and nothing of the picture is stored on the phone", async ({ page }) => {
+  await page.route("**/api/sheets/read", READ_OK);
+  await begin(page);
+  await page.getByTestId("photo-input").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: PNG });
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
+  await expect(page.getByTestId("show-sheet")).toBeEnabled();
+  await page.getByTestId("next-child").click();
+  await expect(page.getByTestId("show-sheet")).toBeDisabled(); // roll 2 has no picture yet
+  const stored = await page.evaluate(async () => {
+    const dbs = await indexedDB.databases();
+    let found = false;
+    for (const d of dbs) {
+      const open = indexedDB.open(d.name as string);
+      const db: IDBDatabase = await new Promise((res) => (open.onsuccess = () => res(open.result)));
+      for (const name of Array.from(db.objectStoreNames)) {
+        const all: unknown[] = await new Promise((res) => {
+          const r = db.transaction(name).objectStore(name).getAll();
+          r.onsuccess = () => res(r.result);
+        });
+        if (JSON.stringify(all).match(/blob:|data:image|\/9j\//)) found = true;
+      }
+      db.close();
+    }
+    return found;
+  });
+  expect(stored).toBe(false);
 });

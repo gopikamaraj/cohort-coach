@@ -81,7 +81,6 @@ export default function Flow() {
           ))}
         </div>
       ) : null}
-      <p className="muted">{tr("flow.telegram")}</p>
     </section>
   );
 }

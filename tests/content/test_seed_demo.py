@@ -14,8 +14,8 @@ from scripts.seed_demo_track import NotAJudgeDeployment, seed
 from services.api.db import ContentAudit, TrackManifest
 from services.content import drafting
 from services.content.track import load_track
-from services.pilot import storage as storage_mod
-from services.pilot.storage import LocalBlobStore
+from services.media import storage as storage_mod
+from services.media.storage import LocalBlobStore
 from tests.ai.test_c05_track_draft import GOOD, PASS
 from tests.content.test_publish import MODEL, TAGGED, Voice, fake_join
 from tests.support_ai import FakeClient

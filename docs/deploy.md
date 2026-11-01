@@ -2,6 +2,8 @@
 
 Status: **pilot mode is deployed on Google Cloud (26 Oct); the generic recipe below is still not run on Render, Neon or Cloudflare.** See "Google Cloud pilot deployment" at the end for what is live. The rest of this page is the original recipe.
 
+> **31 Oct:** the code no longer has a pilot mode. The Google Cloud services described below were deployed on 26 Oct from the older code (a pilot-only API and a judge API). The next deploy is one service, `fln-cc-backend`, that serves the whole app; it needs one database choice (SQLite or Cloud SQL) and its `PWA_ORIGIN`, `MEDIA_LOCAL_STORE` or `GCS_AUDIO_BUCKET` settings. Not done yet.
+
 Status of the original recipe: **written, not yet run.** It needs hosting accounts and secrets (Gopi). Nothing below has been executed on a real host; steps marked "verify" are the checks to run once it is live. The defaults follow OD-3 in `docs/build/DECISIONS.md`: an always-on small API instance, managed Postgres, S3-compatible storage for published audio, and static hosting for the PWA. No plan that sleeps during 1–10 Nov.
 
 ## What runs where
@@ -32,6 +34,7 @@ On the PWA host, set one build variable: `VITE_API_BASE` = the API's https URL (
 
 ## Steps
 
+0. **Before any deploy: the assistant's reference.** Run the prompt `docs/build/Claude Code prompt refresh the assistant reference before deploy.md` in Claude Code (it brings the help pages and each role's suggested questions up to date for every page), then `python tasks.py predeploy`, which must print `predeploy ok`. The index it rebuilds (`services/assistant/index/`) is copied into the API image, so a deploy without this step ships the old questions and answers.
 1. **Database.** Create a Postgres database; copy the connection string and change the scheme to `postgresql+psycopg://`. Tables are created on first start (Alembic comes with the stable schema; see DECISIONS).
 2. **API.** Create a web service from this repo using the `Dockerfile` (it installs `.[prod]` and runs uvicorn on `$PORT`). Choose an always-on plan, set the variables above, deploy. Health check path: `/api/health`.
 3. **PWA.** Create a static site from this repo: root directory `apps/pwa`, build command `npm ci && npm run build`, output directory `dist`, build variable `VITE_API_BASE`. Make sure the host serves `index.html` for the app and `sw.js`, `manifest.webmanifest` and `workbox-*.js` as files.

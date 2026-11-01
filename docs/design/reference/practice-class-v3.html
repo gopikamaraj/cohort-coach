@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cohort Coach: Practice Class</title>
+<!-- Three separate family requests. Stitch packed them into one malformed URL, so Inter never loaded. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0B6B6B; --on-primary:#FFFFFF; --primary-press:#004F4F;
+  --primary-container:#BDEEEE; --on-primary-container:#002020;
+  --secondary-container:#CCE8E7; --on-secondary-container:#051F1F;
+  --tertiary:#A04A00; --tertiary-container:#FFDCC4; --on-tertiary-container:#331200;
+  --success:#1B6D2F; --success-container:#B4F2BC; --on-success-container:#00210A;
+  --bg:#F7FAFA; --surface:#FFFFFF; --surface-low:#ECF5F4; --surface-high:#E1EAE9;
+  --on-surface:#191C1C; --on-surface-variant:#3F4948;
+  --outline:#6F7979; --outline-variant:#BEC9C8;
+  --shadow-2:0 4px 12px rgba(11,107,107,.08);
+  --font:"Inter","Noto Sans Devanagari","Noto Sans Tamil",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --primary:#86D4D3; --on-primary:#003737; --primary-press:#A2F0ef;
+    --primary-container:#004F50; --on-primary-container:#A2F0EF;
+    --secondary-container:#324B4B; --on-secondary-container:#CCE8E7;
+    --tertiary:#FFB68B; --tertiary-container:#753400; --on-tertiary-container:#FFDBC8;
+    --success:#8FD99B; --success-container:#0B3A19; --on-success-container:#B4F2BC;
+    --bg:#0F1515; --surface:#171D1D; --surface-low:#1D2525; --surface-high:#283131;
+    --on-surface:#E0E3E2; --on-surface-variant:#BEC9C8;
+    --outline:#899392; --outline-variant:#3F4948;
+    --shadow-2:0 4px 12px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --primary:#86D4D3; --on-primary:#003737; --primary-press:#A2F0EF;
+  --primary-container:#004F50; --on-primary-container:#A2F0EF;
+  --secondary-container:#324B4B; --on-secondary-container:#CCE8E7;
+  --tertiary:#FFB68B; --tertiary-container:#753400; --on-tertiary-container:#FFDBC8;
+  --success:#8FD99B; --success-container:#0B3A19; --on-success-container:#B4F2BC;
+  --bg:#0F1515; --surface:#171D1D; --surface-low:#1D2525; --surface-high:#283131;
+  --on-surface:#E0E3E2; --on-surface-variant:#BEC9C8;
+  --outline:#899392; --outline-variant:#3F4948;
+  --shadow-2:0 4px 12px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:var(--font);background:var(--bg);color:var(--on-surface);font-size:15px;line-height:1.6;letter-spacing:.015em;min-height:100%}
+svg{display:block}
+.icon{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+/* shell */
+.app{display:grid;grid-template-columns:88px minmax(0,1fr);min-height:100vh}
+.rail{background:var(--surface-low);border-right:1px solid var(--outline-variant);display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 0;position:sticky;top:0;height:100vh}
+.logo{width:48px;height:48px;border-radius:14px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-weight:600;font-size:14px;letter-spacing:0;margin-bottom:14px}
+.nav{width:72px;min-height:56px;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--on-surface-variant);cursor:pointer;border-radius:12px;padding:4px 0}
+.nav .pill{width:56px;height:32px;border-radius:16px;display:grid;place-items:center}
+.nav[aria-current="page"]{color:var(--on-surface);font-weight:600}
+.nav[aria-current="page"] .pill{background:var(--secondary-container);color:var(--on-secondary-container)}
+
+.main{min-width:0}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:16px 48px;border-bottom:1px solid var(--outline-variant);background:var(--bg)}
+.titles{flex:1 1 320px;min-width:0}
+.titles h1{font-size:24px;line-height:32px;font-weight:600;letter-spacing:0}
+.titles p{font-size:13px;line-height:20px;color:var(--on-surface-variant)}
+.tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.status{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border-radius:999px;background:var(--success-container);color:var(--on-success-container);font-size:12px;font-weight:600}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--success)}
+.seg{display:inline-flex;border:1px solid var(--outline);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:none;min-width:48px;min-height:44px;padding:0 14px;font-size:14px;font-weight:500;cursor:pointer}
+.seg button+button{border-left:1px solid var(--outline)}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);font-weight:600}
+.profile{width:44px;height:44px;border-radius:50%;border:0;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;cursor:pointer}
+
+.content{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:24px;padding:24px 48px 48px;max-width:1280px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--outline-variant);border-radius:16px;padding:24px}
+.card h2{font-size:18px;line-height:26px;font-weight:600;letter-spacing:0}
+.card .hint{font-size:13px;line-height:20px;color:var(--on-surface-variant);margin:2px 0 16px}
+
+/* scenario */
+.scenario{background:var(--primary-container);border-color:transparent;color:var(--on-primary-container);display:flex;gap:16px;align-items:flex-start}
+.scenario .meta{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.scenario p{font-size:18px;line-height:28px;font-weight:600;letter-spacing:0;margin-top:6px}
+
+/* children */
+.kids{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.kid{border:1px solid var(--outline-variant);border-radius:12px;background:var(--surface-low);padding:14px 8px 12px;text-align:center}
+.kid.on{background:var(--surface);border:2px solid var(--primary);box-shadow:var(--shadow-2);padding:13px 7px 11px}
+.kid svg{width:64px;height:64px;margin:0 auto 8px}
+.kid b{display:block;font-size:15px;font-weight:600}
+.tag{display:inline-flex;align-items:center;gap:6px;margin-top:4px;min-height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--surface-high);color:var(--on-surface-variant)}
+.tag.speak{background:var(--tertiary-container);color:var(--on-tertiary-container)}
+.tag.speak i{width:8px;height:8px;border-radius:50%;background:var(--tertiary)}
+.says{margin-top:16px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--tertiary-container);color:var(--on-tertiary-container)}
+.says b{display:block;font-size:13px;font-weight:600}
+.says span{font-size:15px;line-height:24px}
+.log{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.log div{padding:10px 14px;border-radius:12px;background:var(--secondary-container);color:var(--on-secondary-container);font-size:14px;line-height:22px}
+.log div b{font-weight:600}
+
+/* board */
+.boardhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.boardhead span.pillx{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--secondary-container);color:var(--on-secondary-container)}
+.sum{font-size:32px;line-height:40px;font-weight:600;letter-spacing:.04em;text-align:center;padding:12px;border-radius:12px;background:var(--surface-low);font-variant-numeric:tabular-nums}
+.mat{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.place{border:1px solid var(--outline-variant);border-radius:12px;padding:12px 14px;background:var(--surface-low);min-height:150px}
+.place h3{font-size:13px;font-weight:600;color:var(--on-surface-variant);letter-spacing:.02em}
+.pieces{display:flex;align-items:flex-end;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:96px}
+.rod{width:18px;height:96px;border-radius:4px;background:var(--primary);background-image:repeating-linear-gradient(to bottom,transparent 0 8.6px,rgba(255,255,255,.35) 8.6px 9.6px)}
+.unit{width:22px;height:22px;border-radius:4px;background:var(--tertiary)}
+
+/* controls */
+.mic{display:flex;align-items:center;justify-content:center;gap:20px;padding:20px 12px;border-radius:12px;background:var(--surface-low)}
+.micbtn{width:72px;height:72px;border-radius:50%;border:0;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow-2)}
+.micbtn:active{background:var(--primary-press)}
+.micbtn .icon{width:32px;height:32px}
+.bars{display:flex;align-items:center;gap:4px;height:36px}
+.bars i{display:block;width:4px;height:8px;border-radius:2px;background:var(--primary);animation:eq 1s ease-in-out infinite}
+.bars i:nth-child(2){animation-delay:.12s}.bars i:nth-child(3){animation-delay:.24s}.bars i:nth-child(4){animation-delay:.36s}
+.paused .bars i{animation:none;height:8px}
+@keyframes eq{0%,100%{height:8px}50%{height:30px}}
+@media (prefers-reduced-motion:reduce){.bars i{animation:none;height:18px}}
+.micmsg{text-align:center;margin-top:10px}
+.micmsg b{display:block;font-size:16px;font-weight:600;color:var(--primary);letter-spacing:0}
+.micmsg span{font-size:13px;color:var(--on-surface-variant)}
+.moves{margin-top:20px}
+.moves p{font-size:13px;font-weight:600;color:var(--on-surface-variant);margin-bottom:8px}
+.move{width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;margin-bottom:8px;border:0;border-radius:999px;background:var(--secondary-container);color:var(--on-secondary-container);font-size:15px;font-weight:600;cursor:pointer;text-align:left}
+.move:hover{filter:brightness(.97)}
+.field{display:flex;gap:8px;margin-top:12px}
+.field input{flex:1;min-width:0;min-height:56px;padding:0 16px;border:1px solid var(--outline-variant);border-radius:8px;background:var(--surface);color:var(--on-surface);font:inherit}
+.field input:focus{border:2px solid var(--primary);padding:0 15px}
+.btn{min-height:56px;padding:0 22px;border:0;border-radius:8px;background:var(--primary);color:var(--on-primary);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn:active{background:var(--primary-press)}
+
+/* feedback */
+.fb{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:10px}
+.fb.good{background:var(--success-container);color:var(--on-success-container)}
+.fb.watch{background:var(--tertiary-container);color:var(--on-tertiary-container)}
+.fb b{display:block;font-size:15px;font-weight:600;letter-spacing:0}
+.fb span{font-size:14px;line-height:22px}
+.meterhead{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-top:16px}
+.meterhead span:last-child{font-weight:400;color:var(--on-surface-variant)}
+.meter{height:10px;border-radius:5px;background:var(--surface-high);overflow:hidden;margin-top:8px}
+.meter i{display:block;height:100%;width:34%;background:var(--success);border-radius:5px}
+.privacy{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:12px;background:var(--surface-low);font-size:13px;line-height:20px;color:var(--on-surface-variant)}
+
+/* children's voices */
+.vrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-4px 0 16px}
+.vtoggle{min-height:44px;padding:0 18px;border-radius:22px;border:1.5px solid var(--primary);background:transparent;color:var(--primary);font-weight:600;cursor:pointer}
+.vtoggle[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.vstatus{font-size:13px;line-height:20px;color:var(--on-surface-variant)}
+.say{flex:none;width:44px;height:44px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer;margin-left:auto}
+.log .child{display:flex;gap:12px;align-items:center;background:var(--tertiary-container);color:var(--on-tertiary-container)}
+.log .child .t{flex:1}
+.kid.talking{box-shadow:0 0 0 3px var(--primary)}
+/* tablet and mobile */
+@media (max-width:1024px){
+  .top{padding:16px 32px}
+  .content{padding:24px 32px 40px;grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr;padding-bottom:88px}
+  .rail{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;flex-direction:row;justify-content:space-around;gap:0;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));border-right:0;border-top:1px solid var(--outline-variant);z-index:20}
+  .logo{display:none}
+  .nav{flex:1;width:auto}
+  .top{padding:12px 16px}
+  .titles h1{font-size:20px;line-height:28px}
+  .tools{width:100%;justify-content:space-between}
+  .content{padding:16px 16px 24px;gap:16px}
+  .card{padding:16px}
+  .sum{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Main">
+    <div class="logo" aria-hidden="true">A-Z</div>
+    <button class="nav" type="button">
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg></span>Home
+    </button>
+    <button class="nav" type="button" aria-current="page">
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5"/><path d="M16 5.5c1.8.4 3 1.8 3 3.5s-1.2 3.1-3 3.5M17.5 14.3c1.8.6 3 2.2 3.3 4.7"/></svg></span>Practice
+    </button>
+    <button class="nav" type="button">
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg></span>My track
+    </button>
+    <button class="nav" type="button">
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg></span>Cohort
+    </button>
+  </nav>
+
+  <div class="main">
+    <header class="top">
+      <div class="titles">
+        <h1>Practice Class</h1>
+        <p>Rehearse a lesson with simulated children. No real child is involved.</p>
+      </div>
+      <div class="tools">
+        <span class="status"><i></i>Works offline</span>
+        <div class="seg" role="group" aria-label="Language">
+          <button type="button" aria-pressed="true">EN</button>
+          <button type="button" aria-pressed="false" lang="hi">हिं</button>
+          <button type="button" aria-pressed="false" lang="ta">தமி</button>
+        </div>
+        <button class="profile" type="button" aria-label="Your account">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- LEFT: the class -->
+      <div class="col">
+        <section class="card scenario" aria-label="Scenario">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-top:2px"><path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.8V16c0 1.2 2.5 2.5 5.5 2.5s5.5-1.300 5.500-2.5v-4.200"/></svg>
+          <div>
+            <div class="meta">Grade 3, subtraction with regrouping</div>
+            <p>Show the class how to work out 42 − 17. Watch where the children get stuck.</p>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Simulated class">
+          <h2>Your simulated class</h2>
+          <p class="hint">Each child holds a different misunderstanding. Respond to what they say.</p>
+          <div class="vrow">
+            <button type="button" class="vtoggle" id="vtoggle" aria-pressed="true">Children’s voices: On</button>
+            <span class="vstatus" id="vstatus" role="status"></span>
+          </div>
+
+          <div class="kids">
+            <div class="kid on" data-child="asha">
+              <!-- confused: raised brows, flat mouth -->
+              <svg viewBox="0 0 64 64" role="img" aria-label="Asha, looking confused"><circle cx="32" cy="32" r="30" fill="#FFDCC4"/><path d="M13 60c2-11 36-11 38 0z" fill="#0B6B6B"/><circle cx="32" cy="29" r="14" fill="#E8B48C"/><path d="M18 27c-1-13 27-13 28 0c-5-5-23-5-28 0z" fill="#2B2B2B"/><circle cx="27" cy="31" r="1.9" fill="#222"/><circle cx="37" cy="31" r="1.9" fill="#222"/><path d="M23.500 25.500l6-2.200M40.500 25.500l-6-2.200" stroke="#222" stroke-width="1.700" stroke-linecap="round"/><path d="M27.500 38.500c3-1.800 6-1.800 9 0" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <b>Asha</b>
+              <span class="tag speak"><i></i>Speaking</span>
+            </div>
+            <div class="kid" data-child="ravi">
+              <!-- attentive: neutral -->
+              <svg viewBox="0 0 64 64" role="img" aria-label="Ravi, listening"><circle cx="32" cy="32" r="30" fill="#CCE8E7"/><path d="M13 60c2-11 36-11 38 0z" fill="#A04A00"/><circle cx="32" cy="29" r="14" fill="#D9A27A"/><path d="M18 26c2-13 26-13 28 0c-8-3-20-3-28 0z" fill="#1F1F1F"/><circle cx="27" cy="31" r="1.9" fill="#222"/><circle cx="37" cy="31" r="1.9" fill="#222"/><path d="M28 37.500h8" stroke="#222" stroke-width="2" stroke-linecap="round"/></svg>
+              <b>Ravi</b>
+              <span class="tag">Listening</span>
+            </div>
+            <div class="kid" data-child="meena">
+              <!-- ready: small smile -->
+              <svg viewBox="0 0 64 64" role="img" aria-label="Meena, ready"><circle cx="32" cy="32" r="30" fill="#E3E0FF"/><path d="M13 60c2-11 36-11 38 0z" fill="#4A6363"/><circle cx="32" cy="29" r="14" fill="#EBB896"/><path d="M17 30c-2-17 30-17 30 0c-4-6-26-6-30 0z" fill="#3A2A1E"/><circle cx="27" cy="31" r="1.9" fill="#222"/><circle cx="37" cy="31" r="1.9" fill="#222"/><path d="M26.500 36.500c3 3.500 8 3.500 11 0" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <b>Meena</b>
+              <span class="tag">Ready</span>
+            </div>
+          </div>
+
+          <div class="says" role="status">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2.800 19c.5-3 2.500-4.500 5.200-4.500M14 8.500c1.500.8 2.300 2 2.300 3.500s-.8 2.700-2.300 3.500M17.500 6c2.200 1.200 3.500 3.300 3.500 6s-1.300 4.800-3.500 6"/></svg>
+            <div style="flex:1"><b>Asha says</b><span id="ashaline">“Two minus seven… I can’t. So I’ll do seven minus two.”</span></div>
+            <button type="button" class="say" id="ashaplay" aria-label="Play Asha’s line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+          </div>
+          <div class="log" id="log" aria-live="polite"></div>
+        </section>
+
+        <section class="card" aria-label="Board">
+          <div class="boardhead"><h2>Board</h2><span class="pillx">Blocks</span></div>
+          <div class="sum" aria-label="42 minus 17 equals what">42 − 17 = ?</div>
+          <div class="mat">
+            <div class="place">
+              <h3>Tens (4)</h3>
+              <div class="pieces" role="img" aria-label="4 ten-rods"><i class="rod"></i><i class="rod"></i><i class="rod"></i><i class="rod"></i></div>
+            </div>
+            <div class="place">
+              <h3>Ones (2)</h3>
+              <div class="pieces" role="img" aria-label="2 single blocks"><i class="unit"></i><i class="unit"></i></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: the teacher -->
+      <div class="col">
+        <section class="card" aria-label="Your turn">
+          <h2>Your turn</h2>
+          <p class="hint">Speak, tap a move, or type. Voice is fastest.</p>
+
+          <div class="mic" id="mic">
+            <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <button class="micbtn" id="micbtn" type="button" aria-pressed="true" aria-label="Pause listening">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.500 11.500a6.500 6.500 0 0 0 13 0M12 18v3"/></svg>
+            </button>
+            <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="micmsg"><b id="micstate">Listening…</b><span>Speak in English, Hindi or Tamil</span></div>
+
+          <div class="moves">
+            <p>Quick moves</p>
+            <button class="move" type="button" data-say="Asha, show me 42 with the blocks.">
+              <span>Ask Asha to show with blocks</span>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="12" width="7" height="7" rx="1"/><rect x="13" y="12" width="7" height="7" rx="1"/><rect x="8.500" y="4" width="7" height="7" rx="1"/></svg>
+            </button>
+            <button class="move" type="button" data-say="Let’s break one ten into ten ones.">
+              <span>Break a ten into ones</span>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="8" rx="1"/><path d="M12 13v2M7 17h2M11 17h2M15 17h2M7 20h10"/></svg>
+            </button>
+            <button class="move" type="button" data-say="Why do you think we can’t take seven from two?">
+              <span>Ask the class why</span>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h12v8H9l-5 4z"/><path d="M19 9v8h-5l-3 3"/></svg>
+            </button>
+          </div>
+
+          <div class="field">
+            <input id="typed" type="text" aria-label="Type what you would say" placeholder="Or type what you would say" autocomplete="off">
+            <button class="btn" id="send" type="button">Send
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M4 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Coaching feedback">
+          <h2>Coaching feedback</h2>
+          <p class="hint">Updates after each turn</p>
+
+          <div class="fb good">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.500l2.800 2.800L16.200 9.500"/></svg>
+            <div><b>You used the blocks</b><span>Concrete material helps children see the ten.</span></div>
+          </div>
+          <div class="fb watch">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.500v5.500M12 16.500v.2"/></svg>
+            <div><b>Asha reversed the digits</b><span>A common pattern: smaller minus larger. Try asking her to start from the blocks.</span></div>
+          </div>
+
+          <div class="meterhead"><span>Class understanding</span><span id="follow">1 of 3 children following</span></div>
+          <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1" aria-label="Children following" id="meterbar"><i id="meterfill"></i></div>
+
+          <div class="privacy">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <span>Practice only. Use counts and patterns, never real children’s names.</span>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var supported=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+  var LANGS=['en','hi','ta'];
+  var CODES={en:'en-IN',hi:'hi-IN',ta:'ta-IN'};
+  var LANGNAME={en:'English',hi:'Hindi',ta:'Tamil'};
+  var lang='en',voicesOn=true,followed=1;
+  var PROFILES={asha:{pitch:1.5,rate:0.95},ravi:{pitch:1.2,rate:1.0},meena:{pitch:1.65,rate:0.95}};
+  var NAMES={asha:'Asha',ravi:'Ravi',meena:'Meena'};
+  var OPENING={
+    en:'“Two minus seven… I can’t. So I’ll do seven minus two.”',
+    hi:'“दो में से सात… नहीं हो सकता। तो मैं सात में से दो घटा देती हूँ।”',
+    ta:'“இரண்டில் இருந்து ஏழு… முடியவில்லை. அதனால் ஏழிலிருந்து இரண்டு கழிக்கிறேன்.”'
+  };
+  var REPLIES=[
+    {who:'asha',
+     en:'I made four tens and two ones. But I can’t take seven from two.',
+     hi:'मैंने चार दहाई और दो इकाई बनाई। लेकिन दो में से सात कैसे घटाऊँ?',
+     ta:'நான்கு பத்துகளும் இரண்டு ஒன்றுகளும் வைத்தேன். ஆனால் இரண்டிலிருந்து ஏழு கழிக்க முடியவில்லை.'},
+    {who:'asha',
+     en:'Now I have three tens and twelve ones. Twelve take away seven is five!',
+     hi:'अब मेरे पास तीन दहाई और बारह इकाई हैं। बारह में से सात घटाओ तो पाँच!',
+     ta:'இப்போது மூன்று பத்துகளும் பன்னிரண்டு ஒன்றுகளும் இருக்கின்றன. பன்னிரண்டிலிருந்து ஏழு கழித்தால் ஐந்து!'},
+    {who:'ravi',
+     en:'Because two is smaller than seven, madam.',
+     hi:'क्योंकि दो, सात से छोटा है, मैडम।',
+     ta:'ஏனென்றால் இரண்டு என்பது ஏழுக்குக் குறைவான எண், ஆசிரியரே.'}
+  ];
+  var TYPED={who:'ravi',
+     en:'I didn’t understand, madam. Please say it again.',
+     hi:'मुझे समझ नहीं आया, मैडम। फिर से बताइए।',
+     ta:'எனக்குப் புரியவில்லை, ஆசிரியரே. மறுபடி சொல்லுங்கள்.'};
+  var ICON='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
+
+  var statusEl=document.getElementById('vstatus');
+  var log=document.getElementById('log');
+
+  function norm(l){return (l||'').toLowerCase().replace('_','-');}
+  function voicesFor(prefix){
+    if(!supported)return [];
+    var vs=window.speechSynthesis.getVoices().filter(function(v){return norm(v.lang).indexOf(prefix)===0;});
+    vs.sort(function(a,b){return (b.localService?1:0)-(a.localService?1:0);});
+    return vs;
+  }
+  function refreshStatus(){
+    if(!supported){statusEl.textContent='This browser can’t speak aloud. Lines show as text.';return;}
+    if(!voicesOn){statusEl.textContent='Voices are off. Lines show as text.';return;}
+    var vs=voicesFor(lang);
+    if(!vs.length){statusEl.textContent=LANGNAME[lang]+' voice: none found on this phone. Lines show as text.';}
+    else if(vs[0].localService){statusEl.textContent=LANGNAME[lang]+' voice: installed on this phone, works offline.';}
+    else{statusEl.textContent=LANGNAME[lang]+' voice: online only on this phone.';}
+  }
+  function kidEl(who){return document.querySelector('.kid[data-child="'+who+'"]');}
+  function speak(who,text){
+    if(!supported||!voicesOn)return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text.replace(/[“”]/g,''));
+    var vs=voicesFor(lang);
+    if(vs.length){u.voice=vs[0];}
+    u.lang=CODES[lang];u.pitch=PROFILES[who].pitch;u.rate=PROFILES[who].rate;
+    var k=kidEl(who);
+    u.onstart=function(){if(k)k.classList.add('talking');};
+    var stop=function(){if(k)k.classList.remove('talking');};
+    u.onend=stop;u.onerror=stop;
+    window.speechSynthesis.speak(u);
+  }
+
+  // language switch: sets the language of the children's lines and voices
+  var seg=document.querySelectorAll('.seg button');
+  seg.forEach(function(b,i){b.addEventListener('click',function(){
+    seg.forEach(function(x){x.setAttribute('aria-pressed','false')});
+    b.setAttribute('aria-pressed','true');
+    lang=LANGS[i];
+    if(supported)window.speechSynthesis.cancel();
+    var line=document.getElementById('ashaline');
+    line.textContent=OPENING[lang];line.lang=lang;
+    refreshStatus();
+  });});
+
+  // children's voices toggle and replay of Asha's opening line
+  var vt=document.getElementById('vtoggle');
+  vt.addEventListener('click',function(){
+    voicesOn=!voicesOn;
+    vt.setAttribute('aria-pressed',voicesOn?'true':'false');
+    vt.textContent='Children’s voices: '+(voicesOn?'On':'Off');
+    if(!voicesOn&&supported)window.speechSynthesis.cancel();
+    refreshStatus();
+  });
+  document.getElementById('ashaplay').addEventListener('click',function(){
+    speak('asha',OPENING[lang]);
+  });
+
+  // mic toggle
+  var mic=document.getElementById('mic'),mb=document.getElementById('micbtn'),ms=document.getElementById('micstate');
+  mb.addEventListener('click',function(){
+    var on=mb.getAttribute('aria-pressed')==='true';
+    mb.setAttribute('aria-pressed',on?'false':'true');
+    mb.setAttribute('aria-label',on?'Start listening':'Pause listening');
+    mic.classList.toggle('paused',on);
+    ms.textContent=on?'Paused. Tap to speak':'Listening…';
+  });
+
+  // the teacher's move, then a child replies in text and voice
+  function addYou(text){
+    if(!text||!text.trim())return false;
+    var d=document.createElement('div');
+    var b=document.createElement('b');b.textContent='You: ';
+    d.appendChild(b);d.appendChild(document.createTextNode(text.trim()));
+    log.appendChild(d);return true;
+  }
+  function addChild(who,text){
+    var d=document.createElement('div');d.className='child';
+    var t=document.createElement('span');t.className='t';t.lang=lang;
+    var b=document.createElement('b');b.textContent=NAMES[who]+': ';
+    t.appendChild(b);t.appendChild(document.createTextNode(text));
+    var btn=document.createElement('button');btn.type='button';btn.className='say sm';
+    btn.setAttribute('aria-label','Play '+NAMES[who]+'’s line');btn.innerHTML=ICON;
+    btn.addEventListener('click',function(){speak(who,text);});
+    d.appendChild(t);d.appendChild(btn);log.appendChild(d);
+  }
+  function reply(r){
+    setTimeout(function(){var text=r[lang];addChild(r.who,text);speak(r.who,text);},500);
+  }
+  function bump(){
+    if(followed<3){followed++;}
+    document.getElementById('follow').textContent=followed+' of 3 children following';
+    document.getElementById('meterfill').style.width=Math.round(followed/3*100)+'%';
+    document.getElementById('meterbar').setAttribute('aria-valuenow',followed);
+  }
+  var moves=document.querySelectorAll('.move');
+  moves.forEach(function(m,i){
+    m.addEventListener('click',function(){
+      if(addYou(m.getAttribute('data-say'))){bump();reply(REPLIES[i]);}
+    });
+  });
+  var inp=document.getElementById('typed');
+  function send(){
+    var v=inp.value;
+    if(addYou(v)){reply(TYPED);}
+    inp.value='';
+  }
+  document.getElementById('send').addEventListener('click',send);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){send();}});
+
+  refreshStatus();
+  if(supported){
+    window.speechSynthesis.onvoiceschanged=refreshStatus;
+    setTimeout(refreshStatus,600);
+  }
+})();
+</script>
+</body>
+</html>

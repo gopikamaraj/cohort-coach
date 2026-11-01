@@ -35,7 +35,7 @@ from ai.registry import get_call
 from services.api.db import ContentAudit, ReviewDecision, ReviewItem
 from services.content import publish, rejections, slots, versions
 from services.content.track import load_track
-from services.pilot.storage import BlobStore
+from services.media.storage import BlobStore
 from services.practice.session import ScriptedMove, start_session, take_turn
 from services.speech.audio import join_to_file
 from services.speech.voices import Voice, voice_for

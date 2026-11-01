@@ -8,7 +8,7 @@ Record on a real Android Go-class phone (2 GB RAM, Chrome) and one laptop screen
 | 2 | The error card with counts | Phone | Simulated label visible |
 | 3 | The cohort chat: post "Meena failed again", refused; post a plain reply | Phone | Judge mode |
 | 4 | The review queue and the two keys | Laptop | Coach, then officer |
-| 5 | The bot: `/start judge`, lesson 1, the two taps | Phone | Telegram, with sound on; the voice note plays |
+| 5 | The lesson page in the web app: lesson 1 with its audio and the two taps | Phone | Sound on; the audio plays (Telegram is roadmap, not shown) |
 | 6 | One Practice Class turn with the overlay | Phone | Voice if the signal allows, else text; say which |
 | 7 | The officer results | Laptop | One working, one not, one under 5 classes |
 | 8 | Airplane mode: a queued upload waits, then sends | Phone | Shows the offline queue |

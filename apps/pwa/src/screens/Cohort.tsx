@@ -7,9 +7,10 @@ import { Icon } from "../components/icons";
 import type { Key } from "../i18n";
 import { ccall, CohortError, ordered, showsText, type CohortSummary, type Post, type Who } from "../lib/cohort";
 import { useApp } from "../state";
+import { SimulatedBanner } from "../components/parts";
 
 export default function Cohort() {
-  const { tr, role, lang } = useApp();
+  const { tr, role, lang, klass } = useApp();
   const [view, setView] = useState<Who>(role === "coach" ? "coach" : "teacher");
   const who: Who = role === "coach" ? "coach" : role === "judge" ? view : "teacher";
   return (
@@ -17,6 +18,7 @@ export default function Cohort() {
       <h1 id="co-title">
         <Icon name="chat" /> {tr("cohort.title")}
       </h1>
+      {klass?.simulated || role !== "teacher" ? <SimulatedBanner /> : null}
       <p>{tr("cohort.intro")}</p>
       {role === "judge" ? (
         <div className="subtabs" role="group" aria-label={tr("cohort.view_as")}>

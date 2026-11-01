@@ -1,0 +1,17 @@
+{
+  "call": "c12_chat_classify",
+  "model": "claude-haiku-5-5",
+  "outputs": [
+    {
+      "confidence": 0.9,
+      "label": "content_question"
+    }
+  ],
+  "prompt_version": 1,
+  "usage": {
+    "cache_read_tokens": 1622,
+    "cache_write_tokens": 0,
+    "input_tokens": 61,
+    "output_tokens": 20
+  }
+}

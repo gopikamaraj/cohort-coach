@@ -241,3 +241,24 @@ def test_the_confusion_band_is_a_word_for_the_engine_strength() -> None:
         "medium",
         "low",
     )
+
+
+def test_a_real_childs_name_is_masked_before_any_model_call_but_the_pretend_children_keep_theirs(
+    ctx: CallContext,
+) -> None:
+    sent: list[str] = []
+    client = ctx.client
+    real_parse = client.messages.parse
+
+    def spy(**kw: object) -> object:
+        sent.append(str(kw.get("messages")))
+        return real_parse(**kw)
+
+    client.messages.parse = spy  # type: ignore[method-assign]
+    s = start_session("SUB-SFL", "en", seed=5)
+    r = take_turn(s, text=f"{name_of(s)}, Rahul wrote 37. What is 52 minus 29?", context=ctx)
+    assert sent and all("Rahul" not in m for m in sent)
+    assert any(name_of(s) in m for m in sent)  # the simulated child is still named
+    assert "Rahul" not in r.layers["input"]["teacher_text"]
+    assert "Rahul" not in s.records[-1].teacher_text
+    assert r.speaker == name_of(s)

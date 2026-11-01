@@ -21,6 +21,7 @@ import {
   type Version,
 } from "../lib/queue";
 import { useApp } from "../state";
+import { SimulatedBanner } from "../components/parts";
 
 const FILTERS = ["pending", "awaiting_mentor", "approved", "rejected", "all"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -94,6 +95,7 @@ export default function Review() {
       <h1 id="q-title">
         <Icon name="check" /> {tr("queue.title")}
       </h1>
+      <SimulatedBanner />
       <p>{tr("queue.intro")}</p>
       <p className="note" data-testid="queue-rule">
         <Icon name="lock" size={18} /> {tr("queue.rule")}

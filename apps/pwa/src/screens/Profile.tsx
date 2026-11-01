@@ -13,6 +13,7 @@ import { href } from "../lib/router";
 import { sendFeedback, type FeedbackKind } from "../lib/feedback";
 import { LANG_NAMES, LANGS, isLang } from "../i18n";
 import { InstallEntry } from "../components/install";
+import { TesterSettings } from "../components/TesterUI";
 import { useApp } from "../state";
 import { useConsent } from "../lib/useConsent";
 
@@ -156,6 +157,8 @@ function Storage() {
           type="file"
           accept="application/json,.json"
           className="sr"
+          aria-label={tr("profile.restore")}
+          tabIndex={-1}
           data-testid="backup-file"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -225,11 +228,12 @@ function DataUsed() {
   );
 }
 
-const CHOICES: { scope: Scope; key: "counts" | "practice" | "share" | "feedback" }[] = [
+const CHOICES: { scope: Scope; key: "counts" | "practice" | "share" | "feedback" | "keep" }[] = [
   { scope: "counts", key: "counts" },
   { scope: "practice_ai", key: "practice" },
   { scope: "share_rehearsal", key: "share" },
   { scope: "feedback", key: "feedback" },
+  { scope: "keep_sheets", key: "keep" },
 ];
 
 function Privacy() {
@@ -378,6 +382,7 @@ export default function Profile() {
         </select>
       </label>
       <InstallEntry variant="row" />
+      <TesterSettings />
       <Classes />
       <Storage />
       <DataUsed />

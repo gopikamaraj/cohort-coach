@@ -122,3 +122,52 @@ def material(world: World) -> dict[str, str]:
         {"en": {"lesson_1": ids["en1"], "lesson_4": ids["en4"]}, "hi": {"lesson_1": ids["hi1"]}},
     )
     return ids
+
+
+# ---- helpers the service and scheduler tests share --------------------------------------------
+
+from datetime import UTC, datetime  # noqa: E402
+
+from ai.client import CallContext  # noqa: E402
+from ai.schemas import ChatCitation, ChatClass, ChatReply, Verdict  # noqa: E402
+from services.api.db import ChatMessage  # noqa: E402
+from services.chat import service  # noqa: E402
+from tests.support_ai import FakeClient  # noqa: E402
+
+NOW = datetime(2026, 10, 29, 9, 0, tzinfo=UTC)
+QUESTION = "How do I show 52 minus 29 with bundles of ten sticks?"
+CONTENT = ChatClass(label="content_question", confidence=0.95)
+PASS = Verdict(passed=True, reason_short="ok", reason_for_user="ok")
+GOOD = ChatReply(
+    answer=(
+        "Make 52 with 5 bundles and 2 loose sticks. You cannot take 9 from 2, "
+        "so open a bundle to get ten loose sticks. Now take away 9 loose sticks."
+    ),
+    citations=[
+        ChatCitation(source_id="L4.1", quote="Open a bundle to get ten loose sticks."),
+        ChatCitation(source_id="L4.2", quote="Now take away 9 loose sticks."),
+    ],
+)
+
+
+def ctx(*replies: object) -> tuple[CallContext, FakeClient]:
+    fake = FakeClient(list(replies))  # type: ignore[arg-type]
+    return CallContext(mode="stub", client=fake), fake  # type: ignore[arg-type]
+
+
+def ask(
+    world: World,
+    *,
+    text: str = QUESTION,
+    consent: bool = True,
+    replies: tuple[object, ...] = (CONTENT, GOOD, PASS),
+    teacher: str | None = None,
+    now: datetime = NOW,
+    language: str = "en",
+) -> tuple[ChatMessage, FakeClient]:
+    c, fake = ctx(*replies)
+    asked = service.ask(
+        world.db, cohort_id=world.cohort_id, teacher_id=teacher or world.teacher, text=text,
+        language=language, ai_consent=consent, now=now, context=c,
+    )  # fmt: skip
+    return asked.message, fake

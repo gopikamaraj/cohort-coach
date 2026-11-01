@@ -1,0 +1,35 @@
+{
+  "call": "c03_feedback",
+  "model": "claude-sonnet-5-5",
+  "outputs": [
+    {
+      "strengths": [
+        {
+          "comment": "You asked Priya to explain her steps before correcting her. That let her show you exactly where her thinking went wrong, with 2 minus 9 turned around.",
+          "quote": "Tell me how you got that.",
+          "rubric_point": "ask_explain",
+          "turn_id": 2
+        },
+        {
+          "comment": "You saw that there were only 2 loose ones and had her open a bundle. She then got 12 sticks and reached 23 on her own.",
+          "quote": "Open a bundle to exchange it for ten sticks.",
+          "rubric_point": "exchange_ten",
+          "turn_id": 4
+        }
+      ],
+      "try_next": {
+        "quote": "Priya, now try 74 minus 46.",
+        "rubric_point": "let_answer",
+        "suggestion": "You could also try giving Priya a moment to say her answer and her thinking on a new problem before you react or add a hint. Her question about why the check did not match would be a great place to pause and let her find out for herself.",
+        "turn_id": 6
+      }
+    }
+  ],
+  "prompt_version": 2,
+  "usage": {
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 2017,
+    "input_tokens": 960,
+    "output_tokens": 311
+  }
+}

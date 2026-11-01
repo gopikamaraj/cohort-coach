@@ -1,0 +1,20 @@
+# A SIMULATED mentor's method card for the demo's coach queue (step 11). No real mentor said this:
+# the transcript and the card were written for the demo by the build (Claude Code, 30 Oct) from the
+# approved SUB-SFL move list, and are labelled "Simulated mentor" wherever they are shown.
+# TODO-HUMAN(Seema): replace with a card from a real mentor interview once one exists.
+mentor_label: Simulated mentor (Teacher 3)
+error: SUB-SFL
+transcript:
+  - I first ask the child to read the sum aloud, top number first.
+  - Then I give them two bundles of ten and some loose sticks for the top number.
+  - When the ones on top are fewer, I ask what we can do, and let them open a bundle.
+  - After they write the answer, they add it back to the bottom number to check.
+card:
+  title: Open a bundle before you take away
+  steps:
+    - Read the sum aloud, top number first.
+    - Make the top number with bundles of ten and loose sticks.
+    - When the top ones are too few, open one bundle into ten ones.
+    - Take away the ones, then the tens.
+    - Check by adding the answer back to the bottom number.
+  phrase: What can we do when there are not enough ones?

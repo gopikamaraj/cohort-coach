@@ -1,0 +1,39 @@
+# Remarks that put a child (or a person) down without a swear word: "you are not clever", "you will
+# never learn". Regular expressions, matched case-insensitively against the text with curly
+# apostrophes straightened. Praise ("you are clever") must never match: every pattern is about
+# someone being NOT able or being called something unkind.
+# TODO-HUMAN(Shivani, Gopi): review and extend the Hindi and Tamil lines with real teacher phrasing.
+en:
+  - \byou(?:'re| are| r)\s+(?:really |just |simply )?not\s+(?:very |that |so )?(?:clever|smart|bright|intelligent|good|capable|able|any good)\b
+  - \bnot\s+(?:clever|smart|bright|intelligent)\s+enough\b
+  - \byou(?:'re| are)\s+(?:so |too |very |really |such an? |just an? )?(?:slow|lazy|weak|hopeless|dull|worthless|pathetic|foolish|fool|dunce|failure|clueless|brainless|careless)\b
+  - \b(?:you|u)\s+(?:can't|cant|cannot|will never|won't ever|never)\s+(?:do|learn|understand|get|solve)\s+(?:anything|it|this|maths?)\b
+  - \bgood for nothing\b
+  - \bwhat(?:'s| is) wrong with you\b
+  - \bshut up\b
+  - \b(?:dunce|dimwit|numbskull|nitwit)\b
+  - \bnever learn\b
+  - \b(?:the )?worst (?:child|student|pupil|one)\b
+hi:
+  - तुम(?:से)? नहीं हो पाएगा
+  - तुम्हारे बस की बात नहीं
+  - तुम होशियार नहीं
+  - तू होशियार नहीं
+  - बुद्धू
+  - निकम्मा
+  - कमअक्ल
+  - तुम कभी नहीं सीखोगे
+  - \btumse nahi hoga\b
+  - \btum hoshiyar nahi\b
+  - \bbuddhu\b
+  - \bnikamma\b
+  - \btumhare bas ki baat nahi\b
+ta:
+  - நீ புத்திசாலி இல்லை
+  - உனக்கு அறிவு இல்லை
+  - உன்னால் முடியாது
+  - நீ சோம்பேறி
+  - நீ ஒன்றுக்கும் உதவாதவன்
+  - \bnee buddhisali illa\b
+  - \bunnala mudiyathu\b
+  - \bsombheri\b

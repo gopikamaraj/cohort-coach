@@ -14,6 +14,7 @@ VALID_SCREENS = (
     "landing",
     "home",
     "check",
+    "papers",
     "cards",
     "practice",
     "programme",
@@ -27,6 +28,15 @@ VALID_SCREENS = (
     "mentor",
     "officer",
     "assistant",
+    "judge",
+    "demo",
+    "two-classes",
+    "admin",
+    "testing",
+    "flow",
+    "history",
+    "privacy",
+    "coach",
 )
 VALID_CRITERIA = ("efficacy", "innovation", "ai", "roadmap")
 CRITERION_LABEL = {

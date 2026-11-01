@@ -29,7 +29,7 @@ def api(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[tuple[TestC
     engine = make_engine(f"sqlite:///{tmp_path / 'api.sqlite'}")
     Base.metadata.create_all(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
-    app = create_app(pilot=False)
+    app = create_app()
 
     def session() -> Iterator[Session]:
         with factory() as s:
@@ -186,11 +186,6 @@ def test_the_stats_route_reports_counts_computed_by_code(api: tuple[TestClient, 
     assert s["approved"] == 1 and s["decided"] == 1 and s["acceptance_with_minor_edits"] == 1.0
 
 
-def test_the_review_routes_do_not_exist_in_pilot_mode(tmp_path: Path) -> None:
-    client = TestClient(create_app(pilot=True))
-    assert client.get("/api/review/items", headers=h("coach")).status_code == 404
-
-
 def test_a_rejection_can_be_promoted_to_a_checker_example_by_the_coach_only(
     api: tuple[TestClient, Session], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -227,7 +222,7 @@ def test_the_officer_publishes_an_active_version_for_a_cohort(
     api: tuple[TestClient, Session], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from services.content import publish
-    from services.pilot.storage import LocalBlobStore, get_audio_store
+    from services.media.storage import LocalBlobStore, get_audio_store
     from services.speech.service import SpeechService
     from tests.content.test_publish import approve_all, fake_join
 
@@ -319,7 +314,7 @@ def test_a_model_run_is_rendered_approved_and_voiced_over_http(
     api: tuple[TestClient, Session], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from services.content import model_run
-    from services.pilot.storage import LocalBlobStore, get_audio_store
+    from services.media.storage import LocalBlobStore, get_audio_store
     from services.practice.stub_client import StubClient
     from services.speech.service import SpeechService
     from tests.content.test_model_run import SCRIPT, approved_script, fake_join

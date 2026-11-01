@@ -1,5 +1,5 @@
-"""The API image must hold every file the running code reads. A missing one was a 500 on the live
-pilot app (Generate audio) that no test caught, because tests run from the whole repository."""
+"""The API image must hold every file the running code reads. A missing one was once a 500 on the
+live app (lesson audio) that no test caught, because tests run from the whole repository."""
 
 from __future__ import annotations
 
@@ -7,8 +7,7 @@ from pathlib import Path
 
 from ai.validators.check_items import GOLDEN
 from services.api.sprites.palette import SPRITES
-from services.pilot.audio import VOICES
-from services.pilot.lessons import CONTENT as LESSONS
+from services.media.voice import VOICES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -18,9 +17,9 @@ def _copied() -> list[str]:
     return [part for ln in lines if ln.startswith("COPY ") for part in ln.split()[1:-1]]
 
 
-def test_the_image_copies_every_file_the_pilot_api_reads_at_run_time() -> None:
+def test_the_image_copies_every_file_the_api_reads_at_run_time() -> None:
     copied = [c.rstrip("/") for c in _copied()]
-    for needed in (GOLDEN, SPRITES, VOICES, LESSONS):
+    for needed in (GOLDEN, SPRITES, VOICES):
         rel = needed.relative_to(ROOT).as_posix()
         assert any(rel == c or rel.startswith(c + "/") for c in copied), (
             f"{rel} is not in the image"

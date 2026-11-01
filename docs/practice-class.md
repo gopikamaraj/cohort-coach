@@ -178,6 +178,12 @@ Recorded here because they changed the build; numbers are in `docs/evidence/eval
 - The red team found a Hinglish role-reversal line labelled `other` instead of `off_task`. The child stayed in role and nothing changed, but the labeller prompt (v3) now lists off-task examples in four languages.
 - Latency: three serial calls (label, child line, check) put the median text turn above the 3 s target. The plan: in voice mode the checker runs while the speech is synthesised (P07), so its time is hidden; the API server will sit near the Claude endpoint (P15); an A/B with Haiku for call 1 was slower and is not adopted. Text mode stays over target until then, and the Practice Class degrades to templates when a call times out.
 
+## One to three children speak, and the room overhears (31 Oct 2026)
+
+- **Who speaks.** The engine picks one to three children each turn: the child she named first, then others chosen by engagement. The shy child speaks only when named and a child who went quiet stays out. The first speaker is made exactly as before; the others answer the problem on the board in their own words from the engine's templates (their answer is right or wrong by the same bug function) or agree, thank or say they are lost. They never use the AI.
+- **Who hears.** Every child in the class hears what the teacher says to one child. The named child gets the full effect of the move on her error strength and engagement; the others get `overhear` (0.5 in the scenario files) of it. Scolding makes only the child it was aimed at go quiet.
+- **Speed switches (.env).** `PRACTICE_SKIP_CHECKER=1` skips call 7 on a child's line; the validators and pre-filter still run. `PRACTICE_AI_INTENTS=explain,work_aloud` sends only explanations to call 1; any other line is a template. Both are off by default. Decision: `docs/build/DECISIONS.md` (2026-10-31).
+
 ## Files
 
 `engine/simulator.py` (pure), `services/practice/` (content, templates, session, stub), `ai/calls/c01…c03*.py`, `services/api/practice.py`, `scripts/practice_cli.py`, `content/{movelists,rubrics,scenarios,personas,templates,schemas}`, `evals/runners/sim_fidelity.py`, `evals/sets/sim_fidelity/`.
@@ -200,7 +206,7 @@ In judge mode the Practice Class has more than free typing. Real teachers never 
 | --- | --- | --- |
 | Watch | An AI plays the teacher in an experienced or a struggling style, then the normal feedback card shows. Both runs can sit side by side. Playback has pause, step, 2× and skip to feedback. | `#/watch` (`services/practice/watch.py`) |
 | Try with hints | Each turn offers three replies built by code from the move list (a strong move, a common mistake, a neutral line), shuffled, with no label until the move tag shows. | Practice Class (`services/practice/hints.py`) |
-| Try to break it | Four prepared bad lines run through the real pre-filter; the reason is shown in her language. | Practice Class and the AI map (`POST /api/judge/try-break`) |
+| Try to break it | Four prepared bad lines, or a line the visitor types, run through the real pre-filter (a typed line is not stored, logged or sent to a model); the reason, or "Passed", is shown in her language. | Practice Class and the AI map (`POST /api/judge/try-break`) |
 
 Every teacher line in Watch says "AI playing the teacher (demo only)" (call 10). Every child line has an English subtitle (call 1 prompt v3; the digits in both lines must match). Each turn shows a move tag, a confusion meter per child (a word and a bar from the engine's strength) and, on request, "Show the machinery": what code decided, which AI call ran and which checks passed.
 

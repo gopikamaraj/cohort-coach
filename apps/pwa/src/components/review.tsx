@@ -218,6 +218,7 @@ export function ReviewTab({ onAgain }: ReviewProps) {
             void setImpact(id, v).then(refresh);
           }}
         />
+        <div className="btn-row">
         <button type="button" className="btn btn-primary" onClick={() => open.seed !== undefined && onAgain(open.seed)} disabled={open.seed === undefined} data-testid="review-again">
           {tr("review.again")}
         </button>
@@ -235,6 +236,7 @@ export function ReviewTab({ onAgain }: ReviewProps) {
         >
           {tr("review.delete")}
         </button>
+        </div>
       </section>
     );
   }

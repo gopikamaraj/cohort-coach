@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import { InstallEntry } from "../components/install";
-import { CAN_SWITCH_MODE } from "../lib/api";
 import type { Key } from "../i18n";
 import { go, useQuery, type Route } from "../lib/router";
 import { dialogSeen, loadRoles, markDialogSeen, type RoleConfig, type RoleId, type RolesResponse } from "../lib/roles";
@@ -36,11 +35,6 @@ function Dialog({ cfg, onEnter, onWalk, onBack }: { cfg: RoleConfig; onEnter: ()
       <ul data-testid="dlg-cannot">{cfg.cannot.map(line)}</ul>
       <h3>{tr("dlg.data")}</h3>
       <p>{tr(cfg.data as Key)}</p>
-      {cfg.also_on.length > 0 ? (
-        <p>
-          <strong>{tr("dlg.also_on")}:</strong> Telegram
-        </p>
-      ) : null}
       <p>
         <strong>{tr("dlg.weekly")}:</strong>{" "}
         {cfg.weekly_minutes === null ? tr("dlg.weekly_none") : tr("dlg.minutes", { n: cfg.weekly_minutes })}
@@ -61,7 +55,7 @@ function Dialog({ cfg, onEnter, onWalk, onBack }: { cfg: RoleConfig; onEnter: ()
 }
 
 export default function Landing() {
-  const { tr, role, setRole } = useApp();
+  const { tr, setRole } = useApp();
   const query = useQuery();
   const [data, setData] = useState<RolesResponse | null>(null);
   const [failed, setFailed] = useState(false);
@@ -94,20 +88,6 @@ export default function Landing() {
       <div className="l-hero">
         <h1 id="landing-title">{tr("landing.title")}</h1>
         <p className="l-lead">{tr("landing.intro")}</p>
-        <ul className="l-chips" data-testid="mode-banner">
-          <li className="m-chip" title={tr("mode.judge_hint")}>
-            <Icon name="mode" size={18} />
-            <span>
-              <strong>{tr("mode.label")}:</strong> {tr("mode.judge")}
-            </span>
-          </li>
-          <li className="m-chip" data-testid="mode-role">
-            <Icon name="profile" size={18} />
-            <span>
-              <strong>{tr("mode.role")}:</strong> {tr(`role.${role === "judge" ? "teacher" : role}` as Key)}
-            </span>
-          </li>
-        </ul>
       </div>
       {failed ? (
         <div className="m-note m-note-error" role="alert" data-testid="landing-error">
@@ -121,7 +101,8 @@ export default function Landing() {
         <Dialog cfg={cfg} onEnter={() => enter(cfg.id)} onWalk={() => { markDialogSeen(cfg.id); setRole(cfg.id as Role); window.location.hash = `/tour/${WALK_START[cfg.id]}`; }} onBack={() => setOpen(null)} />
       ) : (
         <>
-          <div className="role-cards" data-testid="role-cards">
+          <h2 className="l-group">{tr("landing.judges_title")}</h2>
+          <div className="role-cards" data-testid="judge-cards">
             <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
               <span className="m-iconwell m-iconwell-on" aria-hidden="true">
                 <Icon name="judge" size={28} />
@@ -132,6 +113,22 @@ export default function Landing() {
               </span>
               <Icon name="chevron" size={24} className="l-go" />
             </a>
+            <button type="button" className="tile tile-start" onClick={() => {
+                setRole("judge");
+                go("/judge");
+              }} data-testid="card-judge">
+              <span className="m-iconwell" aria-hidden="true">
+                <Icon name="judge" size={28} />
+              </span>
+              <span className="l-card-text">
+                <strong className="role-name">{tr("role.judge")}</strong>
+                <span className="role-line">{tr("landing.judge_hint")}</span>
+              </span>
+              <Icon name="chevron" size={24} className="l-go" />
+            </button>
+          </div>
+          <h2 className="l-group">{tr("landing.roles_title")}</h2>
+          <div className="role-cards" data-testid="role-cards">
             {data?.roles.map((r) => (
               <button key={r.id} type="button" className="tile" onClick={() => choose(r.id)} data-testid={`card-${r.id}`}>
                 <span className="m-iconwell" aria-hidden="true">
@@ -146,8 +143,28 @@ export default function Landing() {
               </button>
             ))}
           </div>
+          <h2 className="l-group">{tr("landing.team_title")}</h2>
+          <div className="role-cards" data-testid="team-cards">
+            <button
+              type="button"
+              className="tile tile-start"
+              onClick={() => {
+                setRole("admin");
+                go("/admin");
+              }}
+              data-testid="card-admin"
+            >
+              <span className="m-iconwell" aria-hidden="true">
+                <Icon name="admin" size={28} />
+              </span>
+              <span className="l-card-text">
+                <strong className="role-name">{tr("role.admin")}</strong>
+                <span className="role-line">{tr("landing.admin_hint")}</span>
+              </span>
+              <Icon name="chevron" size={24} className="l-go" />
+            </button>
+          </div>
           <InstallEntry variant="card" />
-          {CAN_SWITCH_MODE ? <p className="muted l-foot">{tr("landing.pilot_note")}</p> : null}
         </>
       )}
     </section>

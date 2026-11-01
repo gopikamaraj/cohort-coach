@@ -12,6 +12,8 @@ import { href } from "../lib/router";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
 import { StageLines } from "../components/stages";
+import { BeforeAfter } from "../components/BeforeAfter";
+import { formatCheckLabel, shownClassName } from "../lib/checks";
 
 export default function Cards() {
   const { tr, lang, role, online, klass, profile, check } = useApp();
@@ -46,6 +48,11 @@ export default function Cards() {
     <section aria-labelledby="cards-title">
       <h1 id="cards-title">{tr("cards.title")}</h1>
       {klass?.simulated || profile.simulated ? <SimulatedBanner /> : null}
+      {check?.kind ? (
+        <p data-testid="cards-check-label">
+          <strong>{formatCheckLabel(tr, check, shownClassName(tr, klass), lang)}</strong>
+        </p>
+      ) : null}
       <p className="muted">{tr("cards.checked", { n: view.childrenChecked })}</p>
       {view.tooSmall ? <p>{tr("cards.small", { min: view.minChildren })}</p> : null}
       <ul className="cards">
@@ -73,6 +80,7 @@ export default function Cards() {
       {profile.stages ? <StageLines stages={profile.stages} /> : null}
       {view.untracked > 0 ? <p data-testid="untracked">{tr("cards.untracked", { n: view.untracked })}</p> : null}
       {view.anchorWrong > 0 ? <p>{tr("cards.anchor", { n: view.anchorWrong })}</p> : null}
+      <BeforeAfter />
     </section>
   );
 }

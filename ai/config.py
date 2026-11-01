@@ -18,7 +18,9 @@ DEFAULT_MODELS: dict[str, str] = {
     "MODEL_SPRITE": "claude-sonnet-5-5",  # call 11 (sprite item authoring), offline only
     "MODEL_CHAT_CLASS": "claude-haiku-5-5",  # call 12 (class of a teacher's question to her mentor)
     "MODEL_CHAT": "claude-sonnet-5-5",  # call 13 (draft of a reply from approved material)
-    "MODEL_ASSIST": "claude-sonnet-5-5",  # call 14 (the role-scoped assistant's answer)
+    "MODEL_ASSIST": "claude-haiku-5-5",  # call 14 (the role-scoped assistant's answer)
+    "MODEL_PAPER_READ": "claude-haiku-5-5",  # call 16 (Papers page: read the printed questions)
+    "MODEL_SCAN": "claude-haiku-5-5",  # call 15 (pilot demo ingest: header and name scan), offline
     "MODEL_CHECK": "claude-haiku-5-5",
     "MODEL_READ": "claude-haiku-5-5",
     "MODEL_READ_RETRY": "claude-sonnet-5-5",
@@ -30,15 +32,26 @@ def judge_mode() -> bool:
     return os.environ.get("JUDGE_MODE", "0") == "1"  # off unless the demo deployment sets it
 
 
-def pilot_mode() -> bool:
-    """True when this deployment is the pilot: sign-in, sheet upload and intervention audio only.
-    Decided by the server's environment, never by a request."""
-    return os.environ.get("PILOT_MODE", "0") == "1"
+def dev_testing() -> bool:
+    """True on a developer's machine that wants testing shortcuts (such as Approve all entered in
+    Enter check). Off unless .env sets DEV_TESTING=1; never set it on a public deployment."""
+    return os.environ.get("DEV_TESTING", "0").strip().lower() in ("1", "true", "yes")
 
 
-def pilot_audio_max() -> int:
-    """The most audio files the coordinator may ask for (PILOT_AUDIO_MAX, default 10)."""
-    return max(1, int(os.environ.get("PILOT_AUDIO_MAX") or 10))
+def practice_skip_checker() -> bool:
+    """True when a Practice Class child's line skips call 7. The code validators and the pre-filter
+    still run on every AI line; only the model check is left out. Off unless .env turns it on."""
+    return os.environ.get("PRACTICE_SKIP_CHECKER", "0").strip().lower() in ("1", "true", "yes")
+
+
+def practice_ai_intents() -> frozenset[str] | None:
+    """Which kinds of child line call 1 writes. None (the default, or "all") means every kind. A
+    list such as "explain,work_aloud" means only those: any other line is the engine's template.
+    Children who answer or react alongside the first speaker always use templates."""
+    raw = os.environ.get("PRACTICE_AI_INTENTS", "all").strip().lower()
+    if raw in ("", "all"):
+        return None
+    return frozenset(x.strip() for x in raw.split(",") if x.strip())
 
 
 def model_for(env_var: str) -> str:
@@ -60,19 +73,21 @@ class CallPolicy:
 
 # Lowest effort that passes the call's eval (tuned in P04 and P13); live turns are short.
 POLICIES: dict[str, CallPolicy] = {
-    "c01_child_voice": CallPolicy(12, 1, "low", 400, thinking="off"),
-    "c02_move_label": CallPolicy(10, 1, "low", 400, thinking="off"),
+    "c01_child_voice": CallPolicy(6, 1, "low", 400, thinking="off"),
+    "c02_move_label": CallPolicy(6, 1, "low", 400, thinking="off"),
     "c03_feedback": CallPolicy(timeout_s=30, max_retries=1, effort="medium", max_tokens=2500),
     "c04_method_capture": CallPolicy(timeout_s=45, max_retries=2, effort="medium", max_tokens=3000),
     "c05_track_draft": CallPolicy(timeout_s=120, max_retries=2, effort="high", max_tokens=8000),
     "c06_digest": CallPolicy(30, 2, "low", 1200, thinking="off"),
-    "c07_checker": CallPolicy(12, 1, "low", 800, thinking="off"),
+    "c07_checker": CallPolicy(6, 1, "low", 800, thinking="off"),
     "c08_answer_reading": CallPolicy(timeout_s=20, max_retries=1, effort="low", max_tokens=600),
     "c10_demo_teacher": CallPolicy(10, 1, "low", 400, thinking="off"),
     "c11_sprite_author": CallPolicy(timeout_s=60, max_retries=2, effort="medium", max_tokens=2500),
     "c12_chat_classify": CallPolicy(10, 1, "low", 200, thinking="off"),
     "c13_chat_reply": CallPolicy(timeout_s=40, max_retries=1, effort="medium", max_tokens=1500),
     "c14_assistant_answer": CallPolicy(timeout_s=30, max_retries=1, effort="low", max_tokens=1200),
+    "c16_paper_read": CallPolicy(timeout_s=40, max_retries=1, effort="low", max_tokens=3000),
+    "c15_pilot_sheet_scan": CallPolicy(timeout_s=30, max_retries=1, effort="low", max_tokens=1000),
 }
 
 
@@ -92,9 +107,10 @@ def thinking_param(model: str, policy: CallPolicy) -> dict[str, str] | None:
 
 
 def ai_mode() -> str:
+    """live, record, recorded, stub, or off (every call fails as if the service is unreachable)."""
     mode = os.environ.get("AI_MODE", "recorded")
-    if mode not in {"recorded", "live", "record", "stub"}:
-        raise ValueError(f"AI_MODE must be recorded, live, record or stub, not {mode!r}")
+    if mode not in {"recorded", "live", "record", "stub", "off"}:
+        raise ValueError(f"AI_MODE must be recorded, live, record, stub or off, not {mode!r}")
     return mode
 
 

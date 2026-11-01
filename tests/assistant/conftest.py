@@ -26,6 +26,7 @@ def clean(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
     ):
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("RATE_LIMIT_ASSISTANT_PER_MIN", "0")
+    monkeypatch.setenv("RETRIEVAL", "off")  # tests never call Gemini or Firestore
     limits.CAPS.reset()
     answer.reload()
     yield
@@ -50,7 +51,7 @@ def judge_app(monkeypatch: pytest.MonkeyPatch) -> TestClient:
 
     monkeypatch.setenv("JUDGE_MODE", "1")
     monkeypatch.setenv("AI_MODE", "recorded")
-    return TestClient(create_app(pilot=False))
+    return TestClient(create_app())
 
 
 @pytest.fixture
@@ -59,4 +60,4 @@ def prod_app(monkeypatch: pytest.MonkeyPatch) -> TestClient:
 
     monkeypatch.setenv("JUDGE_MODE", "0")
     monkeypatch.setenv("AI_MODE", "recorded")
-    return TestClient(create_app(pilot=False))
+    return TestClient(create_app())

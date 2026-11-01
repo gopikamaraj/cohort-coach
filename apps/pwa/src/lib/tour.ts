@@ -1,8 +1,8 @@
-// The guided tour: six steps, about five minutes, switching roles as it goes. The list lives here
+// The guided tour: seven steps, about five minutes, switching roles as it goes. The list lives here
 // (it is navigation, not a rule); each step shows a real screen and names the judging criterion.
 import type { RoleId } from "./roles";
 
-export type TourScreen = "check" | "cohort" | "content" | "practice" | "term2" | "hood";
+export type TourScreen = "check" | "cohort" | "content" | "practice" | "term2" | "hood" | "testing";
 
 export interface TourStep {
   n: number;
@@ -20,6 +20,7 @@ export const TOUR: readonly TourStep[] = [
   { n: 4, role: "teacher", seconds: 120, screen: "practice", title: "tour.s4.title", notice: "tour.s4.notice" },
   { n: 5, role: "officer", seconds: 45, screen: "term2", title: "tour.s5.title", notice: "tour.s5.notice" },
   { n: 6, role: "teacher", seconds: 30, screen: "hood", title: "tour.s6.title", notice: "tour.s6.notice" },
+  { n: 7, role: "officer", seconds: 10, screen: "testing", title: "tour.s7.title", notice: "tour.s7.notice" },
 ];
 
 export const TOUR_SECONDS = TOUR.reduce((t, s) => t + s.seconds, 0);

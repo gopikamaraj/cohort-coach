@@ -1,4 +1,3 @@
-import { LANG_NAMES, LANGS, isLang } from "./i18n";
 import Cards from "./screens/Cards";
 import Check from "./screens/Check";
 import AiMap from "./screens/AiMap";
@@ -8,7 +7,8 @@ import Practice from "./screens/Practice";
 import Judge from "./screens/Judge";
 import History from "./screens/History";
 import Programme from "./screens/Programme";
-import { OfflineNote, StatusLine } from "./components/parts";
+import { OfflineNote } from "./components/parts";
+import { TopBar } from "./components/TopBar";
 import { Icon } from "./components/icons";
 import { ToastProvider } from "./components/toast";
 import Admin from "./screens/Admin";
@@ -21,33 +21,29 @@ import Landing from "./screens/Landing";
 import Watch from "./screens/Watch";
 import Tour from "./screens/Tour";
 import Review from "./screens/Review";
+import Papers from "./screens/Papers";
+import DemoStudio from "./screens/DemoStudio";
+import TwoClasses from "./screens/TwoClasses";
+import { DemoPanel } from "./components/DemoPanel";
 import Cohort from "./screens/Cohort";
-import Assistant, { AssistantLink } from "./screens/Assistant";
+import Assistant, { AssistantButton, AssistantDrawer } from "./screens/Assistant";
+import TestingEvidence from "./screens/TestingEvidence";
+import { TesterRoot } from "./components/TesterUI";
 import { useEffect, useState } from "react";
-import { go, href, useRoute, type Route } from "./lib/router";
-import { CAN_SWITCH_MODE, MODE } from "./lib/api";
-import { switchMode, type Mode } from "./lib/mode";
-import { AppProvider, ROLES, useApp, type Role } from "./state";
-
-const ROLE_HOME: Record<Role, Route> = {
-  teacher: "/home",
-  judge: "/judge",
-  mentor: "/mentor",
-  coach: "/coach",
-  officer: "/officer",
-  admin: "/admin",
-};
+import { href, useRoute, type Route } from "./lib/router";
+import { AppProvider, useApp, type Role } from "./state";
 
 const ICONS: Record<string, string> = {
   "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check", "/cohort": "chat", "/assistant": "info",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/testing": "info", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check", "/cohort": "chat", "/assistant": "info", "/papers": "papers", "/demo": "judge", "/two-classes": "chat",
 };  // fmt: skip
 
 function Shell() {
   const route = useRoute();
-  const { tr, role, setRole, lang, setLang } = useApp();
+  const { tr, role } = useApp();
   const teacherTabs: { to: Route; label: string }[] = [
     { to: "/home", label: tr("nav.home") },
+    { to: "/papers", label: tr("papers.nav") },
     { to: "/check", label: tr("nav.check") },
     { to: "/cards", label: tr("nav.cards") },
     { to: "/practice", label: tr("nav.practice") },
@@ -58,14 +54,20 @@ function Shell() {
   const byRole: Record<Role, { to: Route; label: string }[]> = {
     teacher: [...teacherTabs, mine],
     mentor: [{ to: "/mentor", label: tr("role.mentor") }, ...teacherTabs, mine],
-    coach: [{ to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/cohort", label: tr("cohort.nav") }, mine],
+    coach: [{ to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/papers", label: tr("papers.nav") }, { to: "/cohort", label: tr("cohort.nav") }, mine],
     officer: [{ to: "/officer", label: tr("role.officer") }, { to: "/review", label: tr("queue.nav") }, mine],
     admin: [{ to: "/admin", label: tr("role.admin") }, mine],
-    judge: [{ to: "/judge", label: tr("role.judge") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/cohort", label: tr("cohort.nav") }, { to: "/admin", label: tr("role.admin") }, mine],
+    judge: [{ to: "/judge", label: tr("role.judge") }, { to: "/demo", label: tr("demo.nav") }, { to: "/two-classes", label: tr("run.nav") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/cohort", label: tr("cohort.nav") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
   const tabs = route === "/roles" || route === "/tour" ? [] : byRole[role];
   // A phone fits four tabs and a More button; the rest sit in a sheet, so nothing hides off-screen.
   const [more, setMore] = useState(false);
+  const [asOpen, setAsOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setAsOpen(true); // the old #/assistant link, for everyone but the judge
+    document.addEventListener("cc:assistant-open", open);
+    return () => document.removeEventListener("cc:assistant-open", open);
+  }, []);
   useEffect(() => setMore(false), [route, role]);
   useEffect(() => {
     if (!more) return;
@@ -76,73 +78,16 @@ function Shell() {
   const bar = tabs.length > 5 ? tabs.slice(0, 4) : tabs;
   const rest = tabs.length > 5 ? tabs.slice(4) : [];
   const restOn = rest.some((tab) => tab.to === route);
-  const wide = route === "/roles" || route === "/tour" || route === "/watch" || route === "/review" || route === "/cohort" || role === "coach" || role === "officer" || role === "admin";
+  const wide = route === "/roles" || route === "/tour" || route === "/watch" || route === "/testing" || route === "/review" || route === "/cohort" || role === "coach" || role === "officer" || role === "admin";
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
-      <div className="frame">
-        {/* Role and language are chosen on the landing page; elsewhere: My profile (language) and the name (back here). */}
-        {route === "/roles" ? (
-          <div className="strip">
-            <label>
-              <span className="sr">{tr("common.menu")}</span>
-              <select
-                value={role}
-                data-testid="role"
-                onChange={(e) => {
-                  const next = e.target.value as Role;
-                  setRole(next);
-                  go(next === "judge" ? "/roles" : ROLE_HOME[next]);
-                }}
-              >
-                {ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {tr(`role.${r}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <span className="sr">{tr("common.language")}</span>
-              <select
-                value={lang}
-                data-testid="lang"
-                onChange={(e) => {
-                  if (isLang(e.target.value)) setLang(e.target.value);
-                }}
-              >
-                {LANGS.map((l) => (
-                  <option key={l} value={l}>
-                    {LANG_NAMES[l]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {CAN_SWITCH_MODE ? (
-              <label>
-                <span className="sr">{tr("mode.label")}</span>
-                <select
-                  value={MODE}
-                  data-testid="mode"
-                  onChange={(e) => {
-                    const next = e.target.value as Mode;
-                    if (next !== MODE) switchMode(next);
-                  }}
-                >
-                  <option value="judge">{tr("mode.judge")}</option>
-                  <option value="pilot">{tr("mode.pilot")}</option>
-                </select>
-              </label>
-            ) : null}
-          </div>
-        ) : null}
-        <header className="top">
-          <a className="brand" href={href("/roles")} data-testid="brand">
-            {tr("app.title")}
-          </a>
-          <StatusLine />
-        </header>
+      <div className={tabs.length === 0 ? "frame frame-bare" : "frame"}>
+        <TopBar assistant={<AssistantButton onOpen={() => setAsOpen(true)} />} />
+        <AssistantDrawer open={asOpen} onClose={() => setAsOpen(false)} screen={route === "/roles" ? "landing" : route.slice(1)} />
+        {route !== "/roles" ? <DemoPanel /> : null}
         <OfflineNote />
-        <main>
+        <TesterRoot />
+        <main tabIndex={0} aria-label={tr("common.main")}>
           {route === "/judge" ? <Judge /> : null}
           {route === "/home" ? <Home /> : null}
           {route === "/check" ? <Check /> : null}
@@ -165,7 +110,10 @@ function Shell() {
           {route === "/cohort" ? <Cohort /> : null}
           {route === "/officer" ? <Officer /> : null}
           {route === "/assistant" ? <Assistant /> : null}
-          {route !== "/assistant" && route !== "/roles" && route !== "/tour" ? <AssistantLink from={route.slice(1)} /> : null}
+          {route === "/testing" ? <TestingEvidence /> : null}
+          {route === "/papers" ? <Papers /> : null}
+          {route === "/demo" ? <DemoStudio /> : null}
+          {route === "/two-classes" ? <TwoClasses /> : null}
         </main>
         {more ? (
           <>
@@ -189,8 +137,14 @@ function Shell() {
               <span>{tab.label}</span>
             </a>
           ))}
+          {rest.map((tab) => (
+            <a key={tab.to} href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "navtab navtab-rest navtab-on" : "navtab navtab-rest"}>
+              <Icon name={ICONS[tab.to] ?? "info"} />
+              <span>{tab.label}</span>
+            </a>
+          ))}
           {rest.length > 0 ? (
-            <button type="button" className={restOn || more ? "navtab navtab-on" : "navtab"} aria-expanded={more} aria-controls="more-sheet" data-testid="nav-more" onClick={() => setMore((v) => !v)}>
+            <button type="button" className={restOn || more ? "navtab navtab-morebtn navtab-on" : "navtab navtab-morebtn"} aria-expanded={more} aria-controls="more-sheet" data-testid="nav-more" onClick={() => setMore((v) => !v)}>
               <Icon name="more" />
               <span>{tr("nav.more")}</span>
             </button>

@@ -101,7 +101,7 @@ def seed(db: Session, languages: list[str], *, draft: bool, track_id: str = "sub
     v = review.assemble_track_version(db, track, ready, *COACH)
     versions.coach_approve(db, v.id, *COACH)
     versions.officer_activate(db, v.id, *OFFICER)
-    from services.pilot.storage import audio_store
+    from services.media.storage import audio_store
     from services.speech.service import default_service
 
     cohort = publish.cohorts_for_error(track.error)[0]
