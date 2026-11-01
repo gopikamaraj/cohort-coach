@@ -1,0 +1,170 @@
+{
+ "B1": {
+  "seeds": 200,
+  "identical_every_seed": true,
+  "seed5_differs_from_seed6": true,
+  "threshold": "identical for every seed; 5 != 6",
+  "pass": true
+ },
+ "B2": {
+  "seeds": 200,
+  "mean_turns": {
+   "show_bundles": 16.635,
+   "exchange_ten": 15.75,
+   "decomposition": 17.575,
+   "tell_rule": 33.645,
+   "repeat_rule_louder": 36.57
+  },
+  "threshold": "each of show_bundles, exchange_ten, decomposition below both rule moves",
+  "pass": true
+ },
+ "B3": {
+  "seeds": 200,
+  "children": {
+   "0": 293,
+   "1": 269
+  },
+  "rate_P1": 0.6840148698884758,
+  "rate_P0": 0.4539249146757679,
+  "difference": 0.23008995521270792,
+  "threshold": ">= 0.10",
+  "pass": true
+ },
+ "B4": {
+  "seeds": 200,
+  "scold": {
+   "mean_turns": 35.755,
+   "mean_attention": 0.4691786723532262
+  },
+  "praise": {
+   "mean_turns": 24.4,
+   "mean_attention": 0.6423230068334397
+  },
+  "threshold": "scold finishes later and has lower mean attention",
+  "pass": true
+ },
+ "B5": {
+  "seeds": 200,
+  "mean_p_learn_consecutive": 0.6569866256839864,
+  "mean_p_learn_spaced": 0.7694638070301936,
+  "threshold": "consecutive < spaced",
+  "pass": true
+ },
+ "B6": {
+  "seeds": 200,
+  "by_turn": {
+   "1": {
+    "n": 644,
+    "mean_primed": 0.4473369565217391,
+    "mean_unprimed": 0.21048136645962734
+   },
+   "2": {
+    "n": 650,
+    "mean_primed": 0.32836923076923075,
+    "mean_unprimed": 0.20984615384615385
+   },
+   "3": {
+    "n": 652,
+    "mean_primed": 0.20782208588957055,
+    "mean_unprimed": 0.20782208588957055
+   }
+  },
+  "prime_window": 2,
+  "higher_on_demo_turn_and_next": true,
+  "equal_after_window": true,
+  "states_identical_with_and_without_priming": true,
+  "transitions_take_no_priming_input": true,
+  "threshold": "higher on turns 1-2, equal on turn 3, state never changed",
+  "pass": true
+ },
+ "B7": {
+  "child_turns": 20000,
+  "h0_W": 0.03,
+  "rate_no_practice": 0.03025,
+  "rate_with_practice_c4": 0.00445,
+  "threshold": "|rate - h0_W| <= 0.01; with practice lower",
+  "pass": true
+ },
+ "B8": {
+  "seeds": 200,
+  "children": 800,
+  "recovery_written_step": 0.94,
+  "answers": 5647,
+  "calibration": [
+   {
+    "bucket": "0.1-0.2",
+    "n": 92,
+    "mean_predicted": 0.16545313948338553,
+    "observed": 0.15217391304347827,
+    "gap": 0.013279226439907255,
+    "counted": true
+   },
+   {
+    "bucket": "0.2-0.3",
+    "n": 585,
+    "mean_predicted": 0.24934266487335,
+    "observed": 0.19145299145299147,
+    "gap": 0.05788967342035853,
+    "counted": true
+   },
+   {
+    "bucket": "0.3-0.4",
+    "n": 471,
+    "mean_predicted": 0.3519377840020247,
+    "observed": 0.35668789808917195,
+    "gap": 0.004750114087147261,
+    "counted": true
+   },
+   {
+    "bucket": "0.4-0.5",
+    "n": 484,
+    "mean_predicted": 0.44978775522062087,
+    "observed": 0.46487603305785125,
+    "gap": 0.01508827783723038,
+    "counted": true
+   },
+   {
+    "bucket": "0.5-0.6",
+    "n": 528,
+    "mean_predicted": 0.5520923529962283,
+    "observed": 0.5246212121212122,
+    "gap": 0.02747114087501612,
+    "counted": true
+   },
+   {
+    "bucket": "0.6-0.7",
+    "n": 369,
+    "mean_predicted": 0.6442825270151572,
+    "observed": 0.6775067750677507,
+    "gap": 0.0332242480525935,
+    "counted": true
+   },
+   {
+    "bucket": "0.7-0.8",
+    "n": 381,
+    "mean_predicted": 0.7547625884736652,
+    "observed": 0.7847769028871391,
+    "gap": 0.030014314413473908,
+    "counted": true
+   },
+   {
+    "bucket": "0.8-0.9",
+    "n": 817,
+    "mean_predicted": 0.8559586371643981,
+    "observed": 0.8457772337821298,
+    "gap": 0.010181403382268361,
+    "counted": true
+   },
+   {
+    "bucket": "0.9-1.0",
+    "n": 1920,
+    "mean_predicted": 0.936404273327921,
+    "observed": 0.9395833333333333,
+    "gap": 0.0031790600054123486,
+    "counted": true
+   }
+  ],
+  "threshold": "recovery >= 0.85; every bucket with >= 50 answers within 0.08",
+  "pass": true
+ }
+}
