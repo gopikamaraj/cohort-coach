@@ -80,7 +80,7 @@ def main(argv: list[str]) -> int:
     args = ap.parse_args(argv)
     load_env()
     from services.media.storage import audio_store
-    from services.speech.service import default_service
+    from services.speech.service import SpeechService, default_chain
 
     engine = make_engine()
     Base.metadata.create_all(engine)
@@ -100,7 +100,10 @@ def main(argv: list[str]) -> int:
     if not args.yes:
         print("Nothing spent. Run again with --yes to voice and cache them.")
         return 0
-    rows = run(db, audio_store(), default_service(), items)
+    patient = SpeechService(
+        "live", providers=default_chain(live=False)
+    )  # batch: may wait for slots
+    rows = run(db, audio_store(), patient, items)
     for r in rows:
         if r["ok"]:
             print(

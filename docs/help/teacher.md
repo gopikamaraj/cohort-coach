@@ -32,6 +32,10 @@ A track that does not work is a fault of the track, not of you. After a lesson, 
 
 Open Practice, then Start. Say or type what you would say to the children, for example: "Priya, what is 52 minus 29?" Open Materials to show bundles of ten. When you are done, tap End and see feedback. If you name a real child, the name is removed before anything is sent to the AI; the five pretend children keep their names. Rehearsing is a way to try a move safely. No source has shown yet that it changes children's results; the pilot will test that.
 
+## Speaking in Practice
+
+Hold the button while you speak and let go when you finish. A timer shows how many seconds you have used, up to 25. At 25 seconds the recording stops by itself, with the message "That is the longest we can listen to at once. Say the rest in a second message." What you said in those 25 seconds is still used. A very short or silent recording is not sent: you see "I didn't catch that. Try again." Silence is never scored. Your recording is sent to a speech service (Bodhan AI, or Sarvam if Bodhan cannot) to be turned into text, then dropped; it is never kept. The text of what was heard is always shown. Each pretend child keeps one voice for the whole practice, and the voice sounds happier or sadder as the engine's mood for that child changes. The voices are AI-generated. If the voice stops working, or this practice has used its share of speech, you see "Voice is off for the rest of this practice. The text continues." and you carry on by typing.
+
 ## Telegram
 
 Telegram is planned for later and is not available now. For now, use the web app for every step.

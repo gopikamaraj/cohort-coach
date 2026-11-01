@@ -123,7 +123,7 @@ export interface EndResponse {
   explanation: string;
 }
 
-export type FailKind = "paused" | "expired" | "finished" | "offline" | "invalid" | "voice" | "unheard" | "other";
+export type FailKind = "paused" | "expired" | "finished" | "offline" | "invalid" | "voice" | "voice_off" | "unheard" | "other";
 
 export class PracticeError extends Error {
   constructor(

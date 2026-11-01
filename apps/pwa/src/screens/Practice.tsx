@@ -104,9 +104,11 @@ export default function Practice() {
   const [hintList, setHintList] = useState<{ move: string; line: string }[]>([]);
   const [voiceFails, setVoiceFails] = useState(0);
   const [vstate, setVstate] = useState<VoiceState>("idle");
+  const [recMs, setRecMs] = useState(0); // how long she has been speaking (the visible timer)
+  const [capNote, setCapNote] = useState(""); // said when the 25 s limit stopped the recording
   const rowId = useRef<number | null>(null);
   const holding = useRef(false);
-  const rec = useRef<{ mr: MediaRecorder; at: number; timer: number } | null>(null);
+  const rec = useRef<{ mr: MediaRecorder; at: number; timer: number; tick: number } | null>(null);
   const log = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -119,6 +121,7 @@ export default function Practice() {
       const r = rec.current;
       if (r) {
         clearTimeout(r.timer);
+        clearInterval(r.tick);
         r.mr.stream.getTracks().forEach((x) => x.stop());
         if (r.mr.state === "recording") r.mr.stop();
       }
@@ -195,6 +198,10 @@ export default function Practice() {
       const r: VoiceTurn = await postVoiceTurn(session.session_id, clip);
       setVoiceFails(0);
       await applyTurn(r, r.heard);
+      if (r.voice_off) {
+        setNotice("practice.voice_off");
+        setVoiceOn(false); // the allowance is used: typing from here, the text continues
+      }
       if (r.audio && r.audio_mime) {
         setVstate("speaking");
         await playReply(r.audio, r.audio_mime);
@@ -206,6 +213,9 @@ export default function Practice() {
         setVoiceFails(n);
         setNotice(n >= MAX_VOICE_FAILURES ? "practice.voice_fallback" : "practice.error");
         if (n >= MAX_VOICE_FAILURES) setVoiceOn(false); // typing takes over by itself
+      } else if (e instanceof PracticeError && e.kind === "voice_off") {
+        setNotice("practice.voice_off");
+        setVoiceOn(false);
       } else if (e instanceof PracticeError && e.kind === "unheard") setNotice("practice.unheard");
       else if (e instanceof PracticeError && (e.kind === "finished" || e.kind === "invalid")) setNotice("practice.error");
       else fail(e);
@@ -220,6 +230,7 @@ export default function Practice() {
     const r = rec.current;
     if (!r) return;
     clearTimeout(r.timer);
+    clearInterval(r.tick);
     if (r.mr.state === "recording") {
       setVstate("thinking");
       r.mr.stop();
@@ -229,6 +240,8 @@ export default function Practice() {
   const startRec = async () => {
     if (!session || busy || over !== null || holding.current) return;
     holding.current = true;
+    setCapNote("");
+    setRecMs(0);
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -273,7 +286,17 @@ export default function Practice() {
       }
       void doVoice(new Blob(chunks, { type: mr.mimeType }));
     };
-    rec.current = { mr, at: Date.now(), timer: window.setTimeout(stopRec, MAX_RECORD_MS) };
+    const at = Date.now();
+    rec.current = {
+      mr,
+      at,
+      // at 25 s the recording stops by itself and she is told why (the service takes 30 s at once)
+      timer: window.setTimeout(() => {
+        setCapNote("practice.rec_limit");
+        stopRec();
+      }, MAX_RECORD_MS),
+      tick: window.setInterval(() => setRecMs(Date.now() - at), 250),
+    };
     mr.start();
     setVstate("listening");
   };
@@ -651,6 +674,16 @@ export default function Practice() {
               <p className="muted" role="status" data-testid="voice-state">
                 {vstate === "listening" ? tr("practice.listening") : ""}
               </p>
+              {vstate === "listening" ? (
+                <p className="rec-timer" data-testid="rec-timer" aria-live="off">
+                  {tr("practice.rec_timer", { s: Math.min(Math.floor(recMs / 1000), MAX_RECORD_MS / 1000), max: MAX_RECORD_MS / 1000 })}
+                </p>
+              ) : null}
+              {capNote ? (
+                <p className="muted" role="status" data-testid="rec-limit">
+                  {tr(capNote as "practice.rec_limit")}
+                </p>
+              ) : null}
             </div>
             <button type="button" className="btn btn-secondary" onClick={useText} data-testid="use-text">
               {tr("practice.use_text")}

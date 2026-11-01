@@ -77,9 +77,15 @@ class ProviderChain:
         )
 
     def _run(
-        self, function: str, language: str, call: Callable[[SpeechProvider], object]
+        self,
+        function: str,
+        language: str,
+        call: Callable[[SpeechProvider], object],
+        order: Sequence[str] | None = None,
     ) -> object:
         tried = self.candidates(function, language)
+        if order is not None:  # a session pinned to some providers (after two failures in a row)
+            tried = [p for p in tried if p.name in order] or tried
         if not tried:
             raise SpeechError("unavailable", 0, "no_provider")
         last: SpeechError | None = None
@@ -117,12 +123,22 @@ class ProviderChain:
         return result
 
     def synthesize(
-        self, text: str, language: str, voice_for: Callable[[str], str], style: str | None = None
+        self,
+        text: str,
+        language: str,
+        voice_for: Callable[[str], str],
+        style: str | None = None,
+        order: Sequence[str] | None = None,
     ) -> Audio:
         """`voice_for(provider name)` gives that provider's voice, so a fallback keeps a matching
-        voice."""
+        voice. `style` is Bodhan's; other providers get none."""
         result = self._run(
-            "tts", language, lambda p: p.synthesize(text, language, voice_for(p.name), style)
+            "tts",
+            language,
+            lambda p: p.synthesize(
+                text, language, voice_for(p.name), style if p.name == "bodhan" else None
+            ),
+            order,
         )
         assert isinstance(result, Audio)
         return result
@@ -147,9 +163,10 @@ def startup_warning(path: Path = GATES) -> str | None:
     blocks the app."""
     passed = gates_passed(path)
     late = [
-        f for f, gate in (("tts", "bodhan_tts"), ("stt", "bodhan_stt"))
+        f
+        for f, gate in (("tts", "bodhan_tts"), ("stt", "bodhan_stt"))
         if order_from_env(f)[:1] == ["bodhan"] and not passed[gate]
-    ]  # fmt: skip
+    ]
     if not late:
         return None
     msg = (

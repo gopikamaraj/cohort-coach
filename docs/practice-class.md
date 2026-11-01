@@ -184,6 +184,18 @@ Recorded here because they changed the build; numbers are in `docs/evidence/eval
 - **Who hears.** Every child in the class hears what the teacher says to one child. The named child gets the full effect of the move on her error strength and engagement; the others get `overhear` (0.5 in the scenario files) of it. Scolding makes only the child it was aimed at go quiet.
 - **Speed switches (.env).** `PRACTICE_SKIP_CHECKER=1` skips call 7 on a child's line; the validators and pre-filter still run. `PRACTICE_AI_INTENTS=explain,work_aloud` sends only explanations to call 1; any other line is a template. Both are off by default. Decision: `docs/build/DECISIONS.md` (2026-10-31).
 
+## Voice through the speech layer (1 Nov 2026, branch `speech-bodhan`)
+
+Speech goes through the provider chain (`services/speech/chain.py`): Bodhan AI first, Sarvam as the fallback (Prompt 3 of `docs/build/bodhan-speech-prompts.md`; report `docs/build/reports/SPEECH-PRACTICE.md`).
+
+- **In.** The phone records in the format it supports (`MediaRecorder.isTypeSupported`) and sends the file as recorded. A timer counts to 25 s and the recording stops by itself at 25 s, with a message. The server converts to 16 kHz mono WAV, trims silence, never sends more than 28 s in one request, passes the session language, and drops the audio once the text exists. Silence or a very short clip is never sent or scored.
+- **Masking.** The transcript and typed lines are masked before calls 1 to 3 (`mask_personal`, keeping the five pretend children's names); this was already in place and is tested by `tests/practice/test_session.py::test_a_real_childs_name_is_masked_before_any_model_call_but_the_pretend_children_keep_theirs`.
+- **Out.** Each child keeps one Bodhan voice for the session, chosen by seat and the persona's gender from `content/voices.yaml` (distinct from the lesson narrator), with her Sarvam voice as the fallback. The engine's mood sets the style by code: bright to happy, small to sad, the others to the voice's neutral reading. A child's line is at most 120 characters (a gate check). Speech is still started in parallel with call 7 and released only on pass; chorus lines are voiced in parallel; a failure leaves that child's line as text.
+- **Failures and caps.** A failed line is text only and the next turn tries again; after two failures in a row (no audio, or the first provider failing so a fallback answered) the session moves to the next provider for the rest of it. Each session has a speech allowance (`SPEECH_SESSION_MAX_STT_SECONDS`, `SPEECH_SESSION_MAX_TTS_CHARS`); when it is used, "Voice is off for the rest of this practice. The text continues."
+- **Rate limit.** Bodhan's default allowance is about 8 requests a minute per model, so a live turn waits at most `BODHAN_LIVE_PACE_MAX_WAIT_S` (2 s) for it before Sarvam speaks instead.
+- **Cache.** Lines are cached in memory and in the private audio store (`line-cache/`); `python tasks.py practice-pregen` voices the engine's template lines ahead of time. `scripts/voice_audition.py` makes a listening page to choose the voices.
+- **Timing.** Every voice turn records each stage and the provider in `layers.evaluation.timing`; `scripts/practice_voice_latency.py` reports medians and 95th percentiles (mock, or `--live --yes`).
+
 ## Files
 
 `engine/simulator.py` (pure), `services/practice/` (content, templates, session, stub), `ai/calls/c01…c03*.py`, `services/api/practice.py`, `scripts/practice_cli.py`, `content/{movelists,rubrics,scenarios,personas,templates,schemas}`, `evals/runners/sim_fidelity.py`, `evals/sets/sim_fidelity/`.

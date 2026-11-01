@@ -1,0 +1,230 @@
+{
+  "source": "scripts/practice_voice_latency.py",
+  "date": "2026-11-01",
+  "mode": "mock (fixed delays: bodhan stt 0.8 s / tts 1.2 s; the AI is a stub)",
+  "turns": 12,
+  "ok_turns": 12,
+  "failed_turns": [],
+  "by_provider": {
+    "bodhan": {
+      "turns": 8,
+      "stt_ms": {
+        "median": 2008,
+        "p95": 2204
+      },
+      "label_ms": {
+        "median": 0,
+        "p95": 0
+      },
+      "engine_ms": {
+        "median": 0,
+        "p95": 15
+      },
+      "child_ms": {
+        "median": 8,
+        "p95": 15
+      },
+      "tts_ms": {
+        "median": 2453,
+        "p95": 4047
+      },
+      "first_audio_ms": {
+        "median": 4508,
+        "p95": 6109
+      }
+    },
+    "cache": {
+      "turns": 4,
+      "stt_ms": {
+        "median": 2084,
+        "p95": 2312
+      },
+      "label_ms": {
+        "median": 0,
+        "p95": 0
+      },
+      "engine_ms": {
+        "median": 0,
+        "p95": 0
+      },
+      "tts_ms": {
+        "median": 0,
+        "p95": 0
+      },
+      "first_audio_ms": {
+        "median": 2092,
+        "p95": 2312
+      }
+    }
+  },
+  "rows": [
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 6625,
+      "stt_ms": 1812,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": 15,
+      "check_ms": null,
+      "tts_ms": 2250,
+      "first_audio_ms": 4202,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 8359,
+      "stt_ms": 1953,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 3327,
+      "first_audio_ms": 5281,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 8437,
+      "stt_ms": 2062,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 4047,
+      "first_audio_ms": 6109,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "en",
+      "status": 200,
+      "wall_ms": 7234,
+      "stt_ms": 2000,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": 0,
+      "check_ms": null,
+      "tts_ms": 2375,
+      "first_audio_ms": 4391,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 6827,
+      "stt_ms": 2062,
+      "label_ms": 0,
+      "engine_ms": 15,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 2422,
+      "first_audio_ms": 4500,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 4531,
+      "stt_ms": 2016,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 2484,
+      "first_audio_ms": 4516,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 2250,
+      "stt_ms": 2217,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 0,
+      "first_audio_ms": 2217,
+      "tts_provider": "cache",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "hi",
+      "status": 200,
+      "wall_ms": 4843,
+      "stt_ms": 2312,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 0,
+      "first_audio_ms": 2312,
+      "tts_provider": "cache",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 7344,
+      "stt_ms": 2204,
+      "label_ms": 0,
+      "engine_ms": 15,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 2484,
+      "first_audio_ms": 4704,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 4202,
+      "stt_ms": 1827,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 2358,
+      "first_audio_ms": 4202,
+      "tts_provider": "bodhan",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 1984,
+      "stt_ms": 1952,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 0,
+      "first_audio_ms": 1968,
+      "tts_provider": "cache",
+      "speech_mode": "live"
+    },
+    {
+      "lang": "ta",
+      "status": 200,
+      "wall_ms": 4047,
+      "stt_ms": 1702,
+      "label_ms": 0,
+      "engine_ms": 0,
+      "child_ms": null,
+      "check_ms": null,
+      "tts_ms": 0,
+      "first_audio_ms": 1702,
+      "tts_provider": "cache",
+      "speech_mode": "live"
+    }
+  ]
+}

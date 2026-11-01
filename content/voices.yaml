@@ -19,3 +19,28 @@ lessons:
     style: educational lecture
     bodhan: Kavya   # TODO-HUMAN(Seema): pick the Bodhan voice that reads English best
     sarvam: ritu
+
+# The five Practice Class children (Prompt 3). Each child keeps one voice for the whole session,
+# taken in seat order from the list for her or his gender (the persona's gender, content/personas).
+# Distinct from the lesson narrator. The Sarvam fallback keeps today's per-child speaker and pitch
+# (content/voices/children.v1.yaml), so a switch to Sarvam keeps each child recognisable.
+# TODO-HUMAN(Seema): confirm by listening (scripts/voice_audition.py).
+children:
+  hi:
+    f: [Suhani, Ishita, Anagha]
+    m: [Amit, Sourav, Chinmay]
+  ta:
+    f: [Lakshmi, Sravani, Deepika]
+    m: [Arun, Vamsi, Adarsh]
+  en:
+    f: [Suhani, Dhara, Anjali]
+    m: [Amit, Parth, Sandeep]
+
+# The engine's mood decides the voice style, by code (never the AI). A mood not listed, or listed
+# as none, uses the voice's neutral reading.
+moods:
+  bright: happy
+  small: sad
+  calm: none
+  flat: none
+  doubtful: none

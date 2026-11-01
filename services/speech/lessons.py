@@ -207,9 +207,9 @@ def voicers_for(speech: Any, language: str) -> list[Voicer]:
         p = chain.providers.get(name)
         if p is None:
             continue
-        voice = cast.get(name, cast.get("sarvam", LEGACY_VOICE))
+        narrator = cast.get(name, cast.get("sarvam", LEGACY_VOICE))
         style = cast.get("style") if name == "bodhan" else None
-        out.append(_voicer(p, name, voice, style, language))
+        out.append(_voicer(p, name, narrator, style, language))
     return out
 
 

@@ -776,3 +776,20 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - *Number words* for the round-trip check (`services/speech/textnorm.py`): English 0 to 999 999; Hindi and Tamil 0 to 100 plus hundreds and thousands, a first draft (`TODO-HUMAN`: Seema for Hindi, Gopi for Tamil).
 
 **Found live (1 Nov) and fixed.** Bodhan's default rate limit is about 8 requests per minute per model (`x-bodhan-rate-limit-source: default`, with Retry-After on the 429). Three chunks in parallel hit it, the one retry waited only 0.5 to 1 s (and capped Retry-After at 10 s), so every lesson fell back to Sarvam. Now requests are paced to `BODHAN_REQUESTS_PER_MINUTE` (8) per model and Retry-After is honoured up to 60 s; a wait longer than `BODHAN_PACE_MAX_WAIT_S` (90) fails at once so the chain falls back. After the fix, a 1 161-character section was voiced by Bodhan with no fallback (13 chunks, 101 s, 24 of 26 sentences passed the round trip). Ask Bodhan to raise the limit before any live use: at 8 a minute a whole lesson takes about 10 minutes, and a Practice Class turn cannot wait.
+
+## 2026-11-01 · Practice Class speech through the speech layer (Prompt 3, branch `speech-bodhan`)
+
+**Decisions (choices where the prompt left room).**
+1. *Voice by gender.* Each child keeps one Bodhan voice for the session, taken in seat order from the list for the persona's gender (`content/voices.yaml`), distinct from the lesson narrator; the Sarvam fallback is the child's existing speaker and pitch.
+2. *A failure, for the two-failure switch,* is a turn with no audio or one where the first provider failed and a fallback answered.
+3. *Live turns wait at most 2 s* (`BODHAN_LIVE_PACE_MAX_WAIT_S`) for Bodhan's rate allowance before Sarvam speaks; batch work still waits up to 90 s.
+4. *The silence message* keeps the prompt's sentence and adds the existing hint ("I didn't catch that. Try again: hold the button while you speak."), so the existing browser test stays unchanged.
+5. *Per-stage timing* is a new `layers.evaluation.timing` key; the existing `stages` keys are unchanged.
+6. *A child's line is at most 120 characters* (a gate check); recorded and template lines already fit, so no replay changes.
+7. *Masking before calls 1 to 3 was already in place* and tested; not changed.
+
+**Found live (1 Nov).** Bodhan's first audio took a median of 14.7 s in a live turn (Sarvam 7.9 s; target 5 s), and its default allowance runs out within two or three turns. Bodhan is not fit for live Practice Class use until Bodhan raises the limit; the chain falls back to Sarvam meanwhile (`evals/results/practice_voice_latency_live.json`).
+
+**Process note.** A new latency script was first written over the existing tracked `scripts/practice_latency.py` (the text-turn latency eval); it was restored from git unchanged and the new script is `scripts/practice_voice_latency.py`.
+
+**Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).

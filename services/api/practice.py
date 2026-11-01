@@ -8,6 +8,7 @@ metadata-only audit rows written by the AI calls.
 from __future__ import annotations
 
 import base64
+import logging
 import os
 import time
 from collections import deque
@@ -43,6 +44,7 @@ from services.practice.watch import (
     run_watch,
     tag,
 )
+from services.speech import cast
 from services.speech.sarvam import SpeechError
 from services.speech.service import SpeechService, default_service
 from services.speech.voices import voice_for
@@ -82,6 +84,7 @@ def get_speech() -> SpeechService:
 SPEECH = Depends(get_speech)
 MAX_AUDIO_BYTES = 2_000_000
 _POOL = ThreadPoolExecutor(max_workers=4)
+log = logging.getLogger(__name__)
 
 
 class CreateSession(BaseModel):
@@ -136,9 +139,13 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
         raise HTTPException(422, "Unknown scenario or error code.") from exc
     _sweep()
     session = start_session(
-        body.scenario, body.language, counts=counts, checked=body.checked, seed=body.seed,
+        body.scenario,
+        body.language,
+        counts=counts,
+        checked=body.checked,
+        seed=body.seed,
         judge=body.judge and judge_session(),
-    )  # fmt: skip
+    )
     _SESSIONS[session.id] = (session, time.time())
     loaded = session.loaded
     return {
@@ -182,9 +189,66 @@ def post_turn(session_id: str, body: TurnRequest, ctx: CallContext = AI_CONTEXT)
     return {**_to_dict(result), "turns_left": session.loaded.config.max_turns - session.state.turn}
 
 
-def _synth(speech: SpeechService, text: str, session: PracticeSession, speaker: str) -> bytes:
+VOICE_OFF = "Voice is off for the rest of this practice. The text continues."
+SWITCH_AFTER = 2  # synthesis failures in a row before the session moves to the next provider
+
+
+def _seat_voices(session: PracticeSession) -> dict[str, str]:
+    """Each child's voice for the whole session: by seat and the persona's gender (voices.yaml)."""
+    kids = session.state.children
+    genders = [session.personas[c.name].gender if c.name in session.personas else "f" for c in kids]
+    return dict(
+        zip([c.name for c in kids], cast.seat_voices(session.language, genders), strict=True)
+    )
+
+
+def _synth_ex(
+    speech: SpeechService, text: str, session: PracticeSession, speaker: str
+) -> tuple[bytes, str]:
+    """A child's line as audio, and who made it. Her voice is fixed for the session; her mood (the
+    engine's) sets the style by code; the session's speech allowance and provider pin apply."""
     persona = session.personas.get(speaker)
-    return speech.synthesize(text, session.language, voice_for(persona.id if persona else ""))
+    voice = voice_for(persona.id if persona else "")
+    if type(speech).synthesize is not SpeechService.synthesize or not hasattr(
+        speech, "synthesize_ex"
+    ):
+        return speech.synthesize(text, session.language, voice), "speech"  # a stand-in service
+    return speech.synthesize_ex(
+        text,
+        session.language,
+        voice,
+        budget=session.speech_budget,
+        style=cast.mood_style(session.moods.get(speaker)),
+        bodhan_voice=_seat_voices(session).get(speaker),
+        order=session.tts_order,
+    )
+
+
+def _synth(speech: SpeechService, text: str, session: PracticeSession, speaker: str) -> bytes:
+    return _synth_ex(speech, text, session, speaker)[0]
+
+
+def _note_tts(session: PracticeSession, ok: bool, provider: str, speech: SpeechService) -> None:
+    """Two failures in a row (no audio, or the first provider failing so a fallback answered) move
+    the session to the providers after the first one for the rest of it. Logged by names only."""
+    chain = getattr(speech, "chain", None)
+    first = (
+        chain.candidates("tts", session.language)[0].name
+        if chain is not None and chain.candidates("tts", session.language)
+        else None
+    )
+    primary_failed = (not ok) or (first is not None and provider not in (first, "cache"))
+    session.tts_failures = session.tts_failures + 1 if primary_failed else 0
+    if session.tts_failures >= SWITCH_AFTER and session.tts_order is None and chain is not None:
+        rest = [p.name for p in chain.candidates("tts", session.language)][1:]
+        if rest:
+            session.tts_order = rest
+            log.warning(
+                "practice voice: session moved from %s to %s after %d failures",
+                first,
+                rest,
+                SWITCH_AFTER,
+            )
 
 
 def _moves_with_cues(session: PracticeSession) -> list[dict[str, Any]]:
@@ -214,8 +278,8 @@ def _moves_with_cues(session: PracticeSession) -> list[dict[str, Any]]:
     return out
 
 
-def _text_mode(why: str) -> HTTPException:
-    return HTTPException(503, {"text_mode": True, "message": why})
+def _text_mode(why: str, voice_off: bool = False) -> HTTPException:
+    return HTTPException(503, {"text_mode": True, "message": why, "voice_off": voice_off})
 
 
 @router.post("/sessions/{session_id}/voice-turn", dependencies=[Depends(_LIMIT_VOICE)])
@@ -234,6 +298,8 @@ def post_voice_turn(
         raise HTTPException(409, "This rehearsal has finished. Ask for feedback.")
     if not speech.available:
         raise _text_mode("Voice is not available right now. Type instead.")
+    if session.voice_off:
+        raise _text_mode(VOICE_OFF, voice_off=True)
     if int(request.headers.get("content-length") or 0) > MAX_AUDIO_BYTES + 100_000:
         raise HTTPException(413, "That recording is too large. Hold the button for less time.")
     recording = audio.file.read(MAX_AUDIO_BYTES + 1)
@@ -241,8 +307,14 @@ def post_voice_turn(
         raise HTTPException(422, "That recording was empty or too long. Try again.")
     t0 = time.monotonic()
     try:
-        heard = speech.transcribe(recording, session.language)
+        if type(speech).transcribe is SpeechService.transcribe:
+            heard = speech.transcribe(recording, session.language, budget=session.speech_budget)
+        else:
+            heard = speech.transcribe(recording, session.language)
     except SpeechError as exc:
+        if exc.code == "session_cap":  # this session's speech allowance is used: text from now on
+            session.voice_off = True
+            raise _text_mode(VOICE_OFF, voice_off=True) from exc
         if exc.kind == "bad_request":  # too long or unreadable: not a service failure
             raise HTTPException(422, "That recording was too long or unclear. Try again.") from exc
         raise _text_mode("Could not hear that. Type instead.") from exc
@@ -250,11 +322,11 @@ def post_voice_turn(
         raise _text_mode("Could not hear that. Type instead.") from exc
     stt_ms = int((time.monotonic() - t0) * 1000)
     if not heard.strip():
-        raise HTTPException(422, "I could not hear anything. Hold the button and speak again.")
-    pending: dict[str, Future[bytes]] = {}
+        raise HTTPException(422, "I didn't catch that. Try again: hold the button while you speak.")
+    pending: dict[str, Future[tuple[bytes, str]]] = {}
 
     def start_audio(candidate: str, speaker: str) -> None:
-        pending["f"] = _POOL.submit(_synth, speech, candidate, session, speaker)
+        pending["f"] = _POOL.submit(_synth_ex, speech, candidate, session, speaker)
 
     try:
         result = take_turn(session, text=heard[:1000], context=ctx, on_candidate=start_audio)
@@ -267,7 +339,8 @@ def post_voice_turn(
         "turns_left": session.loaded.config.max_turns - session.state.turn,
         "heard": heard,
     }
-    audio_b64, tts_wait_ms = None, 0
+    audio_b64, tts_wait_ms, tts_provider = None, 0, None
+    voice_off_now = False
     if result.child_text:
         t1 = time.monotonic()
         # An AI line that was released (it passed gates 1 and 2, or call 7 is switched off): its
@@ -275,30 +348,60 @@ def post_voice_turn(
         released = result.source == "ai"
         try:
             if released and "f" in pending:
-                data = pending["f"].result(timeout=20)
+                data, tts_provider = pending["f"].result(timeout=20)
             else:
-                data = _synth(speech, result.child_text, session, result.speaker or "")
+                data, tts_provider = _synth_ex(
+                    speech, result.child_text, session, result.speaker or ""
+                )
             audio_b64 = base64.b64encode(data).decode()
+            _note_tts(session, True, tts_provider, speech)
+        except SpeechError as exc:
+            voice_off_now = exc.code == "session_cap"
+            if not voice_off_now:
+                _note_tts(session, False, "", speech)
         except Exception:  # noqa: BLE001 - the text is already there; audio is a bonus
-            audio_b64 = None
+            _note_tts(session, False, "", speech)
         tts_wait_ms = int((time.monotonic() - t1) * 1000)
+    first_audio_ms = int((time.monotonic() - t0) * 1000) if audio_b64 else None
     # The other children who spoke: their template lines are spoken in parallel, one clip each.
     spoken = [
-        (o, _POOL.submit(_synth, speech, o["child_text"], session, o["speaker"]))
+        (o, _POOL.submit(_synth_ex, speech, o["child_text"], session, o["speaker"]))
         for o in out.get("others", [])
-        if o["child_text"]
+        if o["child_text"] and not voice_off_now
     ]
+    for o in out.get("others", []):
+        o["audio"], o["audio_mime"] = None, None
     for o, fut in spoken:
         try:
-            o["audio"] = base64.b64encode(fut.result(timeout=20)).decode()
+            o["audio"] = base64.b64encode(fut.result(timeout=20)[0]).decode()
             o["audio_mime"] = "audio/ogg"
+        except SpeechError as exc:  # the text is there; audio is a bonus
+            voice_off_now = voice_off_now or exc.code == "session_cap"
         except Exception:  # noqa: BLE001 - the text is there; audio is a bonus
-            o["audio"], o["audio_mime"] = None, None
+            pass
+    if voice_off_now:
+        session.voice_off = True
     for f in pending.values():  # a candidate that was not released is dropped
         if not f.done():
             f.cancel()
     stages = {"stt_ms": stt_ms, "tts_wait_ms": tts_wait_ms}
     out["layers"]["evaluation"]["stages"] = stages
+    calls = out["layers"]["evaluation"].get("call_ms", {})
+    # every stage of the turn, and who spoke it (for the latency results per provider)
+    out["layers"]["evaluation"]["timing"] = {
+        "stt_ms": stt_ms,
+        "label_ms": calls.get("label"),
+        "engine_ms": out["layers"]["evaluation"].get("engine_ms"),
+        "child_ms": calls.get("child"),
+        "check_ms": calls.get("check"),
+        "tts_ms": tts_wait_ms,
+        "first_audio_ms": first_audio_ms,
+        "tts_provider": tts_provider,
+        "speech_mode": speech.mode,
+    }
+    out["voice_off"] = session.voice_off
+    if session.voice_off:
+        out["voice_message"] = VOICE_OFF
     out["audio"] = audio_b64
     out["audio_mime"] = "audio/ogg" if audio_b64 else None
     out["speech_mode"] = speech.mode

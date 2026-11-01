@@ -62,6 +62,8 @@ export interface VoiceTurn extends TurnResponse {
   audio: string | null;
   audio_mime: string | null;
   speech_mode: string;
+  /** This practice's speech allowance is used: the text continues, voice is off. */
+  voice_off?: boolean;
 }
 
 const TIMEOUT_MS = 30_000;
@@ -89,8 +91,9 @@ export async function postVoiceTurn(
   if (res.ok) return (await res.json()) as VoiceTurn;
   if (res.status === 503) {
     const body = (await res.json().catch(() => ({}))) as {
-      detail?: { text_mode?: boolean };
+      detail?: { text_mode?: boolean; voice_off?: boolean };
     };
+    if (body.detail?.voice_off) throw new PracticeError("voice_off", 503); // not a failure: the allowance is used
     throw new PracticeError(body.detail?.text_mode ? "voice" : "paused", 503);
   }
   if (res.status === 422) throw new PracticeError("unheard", 422); // silence: ask again, not a failure

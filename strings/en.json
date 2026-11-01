@@ -169,7 +169,7 @@
   "practice.use_text": "Type instead",
   "practice.voice_fallback": "Voice is not working right now, so you can type instead.",
   "practice.mic_denied": "The microphone is blocked. Allow it in your browser settings, or type instead.",
-  "practice.unheard": "I could not hear anything. Hold the button and speak again.",
+  "practice.unheard": "I didn't catch that. Try again: hold the button while you speak.",
   "practice.voice_label": "Speak to the children",
   "practice.voice_stub": "Simulated voice: scripted lines and a tone, not real speech recognition.",
   "check.photo": "Take a photo of this sheet",
@@ -2017,5 +2017,8 @@
   "laudio.done_sentence": "A new version with that sentence made again is ready. Teachers keep hearing the approved one until you approve this.",
   "laudio.done_lesson": "A new version of the whole lesson is ready. Teachers keep hearing the approved one until you approve this.",
   "laudio.done_approve": "Approved. Teachers now hear this version.",
-  "laudio.unavailable": "The voice service is not available. Try again later; nothing was changed."
+  "laudio.unavailable": "The voice service is not available. Try again later; nothing was changed.",
+  "practice.rec_timer": "{s} of {max} seconds",
+  "practice.rec_limit": "That is the longest we can listen to at once. Say the rest in a second message.",
+  "practice.voice_off": "Voice is off for the rest of this practice. The text continues."
 }

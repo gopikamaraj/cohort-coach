@@ -3351,3 +3351,8 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   color: var(--warn);
   display: inline-flex;
 }
+.rec-timer {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}

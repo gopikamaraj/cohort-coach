@@ -58,9 +58,13 @@ class SpeechService:
         log: Callable[..., None] | None = None,
         budget_inr_daily: float | None = None,
         providers: ProviderChain | None = None,
+        cache_store: Any = None,
     ) -> None:
         self.mode = mode
         self.chain = providers
+        # A private store for synthesized lines (practice-pregen fills it with the engine's
+        # template lines), so a repeated line is free even after a restart. None: memory only.
+        self.cache_store = cache_store
         self.budget_inr_daily = (
             budget_inr_daily
             if budget_inr_daily is not None
@@ -137,9 +141,29 @@ class SpeechService:
         voice: Voice,
         budget: costs.SessionSpeechBudget | None = None,
         style: str | None = None,
+        bodhan_voice: str | None = None,
+        order: list[str] | None = None,
     ) -> bytes:
+        return self.synthesize_ex(text, lang, voice, budget, style, bodhan_voice, order)[0]
+
+    def synthesize_ex(
+        self,
+        text: str,
+        lang: str,
+        voice: Voice,
+        budget: costs.SessionSpeechBudget | None = None,
+        style: str | None = None,
+        bodhan_voice: str | None = None,
+        order: list[str] | None = None,
+    ) -> tuple[bytes, str]:
+        """(OGG/Opus bytes, who made it: a provider name, "cache", "stub" or "sarvam")."""
         if self.mode != "stub" and self.chain is not None:
-            return self._chain_synthesize(text, lang, voice, budget, style)
+            return self._chain_synthesize(text, lang, voice, budget, style, bodhan_voice, order)
+        return self._legacy_synthesize(
+            text, lang, voice
+        ), self.mode if self.mode == "stub" else "sarvam"
+
+    def _legacy_synthesize(self, text: str, lang: str, voice: Voice) -> bytes:
         t0 = time.monotonic()
         err, cached, size = None, False, 0
         try:
@@ -225,35 +249,42 @@ class SpeechService:
         voice: Voice,
         budget: costs.SessionSpeechBudget | None,
         style: str | None,
-    ) -> bytes:
-        """One line through the chain -> OGG/Opus, pitch-shifted for a child's voice. Cached by
-        text, language, voice and style, so a repeated line costs nothing."""
+        bodhan_voice: str | None = None,
+        order: list[str] | None = None,
+    ) -> tuple[bytes, str]:
+        """One line through the chain -> OGG/Opus, pitch-shifted for a child's voice. Cached (in
+        memory and, when there is one, in the private store) by text, language, voice and style, so
+        a repeated line costs nothing."""
         assert self.chain is not None
         t0 = time.monotonic()
         err, cached, size, cost = None, False, 0, 0.0
-        key = tts.cache_key(text, lang, voice, f"chain:{style or ''}")
+        bodhan = bodhan_voice or BODHAN_DEFAULT_VOICE.get(lang, "Kavya")
+        key = tts.cache_key(text, lang, voice, f"chain:{style or ''}:{bodhan}")
+        stored = f"line-cache/{key}.ogg"
         try:
             hit = tts.CACHE.get(key)
+            if hit is None and self.cache_store is not None and self.cache_store.size(stored):
+                hit = self.cache_store.get(stored)
+                tts.CACHE.put(key, hit)
             if hit is not None:
                 cached, size = True, len(hit)
-                return hit
+                return hit, "cache"
             if budget is not None and not budget.allows_tts(len(text)):
                 raise SpeechError("rate", 0, "session_cap")
 
             def voice_for(provider: str) -> str:
-                # Bodhan's cast per seat comes in Prompt 3; until then one voice per language.
-                if provider == "bodhan":
-                    return BODHAN_DEFAULT_VOICE.get(lang, "Kavya")
-                return voice.speaker
+                return bodhan if provider == "bodhan" else voice.speaker
 
-            got = self.chain.synthesize(text, lang, voice_for, style)
+            got = self.chain.synthesize(text, lang, voice_for, style, order=order)
             cost = costs.cost_inr(got.provider, "tts", chars=got.chars_billed)
             if budget is not None:
                 budget.charge_tts(got.chars_billed)
             out = audio.to_ogg_opus(got.data, pitch_ratio=voice.pitch, input_rate=got.sample_rate)
             tts.CACHE.put(key, out)
+            if self.cache_store is not None:
+                self.cache_store.put(stored, out, "audio/ogg")
             size = len(out)
-            return out
+            return out, got.provider
         except SpeechError as exc:
             err = exc
             raise
@@ -271,12 +302,27 @@ class SpeechService:
             )
 
 
-def default_chain() -> ProviderChain:
-    """Bodhan and Sarvam with keys from the environment, in the SPEECH_*_PROVIDERS order."""
-    from services.speech.bodhan import BodhanProvider
+def default_chain(*, live: bool = True) -> ProviderChain:
+    """Bodhan and Sarvam with keys from the environment, in the SPEECH_*_PROVIDERS order.
+
+    `live` (the API: a teacher is waiting) lets a Bodhan call wait for its rate allowance at most
+    BODHAN_LIVE_PACE_MAX_WAIT_S (2 s) before the chain moves to Sarvam; batch work (lessons,
+    pre-generation) waits up to BODHAN_PACE_MAX_WAIT_S (90 s)."""
+    from services.speech.bodhan import BodhanClient, BodhanProvider, _float_env
     from services.speech.provider import SarvamProvider
 
-    return ProviderChain({"bodhan": BodhanProvider(), "sarvam": SarvamProvider()})
+    wait = _float_env("BODHAN_LIVE_PACE_MAX_WAIT_S", 2.0) if live else None
+    client = BodhanClient(pace_max_wait_s=wait)
+    return ProviderChain({"bodhan": BodhanProvider(client), "sarvam": SarvamProvider()})
+
+
+def _audio_store_or_none() -> Any:
+    from services.media.storage import StorageNotConfigured, audio_store
+
+    try:
+        return audio_store()
+    except StorageNotConfigured:
+        return None
 
 
 def _sql_log() -> Callable[..., None]:
@@ -299,4 +345,5 @@ def default_service() -> SpeechService:
     config.load_env()
     mode = speech_mode()
     chain = default_chain() if mode != "stub" else None
-    return SpeechService(mode, log=_sql_log(), providers=chain)
+    store = _audio_store_or_none() if mode != "stub" else None
+    return SpeechService(mode, log=_sql_log(), providers=chain, cache_store=store)

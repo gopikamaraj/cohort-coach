@@ -251,6 +251,10 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
         script("scripts/lessons_pregen.py"),
         "voice and cache every published demo lesson (prints the cost; --yes to spend)",
     ),
+    "practice-pregen": (
+        script("scripts/practice_pregen.py"),
+        "cache the Practice Class template lines (prints counts and cost; --yes [--limit N])",
+    ),
 }
 
 

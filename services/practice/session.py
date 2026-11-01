@@ -35,6 +35,7 @@ from engine.simulator import (
 from services.practice.content import LoadedScenario, PersonaChild, load_personas, load_scenario
 from services.practice.faces import face
 from services.practice.templates import render_line
+from services.speech.costs import SessionSpeechBudget
 
 log = logging.getLogger(__name__)
 
@@ -80,6 +81,14 @@ class PracticeSession:
     last_addressed: str | None = None
     ended: bool = False
     created: float = field(default_factory=time.time)
+    # Voice (services/api/practice.py): this session's speech allowance, failures in a row, the
+    # providers it is pinned to after two failures, whether voice is off for the rest of it, and the
+    # mood of each child speaking this turn (the engine's; it decides the voice style by code).
+    speech_budget: SessionSpeechBudget = field(default_factory=SessionSpeechBudget)
+    tts_failures: int = 0
+    tts_order: list[str] | None = None
+    voice_off: bool = False
+    moods: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -159,11 +168,16 @@ def seating(session: PracticeSession) -> list[dict[str, Any]]:
                 "shy": c.shy,
                 "persona": persona.id if persona else None,
                 "expression": face(
-                    speaking=False, intent="", correct=None, engagement=0.5, strength=0.0,
-                    quiet=False, shy=c.shy,
+                    speaking=False,
+                    intent="",
+                    correct=None,
+                    engagement=0.5,
+                    strength=0.0,
+                    quiet=False,
+                    shy=c.shy,
                 ),
             }
-        )  # fmt: skip
+        )
     return out
 
 
@@ -171,9 +185,11 @@ def _move_tag(session: PracticeSession, move_id: str) -> dict[str, Any]:
     for m in session.loaded.movelist.moves:
         if m.id == move_id:
             return {
-                "id": m.id, "label": m.label[session.language], "quality": m.quality,
+                "id": m.id,
+                "label": m.label[session.language],
+                "quality": m.quality,
                 "strategy": m.strategy,
-            }  # fmt: skip
+            }
     return {"id": move_id, "label": move_id, "quality": "neutral", "strategy": False}
 
 
@@ -322,9 +338,13 @@ def take_turn(
         move_id, addressed, posed = label.move_id, label.addressed, label.posed
         if label.scope == "none":  # she named nobody: the child she was talking to continues
             addressed = session.last_addressed
+    t_engine = time.monotonic()
     plan, new_state = plan_turn(
         session.state, loaded.config, move_id, addressed=addressed, posed=posed
     )
+    engine_ms = int((time.monotonic() - t_engine) * 1000)
+    # before the child's line is written, so a voice started in parallel knows her mood
+    session.moods = {p.speaker: p.mood for p in (plan, *plan.chorus) if p.speaker}
     # Bayesian child model only: the five fictional children's beliefs, in the debug log only.
     if plan.trace:
         log.debug("bayes trace turn %d: %s", plan.turn, [asdict(r) for r in plan.trace])
@@ -417,7 +437,7 @@ def take_turn(
                     "addressed": addressed,
                     "confidence": label.confidence,
                     "forced": label.forced,
-                }  # fmt: skip
+                }
                 if label
                 else {"move_id": move_id, "source": "material tap"}
             ),
@@ -438,6 +458,7 @@ def take_turn(
         },
         "evaluation": {
             "latency_ms": latency_ms,
+            "engine_ms": engine_ms,
             "tokens": stats["tokens"],
             "cost_usd": stats["cost_usd"],
             "calls": stats["calls"],
@@ -449,7 +470,7 @@ def take_turn(
                     ("check", checker_run),
                 )
                 if v is not None
-            },  # fmt: skip
+            },
         },
         "output": {"child_line": line.text, "source": line.source, "badge": badge},
     }
