@@ -8,6 +8,7 @@ import { Busy } from "./Busy";
 import { Icon } from "./icons";
 import { useApp } from "../state";
 import { WhyLines } from "./WhyLines";
+import { CoverageMatrix } from "./CoverageMatrix";
 
 export function PaperView({ paper, role, layout, showKey = false }: { paper: Paper; role: PaperRole; layout?: Layout; showKey?: boolean }) {
   const { tr } = useApp();
@@ -88,34 +89,11 @@ export function PaperView({ paper, role, layout, showKey = false }: { paper: Pap
       ) : null}
 
       <h4>{tr("papers.coverage_title")}</h4>
-      <div className="table-scroll" role="region" tabIndex={0} aria-label={tr("papers.coverage_title")}>
-        <table data-testid="coverage-grid">
-          <thead>
-            <tr>
-              <th scope="col">{tr("papers.coverage_col_code")}</th>
-              {paper.items.map((it) => (
-                <th key={it.n} scope="col">
-                  {it.n}
-                </th>
-              ))}
-              <th scope="col">{tr("papers.coverage_col_count")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {grid.map((row) => (
-              <tr key={row.code} data-testid={`coverage-${row.code}`}>
-                <th scope="row">{row.code}</th>
-                {paper.items.map((it) => (
-                  <td key={it.n} aria-label={row.items.has(it.n) ? tr("papers.coverage_yes", { n: it.n }) : undefined}>
-                    {row.items.has(it.n) ? "●" : ""}
-                  </td>
-                ))}
-                <td>{row.assessed ? row.count : tr("papers.not_assessed")}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <CoverageMatrix
+        rows={grid.map((r) => ({ code: r.code, items: r.items, assessed: r.assessed }))}
+        items={paper.items.map((it) => ({ n: it.n, extra: !it.is_anchor }))}
+        caption={tr("papers.coverage_title")}
+      />
 
       <h4>
         {tr("papers.checks_title")}

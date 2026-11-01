@@ -15,6 +15,7 @@ import type { Key } from "../i18n";
 import { useApp } from "../state";
 import { PROBE_KEY, STAGE_KEY, STAGE_ORDER } from "../lib/stages";
 import { BeforeAfter } from "../components/BeforeAfter";
+import { ResultsDetail } from "../components/ResultsDetail";
 import { formatCheckLabel, shownClassName } from "../lib/checks";
 
 const TRACKED = new Set(["SUB-SFL", "SUB-NODEC", "PV-HEARD", "PV-REVERSE", "ADD-NOCARRY"]);
@@ -179,6 +180,7 @@ export default function Cards() {
           {tr("stage.note")}
         </p>
       ) : null}
+      <ResultsDetail untracked={view.untracked} />
       <BeforeAfter hideWhenEmpty />
     </section>
   );

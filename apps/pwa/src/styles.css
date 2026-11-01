@@ -3341,6 +3341,8 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
 .finding-lines {
   margin: 0 0 var(--s3);
   padding-left: var(--s5);
+}
+
 /* Lesson audio: the script follows the voice (teacher player and coach review) */
 .say-along {
   margin: var(--s2) 0;
@@ -3378,4 +3380,256 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   font-size: 16px;
   font-variant-numeric: tabular-nums;
   margin: 0;
+}
+
+/* ---- Results page: answer map, "Why an error is flagged", "What each error means" ---- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.chip-draft {
+  background: var(--warn-container);
+}
+/* the coverage matrix: header cells never wrap, the error column stays in view while it scrolls */
+.coverage-scroll {
+  max-width: 100%;
+}
+.coverage th,
+.coverage td {
+  white-space: nowrap;
+  min-width: 2.5rem;
+  padding: 2px 6px;
+}
+.coverage th.cov-code {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 11rem;
+  max-width: 14rem;
+  background: var(--surface);
+  text-align: left;
+  white-space: normal;
+}
+.cov-code-text {
+  display: block;
+  font-weight: 600;
+}
+.cov-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: normal;
+}
+.cov-extra {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.cov-pick {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.cov-pick-row {
+  text-align: left;
+  width: 100%;
+}
+.cov-pick[aria-pressed="true"] {
+  text-decoration: underline;
+  font-weight: 700;
+}
+.cov-on,
+.cov-row-on > td,
+.cov-row-on > th {
+  background: color-mix(in srgb, var(--stick) 35%, var(--surface));
+}
+.results-why summary {
+  min-height: 44px;
+  cursor: pointer;
+}
+.inline-h {
+  display: inline;
+  margin: 0;
+}
+
+/* the answer map: a mistake is colour + two letters + a pattern, never colour alone */
+.amap-h {
+  margin: var(--s2) 0;
+}
+.amap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: 0 0 var(--s2);
+  padding: 0;
+}
+.amap-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: 4px 10px;
+  border: 2px solid var(--outline);
+  border-radius: var(--r-btn);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.amap-chip-on {
+  border-color: var(--pen);
+  background: var(--pen-container);
+}
+.amap-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2rem;
+  border: 1px solid var(--ink);
+  border-radius: var(--r-btn);
+  font-weight: 700;
+  color: var(--ink);
+}
+.amap-pv-heard {
+  --heat: var(--heat-ph);
+  --pat: repeating-linear-gradient(45deg, color-mix(in srgb, var(--ink) 30%, transparent) 0 2px, transparent 2px 7px);
+}
+.amap-pv-reverse {
+  --heat: var(--heat-pr);
+  --pat: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 30%, transparent) 0 2px, transparent 2px 7px);
+}
+.amap-add-nocarry {
+  --heat: var(--heat-ac);
+  --pat: radial-gradient(color-mix(in srgb, var(--ink) 40%, transparent) 1.5px, transparent 2px);
+}
+.amap-sub-sfl {
+  --heat: var(--heat-sf);
+  --pat: repeating-linear-gradient(0deg, color-mix(in srgb, var(--ink) 30%, transparent) 0 2px, transparent 2px 7px);
+}
+.amap-sub-nodec {
+  --heat: var(--heat-sn);
+  --pat: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 30%, transparent) 0 2px, transparent 2px 7px);
+}
+.amap-swatch,
+.amap-cell.amap-err {
+  background-color: var(--heat);
+  background-image: var(--pat);
+  background-size: auto, 8px 8px;
+}
+.amap {
+  border-collapse: separate;
+  border-spacing: 3px;
+}
+.amap th,
+.amap td {
+  padding: 0;
+  border: 0;
+}
+.amap thead th {
+  vertical-align: bottom;
+  white-space: nowrap;
+  font-weight: 400;
+}
+.amap .amap-roll {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 3.25rem;
+  padding: 0 4px;
+  background: var(--surface);
+  text-align: center;
+  font-weight: 700;
+}
+.amap-q {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.amap-cell {
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-btn);
+  background: var(--chalk);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.amap-cell.amap-correct {
+  color: var(--muted);
+  font-weight: 400;
+}
+.amap-cell.amap-blank,
+.amap-cell.amap-unreadable,
+.amap-cell.amap-other {
+  background: var(--surface);
+  border: 2px dotted var(--outline);
+}
+.amap-cell.amap-err span {
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.amap-cell.amap-possible {
+  border: 2px dashed var(--ink);
+}
+.amap-cell.amap-dim {
+  opacity: 0.3;
+}
+.amap-cell:focus-visible,
+.amap-chip:focus-visible,
+.cov-pick:focus-visible {
+  outline: 3px solid var(--pen);
+  outline-offset: 2px;
+}
+.amap-col-on {
+  background: color-mix(in srgb, var(--stick) 35%, var(--surface));
+}
+.amap-total-cell {
+  text-align: center;
+  font-weight: 700;
+}
+.amap-pop {
+  max-width: 28rem;
+}
+.amap-pop-head {
+  align-items: center;
+  justify-content: space-between;
+}
+.explain summary {
+  min-height: 44px;
+  cursor: pointer;
+}
+
+/* the results detail never grows past the screen: a wide table scrolls inside its own box */
+.results-detail,
+.results-detail > *,
+.results-detail details,
+.results-detail .stack,
+.amap-legend li {
+  min-width: 0;
+  max-width: 100%;
+}
+.amap-chip {
+  max-width: 100%;
 }
