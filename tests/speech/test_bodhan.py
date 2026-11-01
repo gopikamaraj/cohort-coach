@@ -37,6 +37,21 @@ def clip(seconds: float = 2.0) -> bytes:
     return audio.tone(seconds, 300, rate=16000)
 
 
+class FakeTime:
+    """A clock that only moves when the client sleeps, so waits are exact and instant."""
+
+    def __init__(self) -> None:
+        self.now = 1000.0
+        self.waits: list[float] = []
+
+    def clock(self) -> float:
+        return self.now
+
+    def sleep(self, s: float) -> None:
+        self.waits.append(round(s, 2))
+        self.now += s
+
+
 # --- request building -----------------------------------------------------------------------------
 
 
@@ -109,9 +124,11 @@ def test_an_unknown_voice_becomes_the_language_default_and_an_unknown_style_is_r
 def test_the_mock_refuses_phone_containers_with_415_like_bodhan(head: bytes) -> None:
     """Why speech to text always converts first: these formats are refused as they come."""
     client = BodhanClient(
-        speak_key=SPEAK_KEY, transcribe_key=TRANSCRIBE_KEY, client=BodhanMock().client(),
+        speak_key=SPEAK_KEY,
+        transcribe_key=TRANSCRIBE_KEY,
+        client=BodhanMock().client(),
         sleep=lambda s: None,
-    )  # fmt: skip
+    )
     with pytest.raises(SpeechError) as e:
         client.transcribe(head, "hi")
     assert e.value.status == 415 and e.value.kind == "bad_request"
@@ -130,9 +147,17 @@ def test_a_bad_voice_or_language_at_the_service_is_a_422_bad_request_not_retried
 
 @pytest.mark.parametrize(
     ("status", "kind", "requests"),
-    [(401, "auth", 1), (403, "auth", 1), (415, "bad_request", 1), (422, "bad_request", 1),
-     (400, "bad_request", 1), (429, "rate", 2), (500, "unavailable", 2), (503, "unavailable", 2)],
-)  # fmt: skip
+    [
+        (401, "auth", 1),
+        (403, "auth", 1),
+        (415, "bad_request", 1),
+        (422, "bad_request", 1),
+        (400, "bad_request", 1),
+        (429, "rate", 2),
+        (500, "unavailable", 2),
+        (503, "unavailable", 2),
+    ],
+)
 def test_each_status_maps_to_a_kind_and_only_429_and_5xx_are_retried(
     status: int, kind: str, requests: int
 ) -> None:
@@ -157,18 +182,23 @@ def test_two_timeouts_are_a_timeout_error() -> None:
 
 
 def test_the_retry_waits_for_retry_after_and_rate_limit_headers_are_kept() -> None:
-    waits: list[float] = []
+    t = FakeTime()
     mock = BodhanMock(fail=[429], retry_after="3")
     client = BodhanClient(
-        speak_key=SPEAK_KEY, transcribe_key=TRANSCRIBE_KEY, client=mock.client(),
-        sleep=waits.append, jitter=lambda: 0.0,
-    )  # fmt: skip
+        speak_key=SPEAK_KEY,
+        transcribe_key=TRANSCRIBE_KEY,
+        client=mock.client(),
+        sleep=t.sleep,
+        jitter=lambda: 0.0,
+        clock=t.clock,
+    )
     client.transcribe(clip(), "hi")
-    assert waits == [3.0]
+    assert t.waits == [3.0]
     still = BodhanClient(
-        transcribe_key=TRANSCRIBE_KEY, client=BodhanMock(fail=[429, 429]).client(),
+        transcribe_key=TRANSCRIBE_KEY,
+        client=BodhanMock(fail=[429, 429]).client(),
         sleep=lambda s: None,
-    )  # fmt: skip
+    )
     with pytest.raises(SpeechError, match="rate"):
         still.transcribe(clip(), "hi")
     assert still.last_rate_limits == {
@@ -212,8 +242,12 @@ def test_a_422_logs_the_unknown_value_and_a_415_logs_loudly(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     caplog.set_level(logging.INFO)
-    client = BodhanClient(speak_key=SPEAK_KEY, transcribe_key=TRANSCRIBE_KEY,
-                          client=BodhanMock().client(), sleep=lambda s: None)  # fmt: skip
+    client = BodhanClient(
+        speak_key=SPEAK_KEY,
+        transcribe_key=TRANSCRIBE_KEY,
+        client=BodhanMock().client(),
+        sleep=lambda s: None,
+    )
     with pytest.raises(SpeechError):
         client.synthesize("Hello", "en", "Nobody", None)
     assert "unknown voice 'Nobody'" in caplog.text
@@ -235,3 +269,82 @@ def test_timeouts_are_set_explicitly(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     c.transcribe(clip(), "en")
     assert seen[0]["connect"] == 5.0 and seen[0]["read"] == 12.0
+
+
+def test_a_429_without_retry_after_waits_longer_before_its_one_retry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Bodhan's limit is per minute and it sends no Retry-After (seen live on 1 Nov), so the
+    retry waits BODHAN_RATE_BACKOFF_S (8 s by default) instead of half a second."""
+    t = FakeTime()
+    client = BodhanClient(
+        transcribe_key=TRANSCRIBE_KEY,
+        client=BodhanMock(fail=[429]).client(),
+        sleep=t.sleep,
+        jitter=lambda: 0.0,
+        clock=t.clock,
+    )
+    client.transcribe(clip(), "hi")
+    assert t.waits == [8.0]
+    monkeypatch.setenv("BODHAN_RATE_BACKOFF_S", "2")
+    t2 = FakeTime()
+    BodhanClient(
+        transcribe_key=TRANSCRIBE_KEY,
+        client=BodhanMock(fail=[429]).client(),
+        sleep=t2.sleep,
+        jitter=lambda: 0.0,
+        clock=t2.clock,
+    ).transcribe(clip(), "hi")
+    assert t2.waits == [2.0]
+
+
+def test_requests_are_paced_to_the_per_minute_allowance_per_model() -> None:
+    """Measured live on 1 Nov: about 8 requests a minute per model. The ninth waits for a slot."""
+    t = FakeTime()
+    mock = BodhanMock()
+    client = BodhanClient(
+        speak_key=SPEAK_KEY,
+        transcribe_key=TRANSCRIBE_KEY,
+        client=mock.client(),
+        sleep=t.sleep,
+        clock=t.clock,
+        requests_per_minute=8,
+    )
+    for _ in range(8):
+        client.synthesize("Ten.", "en", "Kavya", None)
+    client.transcribe(clip(), "en")  # another model: its own allowance
+    assert t.waits == []
+    client.synthesize("Ten.", "en", "Kavya", None)
+    assert t.waits == [60.05] and mock.count == 10
+
+
+def test_a_wait_longer_than_the_limit_fails_at_once_so_the_chain_can_fall_back() -> None:
+    t = FakeTime()
+    client = BodhanClient(
+        speak_key=SPEAK_KEY,
+        client=BodhanMock().client(),
+        sleep=t.sleep,
+        clock=t.clock,
+        requests_per_minute=2,
+        pace_max_wait_s=5,
+    )
+    client.synthesize("One.", "en", "Kavya", None)
+    client.synthesize("Two.", "en", "Kavya", None)
+    with pytest.raises(SpeechError) as e:
+        client.synthesize("Three.", "en", "Kavya", None)
+    assert e.value.kind == "rate" and e.value.code == "paced" and t.waits == []
+
+
+def test_a_long_retry_after_is_not_waited_out_when_it_exceeds_the_limit() -> None:
+    t = FakeTime()
+    mock = BodhanMock(fail=[429], retry_after="48")
+    client = BodhanClient(
+        speak_key=SPEAK_KEY,
+        client=mock.client(),
+        sleep=t.sleep,
+        clock=t.clock,
+        pace_max_wait_s=10,
+    )
+    with pytest.raises(SpeechError) as e:
+        client.synthesize("Ten.", "en", "Kavya", None)
+    assert e.value.kind == "rate" and mock.count == 1 and t.waits == []

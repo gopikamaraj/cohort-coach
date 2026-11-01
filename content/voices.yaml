@@ -1,0 +1,21 @@
+# Voices for the speech layer (services/speech/). Data, not code.
+# TODO-HUMAN(Seema): confirm every voice by listening (scripts/voice_audition.py makes a listening page).
+# Bodhan voices are names from https://console.bodhan.ai/api-docs/ (any voice reads any language).
+# Sarvam voices are Bulbul v3 speaker names, as in content/voices/lessons.v1.yaml.
+version: 1
+
+# One narrator per lesson language. A lesson keeps one voice from start to finish: if the first
+# provider fails part-way, the whole lesson is made again with the next provider's voice.
+lessons:
+  hi:
+    style: educational lecture
+    bodhan: Kavya
+    sarvam: ritu
+  ta:
+    style: educational lecture
+    bodhan: Anitha
+    sarvam: ritu
+  en:
+    style: educational lecture
+    bodhan: Kavya   # TODO-HUMAN(Seema): pick the Bodhan voice that reads English best
+    sarvam: ritu

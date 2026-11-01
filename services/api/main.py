@@ -16,6 +16,7 @@ from services.api.channels.telegram.webhook import router as telegram_router
 from services.api.cohorts.routes import router as cohorts_router
 from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
+from services.api.lesson_audio_api import router as lesson_audio_router
 from services.api.lessons import router as lessons_router
 from services.api.officer import router as officer_router
 from services.api.papers import router as papers_router
@@ -101,6 +102,7 @@ def create_app() -> FastAPI:
     app.include_router(profiles_router)
     app.include_router(programme_router)
     app.include_router(review_router)
+    app.include_router(lesson_audio_router)
     app.include_router(papers_router)
     app.include_router(paper_rules_router)
     app.include_router(paper_hub_router)

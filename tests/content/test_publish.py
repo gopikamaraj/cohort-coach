@@ -41,8 +41,9 @@ class Voice:
         return speech_audio.tone(0.5, 300)
 
 
-def fake_join(clips: list[bytes], *, fmt: str = "ogg", kbps: int = 16, gap_s: float = 0.6):  # type: ignore[no-untyped-def]
-    return b"OggS" + b"x" * 1500 * len(clips), 1.0 * len(clips)
+def fake_mp3(wav: bytes, kbps: int) -> bytes:
+    """Stands in for ffmpeg's loudness pass and MP3 encoder, so these tests stay quick."""
+    return b"ID3" + b"x" * (len(wav) // 40)
 
 
 def approve_all(
@@ -81,7 +82,7 @@ def store() -> LocalBlobStore:
 @pytest.fixture(autouse=True)
 def quick_join(monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest) -> None:
     if request.node.get_closest_marker("real_audio") is None:
-        monkeypatch.setattr(publish, "join_to_file", fake_join)
+        monkeypatch.setattr(publish.lessons, "encode_mp3", fake_mp3)
 
 
 def sub_sfl_cohort() -> str:
@@ -198,9 +199,11 @@ def test_a_filled_lesson_that_breaks_the_arithmetic_is_not_published(
 @pytest.mark.real_audio
 @pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")
 def test_a_voice_lesson_stays_within_the_data_budget() -> None:
+    # The budget changed on 1 Nov 2026 (DECISIONS.md, confirmed by Gopi): lessons are MP3 mono at
+    # 48 kbps, about 1.8 MB per 5 minutes; it was OGG/Opus 16 kbps, about 0.6 MB.
     clip = speech_audio.tone(30.0, 220)  # 30 seconds of sound, as one lesson chunk
     data, seconds = publish.encode([clip] * 10)  # about 5 minutes with the pauses
     assert seconds > 280
     per_five_minutes = len(data) / seconds * 300
-    assert per_five_minutes <= 600_000, per_five_minutes  # ~0.6 MB per 5 minutes (OGG/Opus)
-    assert data[:4] == b"OggS"
+    assert per_five_minutes <= publish.BUDGET_BYTES_PER_5_MIN, per_five_minutes
+    assert data[:3] == b"ID3" or data[:1] == bytes([0xFF])  # an MP3 file (ID3 tag or frame sync)

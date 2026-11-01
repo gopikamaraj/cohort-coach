@@ -759,3 +759,20 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Not done in Prompt 1.** Lessons (Prompt 2), Practice Class recording and voices (Prompt 3), evaluation and gates (Prompt 4). The startup warning fires until `docs/evidence/speech_gates.md` records both gates passed.
 
 **Confirmed by.** Gopi, 2026-11-01 ("start the development", Prompt 1).
+
+## 2026-11-01 · Lesson audio with the speech layer (Prompt 2, branch `speech-bodhan`)
+
+**Decisions (Gopi, 2026-11-01, answering the questions asked before Prompts 2 to 4).**
+1. *Lessons are MP3 mono 48 kbps*, as the prompt says (was OGG/Opus 16 kbps). Gopi was told this breaks the 10 MB per-track budget and chose it. Computed worst case at the 5-minute lesson cap (`scripts/data_budget.py`, `docs/evidence/data_budget.json`): 14.73 MB per track with text practice, against the 10 MB target (6 lessons at the cap are 10.8 MB). No new target number was set, so `tests/test_data_budget.py::test_the_track_fits_the_target_with_text_practice_and_not_with_voice_every_time` now fails and is left failing until a person sets the target (or changes the format). `CLAUDE.md` section 9, the README and `docs/RUBRIC_MAP.md` E3.2 say so.
+2. *Coach audio review is after publishing and optional.* Publishing voices each lesson by itself; the coach can listen, regenerate a sentence or the lesson, and approve; teachers keep the approved version until a new one is approved. Unapproved audio is labelled "Not yet approved" on the review screen.
+3. *Live calls*: Gopi chose to run the live scripts. Run on 1 Nov: `scripts/calibrate_chunks.py --yes` (evals/results/chunk_calibration.json) and a live smoke run of two lesson texts through the pipeline into the local store (`MEDIA_LOCAL_STORE=1`; the real audio bucket was not written from a local run).
+4. *Commits*: one per prompt on `speech-bodhan`, `--no-verify` (the full check is not green; failures listed in each commit message).
+
+**Choices where the prompt left room.**
+- *Small cohorts.* A filled lesson and its audio carry the pooled counts of the cohort's classes, so the coach review screen hides a lesson whose cohort has fewer than 5 classes (rule 3; the manifests view already hides scripts). Records carry `cohort_id` and `cohort_classes`.
+- *Demo pre-generation* reads the newest published manifest of each track. The local database had none (all 14 drafts were held by the output checker, so nothing could be published without re-drafting with call 5, a Claude spend outside this prompt); `lessons-pregen` is built and tested but had nothing to voice.
+- *Telegram* sends a lesson as a voice note, which Telegram accepts as OGG/Opus only. With MP3 lessons the roadmap bot would need `sendAudio`; not changed (Telegram is not deployed).
+- *Timing inside a two-sentence chunk* is split by characters: an estimate, since no provider returns timestamps.
+- *Number words* for the round-trip check (`services/speech/textnorm.py`): English 0 to 999 999; Hindi and Tamil 0 to 100 plus hundreds and thousands, a first draft (`TODO-HUMAN`: Seema for Hindi, Gopi for Tamil).
+
+**Found live (1 Nov) and fixed.** Bodhan's default rate limit is about 8 requests per minute per model (`x-bodhan-rate-limit-source: default`, with Retry-After on the 429). Three chunks in parallel hit it, the one retry waited only 0.5 to 1 s (and capped Retry-After at 10 s), so every lesson fell back to Sarvam. Now requests are paced to `BODHAN_REQUESTS_PER_MINUTE` (8) per model and Retry-After is honoured up to 60 s; a wait longer than `BODHAN_PACE_MAX_WAIT_S` (90) fails at once so the chain falls back. After the fix, a 1 161-character section was voiced by Bodhan with no fallback (13 chunks, 101 s, 24 of 26 sentences passed the round trip). Ask Bodhan to raise the limit before any live use: at 8 a minute a whole lesson takes about 10 minutes, and a Practice Class turn cannot wait.

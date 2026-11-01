@@ -5,6 +5,11 @@ docs/vendors/bodhan/api-reference.md. Auth is `Authorization: Bearer <key>`. Spe
 WAV, FLAC, OGG or MP3 of at most 30 s (we send 16 kHz mono WAV of at most 28 s); text to speech
 returns WAV (PCM16, 24 kHz, mono) and takes `instructions` as a JSON *string*.
 
+Rate limit (measured live on 1 Nov 2026): about 8 requests per minute per model by default (the 429
+says `x-bodhan-rate-limit-source: default` and carries Retry-After). So requests are paced on our
+side to BODHAN_REQUESTS_PER_MINUTE (8) per model; a call that would have to wait longer than
+BODHAN_PACE_MAX_WAIT_S fails at once as `rate`, so the chain moves to Sarvam instead of hanging.
+
 Status mapping: 401/403 auth (no retry); 415 our conversion is wrong (no retry, logged loudly); 422
 a bad voice, language or style (no retry, the unknown value is logged); 400 and other 4xx bad
 request (no retry); 429 and 5xx retried once with backoff and jitter, honouring Retry-After;
@@ -18,7 +23,9 @@ import json
 import logging
 import os
 import random
+import threading
 import time
+from collections import deque
 from collections.abc import Callable
 from typing import Any
 
@@ -37,22 +44,47 @@ TTS_MODEL = "indic-speak"
 LANGUAGE_CODES = {"en": "en", "hi": "hi", "ta": "ta"}
 STYLES = frozenset(
     {
-        "AIR style news", "Customer Care", "TV style news", "advertisements", "anger",
-        "children's stories", "disgust", "educational lecture", "fear", "happy", "news", "sad",
-        "single person narration audiobook", "surprise",
+        "AIR style news",
+        "Customer Care",
+        "TV style news",
+        "advertisements",
+        "anger",
+        "children's stories",
+        "disgust",
+        "educational lecture",
+        "fear",
+        "happy",
+        "news",
+        "sad",
+        "single person narration audiobook",
+        "surprise",
     }
-)  # fmt: skip
+)
 # The 45 voices by the language each was recorded in (female first). Any voice reads any language.
 VOICES_BY_LANGUAGE: dict[str, tuple[str, ...]] = {
-    "as": ("Prastuti", "Ankur"), "bn": ("Ishita", "Sourav"), "brx": ("Gwrbw", "Sansuma"),
-    "doi": ("Preeti", "Sham"), "gu": ("Dhara", "Parth"), "hi": ("Kavya", "Suhani", "Amit"),
-    "kn": ("Deepika", "Adarsh"), "kok": ("Anjali", "Sandeep"), "ks": ("Zoon", "Ishfaq"),
-    "mai": ("Vaidehi", "Madhukar"), "ml": ("Lakshmi", "Kiran"), "mni": ("Thoibi", "Chaoba"),
-    "mr": ("Anagha", "Chinmay"), "ne": ("Srijana", "Sagar"), "or": ("Itishree", "Akash"),
-    "pa": ("Kaur", "Manpreet"), "sa": ("Bharati", "Aryaman"), "sat": ("Phulmani", "Sibu"),
-    "sd": ("Moomal", "Rano"), "ta": ("Anitha", "Arun"), "te": ("Sravani", "Vamsi"),
+    "as": ("Prastuti", "Ankur"),
+    "bn": ("Ishita", "Sourav"),
+    "brx": ("Gwrbw", "Sansuma"),
+    "doi": ("Preeti", "Sham"),
+    "gu": ("Dhara", "Parth"),
+    "hi": ("Kavya", "Suhani", "Amit"),
+    "kn": ("Deepika", "Adarsh"),
+    "kok": ("Anjali", "Sandeep"),
+    "ks": ("Zoon", "Ishfaq"),
+    "mai": ("Vaidehi", "Madhukar"),
+    "ml": ("Lakshmi", "Kiran"),
+    "mni": ("Thoibi", "Chaoba"),
+    "mr": ("Anagha", "Chinmay"),
+    "ne": ("Srijana", "Sagar"),
+    "or": ("Itishree", "Akash"),
+    "pa": ("Kaur", "Manpreet"),
+    "sa": ("Bharati", "Aryaman"),
+    "sat": ("Phulmani", "Sibu"),
+    "sd": ("Moomal", "Rano"),
+    "ta": ("Anitha", "Arun"),
+    "te": ("Sravani", "Vamsi"),
     "ur": ("Saba", "Zaid"),
-}  # fmt: skip
+}
 VOICES = frozenset(v for vs in VOICES_BY_LANGUAGE.values() for v in vs)
 # A default voice per app language until content/voices.yaml (Prompt 2) sets the cast.
 # TODO-HUMAN(Seema): confirm by listening.
@@ -94,6 +126,9 @@ class BodhanClient:
         tts_read_s: float | None = None,
         sleep: Callable[[float], None] = time.sleep,
         jitter: Callable[[], float] = random.random,
+        clock: Callable[[], float] = time.monotonic,
+        requests_per_minute: int | None = None,
+        pace_max_wait_s: float | None = None,
     ) -> None:
         self._speak_key = speak_key if speak_key is not None else _key("BODHAN_SPEAK_API_KEY")
         self._transcribe_key = (
@@ -112,7 +147,40 @@ class BodhanClient:
         self._http = client or httpx.Client()
         self._sleep = sleep
         self._jitter = jitter
+        self._clock = clock
+        self._per_min = (
+            requests_per_minute
+            if requests_per_minute is not None
+            else int(_float_env("BODHAN_REQUESTS_PER_MINUTE", 8))
+        )
+        self.max_wait_s = (
+            pace_max_wait_s
+            if pace_max_wait_s is not None
+            else _float_env("BODHAN_PACE_MAX_WAIT_S", 90)
+        )
+        self._sent: dict[str, deque[float]] = {}
+        self._blocked_until: dict[str, float] = {}
+        self._lock = threading.Lock()
         self.last_rate_limits: dict[str, str] = {}
+
+    def _pace(self, model: str) -> None:
+        """Wait for a free slot in this model's per-minute allowance (and past any Retry-After),
+        or fail at once with `rate` when the wait would be longer than `max_wait_s`."""
+        while True:
+            with self._lock:
+                now = self._clock()
+                q = self._sent.setdefault(model, deque())
+                while q and now - q[0] >= 60.0:
+                    q.popleft()
+                blocked = self._blocked_until.get(model, 0.0) - now
+                if blocked <= 0 and (self._per_min <= 0 or len(q) < self._per_min):
+                    q.append(now)
+                    return
+                full = self._per_min > 0 and len(q) >= self._per_min
+                wait = max(blocked, (60.0 - (now - q[0]) + 0.05) if full else 0.0)
+            if wait > self.max_wait_s:
+                raise SpeechError("rate", 429, "paced")
+            self._sleep(wait)
 
     @property
     def speak_configured(self) -> bool:
@@ -130,6 +198,7 @@ class BodhanClient:
         headers = {"Authorization": f"Bearer {key}"}
         last: SpeechError | None = None
         for attempt in range(2):  # one retry, for 429, 5xx and timeouts only
+            self._pace(model)
             t0 = time.monotonic()
             wait = 0.0
             try:
@@ -169,6 +238,16 @@ class BodhanClient:
                 if res.status_code != 429 and res.status_code < 500:
                     raise last
                 wait = _retry_after(res)
+                if res.status_code == 429:
+                    if wait == 0.0:  # no Retry-After: the limit is per minute, so wait a while
+                        wait = _float_env("BODHAN_RATE_BACKOFF_S", 8.0) * (
+                            1 + 0.25 * self._jitter()
+                        )
+                    with self._lock:
+                        self._blocked_until[model] = self._clock() + wait
+                    if wait > self.max_wait_s:
+                        raise last  # too long to wait here: the chain tries the next provider
+                    continue  # the pace waits out the Retry-After before the one retry
             if attempt == 0:
                 self._sleep(max(wait, 0.5 * (1 + self._jitter())))
         assert last is not None
@@ -256,7 +335,9 @@ def _unknown_value(res: httpx.Response) -> str:
 
 def _retry_after(res: httpx.Response) -> float:
     try:
-        return min(float(res.headers.get("retry-after", "0")), 10.0)
+        return min(
+            float(res.headers.get("retry-after", "0")), _float_env("BODHAN_MAX_RETRY_AFTER_S", 60)
+        )
     except ValueError:
         return 0.0
 

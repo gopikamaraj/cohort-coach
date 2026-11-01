@@ -2,6 +2,7 @@
 // words and every number come from the server, the same as in the Telegram bot.
 import { API_BASE } from "./api";
 import { deviceId } from "./consent";
+import type { AudioInfo } from "./lessonAudio";
 
 export interface FlowButton {
   id: string;
@@ -15,6 +16,8 @@ export interface FlowMessage {
   url: string | null;
   url_label: string | null;
   audio: string | null;
+  /** For a lesson: its size, sentences and their timing, and whether the voice is AI-generated. */
+  audio_info?: AudioInfo | null;
   /** A sprite scene by reference; the app draws it itself, so it also works offline. */
   scene: SceneRef | null;
   alt: string | null;

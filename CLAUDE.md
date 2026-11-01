@@ -229,7 +229,7 @@ Model IDs are from Anthropic's current lineup; confirm them on the model pages b
 | --- | --- |
 | Data per teacher per 3-week track | < 10 MB, measured |
 | Check entry | sheet photos, ~80 KB each (~2.5 MB per class); queued offline in Telegram's outbox or the PWA's |
-| Voice lesson | ~0.6 MB per 5 min (OGG/Opus 16 kbps) |
+| Voice lesson | ~1.8 MB per 5 min (MP3 mono 48 kbps; decided 1 Nov 2026 on branch `speech-bodhan`, was ~0.6 MB at OGG/Opus 16 kbps). At the 5-minute cap six lessons break the 10 MB track target: a new target is pending a human decision (`DECISIONS.md`) |
 | Model run | ~0.35 MB per 3 min (OGG/Opus 16 kbps) |
 | Practice Class | ~1 MB per voice session, ~50 KB in text mode, measured on Slow 3G |
 | PWA first load | < 1 MB compressed JS; install optional; shell cached after first load |
