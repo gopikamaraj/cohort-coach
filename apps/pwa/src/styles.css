@@ -3317,3 +3317,28 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   text-align: center;
   line-height: 1.2;
 }
+
+/* A card's row of actions (Papers): the buttons wrap onto more lines instead of shrinking into
+   narrow columns, and each label keeps its words whole (a card otherwise breaks anywhere). */
+.card-actions .btn {
+  flex: 1 1 9.5rem;
+  width: auto;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* What my class gets wrong: every finding is the same card; a small label says what kind it is. */
+.finding-kind {
+  display: inline-flex;
+  margin: 0 0 var(--s2);
+}
+.finding-kind-stage {
+  background: var(--warn-container);
+}
+.finding-kind-other {
+  background: var(--chalk);
+}
+.finding-lines {
+  margin: 0 0 var(--s3);
+  padding-left: var(--s5);
+}

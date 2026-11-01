@@ -9,7 +9,9 @@ import { useApp } from "../state";
 
 const byDate = (a: CheckRow, b: CheckRow) => (a.checkDate ?? "").localeCompare(b.checkDate ?? "") || a.updatedAt - b.updatedAt;
 
-export function BeforeAfter() {
+/** `hideWhenEmpty`: show nothing until there are two checks to compare (the class findings screen,
+ *  where a lone "nothing to compare yet" line reads as one more finding). */
+export function BeforeAfter({ hideWhenEmpty = false }: { hideWhenEmpty?: boolean } = {}) {
   const { tr, lang, klass, check } = useApp();
   const [rows, setRows] = useState<CheckRow[]>([]);
   const [pick, setPick] = useState<{ from: string; to: string } | null>(null);
@@ -25,6 +27,7 @@ export function BeforeAfter() {
   const result = useMemo(() => (from && to && from.id !== to.id ? pairChecks(from.formKey, from.children, to.formKey, to.children, new Set(from.absent ?? []), new Set(to.absent ?? [])) : null), [from, to]);
 
   const name = (c: CheckRow) => `${kindName(tr, c.kind ?? "pre")} ${formName(tr, c)} (${c.checkDate ? formatDate(c.checkDate, lang) : "—"})`;
+  if (hideWhenEmpty && (!result || !from || !to)) return null;
   const option = (c: CheckRow) => tr("ba.check_option", { kind: kindName(tr, c.kind ?? "pre"), f: formName(tr, c), date: c.checkDate ? formatDate(c.checkDate, lang) : "—" });
 
   return (

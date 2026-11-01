@@ -190,7 +190,7 @@ function TeacherPapers() {
                 <span className={st.formed ? "chip chip-positive" : "chip"}>{tr(st.formed ? "papers.cohort_yes" : "papers.cohort_no")}</span>{" "}
                 {tr(`papers.cohort.${st.reason}` as Key, { n: st.cohortSize ?? 0, entered: st.entered ?? 0, expected: st.expected ?? 0 })}
               </p>
-              <div className="row">
+              <div className="row card-actions">
                 {st.action !== "none" ? (
                   <a className="btn btn-secondary" href={href("/check")} data-testid={`paper-next-${p.form}`}>
                     {tr(st.action === "enter_check" ? "papers.next_enter" : "papers.next_continue")}
@@ -262,7 +262,7 @@ function ScopedPapers() {
               <span className="chip">{p.check_code}</span> <span className="chip">{tr(`check.kind.${p.kind}` as Key)}</span> <span className="chip">{tr(`papers.status.${p.status}` as Key)}</span>{" "}
               <span className="chip">{sourceLabel(tr as never, p)}</span> <span className={p.cohorts.formed ? "chip chip-positive" : "chip"}>{tr(p.cohorts.formed ? "papers.cohort_yes" : "papers.cohort_no")}</span>
             </p>
-            <div className="row">
+            <div className="row card-actions">
               <button type="button" className="btn btn-secondary" aria-expanded={detail === p.id} onClick={() => { setNonce((n) => n + 1); setDetailTab("overview"); setAskDelete(false); setDetail(detail === p.id ? null : p.id); }}>
                 {tr("ph.details")}
               </button>

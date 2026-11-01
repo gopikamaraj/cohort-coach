@@ -27,7 +27,14 @@ test("a made-up class is entered and approved, and the error card says where it 
   await expect(page.getByTestId("stage-Output")).toBeVisible();
   await expect(page.getByTestId("stage-Input (test)")).toBeVisible();
   await expect(page.getByTestId("stage-missed-subtraction")).toContainText("1 children missed the teaching on subtraction with borrowing");
-  await expect(stages).not.toContainText("%"); // counts, never percentages
+  // every finding is in the one list: mistakes, the stages and what else was seen
+  const findings = page.getByTestId("findings");
+  await expect(findings.getByTestId("stage-Core")).toBeVisible();
+  await expect(findings.getByTestId("stage-missed-subtraction")).toBeVisible();
+  await expect(findings.locator("[data-kind=error]").first()).toBeVisible();
+  await expect(findings).toContainText("most likely");
+  await expect(findings).not.toContainText("%"); // counts, never percentages
+  await expect(stages).not.toContainText("%");
 });
 
 test("the sheets never leave the phone: no request carries the answers and the stage lines still show", async ({ page }) => {

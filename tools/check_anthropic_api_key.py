@@ -134,16 +134,26 @@ def main():
         "POST",
         "/messages",
         key,
-        {"model": model, "max_tokens": 16, "messages": [{"role": "user", "content": "Reply with the single word: ok"}]},
+        {
+            "model": model,
+            "max_tokens": 16,
+            "messages": [{"role": "user", "content": "Reply with the single word: ok"}],
+        },
     )
     if status != 200:
         print("FAIL (message test)\n    " + error_text(status, data, rid))
-        print("If the first check passed, the key is valid but usage, billing or the model is the problem.")
+        print(
+            "If the first check passed, the key is valid but usage, billing "
+            "or the model is the problem."
+        )
         sys.exit(2)
     text = "".join(b.get("text", "") for b in data.get("content", []))
     use = data.get("usage", {})
     print(f"PASS: got a reply: {text!r}")
-    print(f"Tokens used: {use.get('input_tokens')} in, {use.get('output_tokens')} out. request-id: {rid}")
+    print(
+        f"Tokens used: {use.get('input_tokens')} in, {use.get('output_tokens')} out. "
+        f"request-id: {rid}"
+    )
 
 
 if __name__ == "__main__":

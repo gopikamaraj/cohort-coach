@@ -94,9 +94,7 @@ def test_a_teacher_generates_prints_and_gets_the_key_layout_map_and_twin(
 ) -> None:
     out = gen(client)
     p, twin = out["paper"], out["twin"]
-    assert (
-        p["status"] == "auto_approved" and p["printable"] and p["check_code"] == "PRE · 3A · T1"
-    )
+    assert p["status"] == "auto_approved" and p["printable"] and p["check_code"] == "PRE · 3A · T1"
     assert twin["form"] == "B" and twin["frozen"] and twin["twin_of"] == p["id"]
     pdf = client.get(f"/api/papers/{p['id']}/paper.pdf", headers=h("teacher"))
     assert pdf.status_code == 200 and pdf.content.startswith(b"%PDF")
