@@ -1,0 +1,651 @@
+{
+ "source": "evals/runners/bayes_replay.py",
+ "runs": {
+  "sub-sfl.experienced.en.json": {
+   "recorded_turns": 9,
+   "legacy": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.5,
+     1.0,
+     1.0,
+     0.3333333333333333,
+     0.0,
+     0.3333333333333333,
+     null,
+     null,
+     null
+    ],
+    "turns_matching_recorded_engine": "9 of 9"
+   },
+   "bayesian": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.0,
+     0.0,
+     0.3333333333333333,
+     0.3333333333333333,
+     0.0,
+     0.3333333333333333,
+     null,
+     null,
+     null
+    ],
+    "final_marginals": {
+     "Priya": {
+      "place_value": 0.8733706606421386,
+      "exchange": 0.787629952946512,
+      "written_step": 0.7685113651974624,
+      "habit": {
+       "none": 0.677621452974364,
+       "target": 0.2896923450509417,
+       "sibling": 0.01704072617946716,
+       "no_method": 0.015645475795227345
+      }
+     },
+     "Vijay": {
+      "place_value": 0.9723632135571714,
+      "exchange": 0.9737519702073802,
+      "written_step": 0.956090006405595,
+      "habit": {
+       "none": 0.9189570381439284,
+       "target": 0.05802515058009604,
+       "sibling": 0.003413244151770355,
+       "no_method": 0.019604567124205136
+      }
+     },
+     "Ravi": {
+      "place_value": 0.8070645124638811,
+      "exchange": 0.6529212796779709,
+      "written_step": 0.33636115984150966,
+      "habit": {
+       "none": 0.5625351472098701,
+       "target": 0.3797191670107179,
+       "sibling": 0.022336421588865764,
+       "no_method": 0.03540926419054609
+      }
+     },
+     "Anu": {
+      "place_value": 0.8335559330256124,
+      "exchange": 0.7090977623573548,
+      "written_step": 0.5028163828744169,
+      "habit": {
+       "none": 0.6173336182896444,
+       "target": 0.01986547993050708,
+       "sibling": 0.33771315881862035,
+       "no_method": 0.025087742961228156
+      }
+     }
+    },
+    "final_true_states": {
+     "Priya": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "Vijay": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "Ravi": {
+      "place_value": 0,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "Anu": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     }
+    }
+   }
+  },
+  "sub-sfl.experienced.hi.json": {
+   "recorded_turns": 9,
+   "legacy": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.5,
+     1.0,
+     1.0,
+     0.3333333333333333,
+     0.0,
+     0.3333333333333333,
+     null,
+     null,
+     0.5
+    ],
+    "turns_matching_recorded_engine": "9 of 9"
+   },
+   "bayesian": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.0,
+     0.0,
+     0.3333333333333333,
+     0.3333333333333333,
+     0.0,
+     0.3333333333333333,
+     null,
+     null,
+     0.5
+    ],
+    "final_marginals": {
+     "\u092a\u094d\u0930\u093f\u092f\u093e": {
+      "place_value": 0.8936219820197866,
+      "exchange": 0.819639094080593,
+      "written_step": 0.799205518508658,
+      "habit": {
+       "none": 0.7222200555559914,
+       "target": 0.24807271939210673,
+       "sibling": 0.014592512905418043,
+       "no_method": 0.015114712146484001
+      }
+     },
+     "\u0935\u093f\u091c\u092f": {
+      "place_value": 0.9838832219376438,
+      "exchange": 0.9854128875936371,
+      "written_step": 0.9721233761239281,
+      "habit": {
+       "none": 0.9388938754194828,
+       "target": 0.03944403237809429,
+       "sibling": 0.0023202371987114286,
+       "no_method": 0.019341855003711557
+      }
+     },
+     "\u0930\u0935\u093f": {
+      "place_value": 0.8379186341354816,
+      "exchange": 0.7048186034848773,
+      "written_step": 0.4169244695192694,
+      "habit": {
+       "none": 0.6194951445106479,
+       "target": 0.3300916687821302,
+       "sibling": 0.01941715698718413,
+       "no_method": 0.030996029720037628
+      }
+     },
+     "\u0905\u0928\u0941": {
+      "place_value": 0.8600608520852895,
+      "exchange": 0.7525885976323785,
+      "written_step": 0.5644545829369221,
+      "habit": {
+       "none": 0.668464744363549,
+       "target": 0.01717315897662547,
+       "sibling": 0.2919437026026329,
+       "no_method": 0.02241839405719255
+      }
+     }
+    },
+    "final_true_states": {
+     "\u092a\u094d\u0930\u093f\u092f\u093e": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0935\u093f\u091c\u092f": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0930\u0935\u093f": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0905\u0928\u0941": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     }
+    }
+   }
+  },
+  "sub-sfl.experienced.ta.json": {
+   "recorded_turns": 9,
+   "legacy": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.5,
+     1.0,
+     1.0,
+     0.3333333333333333,
+     0.0,
+     null,
+     0.0,
+     0.6666666666666666,
+     0.5
+    ],
+    "turns_matching_recorded_engine": "9 of 9"
+   },
+   "bayesian": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.0,
+     0.0,
+     0.3333333333333333,
+     0.3333333333333333,
+     0.0,
+     null,
+     0.0,
+     0.0,
+     0.5
+    ],
+    "final_marginals": {
+     "\u0baa\u0bbf\u0bb0\u0bbf\u0baf\u0bbe": {
+      "place_value": 0.907035808556782,
+      "exchange": 0.8412471134357102,
+      "written_step": 0.8298439471824633,
+      "habit": {
+       "none": 0.783740052649489,
+       "target": 0.19049001547789693,
+       "sibling": 0.011205295028111585,
+       "no_method": 0.014564636844502904
+      }
+     },
+     "\u0bb5\u0bbf\u0b9c\u0baf\u0bcd": {
+      "place_value": 0.988536735311358,
+      "exchange": 0.9894754500189088,
+      "written_step": 0.9826455225887277,
+      "habit": {
+       "none": 0.964737262805697,
+       "target": 0.015199795903096253,
+       "sibling": 0.0008941056413586032,
+       "no_method": 0.019168835649847747
+      }
+     },
+     "\u0bb0\u0bb5\u0bbf": {
+      "place_value": 0.8583405566739786,
+      "exchange": 0.7399691692297528,
+      "written_step": 0.5010517134273681,
+      "habit": {
+       "none": 0.6993760356047178,
+       "target": 0.2590310645244874,
+       "sibling": 0.015237121442616904,
+       "no_method": 0.026355778428177774
+      }
+     },
+     "\u0b85\u0ba9\u0bc1": {
+      "place_value": 0.8775960540942417,
+      "exchange": 0.7819210986443961,
+      "written_step": 0.62788475727071,
+      "habit": {
+       "none": 0.7397082278809859,
+       "target": 0.013370949916688947,
+       "sibling": 0.22730614858371206,
+       "no_method": 0.01961467361861313
+      }
+     }
+    },
+    "final_true_states": {
+     "\u0baa\u0bbf\u0bb0\u0bbf\u0baf\u0bbe": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0bb5\u0bbf\u0b9c\u0baf\u0bcd": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0bb0\u0bb5\u0bbf": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0b85\u0ba9\u0bc1": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     }
+    }
+   }
+  },
+  "sub-sfl.struggling.en.json": {
+   "recorded_turns": 9,
+   "legacy": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "turns_matching_recorded_engine": "9 of 9"
+   },
+   "bayesian": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.0,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "final_marginals": {
+     "Priya": {
+      "place_value": 0.5735337470145356,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.3683245159863401,
+      "habit": {
+       "none": 0.18188688281002172,
+       "target": 0.5952663945496663,
+       "sibling": 0.18937948869580948,
+       "no_method": 0.03346723394450235
+      }
+     },
+     "Vijay": {
+      "place_value": 0.660237750321826,
+      "exchange": 0.421017040904069,
+      "written_step": 0.7409951616622705,
+      "habit": {
+       "none": 0.24538975016021483,
+       "target": 0.6470151699721733,
+       "sibling": 0.08470415915906168,
+       "no_method": 0.022890920708550203
+      }
+     },
+     "Ravi": {
+      "place_value": 0.5735337470145355,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.5231525284346609,
+      "habit": {
+       "none": 0.22013233646726427,
+       "target": 0.5148896655503665,
+       "sibling": 0.23930389043137412,
+       "no_method": 0.02567410755099473
+      }
+     },
+     "Anu": {
+      "place_value": 0.5735337470145356,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.36832451598634003,
+      "habit": {
+       "none": 0.1818868828100217,
+       "target": 0.03501567026762745,
+       "sibling": 0.749630212977848,
+       "no_method": 0.03346723394450235
+      }
+     }
+    },
+    "final_true_states": {
+     "Priya": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "Vijay": {
+      "place_value": 0,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "target"
+     },
+     "Ravi": {
+      "place_value": 0,
+      "exchange": 0,
+      "written_step": 1,
+      "habit": "target"
+     },
+     "Anu": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "sibling"
+     }
+    }
+   }
+  },
+  "sub-sfl.struggling.hi.json": {
+   "recorded_turns": 9,
+   "legacy": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "turns_matching_recorded_engine": "9 of 9"
+   },
+   "bayesian": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.0,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "final_marginals": {
+     "\u092a\u094d\u0930\u093f\u092f\u093e": {
+      "place_value": 0.5735337470145357,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.4379881709393498,
+      "habit": {
+       "none": 0.3040773423977172,
+       "target": 0.4831360604685341,
+       "sibling": 0.18308894996882846,
+       "no_method": 0.02969764716492019
+      }
+     },
+     "\u0935\u093f\u091c\u092f": {
+      "place_value": 0.660237750321826,
+      "exchange": 0.42101704090406894,
+      "written_step": 0.870080441400915,
+      "habit": {
+       "none": 0.43707508568425024,
+       "target": 0.4629774909910317,
+       "sibling": 0.08039868944196193,
+       "no_method": 0.019548733882756044
+      }
+     },
+     "\u0930\u0935\u093f": {
+      "place_value": 0.5735337470145357,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.4379881709393498,
+      "habit": {
+       "none": 0.3040773423977172,
+       "target": 0.4831360604685341,
+       "sibling": 0.18308894996882846,
+       "no_method": 0.02969764716492019
+      }
+     },
+     "\u0905\u0928\u0941": {
+      "place_value": 0.5735337470145359,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.4379881709393497,
+      "habit": {
+       "none": 0.3040773423977172,
+       "target": 0.028419768262854965,
+       "sibling": 0.6378052421745075,
+       "no_method": 0.02969764716492019
+      }
+     }
+    },
+    "final_true_states": {
+     "\u092a\u094d\u0930\u093f\u092f\u093e": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     },
+     "\u0935\u093f\u091c\u092f": {
+      "place_value": 0,
+      "exchange": 1,
+      "written_step": 0,
+      "habit": "target"
+     },
+     "\u0930\u0935\u093f": {
+      "place_value": 0,
+      "exchange": 0,
+      "written_step": 0,
+      "habit": "none"
+     },
+     "\u0905\u0928\u0941": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "none"
+     }
+    }
+   }
+  },
+  "sub-sfl.struggling.ta.json": {
+   "recorded_turns": 9,
+   "legacy": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "turns_matching_recorded_engine": "9 of 9"
+   },
+   "bayesian": {
+    "turns": 9,
+    "finished": null,
+    "wrong_rate_by_turn": [
+     0.0,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "final_marginals": {
+     "\u0baa\u0bbf\u0bb0\u0bbf\u0baf\u0bbe": {
+      "place_value": 0.5735337470145356,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.31396003994663135,
+      "habit": {
+       "none": 0.12373525154282802,
+       "target": 0.6625419169685699,
+       "sibling": 0.17710199017701134,
+       "no_method": 0.03662084131159057
+      }
+     },
+     "\u0bb5\u0bbf\u0b9c\u0baf\u0bcd": {
+      "place_value": 0.660237750321826,
+      "exchange": 0.421017040904069,
+      "written_step": 0.7003155710035611,
+      "habit": {
+       "none": 0.1733530418295418,
+       "target": 0.7196010002111742,
+       "sibling": 0.08320450381463132,
+       "no_method": 0.023841454144652652
+      }
+     },
+     "\u0bb0\u0bb5\u0bbf": {
+      "place_value": 0.5735337470145356,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.4345538555541575,
+      "habit": {
+       "none": 0.14305572904928948,
+       "target": 0.5825418283589299,
+       "sibling": 0.24399751646342566,
+       "no_method": 0.030404926128354673
+      }
+     },
+     "\u0b85\u0ba9\u0bc1": {
+      "place_value": 0.5735337470145356,
+      "exchange": 0.25578482929541935,
+      "written_step": 0.31396003994663135,
+      "habit": {
+       "none": 0.12373525154282804,
+       "target": 0.03897305393932764,
+       "sibling": 0.8006708532062533,
+       "no_method": 0.03662084131159057
+      }
+     }
+    },
+    "final_true_states": {
+     "\u0baa\u0bbf\u0bb0\u0bbf\u0baf\u0bbe": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "target"
+     },
+     "\u0bb5\u0bbf\u0b9c\u0baf\u0bcd": {
+      "place_value": 0,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "target"
+     },
+     "\u0bb0\u0bb5\u0bbf": {
+      "place_value": 0,
+      "exchange": 0,
+      "written_step": 1,
+      "habit": "target"
+     },
+     "\u0b85\u0ba9\u0bc1": {
+      "place_value": 1,
+      "exchange": 1,
+      "written_step": 1,
+      "habit": "sibling"
+     }
+    }
+   }
+  }
+ },
+ "last_three_wrong_rate_by_style": {
+  "experienced": {
+   "legacy": 0.2962962962962963,
+   "bayesian": 0.2222222222222222
+  },
+  "struggling": {
+   "legacy": 0.5,
+   "bayesian": 0.0
+  }
+ }
+}

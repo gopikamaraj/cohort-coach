@@ -1,0 +1,65 @@
+{
+ "eval": "bayes_fidelity",
+ "source": "evals/runners/bayes_fidelity.py",
+ "set": "evals/sets/sim_fidelity/*.yaml",
+ "bar": 1.0,
+ "protocol": {
+  "turns": 200,
+  "matched": 200,
+  "share": 1.0,
+  "per_error": {
+   "PV-HEARD": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   },
+   "ADD-NOCARRY": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   },
+   "SUB-SFL": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   },
+   "SUB-NODEC": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   }
+  },
+  "failures": [],
+  "passed": true
+ },
+ "with_stage_mix": {
+  "turns": 200,
+  "matched": 200,
+  "share": 1.0,
+  "per_error": {
+   "PV-HEARD": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   },
+   "ADD-NOCARRY": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   },
+   "SUB-SFL": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   },
+   "SUB-NODEC": {
+    "turns": 50,
+    "matched": 50,
+    "share": 1.0
+   }
+  },
+  "failures": [],
+  "passed": true
+ },
+ "passed": true
+}
