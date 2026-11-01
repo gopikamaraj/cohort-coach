@@ -91,8 +91,19 @@ def summarise(table: dict[str, dict[str, float]]) -> dict[str, Any]:
         "lhs": sum(set(ranking(k)[-2:]) == rule_moves for k in lhs) / len(lhs),
         "oat": sum(set(ranking(k)[-2:]) == rule_moves for k in oat) / len(oat),
     }
+    swaps: dict[str, int] = {}
+    for k in lhs:
+        for i, (want, got) in enumerate(zip(order, ranking(k), strict=True)):
+            if want != got:
+                key = f"place {i + 1}: {want} -> {got}"
+                swaps[key] = swaps.get(key, 0) + 1
     return {
         "default_ranking": order,
+        "full_ranking_same_share": {
+            "lhs": sum(ranking(k) == order for k in lhs) / len(lhs),
+            "oat": sum(ranking(k) == order for k in oat) / len(oat),
+        },
+        "lhs_rank_swaps": swaps,
         "default_top_tier": sorted(top),
         "bands": bands,
         "top_tier_same_share": {
@@ -112,7 +123,14 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--draws", type=int, default=50)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 2))
     ap.add_argument("--no-write", action="store_true")
+    ap.add_argument("--summarise-only", action="store_true", help="re-summarise the saved table")
     args = ap.parse_args(argv)
+    if args.summarise_only:
+        saved = json.loads((OUT / "sensitivity.json").read_text(encoding="utf-8"))
+        saved["summary"] = summarise(saved["table"])
+        (OUT / "sensitivity.json").write_text(json.dumps(saved, indent=1) + "\n", encoding="utf-8")
+        print(json.dumps({k: v for k, v in saved["summary"].items() if k != "bands"}, indent=1))
+        return 0
     cfgs = configs(args.draws)
     jobs = [(label, v, m, args.seeds) for label, v in cfgs.items() for m in MOVES_210]
     print(f"{len(cfgs)} configurations x {len(MOVES_210)} moves x {args.seeds} seeds "
@@ -127,6 +145,7 @@ def main(argv: list[str]) -> int:
         print(f"  {m:<20} defaults {b['defaults']:5.1f}  LHS median {b['lhs_median']:5.1f} "
               f"[{b['lhs_p5']:5.1f}, {b['lhs_p95']:5.1f}]  one-at-a-time "
               f"[{b['oat_min']:5.1f}, {b['oat_max']:5.1f}]")  # fmt: skip
+    print("full ranking same:", summary["full_ranking_same_share"])
     print("top tier same:", summary["top_tier_same_share"])
     print("rule moves last:", summary["rule_moves_last_share"])
     print("params changing the full ranking:", summary["params_changing_full_ranking"])

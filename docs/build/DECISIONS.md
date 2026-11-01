@@ -742,3 +742,22 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Not changed.** `CLAUDE.md`, README, `AI_USAGE.md` and the submission docs (the lines that would need changing are listed in the build report given in chat), `sim_fidelity.py`, `results.md`, recorded results, decks.
 
 **Confirmed by.** Build prompt run by Gopi, 2026-11-01. The standing instruction "go with the recommended approach" covers the resolutions above.
+
+## 2026-11-01 · 32-state Bayesian child model replaces the one-variable model behind `SIMULATOR_MODEL`
+
+**Decision.** Build the 32-state Bayesian child model specified in `docs/build/BAYESIAN-32-STATE-BUILD-PROMPT-v2.md` (place value × exchange idea × written step × wrong habit, an observer that updates a belief by Bayes' rule, information-gain question choice) in a new package `engine/bayes/`, selected by `SIMULATOR_MODEL=bayesian` through one factory, `engine/sim_switch.py`. Default stays `legacy`. Branch `bayes-32state`, made from `7cd0afa` so it does not depend on the speech branch. Spec: `docs/BAYESIAN-MODEL.md`. Report: `docs/build/reports/BAYES-32-STATE.md`.
+
+**Conflicts found in Step 0, and how they were resolved.**
+1. *`bayesian` already meant the one-variable model, wired inside `engine/simulator.py`, which this prompt forbids editing.* `engine/simulator.py` is left byte-for-byte as it was (hash recorded and tested). The factory always passes `engine.child_model.LEGACY` to the legacy path, so no session can select the one-variable model any more; `bayesian` now means the 32-state model. `engine/child_model.py` and its unit tests stay (they test the module directly). Scripts that call `engine.simulator.new_session` without a model still read the old switch, so they must be run with `SIMULATOR_MODEL` unset (stated in the spec, section 10).
+2. *One existing test pinned `bayesian` to the one-variable model* (`test_child_model_bayes.py::test_a_session_keeps_its_model_after_the_environment_changes`). It now checks the same property, a session keeps its model when the environment changes, on the 32-state model. No assertion was removed.
+3. *`evals/runners/sim_model_compare.py` and `docs/BAYESIAN-MODEL.md` already existed.* "Never modify existing evals": the comparison is a new file, `evals/runners/bayes_model_compare.py`. The spec document is rewritten, since this prompt supersedes the one that wrote it (section 10 keeps a note of the old model).
+4. *"All 183 existing tests"* is the simulator and practice subset counted in `docs/build/reports/BAYESIAN-CHECK.md` 2.11, not the whole suite (about 2,500 tests, 8 of which already fail on the base commit for unrelated reasons).
+5. *Turn order.* Legacy chooses the problem before applying the move; the information-gain choice needs the predicted belief, so the move is applied first. The problem does not enter the transitions, so nothing else changes.
+6. *Shared code edited beyond `services/practice/session.py`*: `services/api/main.py` (one line: the startup check calls the new factory), `.env.example` (`BAYES_PARAMS` replaces the old `BAYES_*` lines) and `tests/conftest.py` (`BAYES_PARAMS` is cleared for the suite like `SIMULATOR_MODEL`).
+7. *Fixed draws per answer.* An answer draws exactly two uniforms (kind, then number by index) rather than `rng.choice`, whose draw count varies; the distribution is the same.
+
+**Not changed.** `engine/simulator.py`, `engine/bugs.py`, move lists, scenarios, personas, `sim_fidelity.py`, `engine_items.py`, `evals/results.md`, `docs/submission/*`, README, `CLAUDE.md`, `AI_USAGE.md` (the lines that would need changing are listed in the report).
+
+**Hook.** Commits on this branch skip the pre-commit hook: `tasks.py check` already fails at lint on the base commit (`tools/check_anthropic_api_key.py`). Ruff, mypy and the relevant tests were run on every change instead.
+
+**Confirmed by.** Build prompt run by Gopi, 2026-11-01. The standing instruction "go with the recommended approach" covers the resolutions above; every parameter is a build default awaiting review (`TODO-HUMAN(Seema)` in `content/bayes/*.yaml`).
