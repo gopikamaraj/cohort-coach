@@ -71,6 +71,8 @@ Built on 23 Oct 2026 from the repo (screens in `apps/pwa/src/screens/`, `docs/de
 - X28 renders the same flows as the bot in the web app; X8, X11 and X12 are parts of the teacher track and results flow that the design doc treats as part of T3 and T4.
 - Roadmap cards R1 to R3 are named in the design brief but are not defined anywhere in the repo; each carries a TODO-HUMAN line. R4 comes from the parked roadmap items (`docs/build/PARKING.md`, `docs/build/BUILD_PROMPTS.md` P16).
 - Features in the repo with no screen of their own are folded into the nearest prompt: the Practice Class cues and materials help (T5, X27), data used and backup (X16), the sprite avatar expressions (X27).
+| X36 | Results: answer map, Why an error is flagged, What each error means | Teacher | Phone first | apps/pwa/src/components/AnswerMap.tsx; CoverageMatrix.tsx; ErrorExplanations.tsx; ResultsDetail.tsx; apps/pwa/src/screens/Cards.tsx | Roll by question table with a legend, sorting, a cell popover and arrow-key movement; the paper's coverage matrix with this class's counts and the rule in words; an explanation of each error with this class's own worked example. Built without a Stitch export |
+| X37 | Cohort of one class and its intervention content | Teacher, Coach | Phone first | apps/pwa/src/components/ClassCohortMaker.tsx; MyClassCohorts.tsx; InterventionPack.tsx; AudioDownload.tsx | Create a cohort for my class (labelled Just my class), the text-first pack of nine collapsible sections per error with draft labels, Download audio per section and for the whole pack; the coach's list of cohorts of one class in counts. Built without a Stitch export |
 
 ## Screenshot pack for Stitch
 

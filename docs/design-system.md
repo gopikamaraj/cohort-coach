@@ -67,6 +67,8 @@ Counts are drawn as sticks: a row of short vertical strokes, grouped in tens and
 - **Signal pill:** an icon plus a word for online, offline and "will send when connected". Offline uses the tertiary container with a cloud-off icon, and a note under the header says what still works.
 - **Focus ring:** 3 px `pen` outline with a 2 px offset on every interactive element.
 
+- **Answer map** (results page): a real table, one button per cell (44 px), roll column fixed while the table scrolls inside its own box. A mistake is colour **and** two letters **and** a pattern: PV-HEARD PH (sky, forward stripes), PV-REVERSE PR (purple, backward stripes), ADD-NOCARRY AC (orange, dots), SUB-SFL SF (green, horizontal stripes), SUB-NODEC SN (yellow, vertical stripes). A confirmed mistake has a solid edge, a "possible" one a dashed edge. The tokens `--heat-ph/pr/ac/sf/sn` are in `theme.css`; `tests/test_design_tokens.py` checks each against `ink` (at least 4.5:1) and that no two are closer than 15 CIE76 units under protan, deutan and tritan simulation.
+
 ## Motion
 
 None that carries meaning. State layers fade in 150 ms (`--motion`), and are removed under `prefers-reduced-motion`.
