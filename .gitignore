@@ -55,3 +55,4 @@ data/autopilot-screens/
 audition/
 evals/speech-eval/
 data/speech-eval/
+.env.local
