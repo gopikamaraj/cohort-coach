@@ -13,12 +13,14 @@ from services.api.admin_data import router as admin_data_router
 from services.api.assistant import router as assistant_router
 from services.api.channels.pwa import router as flow_router
 from services.api.channels.telegram.webhook import router as telegram_router
+from services.api.cohorts.class_only import router as class_only_router
 from services.api.cohorts.routes import router as cohorts_router
 from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
 from services.api.lesson_audio_api import router as lesson_audio_router
 from services.api.lessons import router as lessons_router
 from services.api.officer import router as officer_router
+from services.api.pack_audio import router as pack_audio_router
 from services.api.papers import router as papers_router
 from services.api.papers import rules_router as paper_rules_router
 from services.api.practice import router as practice_router
@@ -91,6 +93,8 @@ def create_app() -> FastAPI:
     app.include_router(judge_router)
     app.include_router(assistant_router)
     app.include_router(lessons_router)
+    app.include_router(class_only_router)
+    app.include_router(pack_audio_router)
     app.include_router(cohorts_router)
     app.include_router(officer_router)
     app.include_router(roles_router)

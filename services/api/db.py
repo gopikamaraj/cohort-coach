@@ -414,6 +414,36 @@ class CohortSpace(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
+class ClassCohort(Base):
+    """A cohort of one class: "Just my class, no other teachers yet". Counts only (the errors she
+    chose and how many children showed each); no child, no answer, no roll number. A separate,
+    labelled path: COHORT_MIN_CLASSES is not touched and cohort formation never reads this table."""
+
+    __tablename__ = "class_cohorts"
+    __table_args__ = (UniqueConstraint("teacher_id", "check_id"),)
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(18), index=True)
+    check_id: Mapped[str] = mapped_column(String(80))  # the check it was made from (class:term)
+    name: Mapped[str] = mapped_column(String(80))
+    scope: Mapped[str] = mapped_column(String(16), default="class_only")
+    errors: Mapped[list[str]] = mapped_column(JSON, default=list)
+    counts: Mapped[dict[str, int]] = mapped_column(JSON, default=dict)
+    children_checked: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(10), default="active")
+    simulated: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class AudioDownloadUse(Base):
+    """How many characters of "Download audio" a phone has used: a count and nothing else."""
+
+    __tablename__ = "audio_download_use"
+
+    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)
+    chars: Mapped[int] = mapped_column(Integer, default=0)
+
+
 class CohortMember(Base):
     """A teacher in a cohort space. The display name is a label the system made (Teacher 7),
     unique in the cohort and never typed by her; the coach can map it to the teacher (see docs)."""
