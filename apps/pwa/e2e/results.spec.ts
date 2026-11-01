@@ -252,3 +252,41 @@ test.describe("laptop", () => {
     await page.getByTestId("results-detail").screenshot({ path: path.join(SHOTS, "results-full-laptop.png") });
   });
 });
+
+test.describe("absent children, reload and offline", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("two absent rolls are left out of the map and the count, and the page is the same after a reload and offline", async ({ page, context }) => {
+    await startSample(page, { size: fx.children.length + 2 });
+    await enterRolls(page, fx.children.map((c) => c.answers));
+    await page.getByTestId("absent").check(); // roll 17
+    await page.getByTestId("child-select").selectOption({ index: fx.children.length + 1 });
+    await page.getByTestId("absent").check(); // roll 18
+    await finishEntering(page);
+    await page.goto("/#/cards");
+    await expect(page.getByText("16 children checked.")).toBeVisible();
+    const check = async () => {
+      await expect(page.getByTestId("answer-map")).toBeVisible();
+      await expect(page.getByText("2 absent: not in this table.")).toBeVisible();
+      await expect(page.locator("[data-testid^=amap-row-]")).toHaveCount(16);
+      await expect(page.getByTestId("card-SUB-SFL").locator(".numeral")).toHaveText(String(fx.class.counts["SUB-SFL"]));
+    };
+    await check();
+    await page.reload();
+    await check();
+    await page.evaluate(async () => {
+      await navigator.serviceWorker.ready;
+    });
+    await page.waitForFunction(async () => (await caches.keys()).length > 0);
+    await context.setOffline(true);
+    await page.reload();
+    await check();
+    await context.setOffline(false);
+  });
+
+  test("with no check yet the results page says so and shows no table", async ({ page }) => {
+    await page.goto("/#/cards");
+    await expect(page.getByTestId("cards-none")).toBeVisible();
+    await expect(page.getByTestId("answer-map")).toHaveCount(0);
+  });
+});
