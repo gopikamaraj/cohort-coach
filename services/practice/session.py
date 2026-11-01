@@ -14,7 +14,7 @@ import random
 import time
 import uuid
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from ai.calls.c01_child_voice import ChildLineResult, child_line
@@ -23,14 +23,12 @@ from ai.calls.c03_feedback import FeedbackCard, TurnLine, give_feedback
 from ai.client import CallContext, CallResult
 from ai.config import practice_ai_intents, practice_skip_checker
 from ai.validators.mask import mask_personal
+from engine import sim_switch
 from engine.model import ErrorCode
 from engine.simulator import (
     Problem,
-    SessionState,
     TurnPlan,
     fill_seats,
-    new_session,
-    plan_turn,
 )
 from services.practice.content import LoadedScenario, PersonaChild, load_personas, load_scenario
 from services.practice.faces import face
@@ -73,13 +71,16 @@ class PracticeSession:
     judge: bool
     seed: int
     loaded: LoadedScenario
-    state: SessionState
+    # engine.simulator.SessionState (legacy) or engine.bayes.planner.BayesState (bayesian): the
+    # model is chosen once, when the session starts (engine/sim_switch.py)
+    state: Any
     personas: dict[str, PersonaChild]
     records: list[TurnRecord] = field(default_factory=list)
     plan_numbers: set[int] = field(default_factory=set)
     last_addressed: str | None = None
     ended: bool = False
     created: float = field(default_factory=time.time)
+    model: str = "legacy"  # the child model this session runs on (SIMULATOR_MODEL when it began)
 
 
 @dataclass
@@ -199,7 +200,10 @@ def start_session(
     seed: int | None = None,
     judge: bool = False,
     session_id: str | None = None,
+    note_tags: Sequence[str] = (),
 ) -> PracticeSession:
+    """A new rehearsal. The child model comes from SIMULATOR_MODEL now and stays for the session.
+    `note_tags` are teacher-note tags for the bayesian model (no screen sends them yet)."""
     loaded = load_scenario(error)
     seed = random.SystemRandom().randrange(1, 2**31) if seed is None else seed
     kids = _pick_names(language, seed)
@@ -212,6 +216,7 @@ def start_session(
         names=names,
         stage_mix=loaded.scenario.stage_mix,
     )
+    state = sim_switch.new_session(loaded.config, seats, seed, note_tags=note_tags)
     return PracticeSession(
         id=session_id or uuid.uuid4().hex[:12],
         error=error,
@@ -219,8 +224,9 @@ def start_session(
         judge=judge,
         seed=seed,
         loaded=loaded,
-        state=new_session(loaded.config, seats, seed),
+        state=state,
         personas={k.names[language]: k for k in kids},
+        model=sim_switch.model_of(state),
     )
 
 
@@ -322,12 +328,13 @@ def take_turn(
         move_id, addressed, posed = label.move_id, label.addressed, label.posed
         if label.scope == "none":  # she named nobody: the child she was talking to continues
             addressed = session.last_addressed
-    plan, new_state = plan_turn(
+    plan, new_state, trace = sim_switch.plan_turn(
         session.state, loaded.config, move_id, addressed=addressed, posed=posed
     )
-    # Bayesian child model only: the five fictional children's beliefs, in the debug log only.
-    if plan.trace:
-        log.debug("bayes trace turn %d: %s", plan.turn, [asdict(r) for r in plan.trace])
+    # Bayesian child model only: the five fictional children's hidden states and the observer's
+    # beliefs, in the debug log only (never in the API response).
+    if trace is not None:
+        log.debug("bayes trace turn %d: %s", plan.turn, trace)
     persona = session.personas.get(plan.speaker or "")
     skip_checker = practice_skip_checker()
     ai_intents = practice_ai_intents()

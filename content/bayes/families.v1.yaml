@@ -1,0 +1,31 @@
+# 32-state Bayesian child model (docs/BAYESIAN-MODEL.md): what the four variables mean per family of
+# errors, and which error codes are siblings. Build defaults, not reviewed by an educator.
+# TODO-HUMAN(Seema): review the meanings, the sibling pairs and the habit shift.
+# Code uses the keys place_value, exchange, written_step and habit; their meaning comes from here.
+version: 1
+provenance: build default, not reviewed by an educator
+families:
+  subtraction:
+    codes: [SUB-SFL, SUB-NODEC]
+    meaning:
+      place_value: tens and ones
+      exchange: one ten = ten ones
+      written_step: the written borrow-and-decrement step
+    siblings: {SUB-SFL: SUB-NODEC, SUB-NODEC: SUB-SFL}
+    shift: {SUB-SFL: SUB-NODEC} # under rule-drill moves
+  addition:
+    codes: [ADD-NOCARRY]
+    meaning:
+      place_value: tens and ones
+      exchange: one ten = ten ones
+      written_step: the written carry step
+    siblings: {} # no sibling: the sibling prior is 0
+    shift: {}
+  place_value:
+    codes: [PV-HEARD, PV-REVERSE]
+    meaning:
+      place_value: tens and ones
+      exchange: one ten = ten ones
+      written_step: writing a two-digit numeral in place order
+    siblings: {PV-HEARD: PV-REVERSE, PV-REVERSE: PV-HEARD}
+    shift: {}

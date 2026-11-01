@@ -104,10 +104,11 @@ def _practice_speed_switches_off_for_the_suite(monkeypatch: pytest.MonkeyPatch) 
 
 @pytest.fixture(autouse=True)
 def _developer_switches_out_of_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The same for the switches added on 1 Nov: the child model and the testing shortcuts. The suite
-    tests the defaults; a test of a switch sets it itself."""
+    """The same for the switches added on 1 Nov: the child model and the testing shortcuts. The
+    suite tests the defaults; a test of a switch sets it itself."""
     for name in (
         "SIMULATOR_MODEL",
+        "BAYES_PARAMS",
         "DEV_TESTING",
         "BAYES_PRIOR_CONCENTRATION",
         "BAYES_RESPONSIVENESS_SCALE",

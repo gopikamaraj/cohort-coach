@@ -1,0 +1,20 @@
+# 32-state Bayesian child model (docs/BAYESIAN-MODEL.md): the closed list of teacher-note tags and
+# their likelihood ratios (soft evidence). Unknown tags are refused; no free text, no AI parsing.
+# Build defaults, not reviewed by an educator. TODO-HUMAN(Seema): review the tags and ratios.
+# Each factor multiplies the weight of every state whose `variable` equals `value` by `ratio`;
+# `families`, when given, limits the factor to those families.
+version: 1
+provenance: build default, not reviewed by an educator
+tags:
+  pv_secure:
+    - {variable: place_value, value: 1, ratio: 3.0}
+  pv_shaky:
+    - {variable: place_value, value: 1, ratio: 0.33}
+  bundles_used_before:
+    - {variable: exchange, value: 1, ratio: 2.0}
+  rule_drilled:
+    - {variable: habit, value: sibling, ratio: 2.0, families: [subtraction]}
+    - {variable: written_step, value: 1, ratio: 1.5}
+  new_topic:
+    - {variable: exchange, value: 1, ratio: 0.5}
+    - {variable: written_step, value: 1, ratio: 0.5}

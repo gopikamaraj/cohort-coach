@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ai.config import load_env
-from engine.child_model import model_from_env
+from engine.sim_switch import check_startup as check_child_model
 from services.api.admin_data import router as admin_data_router
 from services.api.assistant import router as assistant_router
 from services.api.channels.pwa import router as flow_router
@@ -56,7 +56,7 @@ async def _tester_lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 def create_app() -> FastAPI:
-    model_from_env()  # a bad SIMULATOR_MODEL (or BAYES_* value) stops the API here, with a message
+    check_child_model()  # a bad SIMULATOR_MODEL (or, in bayesian mode, BAYES_PARAMS) stops the API
     app = FastAPI(
         title="Cohort Coach API",
         version=VERSION,

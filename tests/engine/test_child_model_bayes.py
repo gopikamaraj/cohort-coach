@@ -475,6 +475,12 @@ def test_a_bad_setting_stops_the_api_at_startup(monkeypatch: pytest.MonkeyPatch)
 def test_a_session_keeps_its_model_after_the_environment_changes(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    # Retargeted on 1 Nov (docs/build/BAYESIAN-32-STATE-BUILD-PROMPT-v2.md, which supersedes the
+    # prompt that built this one-variable model): a session started with SIMULATOR_MODEL=bayesian
+    # now runs the 32-state model through engine/sim_switch.py. What the test checks is unchanged:
+    # the session keeps the model it started with when the environment changes.
+    from engine import sim_switch
+    from engine.bayes.planner import BayesState
     from services.practice.session import start_session
 
     monkeypatch.setenv("SIMULATOR_MODEL", "bayesian")
@@ -483,11 +489,13 @@ def test_a_session_keeps_its_model_after_the_environment_changes(
     state = s.state
     for move, seat in SCRIPT[:4]:
         to = state.children[seat].name if seat is not None else None
-        plan, state = plan_turn(state, s.loaded.config, move, addressed=to, posed=None)
-        assert isinstance(state.model, BayesianModel) and plan.trace
+        plan, state, trace = sim_switch.plan_turn(
+            state, s.loaded.config, move, addressed=to, posed=None
+        )
+        assert isinstance(state, BayesState) and trace
     monkeypatch.delenv("SIMULATOR_MODEL")
     assert start_session("SUB-SFL", "en", seed=5).state.model == LEGACY
-    assert isinstance(state.model, BayesianModel)
+    assert isinstance(state, BayesState) and s.model == "bayesian"
 
 
 @pytest.mark.parametrize("model", [LEGACY, BAYES], ids=["legacy", "bayesian"])
