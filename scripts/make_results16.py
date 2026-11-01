@@ -1,6 +1,6 @@
 """A made-up class of 16 on Form A for the results-page tests, with the engine's own reading of it.
 
-Writes apps/pwa/e2e/fixtures/results16.json: the answers each roll types (no child, no real data), and
+Writes apps/pwa/e2e/fixtures/results16.json: the answers each roll types (no real child), and
 what the Python engine says about every cell, every child and the class. The browser tests compare
 what the results page shows with this file, so the page is checked against the engine, not against
 itself. `--check` fails if the file is out of date.
