@@ -3633,3 +3633,42 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
 .amap-chip {
   max-width: 100%;
 }
+
+/* ---- Cohort of one class and its intervention pack ---- */
+.audio-dl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  margin: var(--s2) 0;
+}
+.pack-section {
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  padding: var(--s2) var(--s3);
+  background: var(--surface);
+}
+.pack-section summary {
+  min-height: 44px;
+  cursor: pointer;
+}
+.pack-strategies {
+  padding-left: var(--s5);
+}
+.check-line {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+}
+@media print {
+  .no-print,
+  .navbar,
+  .topbar {
+    display: none !important;
+  }
+  .pack-section {
+    break-inside: avoid;
+    border: 0;
+  }
+}

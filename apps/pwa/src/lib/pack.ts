@@ -2,7 +2,7 @@
 // explanations file, the strategy library and content/errors/intervention.v1.yaml (all in
 // generated/error_content.json). No AI is called. A section with no content is left out and named in
 // `omitted` (not invented); every section says where it came from and whether it is still a draft.
-import type { Lang } from "../i18n";
+import type { Key, Lang } from "../i18n";
 import { content, explanationFor, pick, type ExtraStrategy } from "./errorContent";
 import { keys } from "./diagnosis";
 import type { InThisClass } from "./results";
@@ -124,4 +124,47 @@ export function buildPack(input: PackInput, onOmit: (id: SectionId, code: string
   add(listSection("home", pack?.at_home), "home");
   add(textSection("stuck", pack?.if_not_improving, SRC_PACK, draftPack), "stuck");
   return { code, sections, omitted };
+}
+
+export type Tr = (key: Key, params?: Record<string, string | number>) => string;
+
+/** Every line of a section, in the order it is shown. The screen and the audio both read these, so
+ *  the audio is always the text on the screen. Each ends in a full stop so it is spoken as a sentence. */
+export function sectionLines(s: PackSection, tr: Tr): string[] {
+  const end = (t: string) => (/[.?!।]$/.test(t.trim()) ? t.trim() : `${t.trim()}.`);
+  const out: string[] = [];
+  if (s.here) {
+    out.push(tr("results.explain.children_line", { n: s.here.children, total: s.here.total }));
+    const e = s.here.example;
+    if (e) {
+      out.push(tr(/^\d+$/.test(e.question) ? "results.explain.example_say" : "results.explain.example", { question: e.question, wrote: e.wrote, correct: e.correct }));
+    }
+  }
+  if (s.text) out.push(s.text);
+  if (s.list) out.push(...s.list);
+  if (s.numbers) out.push(tr("pack.working_line", s.numbers));
+  for (const st of s.strategies ?? []) {
+    out.push(st.label, st.description);
+    if (st.materials && st.materials !== "None") out.push(tr("pack.materials", { list: st.materials }));
+    out.push(...st.steps);
+    for (const w of st.worked) out.push(tr("pack.worked", { text: w }));
+  }
+  return out.map(end);
+}
+
+export const SECTION_TITLE: Record<SectionId, Key> = {
+  seeing: "pack.sec.seeing",
+  why: "pack.sec.why",
+  check: "pack.sec.check",
+  strategies: "pack.sec.strategies",
+  activity: "pack.sec.activity",
+  mistakes: "pack.sec.mistakes",
+  working: "pack.sec.working",
+  home: "pack.sec.home",
+  stuck: "pack.sec.stuck",
+};
+
+/** The text of the whole pack for one error: each section's title, then its lines. */
+export function packText(pack: Pack, tr: Tr): string {
+  return pack.sections.map((s) => [tr(SECTION_TITLE[s.id]), ...sectionLines(s, tr)].map((l) => (/[.?!।]$/.test(l.trim()) ? l.trim() : `${l.trim()}.`)).join("\n")).join("\n\n");
 }

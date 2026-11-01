@@ -8,6 +8,7 @@ import type { Key } from "../i18n";
 import { ccall, CohortError, ordered, showsText, type CohortSummary, type Post, type Who } from "../lib/cohort";
 import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
+import { ClassOnlyForCoach, MyClassCohorts } from "../components/MyClassCohorts";
 
 export default function Cohort() {
   const { tr, role, lang, klass } = useApp();
@@ -29,7 +30,17 @@ export default function Cohort() {
           ))}
         </div>
       ) : null}
-      {who === "coach" ? <CoachView tr={tr} lang={lang} /> : <TeacherView tr={tr} lang={lang} />}
+      {who === "coach" ? (
+        <>
+          <ClassOnlyForCoach />
+          <CoachView tr={tr} lang={lang} />
+        </>
+      ) : (
+        <>
+          <MyClassCohorts />
+          <TeacherView tr={tr} lang={lang} />
+        </>
+      )}
     </section>
   );
 }

@@ -6,6 +6,7 @@ import { SimulatedBanner } from "../components/parts";
 import { href } from "../lib/router";
 import { useApp } from "../state";
 import type { Key } from "../i18n";
+import { forCheck } from "../lib/classCohort";
 
 interface Programme {
   simulated: boolean;
@@ -43,10 +44,16 @@ export default function ProgrammeScreen() {
   const p = data?.placement.status;
   const cohortBody =
     p === "this_term" ? tr("prog.s3.this", { n: data?.cohort?.size ?? 0 }) : p === "next_term" ? tr("prog.s3.next") : tr("prog.s3.wait");
+  const mine = profile ? forCheck(profile.id) : null;
   const steps: Step[] = [
     { key: "check", title: tr("prog.s1"), done: Boolean(profile), body: profile ? tr("prog.s1.done", { n: profile.childrenChecked }) : tr("prog.s1.none") },
     { key: "track", title: tr("prog.s2"), done: Boolean(errorName), body: errorName ? errorName : tr("prog.s2.none") },
-    { key: "cohort", title: tr("prog.s3"), done: p === "this_term" || p === "next_term", body: cohortBody },
+    {
+      key: "cohort",
+      title: tr("prog.s3"),
+      done: p === "this_term" || p === "next_term" || Boolean(mine),
+      body: mine ? `${tr("prog.mine", { name: mine.name })}. ${tr("cohort.mine.label")}` : cohortBody,
+    },
     { key: "mentor", title: tr("prog.s4"), done: false, body: data?.cohort?.mentor_slot ? `${tr("prog.s4.has")} ${tr("prog.s4.later")}` : tr("prog.s4.later") },
     {
       key: "lessons",
