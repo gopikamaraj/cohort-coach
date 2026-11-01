@@ -37,7 +37,7 @@ export function ErrorExplanations({
         return (
           <details key={code} id={`explain-${code}`} className="card explain" open={openCodes.has(code)} onToggle={(e) => onToggle(code, e.currentTarget.open)} data-testid={`explain-${code}`}>
             <summary>
-              <strong>{title}</strong> <span className="chip">{code}</span>
+              <strong>{title}</strong>{code === "ADD-WHOLE-ONES" ? null : <span className="chip"> {code}</span>}
               {draft ? <span className="chip chip-draft"> {tr("results.explain.draft")}</span> : null}
             </summary>
             {fields.map(({ f, text }) =>

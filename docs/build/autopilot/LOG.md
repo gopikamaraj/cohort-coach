@@ -3,7 +3,9 @@
 Counts and plain text only. Newest step last.
 
 ## Morning summary
-(written at the end)
+1. Done on branch autopilot/results-cohort-audio (local, nothing pushed): answer map, shared coverage matrix with class counts, error explanations, a cohort of one class, text-first intervention content, Download audio (one live Bodhan check passed, INR 0.26 estimated, 0 Claude calls). Full account: REPORT.md.
+2. apps/pwa/node_modules is damaged by my worktree cleanup; close the Vite preview on port 4199 and the dev server, then run npm ci in apps/pwa. Sources are fine.
+3. Look first: REPORT.md top section; the draft content files in content/errors/ (Seema); the e2e failures list (11 already fail on the base, 2 mine fixed, 2 unconfirmed); DECISIONS.md 2026-11-02; data/autopilot-screens/ (not committed).
 
 ## Steps
 - Start. Branch autopilot/results-cohort-audio from bayes-32state. Never push, never merge.
@@ -18,3 +20,4 @@ Counts and plain text only. Newest step last.
 - Merge bug found by the wrapping test and fixed: styles.css lost one closing brace at the merge seam (.finding-lines), which nested the speech-layer CSS and the new results CSS inside it. Brace count now balanced.
 - Parts B, B2, C built and verified in the browser (Playwright; the Chrome extension is not connected in this session): answer map, shared coverage matrix (paper page and results page), What each error means. tests/e2e: results.spec.ts 9 pass (cells vs the Python engine fixture, totals, legend, sort, highlight both ways, popover, arrow keys, no-wrap headers, axe, no clipping, hi/ta at 360, laptop); vitest 463 pass; design-token tests extended (heat palette contrast >= 4.5, colour-blind distance >= 15, a pattern and two letters per mistake). Found and fixed: results detail clipped at the right edge on a phone (grid min-width).
 - Part F live check (scripts/verify_pack_audio_live.py --go), one English section (SUB-SFL why + two-minute check): 368 characters of text to speech, about 31 s of speech through Bodhan, 31 s of speech to text for the round trip; estimated cost INR 0.26 (prices in content/speech_prices.yaml are unverified); caps used 368 of 20000 characters and 31 of 300 seconds; 0 Claude calls. Result: status 200, provider bodhan, ffprobe 31.4 s (expected about 25 s), mean volume -16.3 dB (not silent), repeat press served from the cache, round trip CER 0.004 and WER 0.013. Hindi and Tamil audio was not run: there is no Hindi or Tamil pack content yet (English only, by design).
+- Mistake and recovery: removing the base-comparison worktree deleted part of apps/pwa/node_modules through a Windows junction; restored with npm ci from the lockfile (package files unchanged). No source or data was lost.

@@ -10,11 +10,18 @@ import { CoverageMatrix } from "./CoverageMatrix";
 import { ErrorExplanations } from "./ErrorExplanations";
 
 export function ResultsDetail({ untracked }: { untracked: number }) {
-  const { tr, check } = useApp();
+  const { tr, check, role } = useApp();
   const [code, setCode] = useState<string | null>(null);
   const [item, setItem] = useState<number | null>(null);
   const [openExplain, setOpenExplain] = useState<Set<string>>(new Set());
   const map = useMemo(() => (check ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null), [check]);
+  if (role !== "teacher" && role !== "judge") {
+    return (
+      <p className="muted" data-testid="results-detail-role">
+        {tr("results.map.role_hidden")}
+      </p>
+    );
+  }
   if (!check || !map || map.rolls.length === 0) {
     return (
       <p className="muted" data-testid="results-detail-none">

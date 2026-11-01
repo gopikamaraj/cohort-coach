@@ -10,7 +10,7 @@ import { shownClassName } from "../lib/checks";
 import { useApp } from "../state";
 
 export function ClassCohortMaker() {
-  const { tr, lang, profile, check, klass, online } = useApp();
+  const { tr, lang, profile, check, klass, online, role } = useApp();
   const checkId = check?.id ?? profile?.id ?? "";
   const [made, setMade] = useState<ClassCohort | null>(() => (checkId ? forCheck(checkId) : null));
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ export function ClassCohortMaker() {
     if (online) void syncPending(lang).then(() => setMade(checkId ? forCheck(checkId) : null));
   }, [online, lang, checkId]);
 
-  if (!profile || found.length === 0) return null;
+  if ((role !== "teacher" && role !== "judge") || !profile || found.length === 0) return null;
   const nameFor = (codes: string[]) =>
     tr("cohort.mine.name_default", { class: shownClassName(tr, klass), error: codes[0] ? tr(`err.${codes[0]}` as Key) : "" });
   const start = () => {

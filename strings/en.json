@@ -2157,5 +2157,6 @@
   "audio.cap": "The audio limit is reached. Read the text, or try again later.",
   "audio.not_ready": "Audio is not set up on this server.",
   "audio.size_kb": "{n} KB",
-  "audio.size_mb": "{n} MB"
+  "audio.size_mb": "{n} MB",
+  "results.map.role_hidden": "The answer map and the explanations show each child's answers, so only the teacher whose class this is can see them. You see counts on the other screens."
 }

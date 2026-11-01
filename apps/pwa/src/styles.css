@@ -3672,3 +3672,28 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
     border: 0;
   }
 }
+
+/* a wide table (the coverage matrix) scrolls in its own box and never widens its card or the page */
+.stack,
+.card {
+  min-width: 0;
+}
+.stack > .table-scroll,
+.card > .table-scroll,
+.coverage-scroll {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* the matrix is wider than a phone: its box takes the width it is given and scrolls inside (contain
+   stops its content from widening the parents, wherever it is placed) */
+.coverage-scroll {
+  width: 100%;
+  contain: inline-size;
+}
+
+/* the visually hidden text inside a scrolling table is absolutely placed: the box must be its
+   containing block, or that text escapes the box and widens the page */
+.table-scroll {
+  position: relative;
+}

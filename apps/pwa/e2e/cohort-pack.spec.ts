@@ -164,3 +164,36 @@ test("with no cohort yet the cohort page says how to make one", async ({ page })
   await expect(page.getByTestId("mine-none")).toBeVisible();
   await expect(page.getByTestId("pack")).toHaveCount(0);
 });
+
+test("made offline, the cohort is kept on the phone and sent when the phone is back online", async ({ page, context }) => {
+  await enter16(page);
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await page.waitForFunction(async () => (await caches.keys()).length > 0);
+  await context.setOffline(true);
+  await page.getByTestId("class-cohort-open").click();
+  await page.getByTestId("class-cohort-create").click();
+  await expect(page.getByTestId("class-cohort-made")).toContainText("Saved on this phone. It will be sent when you are online.");
+  await context.setOffline(false);
+  const sent = page.waitForRequest((r) => r.url().includes("/api/cohorts/class-only") && r.method() === "POST", { timeout: 30_000 });
+  await page.reload();
+  await sent;
+  await expect(page.getByTestId("class-cohort-made")).not.toContainText("Saved on this phone");
+  await chooseRole(page, "coach");
+  await page.goto("/#/cohort");
+  await expect(page.getByTestId("class-only-coach")).toContainText("1 class, 16 children checked");
+});
+
+test("a coach, mentor or officer never sees the roll-level map, explanations or the cohort maker", async ({ page }) => {
+  await enter16(page);
+  for (const role of ["coach", "mentor", "officer"]) {
+    await chooseRole(page, role);
+    await page.goto("/#/cards");
+    await expect(page.getByTestId("results-detail-role")).toBeVisible();
+    await expect(page.getByTestId("answer-map")).toHaveCount(0);
+    await expect(page.getByTestId("explanations")).toHaveCount(0);
+    await expect(page.getByTestId("class-cohort-open")).toHaveCount(0);
+    await expect(page.getByTestId("card-SUB-SFL")).toBeVisible(); // counts stay
+  }
+});
