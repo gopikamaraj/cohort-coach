@@ -52,3 +52,5 @@ e2e-imports/
 apps/pwa/e2e-imports/
 e2e-imports-off/
 audition/
+evals/speech-eval/
+data/speech-eval/

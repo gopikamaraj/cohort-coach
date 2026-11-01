@@ -688,6 +688,9 @@ export default function Practice() {
             <button type="button" className="btn btn-secondary" onClick={useText} data-testid="use-text">
               {tr("practice.use_text")}
             </button>
+            <p className="muted" data-testid="ai-voices">
+              {tr("practice.ai_voices")}
+            </p>
           </>
         ) : (
           <>

@@ -219,6 +219,11 @@ export function AssistantPanel({ screen, full, ask }: { screen: string; full: bo
           </ol>
         </div>
       ) : null}
+      {surface === "about" ? (
+        <p className="muted" data-testid="about-credits">
+          {tr("about.speech_credits")}
+        </p>
+      ) : null}
       {scope ? (
         <p className="muted" data-testid="as-footer">
           {tr("assistant.answers_from", { src: scope.answers_from })} · {tr("assistant.commit")} {scope.commit?.slice(0, 7) ?? "-"}

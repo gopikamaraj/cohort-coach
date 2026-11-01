@@ -143,7 +143,7 @@ def numbers_to_digits(text: str, lang: str) -> str:
     return " ".join(out)
 
 
-def normalise(text: str, lang: str) -> str:
+def normalise(text: str, lang: str, numbers: bool = True) -> str:
     """For comparison only: NFC, ASCII digits, lower case, no punctuation, number words as
     digits."""
     t = unicodedata.normalize("NFC", text).translate(_DIGITS).lower()
@@ -153,7 +153,7 @@ def normalise(text: str, lang: str) -> str:
         for ch in t
     )
     t = re.sub(r"\s+", " ", t).strip()
-    return numbers_to_digits(t, lang)
+    return numbers_to_digits(t, lang) if numbers else t
 
 
 def _distance(a: list[str] | str, b: list[str] | str) -> int:

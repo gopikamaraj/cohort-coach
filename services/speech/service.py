@@ -10,8 +10,11 @@ not speech recognition and says so in its `mode`. Every request writes one metad
 from __future__ import annotations
 
 import itertools
+import logging
 import os
+import threading
 import time
+from collections import deque
 from collections.abc import Callable
 from datetime import date
 from functools import cache
@@ -22,7 +25,7 @@ import yaml
 from sqlalchemy.orm import sessionmaker
 
 from services.api.db import Base, SpeechCall, make_engine
-from services.speech import audio, costs, stt, tts
+from services.speech import audio, costs, stt, textnorm, tts
 from services.speech.bodhan import DEFAULT_VOICE as BODHAN_DEFAULT_VOICE
 from services.speech.chain import ProviderChain
 from services.speech.health import CircuitBreaker
@@ -43,6 +46,7 @@ STUB_LINES = {
     "ta": ["கட்டுகளால் காட்டு", "எப்படி செய்தாய் சொல்", "கூட்டி சரிபார்", "நன்றாகச் செய்தாய்"],
 }
 _counter = itertools.count()
+log = logging.getLogger(__name__)
 
 
 def speech_mode() -> str:
@@ -65,6 +69,8 @@ class SpeechService:
         # A private store for synthesized lines (practice-pregen fills it with the engine's
         # template lines), so a repeated line is free even after a restart. None: memory only.
         self.cache_store = cache_store
+        self._shadow_times: deque[float] = deque()
+        self._shadow_lock = threading.Lock()
         self.budget_inr_daily = (
             budget_inr_daily
             if budget_inr_daily is not None
@@ -219,14 +225,19 @@ class SpeechService:
             if budget is not None and not budget.allows_stt(heard):
                 raise SpeechError("rate", 0, "session_cap")
             texts = []
-            for part in audio.split_for_stt(wav):
+            parts = audio.split_for_stt(wav)
+            used = ""
+            for part in parts:
                 got = self.chain.transcribe(part, lang)
                 seconds += got.seconds_billed
                 cost += costs.cost_inr(got.provider, "stt", seconds=got.seconds_billed)
                 texts.append(got.text)
+                used = got.provider
             if budget is not None:
                 budget.charge_stt(seconds)
-            return " ".join(t for t in texts if t)
+            text = " ".join(t for t in texts if t)
+            self._shadow(parts, lang, text, used, heard, budget)
+            return text
         except SpeechError as exc:
             err = exc
             raise
@@ -241,6 +252,59 @@ class SpeechService:
                 cost_inr=cost,
                 error_kind=err.kind if err else None,
             )
+
+    def _shadow(
+        self,
+        parts: list[bytes],
+        lang: str,
+        text: str,
+        primary: str,
+        seconds: float,
+        budget: costs.SessionSpeechBudget | None,
+    ) -> threading.Thread | None:
+        """Shadow mode (SPEECH_SHADOW_PROVIDER, off by default): the same audio goes to a second
+        provider after the first has answered, in the background, and only a similarity score
+        (1 - character error rate between the two transcripts) and its latency are logged, never
+        either text. Rate-limited (SPEECH_SHADOW_PER_MINUTE, default 4) and counted in the
+        session's speech allowance."""
+        name = os.environ.get("SPEECH_SHADOW_PROVIDER", "").strip().lower()
+        if not name or self.chain is None or name == primary:
+            return None
+        provider = self.chain.providers.get(name)
+        if provider is None or not provider.configured_for("stt"):
+            return None
+        if budget is not None and not budget.allows_stt(seconds):
+            return None
+        now = time.monotonic()
+        limit = int(os.environ.get("SPEECH_SHADOW_PER_MINUTE", "4") or 4)
+        with self._shadow_lock:
+            while self._shadow_times and now - self._shadow_times[0] >= 60:
+                self._shadow_times.popleft()
+            if len(self._shadow_times) >= limit:
+                return None
+            self._shadow_times.append(now)
+        if budget is not None:
+            budget.charge_stt(seconds)
+
+        def run() -> None:
+            t0 = time.monotonic()
+            try:
+                other = " ".join(provider.transcribe(p, lang).text for p in parts)
+            except SpeechError as exc:
+                log.info("speech shadow stt provider=%s failed=%s", name, exc.kind)
+                return
+            similarity = max(0.0, 1.0 - textnorm.cer(text, other, lang)) if text else 0.0
+            log.info(
+                "speech shadow stt provider=%s primary=%s similarity=%.3f latency_ms=%d",
+                name,
+                primary,
+                similarity,
+                int((time.monotonic() - t0) * 1000),
+            )
+
+        th = threading.Thread(target=run, daemon=True)
+        th.start()
+        return th
 
     def _chain_synthesize(
         self,

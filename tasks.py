@@ -255,6 +255,18 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
         script("scripts/practice_pregen.py"),
         "cache the Practice Class template lines (prints counts and cost; --yes [--limit N])",
     ),
+    "speech-eval-pack": (
+        script("scripts/speech_eval_pack.py"),
+        "blinded listening pack, Bodhan and Sarvam (prints the cost; --yes to spend)",
+    ),
+    "speech-eval-stt": (
+        script("scripts/speech_eval_stt.py"),
+        "speech-to-text eval on data/speech-eval/ (prints the cost; --yes) [--record NAME]",
+    ),
+    "speech-latency": (
+        script("scripts/speech_latency.py"),
+        "speech latency per function and provider, live and capped (prints the cost; --yes)",
+    ),
 }
 
 

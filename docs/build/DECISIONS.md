@@ -793,3 +793,18 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Process note.** A new latency script was first written over the existing tracked `scripts/practice_latency.py` (the text-turn latency eval); it was restored from git unchanged and the new script is `scripts/practice_voice_latency.py`.
 
 **Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).
+
+## 2026-11-01 · Speech evaluation, gates and rollout (Prompt 4, branch `speech-bodhan`)
+
+**Decisions (choices where the prompt left room).**
+1. *"Numbers wrong"* in the listening test is a "correct numbers" score of 1 or 2 (of 5) (`content/speech_gates.yaml`, `numbers_wrong_at_or_below`).
+2. *Gate thresholds* are the prompt's defaults, marked `TODO-HUMAN(Gopi, Seema): confirm`: text to speech, Bodhan's naturalness within 0.3 of Sarvam's and under 5% numbers wrong; speech to text, a character error rate at most 5 points worse than Sarvam's and key-term accuracy at least 90%.
+3. *Key terms are matched as whole words* on text without the number conversion ("ten" is a term and a number; "tens" and "tents" are not "ten").
+4. *Shadow mode* runs in the background after the main transcript, so it adds no wait for the teacher; it logs `provider`, `primary`, `similarity` and `latency_ms` only.
+5. *The About screen* is the assistant panel's "About this product" tab; the attribution sits there and in the README. The Practice Class voice controls say the children's voices are AI-generated.
+6. *Cost evidence* (`docs/evidence/speech_cost.md`) is generated from measured inputs (lesson drafts, calibration, engine-simulated sessions); the teacher's speech per turn (6 s) is a stated assumption; every paid price stays `verified: false` until Gopi confirms them on the consoles.
+7. *No slide edited.* `docs/build/reports/SPEECH-ROLLOUT.md` lists the deck sentences to change once the gates pass.
+
+**State on 1 Nov.** Both gates `pending`: the listening pack is made (live) but has no ratings yet, and the speech-to-text test needs team members' recordings (`docs/evidence/speech-eval/PROTOCOL.md`). Rollout stage 1 (`docs/build/SPEECH-ROLLOUT.md`).
+
+**Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).

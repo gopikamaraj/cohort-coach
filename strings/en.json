@@ -341,7 +341,7 @@
   "consent.counts": "Send my class counts",
   "consent.counts_why": "How many children show each error, for grouping teachers. Never a child's answer.",
   "consent.practice": "Use AI in the Practice Class",
-  "consent.practice_why": "What you type or say there goes to AI services (Claude for the replies, Sarvam for speech) to answer you. We do not keep it, and each service has its own retention rules.",
+  "consent.practice_why": "What you type there goes to Claude for the replies. When you speak, your recording goes to a third-party speech service (Bodhan AI, or Sarvam if Bodhan cannot) to be turned into text; we do not keep the recording, and each service has its own retention rules. The children's voices are AI-generated.",
   "consent.share": "Share my rehearsals to improve the simulator",
   "consent.share_why": "Off by default. Without this, rehearsals stay on your phone.",
   "consent.feedback": "Send my feedback to the team",
@@ -360,7 +360,7 @@
   "feedback.note": "Please do not write names, phone numbers or anything about a particular child.",
   "feedback.send": "Send",
   "practice.consent_title": "Allow AI for the Practice Class?",
-  "practice.consent_body": "To answer you, what you type or say is sent to AI services (Claude and Sarvam). It is not kept on our servers. You can turn this off in My profile.",
+  "practice.consent_body": "To answer you, what you type goes to Claude, and what you say is sent to a third-party speech service (Bodhan AI or Sarvam) to be turned into text. We do not keep your recording. You can turn this off in My profile.",
   "practice.consent_allow": "Allow and start",
   "obs.need_consent": "Sharing is off, so this stays on your phone. Turn it on in My profile to send it.",
   "notice.title": "Privacy notice",
@@ -2020,5 +2020,7 @@
   "laudio.unavailable": "The voice service is not available. Try again later; nothing was changed.",
   "practice.rec_timer": "{s} of {max} seconds",
   "practice.rec_limit": "That is the longest we can listen to at once. Say the rest in a second message.",
-  "practice.voice_off": "Voice is off for the rest of this practice. The text continues."
+  "practice.voice_off": "Voice is off for the rest of this practice. The text continues.",
+  "practice.ai_voices": "The children's voices are AI-generated.",
+  "about.speech_credits": "Voices and speech recognition: Bodhan AI / AI4Bharat (Indic-Speak, Indic-Transcribe), with Sarvam AI as the fallback. All voices in this app are AI-generated; no real child's voice is used."
 }
