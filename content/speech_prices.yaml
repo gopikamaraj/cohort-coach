@@ -1,0 +1,35 @@
+# Speech prices per provider and function, in INR. Every value is `verified: false` until a person
+# reads it on the provider's own pricing page and changes it (Prompt 4 asks for that). Code uses these
+# figures only to estimate cost in logs, scripts and the per-session caps; it never shows a cost to a
+# teacher.
+currency: INR
+providers:
+  bodhan:
+    tts:
+      per: 10000_characters
+      price: 6.0
+      verified: false
+      source: "a third-party article (unverified); the API page has no prices. Check https://console.bodhan.ai/#pricing"
+      as_of: "2026-11-01"
+    stt:
+      per: minute_of_audio
+      price: 0.10
+      verified: false
+      source: "a third-party article (unverified); the API page says billing is per second of audio"
+      as_of: "2026-11-01"
+  sarvam:
+    tts:
+      per: 10000_characters
+      price: 30.0
+      verified: false
+      source: "services/speech/pricing.yaml, copied from https://docs.sarvam.ai/api/getting-started/pricing on 2026-10-17 (Bulbul v3)"
+      as_of: "2026-10-17"
+    stt:
+      per: minute_of_audio
+      price: 0.5  # 30 per hour of audio, billed per second
+      verified: false
+      source: "services/speech/pricing.yaml, copied from https://docs.sarvam.ai/api/getting-started/pricing on 2026-10-17"
+      as_of: "2026-10-17"
+  mock:
+    tts: {per: 10000_characters, price: 0.0, verified: true, source: "tests only", as_of: "2026-11-01"}
+    stt: {per: minute_of_audio, price: 0.0, verified: true, source: "tests only", as_of: "2026-11-01"}

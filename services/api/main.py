@@ -33,6 +33,7 @@ from services.media.api import router as media_router
 from services.papers_hub.api import router as paper_hub_router
 from services.pilot_demo.api import router as pilot_demo_router
 from services.sheets_keep.api import router as sheet_keep_router
+from services.speech.chain import startup_warning as speech_startup_warning
 from services.tester import tester_stats_enabled
 
 load_env()
@@ -57,6 +58,8 @@ async def _tester_lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     model_from_env()  # a bad SIMULATOR_MODEL (or BAYES_* value) stops the API here, with a message
+    if os.environ.get("SPEECH_MODE", "live") != "stub":
+        speech_startup_warning()  # log only: Bodhan first before its gates pass (never blocks)
     app = FastAPI(
         title="Cohort Coach API",
         version=VERSION,

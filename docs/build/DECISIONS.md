@@ -742,3 +742,20 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Not changed.** `CLAUDE.md`, README, `AI_USAGE.md` and the submission docs (the lines that would need changing are listed in the build report given in chat), `sim_fidelity.py`, `results.md`, recorded results, decks.
 
 **Confirmed by.** Build prompt run by Gopi, 2026-11-01. The standing instruction "go with the recommended approach" covers the resolutions above.
+
+## 2026-11-01 · Speech behind one provider layer, Bodhan AI first, Sarvam as the fallback (branch `speech-bodhan`)
+
+**Decision.** All live speech goes through `services/speech/chain.py`: Bodhan AI first for speech to text (`indic-transcribe`) and text to speech (`indic-speak`), Sarvam as the fallback, a mock for tests. The order is configurable (`SPEECH_TTS_PROVIDERS`, `SPEECH_STT_PROVIDERS`, with per-language overrides). Built from Prompt 1 of `docs/build/bodhan-speech-prompts.md`, on branch `speech-bodhan`; not merged into the evaluated version (1 Nov freeze).
+
+**Choices where the prompt left room.**
+1. *A 401 falls back.* The prompt says a 4xx request error does not fall back. A 401 or 403 is a key problem at that provider, not a fault in our request, so the next provider is tried. 400, 415 and 422 do not fall back.
+2. *Bodhan voices.* Until the cast in `content/voices.yaml` (Prompts 2 and 3), Bodhan uses one voice per language (Hindi Kavya, Tamil Anitha, English Kavya; `TODO-HUMAN(Seema)`), pitch-shifted per child exactly as the Sarvam voices are.
+3. *An explicit Sarvam client keeps the old path.* `SpeechService(client=SarvamClient(...))` behaves as before, so existing tests and scripts are unchanged; the chain is used by `default_service()` and wherever a chain is passed.
+4. *`split_for_stt` cuts at the limit when there is no silence*, as the prompt says. The older `split_at_silences` (the quietest frame even in speech) is kept for its existing callers.
+5. *The converted WAV carries its true length.* ffmpeg writing to a pipe leaves the WAV size fields unset; the Bodhan mock (which measures the header) refused such a file as over 30 s. `to_wav_16k_mono` rewrites the header. Bodhan meters by duration, so this matters for the real service.
+6. *Per-session caps* (`SPEECH_SESSION_MAX_STT_SECONDS`, `SPEECH_SESSION_MAX_TTS_CHARS`) are built and tested in the speech service. Wiring them to Practice Class sessions and the "voice is off" message is Prompt 3.
+7. *Prices.* `content/speech_prices.yaml`, every paid value `verified: false` (Bodhan's from an unverified article; the API page shows none).
+
+**Not done in Prompt 1.** Lessons (Prompt 2), Practice Class recording and voices (Prompt 3), evaluation and gates (Prompt 4). The startup warning fires until `docs/evidence/speech_gates.md` records both gates passed.
+
+**Confirmed by.** Gopi, 2026-11-01 ("start the development", Prompt 1).
