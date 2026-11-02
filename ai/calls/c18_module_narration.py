@@ -24,10 +24,9 @@ class NarrationRun:
     run: CallResult
 
 
-def make_input(*, language: str, title: str, parts: list[dict[str, Any]]) -> CallInput:
-    """`parts`: [{id, heading, text}], a list of steps already joined by code."""
-    text = "\n\n".join(f"[{p['id']}] {p['heading']}\n{p['text']}" for p in parts)
-    return CallInput(trusted={"language": language, "title": title}, untrusted={"module": text})
+def make_input(*, facts: dict[str, Any], module: str) -> CallInput:
+    """`facts` and `module` come from services/modules/speech_input.py (the facts and the module block)."""
+    return CallInput(trusted=facts, untrusted={"module": module})
 
 
 def narrate(*, context: CallContext | None = None, **facts: Any) -> NarrationRun:

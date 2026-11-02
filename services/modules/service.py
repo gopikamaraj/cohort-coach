@@ -291,7 +291,8 @@ def generate_module(
         }
     from services.modules import narration  # here to avoid an import loop
 
-    said = narration.run(text)  # reworded for listening, or None: the code-built script is used
+    live_n = len([r for r in rows if r.status != states.SKIPPED])
+    said = narration.run(text, number=number, count=live_n)  # reworded for listening, or None: the code-built script is used
     if said is not None:
         text["narration"] = said
     claim = {
@@ -542,7 +543,7 @@ def refresh_narration(
     if module.status in (states.PLANNED, states.SKIPPED):
         raise ModulesError("not_made", "That module is not made yet.")
     mt = module_view(db, track, module, lang, total)["text"]
-    said = narration.run({**mt, "language": mt.get("language", lang)})
+    said = narration.run({**mt, "language": mt.get("language", lang)}, number=number, count=total)
     stored = {k: v for k, v in (module.text or {}).items() if k != "narration"}
     if said is not None:
         stored["narration"] = said

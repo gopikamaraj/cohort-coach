@@ -18,9 +18,10 @@ from ai import config as ai_config
 from ai.calls.c18_module_narration import narrate
 from ai.client import CallContext
 from ai.guard.gates import ContentType, GateInput, run_gates
+from ai.prompt_loader import load_prompt
 from ai.schemas import ModuleNarration
 from services.api import strings
-from services.modules import library
+from services.modules import library, speech_input
 
 _TOKENS = re.compile(r"\{pv:\d+\}|\d+")
 _SLOT = re.compile(r"\{pv:\d+\}")
@@ -78,14 +79,28 @@ def validate(out: ModuleNarration, mt: dict[str, Any]) -> dict[str, str] | None:
     return got
 
 
-def run(mt: dict[str, Any], *, context: CallContext | None = None) -> dict[str, Any] | None:
+def run(
+    mt: dict[str, Any],
+    *,
+    number: int | None = None,
+    count: int | None = None,
+    context: CallContext | None = None,
+) -> dict[str, Any] | None:
     """{language, sections: {id: text}} or None (AI off, offline, anything invalid, or a gate held it)."""
     if ai_config.ai_mode() == "off":
         return None
     lang = mt.get("language", "en")
     try:
-        parts = [{"id": p["id"], "heading": heading(p["id"], lang), "text": body(p)} for p in speakable(mt)]
-        got = narrate(language=lang, title=mt.get("title", ""), parts=parts, context=context)
+        si = speech_input.build_speech_input(
+            mt,
+            language=lang,
+            number=number,
+            count=count,
+            digit_readings=speech_input.readings_for(mt),
+            prompt_version=load_prompt("c18_module_narration").version,
+            model=ai_config.model_for("MODEL_NARRATION"),
+        )
+        got = narrate(facts=si.facts, module=si.module_block, context=context)
         checked = None if got.fell_back else validate(got.output, mt)
         if checked is None:
             return None
