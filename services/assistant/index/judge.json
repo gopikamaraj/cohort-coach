@@ -10855,6 +10855,45 @@
 "ts_start": null
 },
 {
+"heading": "Decisions log > 2026-11-02 · The pack no longer repeats what the modules carry",
+"id": "judge:docs/build/DECISIONS.md#decisions-log-2026-11-02-the-pack-no-longer-repeats-what-the-modules-carry:0",
+"kind": "file",
+"line": 969,
+"ns": "judge",
+"path": "docs/build/DECISIONS.md",
+"section": null,
+"slide_no": null,
+"text": "- **Decision:** the pack shown after \"Print this pack\" drops three sections: Strategies to try, A two-minute check, and If it does not improve. The modules now carry them (each module shows its approach with steps, a worked example and \"How to know it worked\"; the branch table picks another approach or a smaller step when she answers not yet or partly). The pack keeps What you are seeing, Why children do this, A ten-minute activity, Common mistakes when teaching this, How to know it is working, and Ideas for home. The printed summary lost the same two parts, and the intro line points to the modules.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Decisions log > 2026-11-02 · The pack no longer repeats what the modules carry",
+"id": "judge:docs/build/DECISIONS.md#decisions-log-2026-11-02-the-pack-no-longer-repeats-what-the-modules-carry:1",
+"kind": "file",
+"line": 970,
+"ns": "judge",
+"path": "docs/build/DECISIONS.md",
+"section": null,
+"slide_no": null,
+"text": "- **Why:** the same steps and worked examples appeared twice, in two places that could drift apart, and the pack's three strategies were not the ones her modules used. - **Alternatives:** keep them behind a \"more\" fold (rejected: still duplicated); also drop the ten-minute activity (kept: no module has it). - **Tests:** the pack tests that asserted those sections now assert they are absent; nothing was loosened otherwise. The e2e spec for the pack is updated but not run.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Decisions log > 2026-11-02 · The pack no longer repeats what the modules carry",
+"id": "judge:docs/build/DECISIONS.md#decisions-log-2026-11-02-the-pack-no-longer-repeats-what-the-modules-carry:2",
+"kind": "file",
+"line": 973,
+"ns": "judge",
+"path": "docs/build/DECISIONS.md",
+"section": null,
+"slide_no": null,
+"text": "- **Left in the content files:** `two_minute_check` (the module's check reads it) and `if_not_improving` (now unused; content is Seema's, so I did not delete it). - **Confirmed by:** not yet.",
+"ts_end": null,
+"ts_start": null
+},
+{
 "heading": "Build progress",
 "id": "judge:docs/build/PROGRESS.md#build-progress:0",
 "kind": "file",

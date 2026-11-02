@@ -70,7 +70,7 @@ Open My class after you finish a check. Under the findings, the answer map has o
 
 ## A cohort for your class and its ideas to try
 
-On My class, tap Create a cohort for my class, choose the mistakes to work on (the most common one is chosen for you) and confirm. It is just your class, with no other teachers yet, and only counts are saved. Open the cohort page to read the improvement track: what you are seeing, why children do this, a two-minute check, strategies to try, a ten-minute activity, common teaching mistakes, how to know it is working, ideas for home, and what to try if it does not improve. Everything is text first. Tap Download audio on a section, or for the whole pack, to get an MP3 file made with an AI-generated voice; it needs a connection, and nothing is made until you tap. Hindi and Tamil text is not written yet, so those pages show English with a note.
+On My class, tap Create a cohort for my class, choose the mistakes to work on (the most common one is chosen for you) and confirm. It is just your class, with no other teachers yet, and only counts are saved. Open the cohort page to read the improvement track: what you are seeing, why children do this, a ten-minute activity, common teaching mistakes, how to know it is working and ideas for home. The strategies, their steps and examples, the two-minute check and what to do when a module is not working are in the modules above it, one module at a time. Everything is text first. Tap Download audio on a section, or for the whole pack, to get an MP3 file made with an AI-generated voice; it needs a connection, and nothing is made until you tap. Hindi and Tamil text is not written yet, so those pages show English with a note.
 
 ## Your improvement track: modules
 

@@ -3652,9 +3652,6 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   min-height: 44px;
   cursor: pointer;
 }
-.pack-strategies {
-  padding-left: var(--s5);
-}
 .check-line {
   display: flex;
   align-items: center;

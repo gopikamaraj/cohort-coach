@@ -57,18 +57,14 @@ test("the cohort page shows the pack, text first, from the class's own results",
   await expect(page.getByTestId("pack")).toBeVisible();
   await expect(page.getByTestId("mine-label")).toHaveText("Just my class: no other teachers yet");
   await expect(page.getByTestId("pack-draft")).toBeVisible();
-  for (const id of ["seeing", "why", "check", "strategies", "activity", "mistakes", "working", "home", "stuck"]) await expect(page.getByTestId(`pack-SUB-SFL-${id}`)).toBeVisible();
+  for (const id of ["seeing", "why", "activity", "mistakes", "working", "home"]) await expect(page.getByTestId(`pack-SUB-SFL-${id}`)).toBeVisible();
   const open = async (id: string) => page.getByTestId(`pack-SUB-SFL-${id}`).locator("summary").click();
   await open("seeing");
   await expect(page.getByTestId("pack-SUB-SFL-seeing")).toContainText("5 of 16 children show it.");
   await expect(page.getByTestId("pack-SUB-SFL-seeing")).toContainText("74 − 36"); // her own question
   await open("working");
   await expect(page.getByTestId("pack-SUB-SFL-working")).toContainText("Now: 5 of 16 children");
-  await open("strategies");
-  expect(await page.locator("[data-testid^=pack-strategy-]").count()).toBe(3);
-  await expect(page.getByTestId("pack-SUB-SFL-strategies")).toContainText("Strategy library");
-  await open("check");
-  await expect(page.getByTestId("pack-SUB-SFL-check")).toContainText("Write a subtraction");
+  for (const gone of ["strategies", "check", "stuck"]) await expect(page.getByTestId(`pack-SUB-SFL-${gone}`)).toHaveCount(0); // the modules carry these
   const text = await page.getByTestId("pack").innerText();
   expect(text).not.toContain("%");
   expect(text).not.toContain("undefined");

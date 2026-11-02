@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { keys } from "./diagnosis";
 import { content } from "./errorContent";
-import { buildPack, MAX_STRATEGIES, SECTION_ORDER } from "./pack";
+import { buildPack, SECTION_ORDER } from "./pack";
 
 const input = (code: string, lang: "en" | "hi" | "ta" = "en") => ({ code, lang, children: 5, total: 16, here: null });
 
@@ -18,19 +18,15 @@ describe("buildPack", () => {
     const p = buildPack(input("SUB-SFL"));
     for (const s of p.sections) expect(s.source.length, s.id).toBeGreaterThan(3);
     expect(p.sections.find((s) => s.id === "why")?.draft).toBe(true);
-    expect(p.sections.find((s) => s.id === "strategies")?.draft).toBe(true);
+    expect(p.sections.find((s) => s.id === "activity")?.draft).toBe(true);
     expect(content.status).toBe("draft");
   });
 
-  it("shows at most three strategies, each from the library with steps, or the pack's own for an error the library misses", () => {
-    const sfl = buildPack(input("SUB-SFL")).sections.find((s) => s.id === "strategies")!;
-    expect(sfl.strategies!.length).toBe(MAX_STRATEGIES);
-    for (const st of sfl.strategies!) expect(st.steps.length).toBeGreaterThan(0);
-    const libraryIds = Object.keys(content.strategies);
-    expect(sfl.strategies!.every((s) => libraryIds.includes(s.id))).toBe(true);
-    const rev = buildPack(input("PV-REVERSE")).sections.find((s) => s.id === "strategies")!;
-    expect(rev.strategies!.map((s) => s.id)).toEqual(["say_build_write"]);
-    expect(rev.strategies![0]!.draft).toBe(true);
+  it("does not repeat what the modules carry: no strategies, no two-minute check, no 'if it does not improve'", () => {
+    for (const code of keys.error_order) {
+      const ids = buildPack(input(code)).sections.map((s) => s.id) as string[];
+      for (const gone of ["strategies", "check", "stuck"]) expect(ids, `${code} ${gone}`).not.toContain(gone);
+    }
   });
 
   it("uses the class's own numbers, from the rule the engine uses", () => {
@@ -44,14 +40,14 @@ describe("buildPack", () => {
     const logged: string[] = [];
     const p = buildPack(input("NO-SUCH-ERROR"), (id, code) => logged.push(`${code}:${id}`));
     expect(p.sections.map((s) => s.id)).toEqual(["seeing", "working"]);
-    expect(p.omitted).toEqual(["why", "check", "strategies", "activity", "mistakes", "home", "stuck"]);
-    expect(logged).toHaveLength(7);
+    expect(p.omitted).toEqual(["why", "activity", "mistakes", "home"]);
+    expect(logged).toHaveLength(4);
   });
 
   it("shows English with a flag when the language has no text yet", () => {
     const hi = buildPack(input("SUB-SFL", "hi"));
-    expect(hi.sections.find((s) => s.id === "check")).toMatchObject({ fallback: true });
-    expect(hi.sections.find((s) => s.id === "check")!.text).toContain("Write a subtraction");
+    const en = buildPack(input("SUB-SFL", "en"));
+    for (const s of hi.sections.filter((x) => x.fallback)) expect(s.text ?? s.list).toEqual(en.sections.find((x) => x.id === s.id)!.text ?? en.sections.find((x) => x.id === s.id)!.list);
     expect(buildPack(input("SUB-SFL", "en")).sections.every((s) => !s.fallback)).toBe(true);
   });
 

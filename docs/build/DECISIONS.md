@@ -963,3 +963,12 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Why:** a listener cannot see the headings, and the model is good at spoken phrasing but must not touch numbers.
 - **Alternatives:** let the model write the headings (rejected: can drop or change them); reword on every view (rejected: cost and drift).
 - **Confirmed by:** not yet. The per-error examples and the Hindi and Tamil headings need Seema and Shivani; no live narration run has been made, so call 18 is Built, not Verified.
+
+## 2026-11-02 · The pack no longer repeats what the modules carry
+
+- **Decision:** the pack shown after "Print this pack" drops three sections: Strategies to try, A two-minute check, and If it does not improve. The modules now carry them (each module shows its approach with steps, a worked example and "How to know it worked"; the branch table picks another approach or a smaller step when she answers not yet or partly). The pack keeps What you are seeing, Why children do this, A ten-minute activity, Common mistakes when teaching this, How to know it is working, and Ideas for home. The printed summary lost the same two parts, and the intro line points to the modules.
+- **Why:** the same steps and worked examples appeared twice, in two places that could drift apart, and the pack's three strategies were not the ones her modules used.
+- **Alternatives:** keep them behind a "more" fold (rejected: still duplicated); also drop the ten-minute activity (kept: no module has it).
+- **Tests:** the pack tests that asserted those sections now assert they are absent; nothing was loosened otherwise. The e2e spec for the pack is updated but not run.
+- **Left in the content files:** `two_minute_check` (the module's check reads it) and `if_not_improving` (now unused; content is Seema's, so I did not delete it).
+- **Confirmed by:** not yet.

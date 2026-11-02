@@ -1,33 +1,20 @@
 // The intervention pack for one error of a cohort, put together on the phone from approved content: the
-// explanations file, the strategy library and content/errors/intervention.v1.yaml (all in
-// generated/error_content.json). No AI is called. A section with no content is left out and named in
+// explanations file and content/errors/intervention.v1.yaml (in generated/error_content.json). The strategies,
+// their steps and worked examples, the two-minute check and what to do when it is not improving are in the
+// modules (ModuleTrack), so they are not repeated here. No AI is called. A section with no content is left out and named in
 // `omitted` (not invented); every section says where it came from and whether it is still a draft.
 import type { Key, Lang } from "../i18n";
-import { content, explanationFor, pick, type ExtraStrategy } from "./errorContent";
+import { content, explanationFor, pick } from "./errorContent";
 import { keys } from "./diagnosis";
 import type { InThisClass } from "./results";
 
-export type SectionId = "seeing" | "why" | "check" | "strategies" | "activity" | "mistakes" | "working" | "home" | "stuck";
-export const SECTION_ORDER: SectionId[] = ["seeing", "why", "check", "strategies", "activity", "mistakes", "working", "home", "stuck"];
-export const MAX_STRATEGIES = 3;
-
-export interface PackStrategy {
-  id: string;
-  label: string;
-  description: string;
-  steps: string[];
-  materials: string | null;
-  worked: string[];
-  draft: boolean;
-  source: string;
-  fallback: boolean;
-}
+export type SectionId = "seeing" | "why" | "activity" | "mistakes" | "working" | "home";
+export const SECTION_ORDER: SectionId[] = ["seeing", "why", "activity", "mistakes", "working", "home"];
 
 export interface PackSection {
   id: SectionId;
   text?: string; // one paragraph
   list?: string[]; // bullet points
-  strategies?: PackStrategy[];
   numbers?: { now: number; total: number; n: number }; // "how to know it is working": the class's own counts
   here?: { children: number; total: number; example: InThisClass["example"]; rolls: { confirmed: number[]; possible: number[] } | null };
   source: string;
@@ -43,7 +30,6 @@ export interface Pack {
 
 const SRC_EXPLAIN = "What each error means";
 const SRC_PACK = "Intervention text (content/errors/intervention.v1)";
-const SRC_LIB = "Strategy library (strategies.v1)";
 
 export interface PackInput {
   code: string;
@@ -81,49 +67,12 @@ export function buildPack(input: PackInput, onOmit: (id: SectionId, code: string
 
   add({ id: "seeing", here: { children: input.children, total: input.total, example: input.here?.example ?? null, rolls: input.rolls ?? null }, source: "Your class's check", draft: false, fallback: false }, "seeing");
   add(textSection("why", ex?.why, SRC_EXPLAIN, draftExplain), "why");
-  add(textSection("check", pack?.two_minute_check, SRC_PACK, draftPack), "check");
-
-  // strategies: those in the library that fit this error, then any the pack adds for an error the library misses
-  const strategies: PackStrategy[] = [];
-  for (const [id, s] of Object.entries(content.strategies)) {
-    if (!s.fits.includes(code)) continue;
-    const label = pick(s.label, lang);
-    const description = pick(s.description, lang);
-    const detail = content.pack.strategy_details[id];
-    const steps = pick(detail?.steps, lang);
-    if (!label || !description || !steps) continue;
-    strategies.push({
-      id,
-      label: label.value,
-      description: description.value,
-      steps: steps.value,
-      materials: pick(detail?.materials, lang)?.value ?? null,
-      worked: s.worked_examples,
-      draft: s.status !== "approved",
-      source: SRC_LIB,
-      fallback: label.fallback || description.fallback || steps.fallback,
-    });
-  }
-  for (const x of (content.pack.extra_strategies[code] ?? []) as ExtraStrategy[]) {
-    const label = pick(x.label, lang);
-    const description = pick(x.description, lang);
-    const steps = pick(x.steps, lang);
-    if (!label || !description || !steps) continue;
-    strategies.push({ id: x.id, label: label.value, description: description.value, steps: steps.value, materials: pick(x.materials, lang)?.value ?? null, worked: [], draft: true, source: SRC_PACK, fallback: label.fallback || description.fallback || steps.fallback });
-  }
-  const shown = strategies.slice(0, MAX_STRATEGIES);
-  add(
-    shown.length > 0 ? { id: "strategies", strategies: shown, source: SRC_LIB, draft: shown.some((s) => s.draft), fallback: shown.some((s) => s.fallback) } : null,
-    "strategies",
-  );
-
   add(textSection("activity", pack?.ten_minute_activity, SRC_PACK, draftPack), "activity");
   add(listSection("mistakes", pack?.teaching_mistakes), "mistakes");
   // How to know it is working comes from the rules the engine uses, not from text: the same count,
   // read again at the next check.
   add({ id: "working", numbers: { now: input.children, total: input.total, n: keys.rules.min_hits }, source: "The check's own rule", draft: false, fallback: false }, "working");
   add(listSection("home", pack?.at_home), "home");
-  add(textSection("stuck", pack?.if_not_improving, SRC_PACK, draftPack), "stuck");
   return { code, sections, omitted };
 }
 
@@ -151,25 +100,16 @@ export function sectionLines(s: PackSection, tr: Tr): string[] {
   if (s.text) out.push(s.text);
   if (s.list) out.push(...s.list);
   if (s.numbers) out.push(tr("pack.working_line", s.numbers));
-  for (const st of s.strategies ?? []) {
-    out.push(st.label, st.description);
-    if (st.materials && st.materials !== "None") out.push(tr("pack.materials", { list: st.materials }));
-    out.push(...st.steps);
-    for (const w of st.worked) out.push(tr("pack.worked", { text: w }));
-  }
   return out.map(end);
 }
 
 export const SECTION_TITLE: Record<SectionId, Key> = {
   seeing: "pack.sec.seeing",
   why: "pack.sec.why",
-  check: "pack.sec.check",
-  strategies: "pack.sec.strategies",
   activity: "pack.sec.activity",
   mistakes: "pack.sec.mistakes",
   working: "pack.sec.working",
   home: "pack.sec.home",
-  stuck: "pack.sec.stuck",
 };
 
 /** The text of the whole pack for one error: each section's title, then its lines. */
