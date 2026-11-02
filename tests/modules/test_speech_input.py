@@ -218,3 +218,33 @@ def test_the_builder_does_not_change_the_module_it_reads() -> None:
     before = copy.deepcopy(source)
     build_speech_input(source, language="en", number=1, count=2, digit_readings=("602",))
     assert source == before
+
+
+# ---- digit sidecar ----------------------------------------------------------------------------------
+
+
+def test_602_is_wrapped_everywhere_it_is_a_whole_token_and_nothing_else_is() -> None:
+    got = build_speech_input(mt(), language="en", digit_readings=speech_input.readings_for(mt()))
+    assert got.text.count("{digits:602}") == 3 and "602" not in got.text.replace("{digits:602}", "")
+    assert speech_input.wrap_digits("6020 and 1602 and 602 and 602.", ("602",)) == "6020 and 1602 and {digits:602} and {digits:602}."
+    assert speech_input.wrap_digits("52 - 29 = 23", ("602",)) == "52 - 29 = 23"
+    assert speech_input.wrap_digits("{digits:602}", ("602",)) == "{digits:602}"
+
+
+def test_a_module_the_sidecar_does_not_list_gets_no_guess() -> None:
+    other = mt("SUB-SFL", "check_back")
+    assert speech_input.readings_for(other) == ()
+    assert "{digits:" not in build_speech_input(other, language="en").text
+
+
+def test_a_stale_sidecar_entry_raises() -> None:
+    with pytest.raises(SpeechInputError, match="matches nothing"):
+        build_speech_input(mt(), language="en", digit_readings=("777",))
+
+
+def test_every_sidecar_entry_matches_its_english_module() -> None:
+    for key, digits in speech_input._sidecar().items():
+        error, approach = key.split(":", 1)
+        module = mt(error, approach)
+        assert digits and speech_input.readings_for(module) == digits
+        build_speech_input(module, language="en", digit_readings=digits)  # raises when stale

@@ -22,7 +22,11 @@ import json
 import re
 import unicodedata
 from dataclasses import dataclass
+from functools import cache
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 from services.api import strings
 
@@ -33,6 +37,7 @@ TAGS = ("smaller_step", "purpose", "materials", "steps", "example", "check")
 # The longest current module is about 1,300 characters in English and 2,300 in Tamil
 # (scripts/speech_inputs_report.py); the limit leaves room for a longer one and stops a runaway.
 MAX_INPUT_CHARS = 4000
+SPEECH_CONTENT = Path(__file__).resolve().parents[2] / "content" / "speech"
 
 
 class SpeechInputError(ValueError):
@@ -152,6 +157,9 @@ def build_speech_input(
     if not title:
         raise SpeechInputError("the module has no title")
     sections = _sections(mt, language, digit_readings)
+    stale = unmatched(sections, digit_readings) if language == "en" else []
+    if stale:  # English shows every section, so a listed number that wraps nothing is a stale entry
+        raise SpeechInputError(f"digit reading {stale} matches nothing in this module")
     tags = {s.tag for s in sections}
     if "purpose" not in tags and "steps" not in tags:
         raise SpeechInputError("the module has neither a purpose nor steps")
@@ -171,6 +179,18 @@ def build_speech_input(
     return SpeechInput(text, facts, tuple(sections), digest)
 
 
+@cache
+def _sidecar() -> dict[str, tuple[str, ...]]:
+    raw = yaml.safe_load((SPEECH_CONTENT / "digit_readings.v1.yaml").read_text(encoding="utf-8"))
+    return {k: tuple(str(x) for x in v) for k, v in (raw.get("modules") or {}).items()}
+
+
 def readings_for(mt: dict[str, Any]) -> tuple[str, ...]:
-    """The digit strings the sidecar lists for this module (none until the sidecar is added)."""
-    return ()
+    """The digit strings the sidecar lists for this module (none for a module it does not list)."""
+    return _sidecar().get(f"{mt.get('error')}:{mt.get('approach')}", ())
+
+
+def unmatched(sections: list[Section], readings: tuple[str, ...]) -> list[str]:
+    """Entries that wrapped nothing: stale (the module text changed or the number is not there)."""
+    said = " ".join(s.lines() for s in sections)
+    return [d for d in readings if f"{{digits:{d}}}" not in said]

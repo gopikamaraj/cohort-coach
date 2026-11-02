@@ -1,0 +1,9 @@
+# Numbers the voice reads digit by digit (docs/SPEECH-INPUT.md). When a child writes 602 for sixty-two,
+# the speech must say "six zero two", not "six hundred two". Every other number is said as an ordinary
+# number. Key: the module id, "<ERROR>:<approach>". Value: exact digit strings, matched as whole numbers.
+# Only the case known so far is listed; the report (scripts/speech_inputs_report.py) lists every digit
+# number in every module and whether it is marked, for a content owner to decide.
+# TODO-HUMAN(Seema): review the report and add the modules where a child's written answer is spoken.
+version: 1
+modules:
+  "PV-HEARD:ask_explain": ["602"]
