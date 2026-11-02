@@ -105,33 +105,24 @@ def create_app() -> FastAPI:
     app.include_router(modules_router)
     app.include_router(cohort_chat_router)
 
-    if os.environ.get("SEED_PAPERS_FILE"):  # fresh deployment: papers copied in once
-
-        @app.on_event("startup")
-        def _seed_papers() -> None:
-            from pathlib import Path
-
-            from services.api.profiles import _factory
-            from services.api.seed import load_papers
-
-            path = Path(os.environ["SEED_PAPERS_FILE"])
-            if path.is_file():
-                with _factory()() as db:
-                    load_papers(db, path)
-
     if os.environ.get("SEED_ALL_FILE"):  # fresh deployment: every table copied in once
 
         @app.on_event("startup")
         def _seed_all() -> None:
+            import logging
             from pathlib import Path
 
             from services.api.profiles import _factory
             from services.api.seed import load_all
 
             path = Path(os.environ["SEED_ALL_FILE"])
-            if path.is_file():
+            if not path.is_file():
+                return
+            try:  # a bad seed is logged and skipped: the service must still start
                 with _factory()() as db:
                     load_all(db, path)
+            except Exception:
+                logging.getLogger("seed").exception("seed not loaded")
 
     if os.environ.get("CHAT_POLLER", "1") == "1":  # the server owns the chat's AI timer
 

@@ -9,6 +9,7 @@ printed questions and their keys only: no child data, no sheet photo. The startu
 from __future__ import annotations
 
 import json
+import logging
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -104,8 +105,12 @@ def load_all(db: Session, path: Path) -> dict[str, int]:
                 return datetime.fromisoformat(v).date()
             return v
 
-        for i in range(0, len(rows), 500):
-            db.execute(insert(table), [{k: fix(k, v) for k, v in row.items()} for row in rows[i : i + 500]])
-        loaded[table.name] = len(rows)
-    db.commit()
+        try:
+            for i in range(0, len(rows), 500):
+                db.execute(insert(table), [{k: fix(k, v) for k, v in row.items()} for row in rows[i : i + 500]])
+            db.commit()
+            loaded[table.name] = len(rows)
+        except Exception:  # one table that will not take its rows must not stop the others
+            db.rollback()
+            logging.getLogger("seed").exception("table %s not loaded", table.name)
     return loaded
