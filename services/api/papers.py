@@ -126,8 +126,10 @@ def generate(
 
 
 @router.get("")
-def list_papers(class_id: str | None = None, _: str = GENERATE, db: Session = SESSION) -> list[dict[str, Any]]:
-    # every created paper is listed for everyone for now (`class_id` is kept so old callers still work)
+def list_papers(
+    class_id: str | None = None, _: str = GENERATE, db: Session = SESSION
+) -> list[dict[str, Any]]:
+    # every paper is listed for everyone for now (`class_id` stays so old callers still work)
     db = _db(db)
     rows = db.scalars(select(PaperRow).order_by(PaperRow.created_at)).all()
     return [store.summary(r) for r in rows]
