@@ -32,6 +32,7 @@ from services.content.review import OPEN
 
 router = APIRouter(prefix="/api/officer", tags=["officer"])
 RESULTS = Depends(require("officer.results"))
+PILOT_MIN_CLASSES = 2
 SHARE_NUMERATOR, SHARE_DENOMINATOR = 1, 4  # a class "shows" an error at 1 child in 4 or more
 
 
@@ -116,12 +117,12 @@ def results(_: str = RESULTS) -> dict[str, Any]:
 
 
 def _min_entered() -> int:
-    """Classes needed before a figure over the entered classes is shown. 5 in production (the rule); the pilot
-    and demo lower it with OFFICER_MIN_CLASSES, and the page says so (DECISIONS 2026-11-02)."""
+    """Classes needed before a figure over the entered classes is shown: 2 while this is a pilot (decided by Gopi,
+    2 Nov 2026, DECISIONS.md). Block scale sets OFFICER_MIN_CLASSES=5, the rule in CLAUDE.md section 4.3."""
     try:
-        return max(1, int(os.environ.get("OFFICER_MIN_CLASSES", MIN_CLASSES_SHOWN)))
+        return max(1, int(os.environ.get("OFFICER_MIN_CLASSES", PILOT_MIN_CLASSES)))
     except ValueError:
-        return MIN_CLASSES_SHOWN
+        return PILOT_MIN_CLASSES
 
 
 @router.get("/entered")

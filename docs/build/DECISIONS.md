@@ -1027,3 +1027,5 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Five-class rule:** `OFFICER_MIN_CLASSES` (5 in production, so the rule in CLAUDE.md §4.3 holds) is set to 2 on the pilot and demo back end, and the page says so. Same pattern as `COHORT_MIN_CLASSES`.
 - **Results and funnel:** results show the fall in children showing each error between a class's first and latest check, as directional counts with no verdict (a verdict needs 15 classes per group and a comparison group). The funnel shows only what code counts (classes grouped into a cohort); Delivered, Tried, Practised and Changed are work in progress for these classes.
 - **Not done:** teachers in a coach-made cohort do not yet get its track; the e2e specs that clicked the teacher's create button need rewriting.
+
+- **Update (Gopi, 2 Nov 2026):** the pilot default for the officer page is now 2 classes (`PILOT_MIN_CLASSES` in `services/api/officer.py`), with no env setting needed; block scale sets `OFFICER_MIN_CLASSES=5`.

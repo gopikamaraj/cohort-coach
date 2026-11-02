@@ -164,7 +164,9 @@ def test_the_officer_sees_the_entered_classes_as_groups_and_the_five_class_rule_
         client.put("/api/store/profiles/p1", json={"data": {"id": "p1", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": counts}}, headers=on(key))
     client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 2}}}, headers=on(ka))
     client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 3}}}, headers=on(kb))
-    monkeypatch.delenv("OFFICER_MIN_CLASSES", raising=False)
+    o = client.get("/api/officer/entered", headers=on(ka, "officer")).json()
+    assert o["min_classes"] == 2  # the pilot default
+    monkeypatch.setenv("OFFICER_MIN_CLASSES", "5")  # block scale: the five-class rule
     o = client.get("/api/officer/entered", headers=on(ka, "officer")).json()
     assert o["min_classes"] == 5 and all(c["hidden"] for c in o["error_map"]["cells"])  # two classes: hidden by the rule
     assert client.get("/api/officer/entered", headers=on(ka)).status_code == 403
