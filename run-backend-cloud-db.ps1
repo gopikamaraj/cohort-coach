@@ -8,6 +8,7 @@
 #
 # Use:  .\run-backend-cloud-db.ps1            (Ctrl+C to stop; the proxy stops with it)
 
+param([switch]$Clear)   # -Clear: delete every row of the cloud database (asks you to type its name), then stop
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 $project  = "fln-cohort-coach"
@@ -34,6 +35,10 @@ else {
   Start-Sleep -Seconds 4
 }
 try {
+  if ($Clear) {
+    & ".venv\Scripts\python.exe" scripts\clear_all_rows.py
+    return
+  }
   # the same local settings run-backend.bat uses
   $env:ADMIN_OPEN = "1"; $env:JUDGE_MODE = "1"; $env:MEDIA_LOCAL_STORE = "1"
   $env:PWA_ORIGIN = "http://localhost:5173"
