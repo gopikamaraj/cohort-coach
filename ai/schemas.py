@@ -238,6 +238,18 @@ class FeedbackReview(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
 
 
+class NarrationSection(BaseModel):
+    id: str = Field(max_length=20)
+    text: str = Field(max_length=1200)
+
+
+class ModuleNarration(BaseModel):
+    """Call 18: each part of an approved module, reworded so a listener can follow it by ear. One
+    entry per input part, same ids, same order; code speaks the headings and checks every number."""
+
+    sections: list[NarrationSection] = Field(default_factory=list, max_length=8)
+
+
 class ChatClass(BaseModel):
     """Call 12: what kind of question a teacher asked her mentor. Low confidence means unclear."""
 

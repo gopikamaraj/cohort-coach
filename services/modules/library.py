@@ -252,17 +252,7 @@ def display(text: str) -> str:
 
 
 def spoken(mt: ModuleText, intro: str) -> str:
-    """The text sent to the voice: the intro line, then each part with a pause. The shared spoken
-    layer (the normaliser) turns numbers and slots into words. Worked examples are numbers in sums,
-    so they are read only in English."""
-    lines = [intro]
-    for p in mt.parts:
-        if p.id == "example":
-            if mt.language == "en":
-                lines += p.items or []
-            continue
-        if p.text:
-            lines.append(p.text)
-        elif p.items:
-            lines += [f"{i}. {x}" for i, x in enumerate(p.items, 1)]
-    return " [pause] ".join(lines)
+    """The code-built script: the intro, then each part under its spoken heading (see narration.py)."""
+    from services.modules import narration  # here to avoid an import loop
+
+    return narration.script(mt.to_dict(), intro)

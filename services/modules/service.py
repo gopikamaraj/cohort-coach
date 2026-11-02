@@ -289,6 +289,11 @@ def generate_module(
             "focus": list(prefs.focus),
             "approach": result.approach != default.approach,
         }
+    from services.modules import narration  # here to avoid an import loop
+
+    said = narration.run(text)  # reworded for listening, or None: the code-built script is used
+    if said is not None:
+        text["narration"] = said
     claim = {
         "template_id": _template_id(track.error, result.approach or "", smaller),
         "approach_id": result.approach,
@@ -600,8 +605,10 @@ def module_view(db: Session, track: Track, m: TrackModule, lang: str, total: int
             "short": None if short.omitted else short.to_dict(),
         }
     if live is not None and not live.omitted:
+        from services.modules import narration  # here to avoid an import loop
+
         intro = strings.text(lang, "module.spoken.intro", n=m.number, total=total, title=live.title)
-        out["spoken"] = library.spoken(live, intro)
+        out["spoken"] = narration.script(mt, intro, narration.stored_for(stored, mt))
     return out
 
 

@@ -955,3 +955,11 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Defaults and assumptions.** (1) "My name" means her chat name ("Teacher 7"), because the app never holds her real name; otherwise the card says "A teacher in this cohort". (2) The chat is the cohort space she joined for the same error; a cohort of one class has no chat, so the button is hidden and "No peers yet" shows. (3) The unread badge counts other teachers' visible posts since she last tapped the button (the time is kept on her phone only). (4) Offline, the check-in is saved and Share is disabled with the reason; the chat page is opened but its messages are not cached by this change, so "new messages need a connection" is shown and a read-only cached thread is **not** built. (5) The summary is capped at 600 characters.
 
 **Confirmed by.** Not confirmed: for Gopi.
+
+## 2026-11-02 · The spoken script of a module has its headings, and call 18 rewords it for listening
+
+- **Decision:** the text sent to the voice now says each section heading (What this does, What you need, Steps, An example, How to know it worked) before the section, and pauses after "Module n of N." Call 18 (`c18_module_narration`, haiku) may reword each part so a listener can follow it by ear. Code speaks the headings; the model writes only the bodies. Its output is used only if every part is present in order, every number and `{slot}` is kept and none added, the length is close, and the pre-filter and call 7 pass; otherwise the code-built script is used. It runs once when a module is made and is stored with the module.
+- **Also fixed:** "None" in the content files means no materials and is now read as "No materials needed."; worked examples are chosen per error, so a PV-HEARD module has no subtraction example.
+- **Why:** a listener cannot see the headings, and the model is good at spoken phrasing but must not touch numbers.
+- **Alternatives:** let the model write the headings (rejected: can drop or change them); reword on every view (rejected: cost and drift).
+- **Confirmed by:** not yet. The per-error examples and the Hindi and Tamil headings need Seema and Shivani; no live narration run has been made, so call 18 is Built, not Verified.

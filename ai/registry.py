@@ -450,6 +450,34 @@ CALLS: tuple[CallSpec, ...] = (
         evaluation="About 30 synthetic notes in three languages, some with names and some with injected instructions (evals/sets/feedback_review.yaml). The code-side checks run free; tag agreement and follow-up appropriateness need a live run.",
         output="Tags that code uses to prefer an alternative approach and to put matching sections first, and at most two follow-up questions for her to answer or skip. No AI text reaches her except a validated question.",
     ),
+    CallSpec(
+        id=18,
+        key="c18_module_narration",
+        name="Module narration",
+        purpose="Word each part of an approved module so a listener can follow it by ear, with the section headings spoken by code.",
+        model_env="MODEL_NARRATION",
+        when="once, when a module is made, when AI is on",
+        output_model=schemas.ModuleNarration,
+        input_fields=("language", "title", "parts"),
+        validators=(
+            "schema",
+            "same part ids in the same order",
+            "every number and slot is kept, and none is added",
+            "length close to the approved text",
+        ),
+        gates=(
+            "code validators and the rule-based pre-filter",
+            "the output checker (call 7)",
+            "any failure keeps the code-built script",
+        ),
+        eval_id="eval_module_narration",
+        eval_bar="pending: no live eval set; the code-side checks are tested",
+        input="The approved text of one module: its title, and each part's id, heading and text (approved content, no class data, no names).",
+        processing="A small model rewords each part as short spoken sentences that say what to do in order, without adding facts, numbers or advice.",
+        guardrails="Headings are spoken by code, never by the model. Code checks that every part is present in order, that every digit and {slot} of the approved text is kept and none added, and that the length stays close; then the pre-filter and call 7 run. Any failure, AI off or offline keeps the script built by code from the approved text.",
+        evaluation="No accuracy claim yet. The code-side checks are tested with recorded outputs (tests/modules/test_narration.py); a live listening review by Seema and Shivani is pending.",
+        output="A spoken script the Download audio button voices. Nothing reaches her that did not pass the gates; otherwise the code-built script is used.",
+    ),
 )
 
 BY_ID: dict[int, CallSpec] = {c.id: c for c in CALLS}

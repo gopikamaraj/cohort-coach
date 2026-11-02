@@ -44,6 +44,7 @@ def test_ai_map_lists_all_calls_and_layers(api: TestClient) -> None:
         15,
         16,
         17,
+        18,
     ]
     for call in body["calls"]:
         assert set(call["layers"]) == set(LAYERS)
