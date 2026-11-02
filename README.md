@@ -142,11 +142,11 @@ Every AI capability claim, with its file path and a status (Specified, Built or 
 - *evaluation*: Red-team set: 0 unsafe outputs reach a teacher.
 - *output*: A pass or fail verdict with a reason for the team and a one-line reason for the user.
 
-**Call 8: Answer reading.** Read the digits a child wrote on an answer-sheet photo, blind.
+**Call 8: Answer reading.** Read the digits a child wrote on an answer-sheet photo, blind; a box of number words comes back as words.
 
 - *input*: One sheet photo (base64 JPEG). It carries no name or roll number. The model is never told the expected answers.
-- *processing*: A small vision model transcribes digits; a stronger model retries doubtful reads.
-- *guardrails*: Reads outside the correct and error answers, or below the confidence bar, go to the teacher; Devanagari digits normalised; the photo is deleted right after.
+- *processing*: A small vision model transcribes digits, or the number words in a box of words; a stronger model retries doubtful reads. Code turns words into a number.
+- *guardrails*: Reads outside the correct and error answers, or below the confidence bar, go to the teacher; a number worked out from words always goes to the teacher to confirm; Devanagari digits normalised; the photo is deleted right after.
 - *evaluation*: Hand-keyed set: at least 98% of auto-accepted reads correct, at most 15% sent to the teacher.
 - *output*: Per-box digits for the engine to diagnose, on her phone.
 

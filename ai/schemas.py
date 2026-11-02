@@ -126,10 +126,15 @@ class SheetHeader(BaseModel):
 
 
 class SheetRead(BaseModel):
-    """Call 8: digits a child wrote. Never told the expected answers."""
+    """Call 8: digits a child wrote, or the number words when a box holds words. Never told the
+    expected answers."""
 
     reads: list[str]
     confidences: list[float]
+    # one entry per box, or none at all: the number words written in a box that holds words
+    # instead of digits ("three hundred five"), spelling put right, in the language written.
+    # Code turns them into a number; the model never does.
+    words: list[str] = Field(default_factory=list)
     header: SheetHeader | None = None
 
 

@@ -10,6 +10,7 @@ export type CellStatus = "ok" | "check" | "blank";
 export interface SheetCell {
   text: string;
   status: CellStatus;
+  words?: string; // the number words the child wrote, when text was worked out from them
 }
 
 export type SheetFail = "offline" | "typing" | "bad_photo" | "paused" | "cancelled" | "other";

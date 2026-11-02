@@ -87,5 +87,8 @@ def read(
         "form": form,
         "retried": outcome.retried,
         "header": outcome.header.model_dump() if outcome.header else None,
-        "cells": [{"text": c.text, "status": c.status} for c in outcome.cells],
+        "cells": [
+            {"text": c.text, "status": c.status, **({"words": c.words} if c.words else {})}
+            for c in outcome.cells
+        ],
     }

@@ -128,6 +128,21 @@ def _words_to_number(words: list[str], lang: str) -> tuple[int, int] | None:
     return total + current, used
 
 
+def parse_number_words(text: str) -> int | None:
+    """The whole text as one number (English, Hindi or Tamil words, 0 to 9999), or None if any word
+    is not part of a number. Hyphens, dashes and a plain "and" are ignored."""
+    t = unicodedata.normalize("NFC", text).lower()
+    t = re.sub(r"[-\u2010-\u2015,.]", " ", t)
+    words = [w for w in t.split() if w]
+    if not words:
+        return None
+    for lang in ("en", "hi", "ta"):
+        got = _words_to_number(words, lang)
+        if got is not None and got[1] == len(words) and 0 <= got[0] <= 9999:
+            return got[0]
+    return None
+
+
 def numbers_to_digits(text: str, lang: str) -> str:
     words = text.split()
     out: list[str] = []

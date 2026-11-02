@@ -1,6 +1,8 @@
 """Call 8, answer reading: a vision model transcribes the digits a child wrote, blind.
 
-The model is told only how many boxes there are: never the questions, the operands or the
+A box that holds number words instead of digits comes back as words; code turns them into a
+number and the teacher confirms it (never accepted unseen). The model is told only how many
+boxes there are: never the questions, the operands or the
 expected answers. Code then does the judging: digits are normalised (Devanagari and Tamil
 digits), a read is "ok" only if it is confident and is one of the answers the item recognises
 (the correct one, a known error answer or a known untracked pattern); everything else is marked
@@ -12,6 +14,7 @@ The photo is held in memory for this call only and is never stored or logged.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, replace
 from typing import Literal
 
@@ -22,9 +25,11 @@ from ai.validators import ValidatorResult, Violation
 from engine.bugs import answer_codes, correct_answer, untracked_signatures
 from engine.model import Form
 from engine.normalize import normalize_answer
+from services.speech.textnorm import parse_number_words
 
 CONFIDENCE_BAR = 0.8
 MAX_READ_CHARS = 12
+MAX_WORDS_CHARS = 80
 Status = Literal["ok", "check", "blank"]
 
 
@@ -33,6 +38,7 @@ class Cell:
     text: str  # digits as the teacher would type them; "" when nothing usable was read
     confidence: float
     status: Status
+    words: str = ""  # the number words the child wrote, when text came from them
 
 
 @dataclass(frozen=True)
@@ -52,12 +58,22 @@ def plausible_answers(form: Form, n: int) -> set[str]:
     return {str(a) for a in answers}
 
 
-def classify(form: Form, reads: list[str], confidences: list[float]) -> list[Cell]:
+def classify(
+    form: Form, reads: list[str], confidences: list[float], words: list[str] | None = None
+) -> list[Cell]:
     cells: list[Cell] = []
     for i, (raw, conf) in enumerate(zip(reads, confidences, strict=True)):
         reading = normalize_answer(raw)
         conf = max(0.0, min(1.0, conf))
-        if reading == "blank":
+        spoken = (words[i] if words and i < len(words) else "").strip()
+        if reading in ("blank", "unreadable") and spoken:
+            # a box of words: code works out the number; the teacher always confirms it
+            value = parse_number_words(spoken)
+            if value is not None:
+                cells.append(Cell(str(value), conf, "check", spoken))
+                continue
+            cells.append(Cell("", conf, "check", spoken))
+        elif reading == "blank":
             cells.append(Cell("", conf, "blank" if conf >= CONFIDENCE_BAR else "check"))
         elif reading == "unreadable":
             cells.append(Cell("", conf, "check"))
@@ -78,6 +94,12 @@ def _validators(n: int):  # type: ignore[no-untyped-def]
             problems.append(Violation("read_too_long"))
         if any(not 0.0 <= c <= 1.0 for c in out.confidences):
             problems.append(Violation("confidence_out_of_range"))
+        if out.words and len(out.words) != n:
+            problems.append(Violation("wrong_words_count"))
+        if any(len(w) > MAX_WORDS_CHARS for w in out.words):
+            problems.append(Violation("words_too_long"))
+        if any(re.search(r"\d", w) for w in out.words):
+            problems.append(Violation("digits_in_words"))
         return [ValidatorResult("sheet_shape", tuple(problems))]
 
     return check
@@ -111,7 +133,7 @@ def read_sheet(
         runs.append(run)
         if run.ok and isinstance(run.output, SheetRead):
             return SheetOutcome(
-                classify(form, run.output.reads, run.output.confidences),
+                classify(form, run.output.reads, run.output.confidences, run.output.words),
                 retried,
                 runs,
                 run.output.header,

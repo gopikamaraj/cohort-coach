@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Reading a sheet photo: blind read, code-side judging, privacy. A fake model, no network."""
 
 from __future__ import annotations
@@ -85,6 +86,34 @@ def test_endpoint_returns_cells_and_never_the_photo(make_client: Any) -> None:
     assert body["cells"][2] == {"text": "75", "status": "ok"}
     assert base64.b64encode(PNG).decode() not in res.text and "image" not in body
     assert len(fake.messages.calls) == 1
+
+
+def test_a_box_of_number_words_is_turned_into_a_number_the_teacher_confirms(make_client: Any) -> None:
+    # the photo: "three hundred five" and "four hundred ninety six" written in words (box 1 and 2)
+    reply = good()
+    reply.reads[0] = reply.reads[1] = ""
+    reply.words = ["three hundred five", "four hundred - ninety six", *[""] * 8]
+    reply.confidences[0] = reply.confidences[1] = 0.92
+    client, _fake = make_client(reply)
+    cells = post(client).json()["cells"]
+    assert cells[0] == {"text": "305", "status": "check", "words": "three hundred five"}
+    assert cells[1] == {"text": "496", "status": "check", "words": "four hundred - ninety six"}
+    assert "words" not in cells[2]  # a box of digits is as before
+
+
+def test_words_that_are_not_a_number_wait_for_the_teacher_with_nothing_filled_in() -> None:
+    cells = classify(FORM_A, ["", *CORRECT[1:]], [0.9] * 10, ["three banana five", *[""] * 9])
+    assert cells[0].text == "" and cells[0].status == "check" and cells[0].words == "three banana five"
+    assert classify(FORM_A, CORRECT, [0.97] * 10, [])[0].status == "ok"  # no words: nothing changes
+
+
+def test_a_words_list_of_the_wrong_length_or_with_digits_is_refused_and_retried(make_client: Any) -> None:
+    bad = good()
+    bad.words = ["305"]  # one entry, with digits
+    client, fake = make_client(bad, good())
+    cells = post(client).json()["cells"]
+    assert len(fake.messages.calls) == 2  # the bad reply broke the rules, so the model was asked again
+    assert cells[0]["status"] == "ok" and "words" not in cells[0]
 
 
 def test_the_model_is_never_told_the_expected_answers(make_client: Any) -> None:
