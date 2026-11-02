@@ -20,6 +20,7 @@ A, B = f"{1:016x}", f"{2:016x}"
 @pytest.fixture
 def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     monkeypatch.setenv("JUDGE_MODE", "1")
+    monkeypatch.setenv("STORE_SHARED", "0")  # the tests below are about separate phones
     engine = make_engine(f"sqlite:///{tmp_path / 's.sqlite'}")
     Base.metadata.create_all(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
@@ -74,3 +75,16 @@ def test_bad_device_collection_and_size_are_refused(client: TestClient) -> None:
     assert client.put("/api/store/transcripts/1", json={"data": {}}, headers=h(A)).status_code == 404  # rehearsals never go
     assert client.put("/api/store/checks/ok", json={"data": "x" * 300_000}, headers=h(A)).status_code == 413
     assert client.put("/api/store/checks/bad id", json={"data": {}}, headers=h(A)).status_code in (404, 422)
+
+
+def test_by_default_every_browser_shares_one_set_of_documents(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("STORE_SHARED", raising=False)
+    client.put("/api/store/checks/x", json={"data": {"id": "x", "children": [["3", "4"]]}}, headers=h(A))
+    assert client.get("/api/store", headers=h(B)).json()["checks"]["x"]["id"] == "x"  # Edge sees what Chrome wrote
+    assert len(client.get("/api/store/all/checks", headers=h(A, "coach")).json()) == 1
+
+
+def test_documents_written_before_sharing_join_the_shared_set(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    client.put("/api/store/checks/old", json={"data": {"id": "old"}}, headers=h(A))  # separate phones: under A
+    monkeypatch.delenv("STORE_SHARED", raising=False)
+    assert client.get("/api/store", headers=h(B)).json()["checks"]["old"]["id"] == "old"

@@ -998,3 +998,10 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Known gaps:** a check's `missedConcepts` ("Missed the teaching on this") is per-child and now goes with the check; identity is the random device id, so clearing the browser's storage loses access to the stored data (there is no sign-in); the device store has no retention limit yet.
 - **Alternatives:** cloud-first for judge mode only (recommended in session, not chosen); keep device storage and seed demo data (not chosen).
 - **Confirmed by:** Gopi (chose "Cloud-first for everything" when asked).
+
+## 2026-11-02 · The device store is shared by default
+
+- **Decision (Gopi, in session):** every browser reads and writes one shared set of documents in the device store, so a second browser, a phone or a judge sees what was already entered. `STORE_SHARED=0` brings back one set per phone. Documents written earlier under a phone's own id join the shared set on the first read. The shared set includes the settings (`activeClass`, `term`), so every browser works on the same class.
+- **Why:** Chrome, Edge and a phone are three different "teachers" when each has its own random id, and the owner wanted the demo data open to all.
+- **Changes to the 2026-11-02 cloud-first entry:** a teacher can now read another teacher's classes and checks. The coach and mentor "Entered checks" table shows one teacher while the store is shared. This undoes the separation the owner asked for earlier the same day; set `STORE_SHARED=0` on the backend to restore it.
+- **Confirmed by:** Gopi ("just open it up by default").

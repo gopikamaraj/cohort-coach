@@ -9,6 +9,7 @@ teacher's id cannot read it. Coaches and mentors can list every device's entered
 
 from __future__ import annotations
 
+import os
 import re
 from datetime import UTC, datetime
 from typing import Any
@@ -44,10 +45,29 @@ class DeviceDoc(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)
 
 
+SHARED = "0" * 16
+
+
 def _device(x_device_id: str | None) -> str:
+    """The key a request's documents live under. Open by default (decided 2 Nov 2026): every browser shares
+    one set of documents, so a judge or a second device sees what was already entered. STORE_SHARED=0 gives
+    each phone its own documents again, keyed by its random device id."""
     if not x_device_id or not DEVICE.match(x_device_id):
         raise HTTPException(422, "X-Device-Id must be the random id the app made for this phone.")
-    return x_device_id
+    return x_device_id if os.environ.get("STORE_SHARED") == "0" else SHARED
+
+
+def _adopt_earlier(db: Session) -> None:
+    """Shared mode, first read: documents written before sharing (under a phone's own id) join the shared set.
+    The latest write of each document wins. Runs only while the shared set is empty."""
+    if db.scalars(select(DeviceDoc).where(DeviceDoc.device == SHARED).limit(1)).first() is not None:
+        return
+    rows = db.scalars(select(DeviceDoc).where(DeviceDoc.device != SHARED).order_by(DeviceDoc.updated_at)).all()
+    latest: dict[tuple[str, str], DeviceDoc] = {(r.collection, r.doc_id): r for r in rows}
+    for (coll, doc_id), r in latest.items():
+        db.add(DeviceDoc(device=SHARED, collection=coll, doc_id=doc_id, data=r.data))
+    if latest:
+        db.commit()
 
 
 def _collection(name: str) -> str:
@@ -64,6 +84,8 @@ class DocIn(BaseModel):
 def read_all(x_device_id: str | None = Header(default=None), db: Session = SESSION) -> dict[str, dict[str, Any]]:
     """Everything this phone has stored, by collection and id."""
     device = _device(x_device_id)
+    if device == SHARED:
+        _adopt_earlier(db)
     out: dict[str, dict[str, Any]] = {c: {} for c in COLLECTIONS}
     for row in db.scalars(select(DeviceDoc).where(DeviceDoc.device == device)):
         out[row.collection][row.doc_id] = row.data
