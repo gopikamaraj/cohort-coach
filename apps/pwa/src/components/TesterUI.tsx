@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Key } from "../i18n";
 import {
   TAGS, captureInvite, changeNickname, declineSharing, deleteMyData, deviceShort, durationBucket, getPrefs,
-  giveConsent, markJudge, needsFirstRun, pauseSharing, queueFeedback, sharing, subscribePrefs, testerConfig, track, flush,
+  giveConsent, markJudge, needsFirstRun, pauseSharing, queueFeedback, setNickname, sharing, subscribePrefs, testerConfig, track, flush,
 } from "../lib/tester";
 import { useOnline } from "../lib/net";
 import { useRoute } from "../lib/router";
@@ -169,6 +169,78 @@ function FeedbackSheet({ open, onClose, role, screen }: { open: boolean; onClose
 }
 
 /** Mounted once in the shell. Renders nothing at all unless the server has the feature on. */
+/** The nickname pop-up: opens on the role picker until a nickname is set, and from the title bar's nickname button. */
+export function NicknameRoot() {
+  const { tr } = useApp();
+  const route = useRoute();
+  const saved = usePrefs().nickname;
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  useEffect(() => {
+    const show = () => {
+      setName(getPrefs().nickname);
+      setOpen(true);
+    };
+    document.addEventListener("cc:nickname", show);
+    return () => document.removeEventListener("cc:nickname", show);
+  }, []);
+  useEffect(() => {
+    if (route !== "/roles" || saved) return;
+    let asked = false;
+    try {
+      asked = sessionStorage.getItem("cc.nick.asked") === "1";
+    } catch {
+      /* no storage: ask again next time */
+    }
+    if (asked) return;
+    let live = true;
+    void needsFirstRun().then((first) => {
+      if (!live || first) return; // the sharing sheet asks for a name itself
+      try {
+        sessionStorage.setItem("cc.nick.asked", "1");
+      } catch {
+        /* ignore */
+      }
+      setName("");
+      setOpen(true);
+    });
+    return () => {
+      live = false;
+    };
+  }, [route, saved]);
+  const done = () => setOpen(false);
+  if (!open) return null;
+  return (
+    <Sheet open onClose={done} labelId="nick-pop-title" testid="nickname-popup">
+      <div className="sheet-head">
+        <h2 id="nick-pop-title">{tr("profile.nickname_title")}</h2>
+      </div>
+      <label className="field">
+        <span>{tr("profile.nickname_label")}</span>
+        <input type="text" value={name} maxLength={30} onChange={(e) => setName(e.target.value)} autoComplete="off" data-testid="nickname-popup-input" />
+      </label>
+      <p className="muted">{tr("profile.nickname_note")}</p>
+      <div className="sheet-actions">
+        <button
+          type="button"
+          className="m-btn m-btn-filled"
+          disabled={!name.trim()}
+          onClick={() => {
+            setNickname(name);
+            done();
+          }}
+          data-testid="nickname-popup-save"
+        >
+          {tr("profile.nickname_save")}
+        </button>
+        <button type="button" className="m-btn m-btn-tonal" onClick={done} data-testid="nickname-popup-later">
+          {tr("profile.nickname_later")}
+        </button>
+      </div>
+    </Sheet>
+  );
+}
+
 export function TesterRoot() {
   const enabled = useEnabled();
   const { role, lang } = useApp();

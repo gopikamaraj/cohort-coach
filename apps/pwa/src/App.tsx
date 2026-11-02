@@ -29,7 +29,7 @@ import Cohort from "./screens/Cohort";
 import Assistant, { AssistantButton, AssistantDrawer } from "./screens/Assistant";
 import TestingEvidence from "./screens/TestingEvidence";
 import { UsageFooter } from "./components/UsageFooter";
-import { TesterRoot } from "./components/TesterUI";
+import { NicknameRoot, TesterRoot } from "./components/TesterUI";
 import { useEffect, useState } from "react";
 import { href, useRoute, type Route } from "./lib/router";
 import { AppProvider, useApp, type Role } from "./state";
@@ -88,6 +88,7 @@ function Shell() {
         {route !== "/roles" ? <DemoPanel /> : null}
         <OfflineNote />
         <TesterRoot />
+        <NicknameRoot />
         <main tabIndex={0} aria-label={tr("common.main")}>
           {route === "/judge" ? <Judge /> : null}
           {route === "/home" ? <Home /> : null}

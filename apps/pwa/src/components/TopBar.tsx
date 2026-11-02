@@ -48,7 +48,11 @@ export function TopBar({ assistant }: { assistant: React.ReactNode }) {
             </button>
           ))}
         </div>
-        {route === "roles" ? null : ( // the picker is where the role is chosen: no chip there
+        {route === "roles" ? (
+          <button type="button" className="role-chip" onClick={() => document.dispatchEvent(new CustomEvent("cc:nickname"))} data-testid="nickname-chip">
+            {nickname || tr("profile.nickname_set")}
+          </button>
+        ) : ( // the picker is where the role is chosen: no role chip there
           <a className="role-chip" href={href("/roles")} title={tr("top.change_role")} data-testid="role-chip">
             {nickname ? tr("top.as_named", { role: tr(`role.${role}` as Key), name: nickname }) : tr("top.as", { role: tr(`role.${role}` as Key) })}
           </a>
