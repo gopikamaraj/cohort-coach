@@ -19,7 +19,7 @@ from sqlalchemy.orm import Session
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from services.api.db import make_engine  # noqa: E402
+from services.api.db import ClassCohort, make_engine  # noqa: E402
 from services.api.devicestore import DeviceDoc  # noqa: E402
 
 
@@ -28,6 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--delete", metavar="KEY_PREFIX", action="append", default=[], help="delete the documents of the store key starting with this (repeatable)")
     ap.add_argument("--drop-class", metavar="KEY_PREFIX:NAME", action="append", default=[], help="remove one class by name, with its checks and results")
     ap.add_argument("--set-term", metavar="KEY_PREFIX:TERM", action="append", default=[], help="set the term setting of one store key (for example 0524d3:1)")
+    ap.add_argument("--delete-cohort", metavar="COHORT_ID", action="append", default=[], help="delete one cohort row (class_cohorts) by its id, for example cc-6a42b306b287")
     ap.add_argument("--yes", action="store_true")
     args = ap.parse_args(argv)
     engine = make_engine()
@@ -45,6 +46,17 @@ def main(argv: list[str] | None = None) -> int:
                 k["nick"] = str(r.data.get("value") or "")
         for key, k in sorted(keys.items()):
             print(f"{key[:6]}  nickname={k['nick'] or '-':20} classes={k['classes']}  checks={k['checks']}  docs={k['docs']}")
+        for cid in args.delete_cohort:
+            row = db.get(ClassCohort, cid)
+            if row is None:
+                print(f"No cohort {cid}.")
+                continue
+            if not args.yes and input(f"Delete cohort {cid} ({row.scope}, {row.errors})? Type yes: ").strip() != "yes":
+                print("Skipped.")
+                continue
+            db.delete(row)
+            db.commit()
+            print(f"Deleted cohort {cid}.")
         for spec in args.set_term:
             prefix, _, term = spec.partition(":")
             hit = [k for k in keys if k.startswith(prefix)]
