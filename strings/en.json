@@ -2494,5 +2494,20 @@
   "module.chat.offline_note": "New messages need a connection.",
   "module.safety.call_me": "Ask my coach to call me",
   "module.safety.called": "Your coach has been asked to call you. Nothing you wrote was sent.",
-  "module.coach.call_me": "Coach call requests: {n}"
+  "module.coach.call_me": "Coach call requests: {n}",
+  "coach.real.title": "Classes that entered a check",
+  "coach.real.note": "Added up over the classes below. Counts only: no class's own numbers are shown.",
+  "coach.real.term": "Term T{term}: {classes} classes entered, {total} children checked",
+  "coach.real.none": "No class has entered a check yet.",
+  "coach.real.classes": "Classes: {list}",
+  "coach.make.title": "Create a cohort",
+  "coach.make.note": "A cohort groups the classes that show the same mistake. Choose a mistake that at least two classes show.",
+  "coach.make.pick": "Mistake",
+  "coach.make.pick_line": "{name}: {classes} classes ({who})",
+  "coach.make.name": "Cohort name",
+  "coach.make.create": "Create cohort",
+  "coach.make.error": "The cohort could not be created. Check the name and try again.",
+  "coach.make.none": "No mistake is shown by two or more classes yet.",
+  "coach.make.list": "Cohorts",
+  "coach.make.row": "{name}: {classes} classes, {n} of {total} children checked"
 }

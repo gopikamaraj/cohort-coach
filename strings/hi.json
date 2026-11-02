@@ -2494,5 +2494,20 @@
   "module.chat.offline_note": "नए संदेशों के लिए कनेक्शन चाहिए।",
   "module.safety.call_me": "मेरे कोच से मुझे फ़ोन करने को कहें",
   "module.safety.called": "आपके कोच से आपको फ़ोन करने को कहा गया है। आपने जो लिखा, वह नहीं भेजा गया।",
-  "module.coach.call_me": "कोच से फ़ोन के अनुरोध: {n}"
+  "module.coach.call_me": "कोच से फ़ोन के अनुरोध: {n}",
+  "coach.real.title": "जिन कक्षाओं ने जाँच दर्ज की",
+  "coach.real.note": "नीचे की कक्षाओं का जोड़। केवल गिनती: किसी एक कक्षा की अपनी संख्या नहीं दिखती।",
+  "coach.real.term": "सत्र T{term}: {classes} कक्षाओं ने दर्ज किया, {total} बच्चों की जाँच",
+  "coach.real.none": "अभी किसी कक्षा ने जाँच दर्ज नहीं की।",
+  "coach.real.classes": "कक्षाएँ: {list}",
+  "coach.make.title": "समूह बनाएँ",
+  "coach.make.note": "समूह में वे कक्षाएँ आती हैं जिनमें वही गलती दिखती है। ऐसी गलती चुनें जो कम से कम दो कक्षाओं में दिखे।",
+  "coach.make.pick": "गलती",
+  "coach.make.pick_line": "{name}: {classes} कक्षाएँ ({who})",
+  "coach.make.name": "समूह का नाम",
+  "coach.make.create": "समूह बनाएँ",
+  "coach.make.error": "समूह नहीं बन सका। नाम जाँचकर फिर कोशिश करें।",
+  "coach.make.none": "अभी कोई गलती दो या अधिक कक्षाओं में नहीं दिखती।",
+  "coach.make.list": "समूह",
+  "coach.make.row": "{name}: {classes} कक्षाएँ, जाँचे गए {total} बच्चों में से {n}"
 }

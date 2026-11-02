@@ -125,3 +125,29 @@ def test_peers_lists_other_teachers_who_show_the_same_mistake_by_nickname_and_ne
     assert client.get("/api/store/peers?errors=not-a-code", headers=on(ka)).json() == []
     monkeypatch.setenv("STORE_SHARED", "1")
     assert client.get("/api/store/peers?errors=PV-HEARD", headers=on(ka)).json() == []
+
+
+def test_a_coach_sees_the_entered_classes_added_up_and_makes_a_cohort_from_them(client: TestClient) -> None:
+    ka, kb = f"{11:016x}", f"{22:016x}"
+
+    def on(key: str, role: str = "teacher") -> dict[str, str]:
+        return {"X-Device-Id": A, "X-Store-Key": key, "X-Role": role}
+
+    def teacher(key: str, nickname: str, class_name: str, counts: dict[str, int], n: int) -> None:
+        client.put("/api/store/settings/nickname", json={"data": {"key": "nickname", "value": nickname}}, headers=on(key))
+        client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": class_name}}, headers=on(key))
+        client.put("/api/store/profiles/p", json={"data": {"id": "p", "classId": "c1", "term": 1, "childrenChecked": n, "counts": counts}}, headers=on(key))
+
+    teacher(ka, "3A Math Teacher", "3A", {"PV-HEARD": 4}, 20)
+    teacher(kb, "3B Math Teacher", "3B", {"PV-HEARD": 3, "SUB-SFL": 2}, 18)
+    assert client.get("/api/store/coach-summary", headers=on(ka)).status_code == 403
+    s = client.get("/api/store/coach-summary", headers=on(ka, "coach")).json()
+    assert s["terms"]["1"] == {"classes": 2, "children_checked": 38, "children_showing": {"PV-HEARD": 7, "SUB-SFL": 2}}
+    assert all(set(c) == {"teacher", "class", "term", "errors"} for c in s["classes"])  # no class's own count
+    body = {"name": "Place value group", "error": "PV-HEARD"}
+    made = client.post("/api/cohorts/class-only/coach", json=body, headers=on(ka, "coach")).json()
+    assert made["classes"] == 2 and made["counts"] == {"PV-HEARD": 7} and made["children_checked"] == 38 and made["scope"] == "coach"
+    assert client.post("/api/cohorts/class-only/coach", json=body, headers=on(ka, "coach")).json()["id"] == made["id"]
+    one = {"name": "Borrowing group", "error": "SUB-SFL"}
+    assert client.post("/api/cohorts/class-only/coach", json=one, headers=on(ka, "coach")).status_code == 422  # only one class shows it
+    assert client.post("/api/cohorts/class-only/coach", json=body, headers=on(ka)).status_code == 403

@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """A cohort just for one teacher's class (scope "class_only").
 
 She picks which of her class's errors to work on and names it; the server keeps the choice and the
@@ -47,9 +48,9 @@ def view(row: ClassCohort) -> dict[str, Any]:
         "scope": row.scope,
         "status": row.status,
         "errors": row.errors,
-        "counts": row.counts,
+        "counts": {k: v for k, v in row.counts.items() if not k.startswith("_")},
         "children_checked": row.children_checked,
-        "classes": 1,
+        "classes": int(row.counts.get("_classes", 1)),
         "simulated": row.simulated,
     }
 
@@ -96,6 +97,57 @@ def make(
         counts={c: body.counts[c] for c in body.errors},
         children_checked=body.children_checked,
         simulated=body.simulated,
+    )
+    db.add(row)
+    db.commit()
+    return view(row)
+
+
+class CoachMakeIn(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    error: str
+    language: str = "en"
+
+
+COACH_OWNER = "coach-cohorts"
+
+
+@router.post("/coach")
+def make_for_coach(
+    body: CoachMakeIn, _: str = Depends(require("coach.moderate")), db: Session = SESSION
+) -> dict[str, Any]:
+    """A coach forms a cohort from the entered classes that show one mistake (latest term), counts added up.
+    One per mistake and term; a second tap returns the same cohort."""
+    from services.api.devicestore import entered_summary
+
+    if body.error not in CODES:
+        raise HTTPException(422, "Choose from the errors the check can find.")
+    classes = entered_summary(db)["classes"]
+    if not classes:
+        raise HTTPException(422, "No class has entered a check yet.")
+    term = max(c["term"] for c in classes)
+    picked = [c for c in classes if c["term"] == term and c["_counts"].get(body.error, 0) > 0]
+    if len(picked) < 2:
+        raise HTTPException(422, "A cohort needs at least two classes that show this mistake.")
+    check_id = f"coach:{body.error}:{term}"
+    have = db.execute(
+        select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id == check_id)
+    ).scalar_one_or_none()
+    if have is not None:
+        return view(have)
+    problems = check_thread_post(body.name, body.language)
+    if problems:
+        raise HTTPException(422, {"codes": [p.code for p in problems], "message": "Please rewrite the name."})
+    row = ClassCohort(
+        id="cc-" + secrets.token_hex(6),
+        teacher_id=COACH_OWNER,
+        check_id=check_id,
+        name=body.name.strip(),
+        scope="coach",
+        errors=[body.error],
+        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked)},
+        children_checked=sum(c["children_checked"] for c in picked),
+        simulated=False,
     )
     db.add(row)
     db.commit()

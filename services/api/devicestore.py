@@ -173,6 +173,42 @@ def peers(
     return sorted(out, key=lambda p: p["teacher"].lower())
 
 
+def entered_summary(db: Session) -> dict[str, Any]:
+    """Every teacher's entered classes, added up for a coach: per term the number of classes, children checked
+    and children showing each mistake, plus a label per class ("Teacher 1", class name). Counts only."""
+    rows = db.scalars(
+        select(DeviceDoc).where(DeviceDoc.collection.in_(("profiles", "classes", "settings"))).order_by(DeviceDoc.device)
+    ).all()
+    docs: dict[str, dict[str, dict[str, Any]]] = {}
+    for r in rows:
+        docs.setdefault(r.device, {}).setdefault(r.collection, {})[r.doc_id] = r.data if isinstance(r.data, dict) else {}
+    terms: dict[str, dict[str, Any]] = {}
+    classes: list[dict[str, Any]] = []
+    for n, (_dev, d) in enumerate(docs.items(), start=1):
+        nick = str((d.get("settings", {}).get("nickname") or {}).get("value") or "").strip()
+        for prof in d.get("profiles", {}).values():
+            if not int(prof.get("childrenChecked", 0) or 0):
+                continue
+            term = str(prof.get("term", 1))
+            t = terms.setdefault(term, {"classes": 0, "children_checked": 0, "children_showing": {}})
+            t["classes"] += 1
+            t["children_checked"] += int(prof["childrenChecked"])
+            for code, c in (prof.get("counts") or {}).items():
+                t["children_showing"][code] = t["children_showing"].get(code, 0) + int(c or 0)
+            cname = str((d.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
+            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in (prof.get("counts") or {}).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in (prof.get("counts") or {}).items()}})
+    return {"terms": terms, "classes": classes}
+
+
+@router.get("/coach-summary")
+def coach_summary(role: str = Depends(role_of), db: Session = SESSION) -> dict[str, Any]:
+    """Added-up counts, and which classes (teacher label, class name) show which mistake. No class's own count."""
+    if role not in ("coach", "mentor"):
+        raise HTTPException(403, "Only a coach or a mentor can see this.")
+    s = entered_summary(db)
+    return {"terms": s["terms"], "classes": [{k: v for k, v in c.items() if k not in ("_counts", "children_checked")} for c in s["classes"]]}
+
+
 @router.get("/all/{collection}")
 def read_everyone(collection: str, role: str = Depends(role_of), db: Session = SESSION) -> list[dict[str, Any]]:
     """Coaches and mentors: every phone's documents in one collection, labelled, never by device id.
