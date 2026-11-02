@@ -9,8 +9,10 @@ path, and the cohort formation never reads it. A coach sees it in counts, never 
 
 from __future__ import annotations
 
+import json
 import re
 import secrets
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException
@@ -163,7 +165,7 @@ def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
         name=body.name.strip(),
         scope="coach",
         errors=[body.error],
-        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked)},
+        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked), "_members": {c["_key"]: c["_check"] for c in picked if c.get("_check")}},
         children_checked=sum(c["children_checked"] for c in picked),
         simulated=False,
     )
@@ -172,13 +174,86 @@ def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
     return view(row)
 
 
+def _error_label(code: str) -> str:
+    try:
+        table = json.loads((Path(__file__).resolve().parents[3] / "strings" / "en.json").read_text(encoding="utf-8"))
+        return str(table.get(f"err.{code}") or code)
+    except (OSError, ValueError):
+        return code
+
+
+@router.post("/form")
+def form_cohorts(
+    _: str = Depends(require("officer.approve_cohorts")), db: Session = SESSION
+) -> dict[str, Any]:
+    """The officer's one button: for every mistake that two or more entered classes show (latest term), form
+    a cohort from them, once. Each teacher whose class is in it finds it on her next visit."""
+    from services.api.devicestore import entered_summary
+
+    classes = entered_summary(db)["classes"]
+    if not classes:
+        return {"created": [], "already": 0, "waiting": []}
+    term = max(c["term"] for c in classes)
+    created: list[dict[str, Any]] = []
+    already, waiting = 0, []
+    for code in sorted(CODES):
+        n = sum(1 for c in classes if c["term"] == term and c["_counts"].get(code, 0) > 0)
+        if n == 0:
+            continue
+        if n < 2:
+            waiting.append(code)
+            continue
+        have = db.execute(
+            select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id == f"coach:{code}:{term}")
+        ).scalar_one_or_none()
+        if have is not None:
+            already += 1
+            continue
+        created.append(_make_group(CoachMakeIn(name=f"{_error_label(code)} cohort", error=code), db))
+    return {"created": created, "already": already, "waiting": waiting}
+
+
+def _adopt_group_cohorts(db: Session, teacher_id: str, store_key: str | None) -> None:
+    """A cohort the officer formed lists the classes' store keys. When a teacher opens the app with one of those
+    keys she gets her own copy of it (owned by her, on her own check), so everything that works for her own
+    cohort works for it: its track, its chat space, the class page. Pooled counts only."""
+    if not store_key:
+        return
+    mine_checks = {r.check_id for r in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == teacher_id)).scalars()}
+    groups = db.execute(select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.scope == "coach")).scalars().all()
+    changed = False
+    for g in groups:
+        check = (g.counts.get("_members") or {}).get(store_key)
+        if not check or check in mine_checks:
+            continue
+        db.add(
+            ClassCohort(
+                id="cc-" + secrets.token_hex(6),
+                teacher_id=teacher_id,
+                check_id=check,
+                name=g.name,
+                scope="member",
+                errors=g.errors,
+                counts={k: v for k, v in g.counts.items() if k != "_members"},
+                children_checked=g.children_checked,
+                simulated=g.simulated,
+            )
+        )
+        mine_checks.add(check)
+        changed = True
+    if changed:
+        db.commit()
+
+
 @router.get("")
 def mine(
     _: str = Depends(require("cohort.chat")),
     x_device_id: str | None = Header(default=None),
+    x_store_key: str | None = Header(default=None),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     teacher = _teacher(db, x_device_id)
+    _adopt_group_cohorts(db, teacher.teacher_id, x_store_key if x_store_key and re.match(r"^[0-9a-f]{16}$", x_store_key) else None)
     rows = db.execute(
         select(ClassCohort).where(ClassCohort.teacher_id == teacher.teacher_id)
     ).scalars()

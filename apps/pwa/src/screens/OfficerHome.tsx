@@ -4,7 +4,6 @@
 // track, not the teacher. Percentages appear here (an officer view) and nowhere a teacher sees.
 import { useEffect, useState } from "react";
 import { Icon } from "../components/icons";
-import { CohortMaker } from "../components/CohortMaker";
 import OfficerCohorts from "../components/OfficerCohorts";
 import { API_BASE } from "../lib/api";
 import type { Key } from "../i18n";
@@ -32,8 +31,48 @@ interface Entered {
   min_classes: number;
   lowered: boolean;
   terms: number[];
-  error_map: { term: number | null; classes: number; cells: { error: string; hidden: boolean; classes?: number; showing?: number; share_percent?: number; children_showing?: number; children_checked?: number }[] };
+  error_map?: { term: number | null; classes: number; cells: { error: string; hidden: boolean; classes?: number; showing?: number; share_percent?: number; children_showing?: number; children_checked?: number }[] };
   results: { classes: number; hidden: boolean; rows: { error: string; before: number; before_of: number; after: number; after_of: number; fall_points: number | null }[] };
+}
+
+/** One button: the server forms a cohort for every mistake that two or more entered classes show. */
+function FormCohorts() {
+  const { tr } = useApp();
+  const [busy, setBusy] = useState(false);
+  const [out, setOut] = useState<{ created: { name: string; classes: number }[]; already: number; waiting: string[] } | null>(null);
+  const [failed, setFailed] = useState(false);
+  async function press() {
+    setBusy(true);
+    setFailed(false);
+    try {
+      const res = await fetch(`${API_BASE}/api/cohorts/class-only/form`, { method: "POST", headers: { "X-Role": "officer" } });
+      if (!res.ok) throw new Error(String(res.status));
+      setOut((await res.json()) as NonNullable<typeof out>);
+    } catch {
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="panel stack" data-testid="form-cohorts">
+      <h2>{tr("officer.form.title")}</h2>
+      <p className="muted">{tr("officer.form.note")}</p>
+      <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void press()} data-testid="form-cohorts-button">
+        {tr("officer.form.button")}
+      </button>
+      {failed ? <p role="alert">{tr("officer.form.failed")}</p> : null}
+      {out ? (
+        <ul className="plain" data-testid="form-cohorts-result">
+          {out.created.map((c) => (
+            <li key={c.name}>{tr("officer.form.created", { name: c.name, classes: c.classes })}</li>
+          ))}
+          {out.already > 0 ? <li>{tr("officer.form.already", { n: out.already })}</li> : null}
+          {out.created.length === 0 && out.already === 0 ? <li>{tr("officer.form.none")}</li> : null}
+        </ul>
+      ) : null}
+    </div>
+  );
 }
 
 /** The classes that really entered a check (3A, 3B, ...): error map, track results and what of the funnel is counted. */
@@ -47,17 +86,8 @@ function EnteredOfficer() {
   return (
     <div className="panel" data-testid="officer-entered">
       <h2>{tr("officer.real.title")}</h2>
-      <p className="muted">{tr("officer.real.note", { classes: d.error_map.classes, term: d.error_map.term ?? 1 })}</p>
+      <p className="muted">{tr("officer.real.note", { classes: d.error_map?.classes ?? 0, term: d.error_map?.term ?? 1 })}</p>
       {d.lowered ? <p className="note">{tr("officer.real.lowered")}</p> : null}
-      <h3>{tr("officer.real.map")}</h3>
-      <ul className="plain" data-testid="entered-map">
-        {d.error_map.cells.map((c) => (
-          <li key={c.error}>
-            <strong>{tr(`err.${c.error}` as Key)}</strong>:{" "}
-            {c.hidden ? tr("officer.real.hidden", { min: d.min_classes }) : tr("officer.real.map_row", { pct: `${c.share_percent ?? 0}%`, showing: c.showing ?? 0, classes: c.classes ?? 0, n: c.children_showing ?? 0, total: c.children_checked ?? 0 })}
-          </li>
-        ))}
-      </ul>
       <h3>{tr("officer.real.results")}</h3>
       {d.results.hidden ? <p className="muted">{tr("officer.real.hidden", { min: d.min_classes })}</p> : null}
       {d.results.classes === 0 ? <p>{tr("officer.real.results_none")}</p> : null}
@@ -103,7 +133,7 @@ export default function OfficerHome() {
 
       <EnteredOfficer />
 
-      <CohortMaker who="officer" />
+      <FormCohorts />
 
       <OfficerCohorts />
 

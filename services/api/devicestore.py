@@ -203,7 +203,7 @@ def entered_summary(db: Session) -> dict[str, Any]:
             for code, c in _seen(prof).items():
                 t["children_showing"][code] = t["children_showing"].get(code, 0) + int(c or 0)
             cname = str((d.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
-            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof).items()}, "_class": f"{n}:{prof.get('classId')}"})
+            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof).items()}, "_class": f"{n}:{prof.get('classId')}", "_key": _dev, "_check": str(prof.get("id") or "")})
     return {"terms": terms, "classes": classes}
 
 

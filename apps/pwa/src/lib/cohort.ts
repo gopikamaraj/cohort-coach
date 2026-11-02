@@ -2,7 +2,9 @@
 // identified by her phone's random device id, staff by the role they act as (and a pseudonymous
 // person id in the judge deployment). Nothing here ever holds a handle or a phone number.
 import { API_BASE } from "./api";
+import { storeKey } from "./cloudStore";
 import { deviceId } from "./consent";
+import { getPrefs } from "./tester";
 
 export interface CohortSummary {
   id: string;
@@ -39,7 +41,11 @@ export class CohortError extends Error {
 
 function headers(who: Who): Record<string, string> {
   const h: Record<string, string> = { "Content-Type": "application/json", "X-Role": who };
-  if (who === "teacher") h["X-Device-Id"] = deviceId();
+  if (who === "teacher") {
+    h["X-Device-Id"] = deviceId();
+    const key = storeKey(getPrefs().nickname);
+    if (key) h["X-Store-Key"] = key; // lets the server hand her the cohorts the officer formed for her class
+  }
   return h;
 }
 

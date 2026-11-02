@@ -208,3 +208,25 @@ def test_the_officer_can_make_a_cohort_and_sees_no_class_or_teacher_name(client:
     assert made.status_code == 200 and made.json()["classes"] == 2
     assert len(client.get("/api/cohorts/class-only/officer", headers=on(ka, "officer")).json()) == 1
     assert client.post("/api/cohorts/class-only/officer", json={"name": "x", "error": "SUB-SFL"}, headers=on(ka, "coach")).status_code == 403
+
+
+def test_the_officer_button_forms_cohorts_and_each_teacher_gets_her_own_copy(client: TestClient) -> None:
+    ka, kb, kc = f"{11:016x}", f"{22:016x}", f"{33:016x}"
+    dev = {ka: f"{101:016x}", kb: f"{102:016x}", kc: f"{103:016x}"}
+
+    def on(key: str, role: str = "teacher") -> dict[str, str]:
+        return {"X-Device-Id": dev.get(key, A), "X-Store-Key": key, "X-Role": role}
+
+    for key, counts in ((ka, {"SUB-SFL": 1}), (kb, {"SUB-SFL": 2, "PV-HEARD": 1}), (kc, {})):
+        client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": "c"}}, headers=on(key))
+        client.put("/api/store/profiles/c1:1", json={"data": {"id": "c1:1", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": {}, "anyCounts": counts}}, headers=on(key))
+    assert client.post("/api/cohorts/class-only/form", headers=on(ka)).status_code == 403
+    out = client.post("/api/cohorts/class-only/form", headers=on(ka, "officer")).json()
+    assert [c["errors"] for c in out["created"]] == [["SUB-SFL"]] and out["created"][0]["classes"] == 2  # PV-HEARD: one class only
+    again = client.post("/api/cohorts/class-only/form", headers=on(ka, "officer")).json()
+    assert again["created"] == [] and again["already"] == 1
+    mine_a = client.get("/api/cohorts/class-only", headers=on(ka)).json()
+    assert len(mine_a) == 1 and mine_a[0]["check_id"] == "c1:1" and mine_a[0]["classes"] == 2 and mine_a[0]["scope"] == "member"
+    assert len(client.get("/api/cohorts/class-only", headers=on(kb)).json()) == 1
+    assert client.get("/api/cohorts/class-only", headers=on(kc)).json() == []  # her class shows no mistake: not in it
+    assert len(client.get("/api/cohorts/class-only", headers=on(ka)).json()) == 1  # a second visit adds nothing
