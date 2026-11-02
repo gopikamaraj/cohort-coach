@@ -560,7 +560,7 @@ def edit_items(
 def paper_key(paper_id: str, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
     """The paper's own answer key for entering and reading its answers: every answer, wrong answer,
     probe and stage signature, worked out by the engine from the paper's numbers."""
-    _own(db, w, paper_id)
+    _read(db, paper_id)  # reading a key is open to every role for now
     row = db.get(PaperRow, paper_id)
     if row is None:
         raise HTTPException(404, "No such paper.")

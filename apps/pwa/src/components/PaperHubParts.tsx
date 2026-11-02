@@ -402,7 +402,8 @@ export function AssignedToYou({ who, compact, showEmpty, testId }: { who: HubIde
 export const CHECKED = ["auto_approved", "approved", "confirmed"];
 
 /** One dropdown of the class's papers, each with its status (Checked or Not checked yet). Papers
- *  assigned to her come first. A paper not checked yet is listed but cannot be chosen. */
+ *  assigned to her come first. A paper not checked yet can be chosen too: the approval check is switched off for now
+ *  (DECISIONS 2026-11-02); put `disabled={!CHECKED.includes(p.status)}` back on the option to restore it. */
 export function PaperSelect({ who, chosen, onChoose, preferKind }: { who: HubIdentity; chosen: string | null; onChoose: (p: HubPaper | null) => void; preferKind?: string }) {
   const { tr } = useApp();
   const [rows, setRows] = useState<HubPaper[] | null>(null);
@@ -415,7 +416,7 @@ export function PaperSelect({ who, chosen, onChoose, preferKind }: { who: HubIde
         const shown = r.filter((p) => p.status !== "rejected" && p.status !== "withdrawn");
         setRows(shown);
         // keep each checked paper's key on the phone now, so a check can start later with no signal
-        for (const p of shown.filter((x) => CHECKED.includes(x.status))) void fetchPaperKey(p.id, who).catch(() => undefined);
+        for (const p of shown) void fetchPaperKey(p.id, who).catch(() => undefined);
       })
       .catch(() => setRows([]));
   }, [who.classId]);
@@ -460,7 +461,7 @@ export function PaperSelect({ who, chosen, onChoose, preferKind }: { who: HubIde
             <select value={chosen ?? ""} onChange={(e) => onChoose(ordered.find((p) => p.id === e.target.value) ?? null)} data-testid="paper-select">
               <option value="">{tr("ph.choose_pick")}</option>
               {ordered.map((p) => (
-                <option key={p.id} value={p.id} disabled={!CHECKED.includes(p.status)}>
+                <option key={p.id} value={p.id}>
                   {label(p)}
                 </option>
               ))}

@@ -702,8 +702,9 @@ def freeze(db: Session, paper_id: str, actor: str) -> PaperRow:
     if row is None:
         raise KeyError(paper_id)
     if row.frozen_at is None:
-        if not usable(row):
-            raise BadState("only an approved paper is used for a check")
+        # approval check off for now (DECISIONS 2026-11-02): only rejected or withdrawn are refused
+        if row.status in ("rejected", "withdrawn"):
+            raise BadState("a rejected or withdrawn paper is not used for a check")
         row.frozen_at = _now()
         _event(db, "frozen", actor, row, detail="first sheet entered")
         db.commit()

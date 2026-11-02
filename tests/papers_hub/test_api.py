@@ -850,11 +850,11 @@ def test_a_papers_own_key_reads_like_the_built_in_forms_and_comes_from_its_numbe
     # the same fields the phone reads for a built-in form, including the stage signatures
     assert {"probes", "wrong", "untracked", "signatures", "type", "a", "b"} <= set(form["items"][0])
     assert key["rules"]["min_hits"] == 2 and key["content_hash"]
-    # a teacher of another class cannot fetch it
+    # reading a key is open to every role for now (DECISIONS 2026-11-02): papers are shared
     other = env.client.get(
         f"/api/paper-hub/papers/{pid}/key", headers=hdr("teacher", cls="c-other")
     )
-    assert other.status_code in (403, 404)
+    assert other.status_code == 200 and other.json()["forms"].keys() == r.json()["forms"].keys()
 
 
 def test_when_the_ai_service_fails_the_import_says_so_instead_of_blaming_the_photo(

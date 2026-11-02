@@ -1005,3 +1005,11 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Why:** Chrome, Edge and a phone are three different "teachers" when each has its own random id, and the owner wanted the demo data open to all.
 - **Changes to the 2026-11-02 cloud-first entry:** a teacher can now read another teacher's classes and checks. The coach and mentor "Entered checks" table shows one teacher while the store is shared. This undoes the separation the owner asked for earlier the same day; set `STORE_SHARED=0` on the backend to restore it.
 - **Confirmed by:** Gopi ("just open it up by default").
+
+## 2026-11-02 · The paper approval check is switched off for now
+
+- **Decision (Gopi, in session: "remove this check, let's add this later"):** Start a check lets a teacher choose any paper that is not rejected or withdrawn, including papers still waiting in the review queue ("Not checked yet"). Three places changed: the picker no longer disables unapproved papers (`PaperSelect` in `apps/pwa/src/components/PaperHubParts.tsx`), `store.freeze` no longer refuses an unapproved paper when the first sheet is entered, and the paper key read (`GET /api/paper-hub/papers/{id}/key`) is open to every role and works for any paper.
+- **Why:** papers made on the live demo sat in the queue with nobody to approve them, so a teacher could not enter a check on them.
+- **Changes to earlier rules, so this entry needs a human to confirm it:** CLAUDE.md rule 4 (gate 3: AI-generated content waits for human approval) is not applied to papers during check entry. Printing a paper and its key PDF still need approval (`/api/papers/{id}/paper.pdf` and `key.pdf` are untouched); only entering a check on it is open. The Checked / Not checked yet label stays on every paper.
+- **To put it back:** restore `disabled={!CHECKED.includes(p.status)}` on the option, the key-fetch filter in `PaperSelect`, the `usable(row)` test in `store.freeze`, and `_own` in `paper_key`.
+- **Confirmed by:** Gopi (asked to remove it; the restore date is open).
