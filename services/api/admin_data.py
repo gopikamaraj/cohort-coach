@@ -1,16 +1,25 @@
+# ruff: noqa: E501
 """Admin: what data exists, what the testers told us, and deleting by scope to start fresh.
 
-Seven scopes can be deleted (each needs the admin key where one is set, and the typed word DELETE):
-  feedback      app, content, simulation and card-flag feedback
+These scopes can be deleted (each needs the admin key where one is set, and the typed word DELETE),
+listed in the order they are deleted, so a table is always cleared before the one it points at:
+  feedback      app, content, simulation and card-flag feedback, and the lesson taps
   observations  the simulation observations from teachers
   testers       tester profiles (nickname), their usage events and their feedback
   demo          demo sessions and their AI-read scores
+  papers        every paper with its items, imports, assignments, review rows and events (a paper
+                that "has a sheet entered" is freed too)
+  results       the class results the phones synced: class profiles, term counts, engine cohorts,
+                kept sheets (the files in the private bucket are not touched here)
+  modules       improvement tracks, their modules, answers, notes review, shared check-ins
   cohorts       cohorts of one class and the two-class runs
-  cohort_chat   the posts in the cohort chat
+  cohort_chat   the cohort chat: posts, the AI answers' metadata, private question threads, settings
+  cohort_spaces cohort spaces, their members, mentor items and audit rows
   intervention  the per-phone "Download audio" use counts (the cached audio files stay)
-and `all` deletes those seven. Two things are never deleted here, and the page says so:
-  * the AI audit log: it is the ledger the budget guard adds up, so clearing it would hide spend;
-  * the demo's paid-read cache: it saves a paid AI read per sheet, so clearing it costs money.
+and `all` deletes every scope above. Never deleted here, and the page says so (KEPT, KEPT_TABLES): the
+AI audit log and the cost ledgers, the paid-read cache, the paper rules, the published content and
+its approvals, schools and classes, and teacher identities and consent. `KEPT_TABLES` names every
+other table, and a test fails if a new table is in neither a scope nor that list.
 """
 
 from __future__ import annotations
@@ -21,23 +30,89 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import delete, func, select
 
-from services.api.db import AudioDownloadUse, ClassCohort, Feedback, SimObservation, ThreadPost
+from services.api.db import (
+    AiReplyDraft,
+    AudioDownloadUse,
+    ChatConfig,
+    ChatMessage,
+    ChatThread,
+    ClassCohort,
+    ClassTermCount,
+    Cohort,
+    CohortAuditRow,
+    CohortMember,
+    CohortSpace,
+    Feedback,
+    LessonTap,
+    MentorItem,
+    ProfileSync,
+    SimObservation,
+    ThreadPost,
+)
 from services.api.feedback import ADMIN
 from services.api.profiles import SESSION
+from services.cohort_chat.models import ChatTimeout, PostMeta
 from services.cohort_run.models import CohortRun
 from services.demo.models import DemoAiRead, DemoSession
+from services.modules.models import (
+    CheckinShare,
+    ModuleEvent,
+    ModuleFeedback,
+    ModuleReview,
+    Track,
+    TrackModule,
+)
+from services.papers.models import ClassProfileRow, PaperEvent, PaperItemRow, PaperReview, PaperRow
+from services.papers_hub.models import PaperAssignment, PaperImport
+from services.sheets_keep.models import KeptSheet
 from services.tester.models import TesterDevice, TesterEvent, TesterFeedback
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 SCOPES: dict[str, tuple[Any, ...]] = {
-    "feedback": (Feedback,),
+    "feedback": (Feedback, LessonTap),
     "observations": (SimObservation,),
     "testers": (TesterFeedback, TesterEvent, TesterDevice),
     "demo": (DemoAiRead, DemoSession),
+    "papers": (PaperItemRow, PaperReview, PaperAssignment, PaperImport, PaperEvent, PaperRow),
+    "results": (ClassTermCount, KeptSheet, ProfileSync, ClassProfileRow, Cohort),
+    "modules": (CheckinShare, ModuleReview, ModuleFeedback, ModuleEvent, TrackModule, Track),
     "cohorts": (ClassCohort, CohortRun),
-    "cohort_chat": (ThreadPost,),
+    "cohort_chat": (
+        PostMeta, ChatTimeout, ThreadPost, AiReplyDraft, ChatMessage, ChatThread, ChatConfig,
+    ),
+    "cohort_spaces": (MentorItem, CohortMember, CohortSpace, CohortAuditRow),
     "intervention": (AudioDownloadUse,),
+}  # fmt: skip
+# Tables no scope deletes, each with the reason; every table is in SCOPES or here (a test checks).
+KEPT_TABLES = {
+    "ai_calls": "the ledger the budget guard adds up",
+    "speech_calls": "the speech cost ledger",
+    "usage_entries": "the cost ledger",
+    "usage_actions": "the cost ledger",
+    "demo_read_cache": "saves a paid AI read per sheet",
+    "change_log": "the record of what changed because of feedback",
+    "school": "schools and classes are set up, not test data",
+    "classroom": "schools and classes are set up, not test data",
+    "assignment": "schools and classes are set up, not test data",
+    "teachers": "teacher identities and consent",
+    "consents": "teacher identities and consent",
+    "channel_links": "teacher identities and consent",
+    "link_codes": "teacher identities and consent",
+    "flow_state": "teacher identities and consent",
+    "rule_version": "the paper rules, owned by a person",
+    "rule_template": "the paper rules, owned by a person",
+    "rule_bug": "the paper rules, owned by a person",
+    "blueprint": "the paper rules, owned by a person",
+    "blueprint_slot": "the paper rules, owned by a person",
+    "string_pack": "the paper rules, owned by a person",
+    "content_versions": "published content and its approvals",
+    "content_audit": "published content and its approvals",
+    "track_manifests": "published content and its approvals",
+    "lesson_audio": "audio already made (making it again costs a paid speech call)",
+    "review_items": "approvals a coach gave",
+    "review_decisions": "approvals a coach gave",
+    "teacher_flags": "approvals a coach gave",
 }
 KEPT = {
     "ai_audit_log": (
@@ -47,6 +122,7 @@ KEPT = {
         "The audio files already made for the intervention content stay: "
         "making them again costs a paid speech call."
     ),
+    "tables": "Schools and classes, teacher identities and consent, the paper rules, the published content and its approvals, and the cost ledgers stay.",
     "demo_read_cache": (
         "The demo's paid-read cache stays: clearing it would cost a paid AI read per sheet."
     ),

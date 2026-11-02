@@ -34,7 +34,7 @@ interface TesterView {
 interface DataView {
   scopes: Record<string, { rows: number }>;
 }
-const SCOPES = ["feedback", "observations", "testers", "demo", "cohorts", "cohort_chat", "intervention", "all"] as const;
+const SCOPES = ["feedback", "observations", "testers", "demo", "papers", "results", "modules", "cohorts", "cohort_chat", "cohort_spaces", "intervention", "all"] as const;
 
 interface Summary {
   feedback: { new: number; reviewed: number };
@@ -312,6 +312,7 @@ export default function Admin() {
       <p className="muted">{tr("admin.kept_audit")}</p>
       <p className="muted">{tr("admin.kept_cache")}</p>
       <p className="muted">{tr("admin.kept_pack_audio")}</p>
+      <p className="muted">{tr("admin.kept_tables")}</p>
     </section>
   );
 }
