@@ -24,13 +24,15 @@ export function isApproved(rs: RollSet, i: number): boolean {
   return s === "absent" || (s === "entered" && rs.approved.has(i));
 }
 
-export type OptionKey = "check.opt_not_entered" | "check.opt_entered_not_approved" | "check.opt_entered_approved" | "check.opt_absent";
+export type OptionKey = "check.opt_not_entered" | "check.opt_entered_not_approved" | "check.opt_awaiting_check" | "check.opt_entered_approved" | "check.opt_absent";
 
-export function optionKey(rs: RollSet, i: number): OptionKey {
+/** `awaiting`: the AI read this roll from a photo and flagged boxes for her to check. */
+export function optionKey(rs: RollSet, i: number, awaiting = false): OptionKey {
   const s = dataState(rs, i);
   if (s === "absent") return "check.opt_absent";
   if (s === "not_entered") return "check.opt_not_entered";
-  return rs.approved.has(i) ? "check.opt_entered_approved" : "check.opt_entered_not_approved";
+  if (rs.approved.has(i)) return "check.opt_entered_approved";
+  return awaiting ? "check.opt_awaiting_check" : "check.opt_entered_not_approved";
 }
 
 /** Roll numbers 0..size-1: every roll up to the class size, or as many as have been opened. */

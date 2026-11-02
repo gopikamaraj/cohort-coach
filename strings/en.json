@@ -1882,6 +1882,7 @@
   "install.card_note": "Practice Class needs a connection.",
   "check.opt_not_entered": "Roll no {n} · Not entered",
   "check.opt_entered_not_approved": "Roll no {n} · Entered · Not approved",
+  "check.opt_awaiting_check": "Roll no {n} · Entered · Awaiting check · Not approved",
   "check.opt_entered_approved": "Roll no {n} · Entered · Approved",
   "check.opt_absent": "Roll no {n} · Absent · Approved",
   "check.src_typed": "Typed",

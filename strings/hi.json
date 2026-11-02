@@ -1882,6 +1882,7 @@
   "install.card_note": "अभ्यास कक्षा के लिए कनेक्शन चाहिए।",
   "check.opt_not_entered": "रोल नं. {n} · दर्ज नहीं",
   "check.opt_entered_not_approved": "रोल नं. {n} · दर्ज · स्वीकृत नहीं",
+  "check.opt_awaiting_check": "रोल नं. {n} · दर्ज · जाँच की प्रतीक्षा · स्वीकृत नहीं",
   "check.opt_entered_approved": "रोल नं. {n} · दर्ज · स्वीकृत",
   "check.opt_absent": "रोल नं. {n} · अनुपस्थित · स्वीकृत",
   "check.src_typed": "टाइप किया",

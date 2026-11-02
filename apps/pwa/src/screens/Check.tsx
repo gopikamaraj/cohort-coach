@@ -625,7 +625,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
           <select value={child} onChange={(e) => goTo(Number(e.target.value))} data-testid="child-select">
             {Array.from({ length: Math.max(rollTotal, 1) }, (_, i) => (
               <option key={i} value={i}>
-                {tr(optionKey(rs, i), { n: i + 1 })}
+                {tr(optionKey(rs, i, (flags[i]?.length ?? 0) > 0), { n: i + 1 })}
               </option>
             ))}
           </select>

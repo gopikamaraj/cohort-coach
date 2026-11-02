@@ -14,6 +14,8 @@ describe("roll state and option text", () => {
     expect(optionKey(set, 1)).toBe("check.opt_entered_not_approved");
     expect(optionKey(set, 2)).toBe("check.opt_entered_approved");
     expect(optionKey(set, 3)).toBe("check.opt_absent");
+    expect(optionKey(set, 1, true)).toBe("check.opt_awaiting_check");
+    expect(optionKey(set, 2, true)).toBe("check.opt_entered_approved");
   });
   it("absent is approved automatically; not entered is not approved", () => {
     const set = rs([E, E], [0]);
