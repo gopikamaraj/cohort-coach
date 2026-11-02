@@ -210,10 +210,11 @@ def entered_summary(db: Session) -> dict[str, Any]:
 @router.get("/coach-summary")
 def coach_summary(role: str = Depends(role_of), db: Session = SESSION) -> dict[str, Any]:
     """Added-up counts, and which classes (teacher label, class name) show which mistake. No class's own count."""
-    if role not in ("coach", "mentor"):
-        raise HTTPException(403, "Only a coach or a mentor can see this.")
+    if role not in ("coach", "mentor", "officer"):
+        raise HTTPException(403, "Only a coach, a mentor or the officer can see this.")
     s = entered_summary(db)
-    return {"terms": s["terms"], "classes": [{k: v for k, v in c.items() if not k.startswith("_") and k != "children_checked"} for c in s["classes"]]}
+    keep = ("term", "errors") if role == "officer" else ("teacher", "class", "term", "errors")  # the officer sees groups, never a class or teacher
+    return {"terms": s["terms"], "classes": [{k: c[k] for k in keep} for c in s["classes"]]}
 
 
 @router.get("/all/{collection}")

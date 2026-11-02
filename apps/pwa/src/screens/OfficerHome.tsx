@@ -4,6 +4,7 @@
 // track, not the teacher. Percentages appear here (an officer view) and nowhere a teacher sees.
 import { useEffect, useState } from "react";
 import { Icon } from "../components/icons";
+import { CohortMaker } from "../components/CohortMaker";
 import OfficerCohorts from "../components/OfficerCohorts";
 import { API_BASE } from "../lib/api";
 import type { Key } from "../i18n";
@@ -101,6 +102,8 @@ export default function OfficerHome() {
       ) : null}
 
       <EnteredOfficer />
+
+      <CohortMaker who="officer" />
 
       <OfficerCohorts />
 

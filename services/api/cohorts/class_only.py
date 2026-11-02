@@ -116,7 +116,25 @@ COACH_OWNER = "coach-cohorts"
 def make_for_coach(
     body: CoachMakeIn, _: str = Depends(require("coach.moderate")), db: Session = SESSION
 ) -> dict[str, Any]:
-    """A coach forms a cohort from the entered classes that show one mistake (latest term), counts added up.
+    return _make_group(body, db)
+
+
+@router.post("/officer")
+def make_for_officer(
+    body: CoachMakeIn, _: str = Depends(require("officer.approve_cohorts")), db: Session = SESSION
+) -> dict[str, Any]:
+    return _make_group(body, db)
+
+
+@router.get("/officer")
+def for_officer(
+    _: str = Depends(require("officer.approve_cohorts")), db: Session = SESSION
+) -> list[dict[str, Any]]:
+    return [view(r) for r in db.execute(select(ClassCohort)).scalars()]
+
+
+def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
+    """A coach or the officer forms a cohort from the entered classes that show one mistake (latest term), counts added up.
     One per mistake and term; a second tap returns the same cohort."""
     from services.api.devicestore import entered_summary
 

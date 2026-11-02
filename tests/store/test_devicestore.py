@@ -189,3 +189,20 @@ def test_coach_and_peers_count_a_mistake_seen_even_once_and_ignore_the_confirmed
     s = client.get("/api/store/coach-summary", headers=on(ka, "coach")).json()
     assert s["terms"]["1"]["children_showing"] == {"SUB-SFL": 5} and all(c["errors"] == ["SUB-SFL"] for c in s["classes"])
     assert client.get("/api/store/peers?errors=SUB-SFL", headers=on(ka)).json()[0]["errors"] == ["SUB-SFL"]
+
+
+def test_the_officer_can_make_a_cohort_and_sees_no_class_or_teacher_name(client: TestClient) -> None:
+    ka, kb = f"{11:016x}", f"{22:016x}"
+
+    def on(key: str, role: str = "teacher") -> dict[str, str]:
+        return {"X-Device-Id": A, "X-Store-Key": key, "X-Role": role}
+
+    for key, nick in ((ka, "3A"), (kb, "3B")):
+        client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": nick}}, headers=on(key))
+        client.put("/api/store/profiles/p", json={"data": {"id": "p", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": {}, "anyCounts": {"SUB-SFL": 4}}}, headers=on(key))
+    s = client.get("/api/store/coach-summary", headers=on(ka, "officer")).json()
+    assert all(set(c) == {"term", "errors"} for c in s["classes"])
+    made = client.post("/api/cohorts/class-only/officer", json={"name": "Borrowing group", "error": "SUB-SFL"}, headers=on(ka, "officer"))
+    assert made.status_code == 200 and made.json()["classes"] == 2
+    assert len(client.get("/api/cohorts/class-only/officer", headers=on(ka, "officer")).json()) == 1
+    assert client.post("/api/cohorts/class-only/officer", json={"name": "x", "error": "SUB-SFL"}, headers=on(ka, "coach")).status_code == 403
