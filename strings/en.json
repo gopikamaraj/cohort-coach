@@ -1799,6 +1799,8 @@
   "check.see_results": "See results",
   "check.reopen": "Reopen",
   "check.reopen_note": "Reopen to change an answer or a roll number marked absent. Finish entering again to update the results.",
+  "check.next_paper": "Check another paper",
+  "check.next_paper_note": "Starts the next check. This one and its results stay as they are.",
   "demo.entry.all_entered": "Every roll number has a sheet or is marked absent.",
   "demo.entry.next_empty_msg": "Roll no {n} is not entered yet: add its sheet or mark it absent.",
   "demo.entry.finish_confirm": "Finish entering? {n} roll numbers are not approved and will be marked absent.",

@@ -5,7 +5,7 @@
 // dropped at Finish: never saved, never sent again.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BLANK, enteredChildren, finishCheck, hasAnswers, UNREADABLE } from "../lib/check";
-import { activeClass, db, getSetting, type CheckRow, type ProfileRow } from "../lib/db";
+import { activeClass, db, getSetting, setSetting, type CheckRow, type ProfileRow } from "../lib/db";
 import { formOf, keys } from "../lib/diagnosis";
 import { flushAllowed } from "../lib/sendnow";
 import { getConsent, hasConsent, recordOnServer, setConsent, type Choices, countsOn } from "../lib/consent";
@@ -250,6 +250,23 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     setMeta(null);
     setFormKey(null);
     setChild(0);
+    await reload();
+  };
+
+  // A finished check stays as it is (its results too); the next paper's check is the class's next term.
+  const nextPaper = async () => {
+    await writes.current;
+    dropPictures();
+    setDrawer(false);
+    snap.current = { rows: [], absent: new Set(), approved: new Set(), missed: new Map() };
+    photoKids.current = new Set();
+    setFlags({});
+    setDevAbsent(new Set());
+    setMeta(null);
+    setFormKey(null);
+    setChild(0);
+    setReopened(false);
+    await setSetting("term", term + 1);
     await reload();
   };
 
@@ -538,8 +555,11 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
             <button type="button" className="btn btn-secondary" onClick={() => void reopen()} data-testid="check-reopen">
               {tr("check.reopen")}
             </button>
+            <button type="button" className="btn btn-secondary" onClick={() => void nextPaper()} data-testid="check-next-paper">
+              {tr("check.next_paper")}
+            </button>
           </div>
-          <p className="muted">{tr("check.reopen_note")}</p>
+          <p className="muted">{tr("check.reopen_note")} {tr("check.next_paper_note")}</p>
         </div>
       </section>
     );
