@@ -26,9 +26,10 @@ const JPEG_QUALITY = 0.7;
 const TIMEOUT_MS = 30_000;
 
 /** The reads as a row of typed cells, and which boxes the teacher should look at first. */
-export function applyReads(cells: SheetCell[], items: number): { row: string[]; flagged: number[] } {
+export function applyReads(cells: SheetCell[], items: number): { row: string[]; flagged: number[]; words: Record<number, string> } {
   const row: string[] = [];
   const flagged: number[] = [];
+  const words: Record<number, string> = {}; // the number words a child wrote in a box, when the number came from them
   for (let i = 0; i < items; i += 1) {
     const cell = cells[i];
     if (!cell) {
@@ -38,10 +39,11 @@ export function applyReads(cells: SheetCell[], items: number): { row: string[]; 
       row.push(BLANK);
     } else {
       row.push(cell.text);
+      if (cell.words) words[i] = cell.words;
       if (cell.status === "check") flagged.push(i);
     }
   }
-  return { row, flagged };
+  return { row, flagged, words };
 }
 
 /** Shrink to about 1600 px on the long edge as a JPEG (about 150 KB), so it uploads on a weak signal. */

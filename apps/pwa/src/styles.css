@@ -4311,3 +4311,11 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   min-width: 0;
   text-align: center;
 }
+
+/* the number words a child wrote in a box, shown under it when the number came from them */
+.box-words {
+  display: block;
+  margin-top: var(--s1);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}

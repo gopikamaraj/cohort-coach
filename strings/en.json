@@ -185,6 +185,7 @@
   "check.photo_reading": "Reading the sheet…",
   "check.photo_done": "Filled in from the photo. Check every box, fix any mistake, then go to the next child. Marked boxes need a look first.",
   "check.photo_flag": "check",
+  "check.written_words": "Written in words: {words}",
   "check.photo_offline": "Reading a photo needs a connection. Type the answers instead, or try again with a signal.",
   "check.photo_typing": "Could not read this sheet. Type the answers, or take the photo again in better light.",
   "check.photo_bad": "That photo could not be used. Take it again, with the whole sheet in view.",

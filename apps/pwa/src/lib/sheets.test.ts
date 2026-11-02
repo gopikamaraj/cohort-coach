@@ -4,6 +4,20 @@ import { applyReads, readSheet, SheetError, type SheetCell } from "./sheets";
 
 const ok = (text: string): SheetCell => ({ text, status: "ok" });
 
+describe("applyReads with number words", () => {
+  it("types the number a box of words came to and keeps the words to show under the box", () => {
+    const cells: SheetCell[] = [
+      { text: "305", status: "check", words: "three hundred five" },
+      { text: "496", status: "check", words: "four hundred ninety six" },
+      { text: "43", status: "ok" },
+    ];
+    const { row, flagged, words } = applyReads(cells, 3);
+    expect(row).toEqual(["305", "496", "43"]);
+    expect(flagged).toEqual([0, 1]); // the teacher looks at both
+    expect(words).toEqual({ 0: "three hundred five", 1: "four hundred ninety six" }); // a box of digits has none
+  });
+});
+
 describe("applyReads", () => {
   it("fills confident reads, marks blanks, and flags the boxes to look at first", () => {
     const cells: SheetCell[] = [ok("346"), { text: "999", status: "check" }, { text: "", status: "blank" }, { text: "", status: "check" }];

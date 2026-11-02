@@ -99,6 +99,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const [reading, setReading] = useState(false);
   const [photoNote, setPhotoNote] = useState("");
   const [flags, setFlags] = useState<Record<number, number[]>>({}); // boxes to check, per child; not saved
+  const [written, setWritten] = useState<Record<number, Record<number, string>>>({}); // number words a child wrote, per child and box; not saved
   // The pictures, in memory only: gone when she leaves this screen or finishes.
   const [pics, setPics] = useState<Record<number, Picture>>({});
   const picUrls = useRef<Set<string>>(new Set());
@@ -228,6 +229,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     setDrawer(false);
     photoKids.current = new Set();
     setFlags({});
+    setWritten({});
     setDevAbsent(new Set());
     setChild(0);
     setQ(0);
@@ -246,6 +248,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     snap.current = { rows: [], absent: new Set(), approved: new Set(), missed: new Map() };
     photoKids.current = new Set();
     setFlags({});
+    setWritten({});
     setDevAbsent(new Set());
     setMeta(null);
     setFormKey(null);
@@ -261,6 +264,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     snap.current = { rows: [], absent: new Set(), approved: new Set(), missed: new Map() };
     photoKids.current = new Set();
     setFlags({});
+    setWritten({});
     setDevAbsent(new Set());
     setMeta(null);
     setFormKey(null);
@@ -291,6 +295,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     s.rows[child] = row;
     s.approved.delete(child); // any change needs approving again
     if (flags[child]?.includes(index)) setFlags({ ...flags, [child]: (flags[child] ?? []).filter((i) => i !== index) });
+    if (written[child]?.[index]) setWritten({ ...written, [child]: Object.fromEntries(Object.entries(written[child] ?? {}).filter(([k]) => Number(k) !== index)) });
     commit(s);
   };
 
@@ -370,7 +375,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const fillFromRead = (roll: number, res: ReadResult) => {
     if (!formKey) return;
     freezePaper();
-    const { row, flagged } = applyReads(res.cells, items);
+    const { row, flagged, words } = applyReads(res.cells, items);
     const s = clone();
     ensure(s, roll);
     s.rows[roll] = row;
@@ -379,6 +384,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     photoKids.current.add(roll);
     showPicture(roll, res.shrunk, res.sha);
     setFlags((f) => ({ ...f, [roll]: flagged }));
+    setWritten((w) => ({ ...w, [roll]: words }));
     commit(s);
   };
 
@@ -736,6 +742,11 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
                     }}
                   />
                   {flagged ? <span className="box-flag">{tr("check.photo_flag")}</span> : null}
+                  {written[child]?.[i] ? (
+                    <span className="box-words" data-testid={`words-${i + 1}`}>
+                      {tr("check.written_words", { words: written[child]?.[i] ?? "" })}
+                    </span>
+                  ) : null}
                 </div>
               );
             })}
