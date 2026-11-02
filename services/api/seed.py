@@ -114,3 +114,61 @@ def load_all(db: Session, path: Path) -> dict[str, int]:
             db.rollback()
             logging.getLogger("seed").exception("table %s not loaded", table.name)
     return loaded
+
+
+# ---- replace chosen tables: a snapshot from one database over the same tables in another ---------
+
+
+class SnapshotError(Exception):
+    pass
+
+
+def plan_replace(names: list[str]) -> list[Any]:
+    """The chosen tables in insert order (parents first). Refuses an unknown table, and a table left out
+    that holds a foreign key into a chosen one (deleting the parent rows would break it)."""
+    tables = {t.name: t for t in _all_tables()}
+    unknown = [n for n in names if n not in tables]
+    if unknown:
+        raise SnapshotError(f"unknown table(s): {', '.join(unknown)}")
+    chosen = set(names)
+    left_out: dict[str, set[str]] = {}
+    for t in tables.values():
+        if t.name in chosen:
+            continue
+        for fk in t.foreign_keys:
+            if fk.column.table.name in chosen:
+                left_out.setdefault(t.name, set()).add(fk.column.table.name)
+    if left_out:
+        detail = "; ".join(f"{k} refers to {', '.join(sorted(v))}" for k, v in sorted(left_out.items()))
+        raise SnapshotError(f"add these tables too, or they would be left pointing at deleted rows: {detail}")
+    return [t for t in _all_tables() if t.name in chosen]
+
+
+def replace_tables(src: Session, dst: Session, names: list[str]) -> dict[str, tuple[int, int]]:
+    """Per table: (rows removed from the target, rows copied from the source). One transaction on the
+    target: any failure rolls everything back and the target is unchanged."""
+    from sqlalchemy import delete, inspect
+
+    ordered = plan_replace(names)
+    insp = inspect(src.get_bind())
+    have = set(insp.get_table_names())
+    missing = [t.name for t in ordered if t.name not in have]
+    if missing:
+        raise SnapshotError(f"the source has no table(s): {', '.join(missing)}")
+    result: dict[str, tuple[int, int]] = {}
+    try:
+        for table in reversed(ordered):  # children first
+            removed = dst.execute(delete(table)).rowcount
+            result[table.name] = (int(removed or 0), 0)
+        for table in ordered:  # parents first
+            present = {c["name"] for c in insp.get_columns(table.name)}
+            cols = [c for c in table.columns if c.name in present]
+            rows = [dict(r) for r in src.execute(select(*cols)).mappings().all()]
+            for i in range(0, len(rows), 500):
+                dst.execute(insert(table), rows[i : i + 500])
+            result[table.name] = (result[table.name][0], len(rows))
+        dst.commit()
+    except Exception as exc:
+        dst.rollback()
+        raise SnapshotError(f"nothing changed on the target: {exc}") from exc
+    return result

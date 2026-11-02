@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Papers copied between databases: once, and never over papers already there."""
 
 from __future__ import annotations
@@ -42,6 +43,26 @@ def test_every_table_is_copied_into_empty_tables_only(tmp_path: Path) -> None:
         loaded = load_all(dst, tmp_path / "all.json")
         assert loaded["paper"] == 1 and loaded["paper_item"] == counts["paper_item"]
         assert load_all(dst, tmp_path / "all.json") == {}  # a table that has rows is left alone
+
+
+def test_a_snapshot_replaces_the_chosen_tables_and_refuses_a_table_left_dangling(tmp_path: Path) -> None:
+    import pytest
+
+    from services.api.seed import SnapshotError, plan_replace, replace_tables
+
+    with _db(tmp_path / "src.sqlite") as src, _db(tmp_path / "dst.sqlite") as dst:
+        load_papers(src, Path("deploy_seed/papers.json"))
+        stale = PaperRow(id="P-old", check_id="x", check_code="X", class_id="c-x", form="A", kind="pre", seed="s", blueprint="b", blueprint_version=1, rules_version=1, language="en", status="draft", hash="h", body={})
+        dst.add(stale)
+        dst.commit()
+        with pytest.raises(SnapshotError):
+            plan_replace(["paper"])  # paper_item and paper_event point at paper
+        done = replace_tables(src, dst, ["paper", "paper_item", "paper_event", "review_queue"])
+        assert done["paper"] == (1, 1) and done["paper_item"][1] >= 1
+        ids = {r for (r,) in dst.execute(select(PaperRow.id))}
+        assert "P-old" not in ids and len(ids) == 1
+        with pytest.raises(SnapshotError):
+            replace_tables(src, dst, ["no_such_table"])
 
 
 def test_a_cloud_sql_url_is_built_from_parts_and_the_password_is_escaped(monkeypatch) -> None:  # type: ignore[no-untyped-def]
