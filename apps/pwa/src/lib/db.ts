@@ -139,12 +139,18 @@ export class CohortDb extends Dexie {
 
 export const db = new CohortDb();
 
+/** The term is fixed at 1 for now (decided 3 Nov 2026): it kept moving to 2 on its own. Set to null to bring back
+ *  the saved term and "Check another paper". */
+export const FIXED_TERM: number | null = 1;
+
 export async function getSetting<T>(key: string, fallback: T, store: CohortDb = db): Promise<T> {
+  if (key === "term" && FIXED_TERM !== null) return FIXED_TERM as T;
   const row = await store.settings.get(key);
   return row ? (row.value as T) : fallback;
 }
 
 export async function setSetting(key: string, value: unknown, store: CohortDb = db): Promise<void> {
+  if (key === "term" && FIXED_TERM !== null) return;
   await store.settings.put({ key, value });
 }
 
