@@ -1013,3 +1013,10 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Changes to earlier rules, so this entry needs a human to confirm it:** CLAUDE.md rule 4 (gate 3: AI-generated content waits for human approval) is not applied to papers during check entry. Printing a paper and its key PDF still need approval (`/api/papers/{id}/paper.pdf` and `key.pdf` are untouched); only entering a check on it is open. The Checked / Not checked yet label stays on every paper.
 - **To put it back:** restore `disabled={!CHECKED.includes(p.status)}` on the option, the key-fetch filter in `PaperSelect`, the `usable(row)` test in `store.freeze`, and `_own` in `paper_key`.
 - **Confirmed by:** Gopi (asked to remove it; the restore date is open).
+
+## 2026-11-02 · A teacher is her nickname: the device store is separate per nickname
+
+- **Decision (Gopi, in session: "segregate the check teacher-wise / nickname-wise, results from more than one teacher are needed to form the cohort"):** the cloud device store is no longer one shared set. The app sends a key made from the nickname (`X-Store-Key`, `storeKey()` in `apps/pwa/src/lib/cloudStore.ts`); the same nickname on any browser reads and writes the same documents, and another nickname gets its own. With no nickname the phone's random device id is the key. `STORE_SHARED=1` still puts everyone in one set. Changing the nickname makes her a different teacher: the app reads that nickname's documents, or, if it has none yet, sends this phone's data up under it.
+- **Why:** a cohort is formed from the results of several teachers' classes, which needs each teacher's classes and checks kept apart. This replaces "the store is shared by default" (earlier the same day).
+- **Known limits:** the nickname is the whole login (no password): anyone who types the same nickname gets that teacher's data, and the same data under two nicknames is two teachers. Class ids copied between nicknames are the same class to the engine, so each teacher should make her own class. The coach and mentor "Entered checks" table labels teachers "Teacher 1, 2…" in key order, not by nickname.
+- **Confirmed by:** Gopi.

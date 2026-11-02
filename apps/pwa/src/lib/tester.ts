@@ -135,6 +135,7 @@ function load(): TesterPrefs {
 }
 
 function save(next: Partial<TesterPrefs>): void {
+  const before = prefs.nickname;
   prefs = { ...prefs, ...next };
   try {
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
@@ -142,6 +143,7 @@ function save(next: Partial<TesterPrefs>): void {
     /* private mode: the choice lasts until the page closes */
   }
   listeners.forEach((l) => l());
+  if (prefs.nickname !== before && typeof window !== "undefined" && typeof window.dispatchEvent === "function") window.dispatchEvent(new Event("cc:identity")); // she is a different teacher now
 }
 
 export function getPrefs(): TesterPrefs {

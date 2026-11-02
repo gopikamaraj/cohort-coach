@@ -6,6 +6,7 @@ import { API_BASE } from "./api";
 import { deviceId } from "./consent";
 import { db, type CohortDb } from "./db";
 import { isOnline } from "./net";
+import { getPrefs } from "./tester";
 
 export const SYNCED = ["classes", "checks", "profiles", "settings"] as const;
 export type SyncedTable = (typeof SYNCED)[number];
@@ -75,8 +76,30 @@ export function watchTables(store: CohortDb = db): void {
   }
 }
 
+/** A 16-character key made from the nickname, so the same nickname reads the same documents on any browser
+ *  and another nickname gets its own. Not a secret: there is no password, the nickname is the teacher. */
+export function storeKey(nickname: string): string | null {
+  const name = nickname.trim().toLowerCase();
+  if (!name) return null;
+  const mix = (seed: number): string => {
+    let h = seed >>> 0;
+    for (let i = 0; i < name.length; i += 1) {
+      h = Math.imul(h ^ name.charCodeAt(i), 16777619) >>> 0;
+      h = (h ^ (h >>> 13)) >>> 0;
+    }
+    return h.toString(16).padStart(8, "0");
+  };
+  return mix(2166136261) + mix(84696351);
+}
+
 function headers(): Record<string, string> {
-  return { "Content-Type": "application/json", "X-Device-Id": deviceId() };
+  const key = storeKey(getPrefs().nickname);
+  return { "Content-Type": "application/json", "X-Device-Id": deviceId(), ...(key ? { "X-Store-Key": key } : {}) };
+}
+
+/** The nickname changed: she is a different teacher now. What waited to go up belonged to the old one. */
+export function forgetQueue(): void {
+  writeQueue([]);
 }
 
 /** Send what is queued: the row as it is now, or a delete if it is gone. A failure leaves it queued. */

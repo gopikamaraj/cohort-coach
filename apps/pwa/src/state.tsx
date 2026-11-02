@@ -3,7 +3,7 @@
 import { reconcileWithServer } from "./lib/serverTruth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { isLang, t as translate, type Key, type Lang } from "./i18n";
-import { clearCloud, hydrate, watchTables } from "./lib/cloudStore";
+import { clearCloud, forgetQueue, hydrate, watchTables } from "./lib/cloudStore";
 import { activeClass, clearPhone, db, getSetting, setSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
 import { demoPair } from "./lib/demo";
 import { fetchPaperKey } from "./lib/paperKeys";
@@ -88,6 +88,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setPending(await pendingCount());
     });
   }, [reload, online]);
+
+  // A new nickname is a different teacher: read her documents from the cloud (her data moves up if she has none yet).
+  useEffect(() => {
+    const again = () => {
+      forgetQueue();
+      void hydrate().then(() => reload());
+    };
+    window.addEventListener("cc:identity", again);
+    return () => window.removeEventListener("cc:identity", again);
+  }, [reload]);
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);

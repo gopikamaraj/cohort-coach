@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { clearCloud, flushQueue, hydrate, queued, watchTables } from "./cloudStore";
+import { clearCloud, flushQueue, hydrate, queued, storeKey, watchTables } from "./cloudStore";
 import { CohortDb } from "./db";
 
 // A phone with a fake server: documents by collection and id, plus a switch for "no connection".
@@ -124,5 +124,16 @@ describe("the cloud copy", () => {
     await db.outbox.add({ classId: "c-1", createdAt: 1, photo: new Blob(["x"]) });
     await flushQueue(db, fetchFn);
     expect(calls.filter((c) => c.startsWith("PUT"))).toEqual([]);
+  });
+});
+
+describe("the store key (a teacher is her nickname)", () => {
+  it("is 16 hex characters, the same for the same nickname in any case, different for another, none when empty", () => {
+    const priya = storeKey("Priya");
+    expect(priya).toMatch(/^[0-9a-f]{16}$/);
+    expect(storeKey("  priya ")).toBe(priya);
+    expect(storeKey("Ravi")).not.toBe(priya);
+    expect(storeKey("3A Math")).not.toBe(storeKey("3B Math"));
+    expect(storeKey("   ")).toBeNull();
   });
 });

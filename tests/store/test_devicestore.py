@@ -20,7 +20,7 @@ A, B = f"{1:016x}", f"{2:016x}"
 @pytest.fixture
 def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     monkeypatch.setenv("JUDGE_MODE", "1")
-    monkeypatch.setenv("STORE_SHARED", "0")  # the tests below are about separate phones
+    monkeypatch.delenv("STORE_SHARED", raising=False)  # separate teachers is the default
     engine = make_engine(f"sqlite:///{tmp_path / 's.sqlite'}")
     Base.metadata.create_all(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
@@ -77,14 +77,28 @@ def test_bad_device_collection_and_size_are_refused(client: TestClient) -> None:
     assert client.put("/api/store/checks/bad id", json={"data": {}}, headers=h(A)).status_code in (404, 422)
 
 
-def test_by_default_every_browser_shares_one_set_of_documents(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("STORE_SHARED", raising=False)
+def test_with_STORE_SHARED_every_browser_shares_one_set_of_documents(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("STORE_SHARED", "1")
     client.put("/api/store/checks/x", json={"data": {"id": "x", "children": [["3", "4"]]}}, headers=h(A))
     assert client.get("/api/store", headers=h(B)).json()["checks"]["x"]["id"] == "x"  # Edge sees what Chrome wrote
     assert len(client.get("/api/store/all/checks", headers=h(A, "coach")).json()) == 1
 
 
 def test_documents_written_before_sharing_join_the_shared_set(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    client.put("/api/store/checks/old", json={"data": {"id": "old"}}, headers=h(A))  # separate phones: under A
-    monkeypatch.delenv("STORE_SHARED", raising=False)
+    client.put("/api/store/checks/old", json={"data": {"id": "old"}}, headers=h(A))  # separate teachers: under A
+    monkeypatch.setenv("STORE_SHARED", "1")
     assert client.get("/api/store", headers=h(B)).json()["checks"]["old"]["id"] == "old"
+
+
+def test_a_teacher_is_her_store_key_so_the_same_nickname_on_two_browsers_shares_and_another_does_not(client: TestClient) -> None:
+    key_priya, key_ravi = f"{101:016x}", f"{202:016x}"
+
+    def on(browser: str, key: str) -> dict[str, str]:
+        return {"X-Device-Id": browser, "X-Store-Key": key, "X-Role": "teacher"}
+
+    client.put("/api/store/checks/c-1:1", json={"data": {"id": "c-1:1", "term": 1}}, headers=on(A, key_priya))
+    assert client.get("/api/store", headers=on(B, key_priya)).json()["checks"]["c-1:1"]["term"] == 1  # Priya on a second browser
+    assert client.get("/api/store", headers=on(B, key_ravi)).json()["checks"] == {}  # Ravi is someone else
+    assert client.get("/api/store", headers=on(A, key_ravi)).json()["checks"] == {}  # even on Priya's browser
+    labels = [r["teacher"] for r in client.get("/api/store/all/checks", headers=h(A, "coach")).json()]
+    assert labels == ["Teacher 1"]

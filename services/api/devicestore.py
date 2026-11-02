@@ -48,13 +48,14 @@ class DeviceDoc(Base):
 SHARED = "0" * 16
 
 
-def _device(x_device_id: str | None) -> str:
-    """The key a request's documents live under. Open by default (decided 2 Nov 2026): every browser shares
-    one set of documents, so a judge or a second device sees what was already entered. STORE_SHARED=0 gives
-    each phone its own documents again, keyed by its random device id."""
-    if not x_device_id or not DEVICE.match(x_device_id):
-        raise HTTPException(422, "X-Device-Id must be the random id the app made for this phone.")
-    return x_device_id if os.environ.get("STORE_SHARED") == "0" else SHARED
+def _device(key: str | None) -> str:
+    """The key a request's documents live under. A teacher is her nickname: the app sends a key made
+    from it (`X-Store-Key`), so the same nickname on any browser reads and writes the same documents and
+    another nickname gets its own (decided 2 Nov 2026). With no nickname the phone's random device id is
+    the key. STORE_SHARED=1 puts everyone in one shared set instead."""
+    if not key or not DEVICE.match(key):
+        raise HTTPException(422, "The store key must be the 16-character id the app made.")
+    return SHARED if os.environ.get("STORE_SHARED") == "1" else key
 
 
 def _adopt_earlier(db: Session) -> None:
@@ -81,9 +82,9 @@ class DocIn(BaseModel):
 
 
 @router.get("")
-def read_all(x_device_id: str | None = Header(default=None), db: Session = SESSION) -> dict[str, dict[str, Any]]:
+def read_all(x_device_id: str | None = Header(default=None), x_store_key: str | None = Header(default=None), db: Session = SESSION) -> dict[str, dict[str, Any]]:
     """Everything this phone has stored, by collection and id."""
-    device = _device(x_device_id)
+    device = _device(x_store_key or x_device_id)
     if device == SHARED:
         _adopt_earlier(db)
     out: dict[str, dict[str, Any]] = {c: {} for c in COLLECTIONS}
@@ -93,8 +94,8 @@ def read_all(x_device_id: str | None = Header(default=None), db: Session = SESSI
 
 
 @router.put("/{collection}/{doc_id}")
-def write(collection: str, doc_id: str, body: DocIn, x_device_id: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
-    device, coll = _device(x_device_id), _collection(collection)
+def write(collection: str, doc_id: str, body: DocIn, x_device_id: str | None = Header(default=None), x_store_key: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
+    device, coll = _device(x_store_key or x_device_id), _collection(collection)
     if not DOC_ID.match(doc_id):
         raise HTTPException(422, "Bad document id.")
     if len(str(body.data)) > MAX_DOC_BYTES:
@@ -110,17 +111,17 @@ def write(collection: str, doc_id: str, body: DocIn, x_device_id: str | None = H
 
 
 @router.delete("/{collection}/{doc_id}")
-def remove(collection: str, doc_id: str, x_device_id: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
-    device, coll = _device(x_device_id), _collection(collection)
+def remove(collection: str, doc_id: str, x_device_id: str | None = Header(default=None), x_store_key: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
+    device, coll = _device(x_store_key or x_device_id), _collection(collection)
     db.execute(delete(DeviceDoc).where(DeviceDoc.device == device, DeviceDoc.collection == coll, DeviceDoc.doc_id == doc_id))
     db.commit()
     return {"ok": True}
 
 
 @router.delete("")
-def clear(x_device_id: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
+def clear(x_device_id: str | None = Header(default=None), x_store_key: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
     """Delete everything this phone stored (the 'delete my data' action)."""
-    db.execute(delete(DeviceDoc).where(DeviceDoc.device == _device(x_device_id)))
+    db.execute(delete(DeviceDoc).where(DeviceDoc.device == _device(x_store_key or x_device_id)))
     db.commit()
     return {"ok": True}
 
