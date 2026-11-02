@@ -21,6 +21,13 @@ def widen_answer_column(engine: Engine) -> None:
             conn.execute(text("ALTER TABLE module_feedback ALTER COLUMN answer TYPE VARCHAR(10)"))
 
 
+def widen_profile_form(engine: Engine) -> None:
+    """A check's form is now a paper id (P-…), longer than the old letter; Postgres enforces the length."""
+    if engine.dialect.name == "postgresql":
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE profile_sync ALTER COLUMN form TYPE VARCHAR(40)"))
+
+
 def tried_to_worked(db: Session) -> int:
     """Returns how many rows changed (0 on a second run)."""
     changed = 0

@@ -273,7 +273,7 @@ class ProfileSync(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     class_id: Mapped[str] = mapped_column(String(40), index=True)
     term: Mapped[str] = mapped_column(String(8))
-    form: Mapped[str] = mapped_column(String(4))
+    form: Mapped[str] = mapped_column(String(40))  # a paper id (P-…), not just a letter
     children_checked: Mapped[int] = mapped_column(Integer)
     counts: Mapped[dict[str, Any]] = mapped_column(JSON)
     anchor_wrong_count: Mapped[int] = mapped_column(Integer)

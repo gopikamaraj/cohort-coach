@@ -76,6 +76,7 @@ def _factory() -> sessionmaker[Session]:
     from services.modules import migrate
 
     migrate.widen_answer_column(engine)
+    migrate.widen_profile_form(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
     with factory() as db:
         migrate.tried_to_worked(db)  # rows made before "tried" became "worked"
