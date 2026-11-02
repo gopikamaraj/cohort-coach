@@ -113,7 +113,33 @@ def load_all(db: Session, path: Path) -> dict[str, int]:
         except Exception:  # one table that will not take its rows must not stop the others
             db.rollback()
             logging.getLogger("seed").exception("table %s not loaded", table.name)
+    fix_sequences(db)  # the copied rows carry their own ids
     return loaded
+
+
+def fix_sequences(db: Session) -> list[str]:
+    """Postgres only: move each auto-number counter past the biggest id in its table. Rows copied in with
+    their own ids leave the counter behind, and the next new row would reuse an id. Safe to run any time."""
+    from sqlalchemy import text
+
+    if db.get_bind().dialect.name != "postgresql":
+        return []
+    fixed: list[str] = []
+    for table in _all_tables():
+        pk = list(table.primary_key.columns)
+        if len(pk) != 1 or not str(pk[0].type).upper().startswith(("INT", "BIGINT", "SMALLINT")):
+            continue
+        col = pk[0].name
+        seq = db.execute(text("SELECT pg_get_serial_sequence(:t, :c)"), {"t": table.name, "c": col}).scalar()
+        if not seq:
+            continue
+        db.execute(
+            text(f'SELECT setval(:s, GREATEST((SELECT COALESCE(MAX("{col}"), 0) FROM "{table.name}"), 1))'),
+            {"s": seq},
+        )
+        fixed.append(table.name)
+    db.commit()
+    return fixed
 
 
 # ---- replace chosen tables: a snapshot from one database over the same tables in another ---------
@@ -168,6 +194,7 @@ def replace_tables(src: Session, dst: Session, names: list[str]) -> dict[str, tu
                 dst.execute(insert(table), rows[i : i + 500])
             result[table.name] = (result[table.name][0], len(rows))
         dst.commit()
+        fix_sequences(dst)
     except Exception as exc:
         dst.rollback()
         raise SnapshotError(f"nothing changed on the target: {exc}") from exc

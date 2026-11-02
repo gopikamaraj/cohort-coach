@@ -80,6 +80,9 @@ def _factory() -> sessionmaker[Session]:
     factory = sessionmaker(engine, expire_on_commit=False)
     with factory() as db:
         migrate.tried_to_worked(db)  # rows made before "tried" became "worked"
+        from services.api.seed import fix_sequences
+
+        fix_sequences(db)  # Postgres: counters past any rows copied in with their own ids
     return factory
 
 
