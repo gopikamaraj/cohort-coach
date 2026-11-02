@@ -42,3 +42,15 @@ def test_every_table_is_copied_into_empty_tables_only(tmp_path: Path) -> None:
         loaded = load_all(dst, tmp_path / "all.json")
         assert loaded["paper"] == 1 and loaded["paper_item"] == counts["paper_item"]
         assert load_all(dst, tmp_path / "all.json") == {}  # a table that has rows is left alone
+
+
+def test_a_cloud_sql_url_is_built_from_parts_and_the_password_is_escaped(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    from services.api.db import cloudsql_url
+
+    for k in ("CLOUDSQL_INSTANCE", "DB_PASSWORD", "DB_NAME", "DB_USER"):
+        monkeypatch.delenv(k, raising=False)
+    assert cloudsql_url() is None
+    monkeypatch.setenv("CLOUDSQL_INSTANCE", "p:r:i")
+    monkeypatch.setenv("DB_PASSWORD", "a/b@c")
+    monkeypatch.setenv("DB_NAME", "ccapp")
+    assert cloudsql_url() == "postgresql+psycopg://postgres:a%2Fb%40c@/ccapp?host=/cloudsql/p:r:i"

@@ -241,9 +241,21 @@ class Consent(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
+def cloudsql_url() -> str | None:
+    """A Cloud SQL (Postgres) URL built from parts, so the password can come from a secret reference and
+    never be written into a URL by hand: CLOUDSQL_INSTANCE (project:region:name), DB_NAME, DB_PASSWORD."""
+    from urllib.parse import quote
+
+    instance, password = os.environ.get("CLOUDSQL_INSTANCE"), os.environ.get("DB_PASSWORD")
+    if not instance or not password:
+        return None
+    user, name = os.environ.get("DB_USER", "postgres"), os.environ.get("DB_NAME", "cohort")
+    return f"postgresql+psycopg://{user}:{quote(password, safe='')}@/{name}?host=/cloudsql/{instance}"
+
+
 def make_engine(url: str | None = None) -> Engine:
-    """Engine from DATABASE_URL (SQLite for local dev and tests, Postgres in production)."""
-    return create_engine(url or os.environ.get("DATABASE_URL") or "sqlite:///./dev.sqlite")
+    """Engine from DATABASE_URL, else Cloud SQL parts (see `cloudsql_url`), else SQLite for local dev and tests."""
+    return create_engine(url or os.environ.get("DATABASE_URL") or cloudsql_url() or "sqlite:///./dev.sqlite")
 
 
 class ProfileSync(Base):
