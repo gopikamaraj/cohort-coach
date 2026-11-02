@@ -28,6 +28,8 @@ COPY data/__init__.py ./data/__init__.py
 COPY data/synthetic ./data/synthetic
 # Demo Studio (judge deployment): the demo scenario, and the photo effects the demo sheets reuse.
 COPY demo ./demo
+# Papers copied into a fresh deployment once (SEED_PAPERS_FILE=/app/deploy_seed/papers.json).
+COPY deploy_seed ./deploy_seed
 COPY scripts/__init__.py scripts/make_synthetic_sheets.py ./scripts/
 RUN pip install --no-cache-dir ".[prod]"
 

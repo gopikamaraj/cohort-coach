@@ -1,0 +1,1346 @@
+{
+ "paper": [
+  {
+   "id": "P-f6ebe1811643",
+   "check_id": "shared:import",
+   "class_id": "shared",
+   "check_code": "PRE · IMPORTED",
+   "form": "A",
+   "kind": "pre",
+   "seed": "imported",
+   "blueprint": "imported",
+   "blueprint_version": 1,
+   "rules_version": 1,
+   "language": "en",
+   "profile_id": null,
+   "status": "confirmed",
+   "hash": "f6ebe1811643de894953d38911a98a525d4400c72048bfb8d270277989fc9e91",
+   "twin_of": null,
+   "custom": false,
+   "findings": [],
+   "body": {
+    "check_id": "shared:import",
+    "check_code": "PRE · IMPORTED",
+    "form": "A",
+    "kind": "pre",
+    "seed": "imported",
+    "blueprint": "imported",
+    "rules_version": 1,
+    "language": "en",
+    "profile": {
+     "source": "imported",
+     "weights": {},
+     "not_assessed": [],
+     "language": "en",
+     "strength": null,
+     "built_from": []
+    },
+    "not_assessed": [],
+    "coverage": {
+     "PV-HEARD": [
+      1,
+      2
+     ],
+     "PV-REVERSE": [
+      1,
+      2
+     ],
+     "ADD-NOCARRY": [
+      3,
+      4,
+      5,
+      11
+     ],
+     "SUB-SFL": [
+      7,
+      8,
+      9,
+      10,
+      14,
+      15
+     ],
+     "SUB-NODEC": [
+      7,
+      8,
+      9,
+      10,
+      14,
+      15
+     ]
+    },
+    "items": [
+     {
+      "n": 1,
+      "slot": 1,
+      "template": "imported",
+      "competency": "C1",
+      "section": "imported",
+      "operation": "dictate",
+      "a": 305,
+      "b": 0,
+      "correct": 305,
+      "wrong": {
+       "PV-HEARD": [
+        3005
+       ],
+       "PV-REVERSE": [
+        350
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 2,
+      "slot": 2,
+      "template": "imported",
+      "competency": "C1",
+      "section": "imported",
+      "operation": "dictate",
+      "a": 496,
+      "b": 0,
+      "correct": 496,
+      "wrong": {
+       "PV-HEARD": [
+        4096,
+        40096,
+        400906
+       ],
+       "PV-REVERSE": [
+        469
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 3,
+      "slot": 3,
+      "template": "imported",
+      "competency": "C2",
+      "section": "imported",
+      "operation": "add",
+      "a": 38,
+      "b": 47,
+      "correct": 85,
+      "wrong": {
+       "ADD-NOCARRY": [
+        75
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 4,
+      "slot": 4,
+      "template": "imported",
+      "competency": "C2",
+      "section": "imported",
+      "operation": "add",
+      "a": 46,
+      "b": 28,
+      "correct": 74,
+      "wrong": {
+       "ADD-NOCARRY": [
+        64
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 5,
+      "slot": 5,
+      "template": "imported",
+      "competency": "C2",
+      "section": "imported",
+      "operation": "add",
+      "a": 59,
+      "b": 23,
+      "correct": 82,
+      "wrong": {
+       "ADD-NOCARRY": [
+        72
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 6,
+      "slot": 6,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 87,
+      "b": 52,
+      "correct": 35,
+      "wrong": {},
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 7,
+      "slot": 7,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 74,
+      "b": 36,
+      "correct": 38,
+      "wrong": {
+       "SUB-SFL": [
+        42
+       ],
+       "SUB-NODEC": [
+        48
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 8,
+      "slot": 8,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 45,
+      "b": 19,
+      "correct": 26,
+      "wrong": {
+       "SUB-SFL": [
+        34
+       ],
+       "SUB-NODEC": [
+        36
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 9,
+      "slot": 9,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 82,
+      "b": 39,
+      "correct": 43,
+      "wrong": {
+       "SUB-SFL": [
+        57
+       ],
+       "SUB-NODEC": [
+        53
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 10,
+      "slot": 10,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 81,
+      "b": 27,
+      "correct": 54,
+      "wrong": {
+       "SUB-SFL": [
+        66
+       ],
+       "SUB-NODEC": [
+        64
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 11,
+      "slot": 11,
+      "template": "imported",
+      "competency": "C2",
+      "section": "imported",
+      "operation": "add",
+      "a": 246,
+      "b": 178,
+      "correct": 424,
+      "wrong": {
+       "ADD-NOCARRY": [
+        314
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 12,
+      "slot": 12,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 786,
+      "b": 452,
+      "correct": 334,
+      "wrong": {},
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 13,
+      "slot": 13,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 895,
+      "b": 324,
+      "correct": 571,
+      "wrong": {},
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 14,
+      "slot": 14,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 703,
+      "b": 468,
+      "correct": 235,
+      "wrong": {
+       "SUB-SFL": [
+        365
+       ],
+       "SUB-NODEC": [
+        245
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     },
+     {
+      "n": 15,
+      "slot": 15,
+      "template": "imported",
+      "competency": "C3",
+      "section": "imported",
+      "operation": "subtract",
+      "a": 542,
+      "b": 179,
+      "correct": 363,
+      "wrong": {
+       "SUB-SFL": [
+        437
+       ],
+       "SUB-NODEC": [
+        373
+       ]
+      },
+      "untracked": {},
+      "is_anchor": false,
+      "difficulty": null,
+      "twin_of": null
+     }
+    ],
+    "source": "imported_pdf",
+    "layout_map": "approximate",
+    "imported_by": "teacher-c-2fa8da7fc6",
+    "dropped_items": [],
+    "hash": "f6ebe1811643de894953d38911a98a525d4400c72048bfb8d270277989fc9e91"
+   },
+   "approved_by": null,
+   "approved_at": null,
+   "rejected_reason": null,
+   "frozen_at": "2026-11-02T11:54:20.296407",
+   "created_at": "2026-11-02T11:44:34.272167"
+  }
+ ],
+ "paper_item": [
+  {
+   "id": 1,
+   "paper_id": "P-f6ebe1811643",
+   "n": 1,
+   "slot": 1,
+   "template": "imported",
+   "a": 305,
+   "b": 0,
+   "correct": 305,
+   "wrong": {
+    "PV-HEARD": [
+     3005
+    ],
+    "PV-REVERSE": [
+     350
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 2,
+   "paper_id": "P-f6ebe1811643",
+   "n": 2,
+   "slot": 2,
+   "template": "imported",
+   "a": 496,
+   "b": 0,
+   "correct": 496,
+   "wrong": {
+    "PV-HEARD": [
+     4096,
+     40096,
+     400906
+    ],
+    "PV-REVERSE": [
+     469
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 3,
+   "paper_id": "P-f6ebe1811643",
+   "n": 3,
+   "slot": 3,
+   "template": "imported",
+   "a": 38,
+   "b": 47,
+   "correct": 85,
+   "wrong": {
+    "ADD-NOCARRY": [
+     75
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 4,
+   "paper_id": "P-f6ebe1811643",
+   "n": 4,
+   "slot": 4,
+   "template": "imported",
+   "a": 46,
+   "b": 28,
+   "correct": 74,
+   "wrong": {
+    "ADD-NOCARRY": [
+     64
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 5,
+   "paper_id": "P-f6ebe1811643",
+   "n": 5,
+   "slot": 5,
+   "template": "imported",
+   "a": 59,
+   "b": 23,
+   "correct": 82,
+   "wrong": {
+    "ADD-NOCARRY": [
+     72
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 6,
+   "paper_id": "P-f6ebe1811643",
+   "n": 6,
+   "slot": 6,
+   "template": "imported",
+   "a": 87,
+   "b": 52,
+   "correct": 35,
+   "wrong": {},
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 7,
+   "paper_id": "P-f6ebe1811643",
+   "n": 7,
+   "slot": 7,
+   "template": "imported",
+   "a": 74,
+   "b": 36,
+   "correct": 38,
+   "wrong": {
+    "SUB-SFL": [
+     42
+    ],
+    "SUB-NODEC": [
+     48
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 8,
+   "paper_id": "P-f6ebe1811643",
+   "n": 8,
+   "slot": 8,
+   "template": "imported",
+   "a": 45,
+   "b": 19,
+   "correct": 26,
+   "wrong": {
+    "SUB-SFL": [
+     34
+    ],
+    "SUB-NODEC": [
+     36
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 9,
+   "paper_id": "P-f6ebe1811643",
+   "n": 9,
+   "slot": 9,
+   "template": "imported",
+   "a": 82,
+   "b": 39,
+   "correct": 43,
+   "wrong": {
+    "SUB-SFL": [
+     57
+    ],
+    "SUB-NODEC": [
+     53
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 10,
+   "paper_id": "P-f6ebe1811643",
+   "n": 10,
+   "slot": 10,
+   "template": "imported",
+   "a": 81,
+   "b": 27,
+   "correct": 54,
+   "wrong": {
+    "SUB-SFL": [
+     66
+    ],
+    "SUB-NODEC": [
+     64
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 11,
+   "paper_id": "P-f6ebe1811643",
+   "n": 11,
+   "slot": 11,
+   "template": "imported",
+   "a": 246,
+   "b": 178,
+   "correct": 424,
+   "wrong": {
+    "ADD-NOCARRY": [
+     314
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 12,
+   "paper_id": "P-f6ebe1811643",
+   "n": 12,
+   "slot": 12,
+   "template": "imported",
+   "a": 786,
+   "b": 452,
+   "correct": 334,
+   "wrong": {},
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 13,
+   "paper_id": "P-f6ebe1811643",
+   "n": 13,
+   "slot": 13,
+   "template": "imported",
+   "a": 895,
+   "b": 324,
+   "correct": 571,
+   "wrong": {},
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 14,
+   "paper_id": "P-f6ebe1811643",
+   "n": 14,
+   "slot": 14,
+   "template": "imported",
+   "a": 703,
+   "b": 468,
+   "correct": 235,
+   "wrong": {
+    "SUB-SFL": [
+     365
+    ],
+    "SUB-NODEC": [
+     245
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  },
+  {
+   "id": 15,
+   "paper_id": "P-f6ebe1811643",
+   "n": 15,
+   "slot": 15,
+   "template": "imported",
+   "a": 542,
+   "b": 179,
+   "correct": 363,
+   "wrong": {
+    "SUB-SFL": [
+     437
+    ],
+    "SUB-NODEC": [
+     373
+    ]
+   },
+   "is_anchor": false,
+   "twin_of": null
+  }
+ ],
+ "paper_import": [
+  {
+   "id": "I-61dfe9de13536b6e",
+   "owner": "teacher-c-2fa8da7fc6",
+   "role": "teacher",
+   "file_hash": "43475c2e80b3a6f53b7a419675adfe08659cf6825a990ddbaa287016cb1ea272",
+   "status": "confirmed",
+   "draft": {
+    "header": {
+     "form_letter": "A",
+     "check_code": null,
+     "class_code": null
+    },
+    "language": "en",
+    "contains_handwritten_answers": false,
+    "sheets_read": 1,
+    "items": [
+     {
+      "n": 1,
+      "operation": "dictate",
+      "a": 305,
+      "b": null,
+      "prompt_text": "Write the number you hear in its box.",
+      "box_pct": [
+       5.0,
+       21.0,
+       46.0,
+       11.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 305,
+      "competency": "C1",
+      "skill": "Write a dictated number in digits",
+      "error_probes": [
+       "PV-HEARD",
+       "PV-REVERSE"
+      ],
+      "wrong": {
+       "PV-HEARD": [
+        3005
+       ],
+       "PV-REVERSE": [
+        350
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 305,
+      "from_guide": false
+     },
+     {
+      "n": 2,
+      "operation": "dictate",
+      "a": 496,
+      "b": null,
+      "prompt_text": "Write the number you hear in its box.",
+      "box_pct": [
+       57.0,
+       21.0,
+       38.0,
+       11.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 496,
+      "competency": "C1",
+      "skill": "Write a dictated number in digits",
+      "error_probes": [
+       "PV-HEARD",
+       "PV-REVERSE"
+      ],
+      "wrong": {
+       "PV-HEARD": [
+        4096,
+        40096,
+        400906
+       ],
+       "PV-REVERSE": [
+        469
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 496,
+      "from_guide": false
+     },
+     {
+      "n": 3,
+      "operation": "add",
+      "a": 38,
+      "b": 47,
+      "prompt_text": "",
+      "box_pct": [
+       7.0,
+       77.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 85,
+      "competency": "C2",
+      "skill": "Add whole numbers",
+      "error_probes": [
+       "ADD-NOCARRY"
+      ],
+      "wrong": {
+       "ADD-NOCARRY": [
+        75
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 85,
+      "from_guide": false
+     },
+     {
+      "n": 4,
+      "operation": "add",
+      "a": 46,
+      "b": 28,
+      "prompt_text": "",
+      "box_pct": [
+       25.0,
+       77.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 74,
+      "competency": "C2",
+      "skill": "Add whole numbers",
+      "error_probes": [
+       "ADD-NOCARRY"
+      ],
+      "wrong": {
+       "ADD-NOCARRY": [
+        64
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 74,
+      "from_guide": false
+     },
+     {
+      "n": 5,
+      "operation": "add",
+      "a": 59,
+      "b": 23,
+      "prompt_text": "",
+      "box_pct": [
+       43.0,
+       77.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 82,
+      "competency": "C2",
+      "skill": "Add whole numbers",
+      "error_probes": [
+       "ADD-NOCARRY"
+      ],
+      "wrong": {
+       "ADD-NOCARRY": [
+        72
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 82,
+      "from_guide": false
+     },
+     {
+      "n": 6,
+      "operation": "subtract",
+      "a": 87,
+      "b": 52,
+      "prompt_text": "",
+      "box_pct": [
+       61.0,
+       77.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 35,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [],
+      "wrong": {},
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 35,
+      "from_guide": false
+     },
+     {
+      "n": 7,
+      "operation": "subtract",
+      "a": 74,
+      "b": 36,
+      "prompt_text": "",
+      "box_pct": [
+       79.0,
+       77.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 38,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [
+       "SUB-SFL",
+       "SUB-NODEC"
+      ],
+      "wrong": {
+       "SUB-SFL": [
+        42
+       ],
+       "SUB-NODEC": [
+        48
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 38,
+      "from_guide": false
+     },
+     {
+      "n": 8,
+      "operation": "subtract",
+      "a": 45,
+      "b": 19,
+      "prompt_text": "",
+      "box_pct": [
+       7.0,
+       62.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 26,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [
+       "SUB-SFL",
+       "SUB-NODEC"
+      ],
+      "wrong": {
+       "SUB-SFL": [
+        34
+       ],
+       "SUB-NODEC": [
+        36
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 26,
+      "from_guide": false
+     },
+     {
+      "n": 9,
+      "operation": "subtract",
+      "a": 82,
+      "b": 39,
+      "prompt_text": "",
+      "box_pct": [
+       25.0,
+       62.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 43,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [
+       "SUB-SFL",
+       "SUB-NODEC"
+      ],
+      "wrong": {
+       "SUB-SFL": [
+        57
+       ],
+       "SUB-NODEC": [
+        53
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 43,
+      "from_guide": false
+     },
+     {
+      "n": 10,
+      "operation": "subtract",
+      "a": 81,
+      "b": 27,
+      "prompt_text": "",
+      "box_pct": [
+       43.0,
+       62.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 54,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [
+       "SUB-SFL",
+       "SUB-NODEC"
+      ],
+      "wrong": {
+       "SUB-SFL": [
+        66
+       ],
+       "SUB-NODEC": [
+        64
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 54,
+      "from_guide": false
+     },
+     {
+      "n": 11,
+      "operation": "add",
+      "a": 246,
+      "b": 178,
+      "prompt_text": "",
+      "box_pct": [
+       61.0,
+       62.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 424,
+      "competency": "C2",
+      "skill": "Add whole numbers",
+      "error_probes": [
+       "ADD-NOCARRY"
+      ],
+      "wrong": {
+       "ADD-NOCARRY": [
+        314
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 424,
+      "from_guide": false
+     },
+     {
+      "n": 12,
+      "operation": "subtract",
+      "a": 786,
+      "b": 452,
+      "prompt_text": "",
+      "box_pct": [
+       79.0,
+       62.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 334,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [],
+      "wrong": {},
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 334,
+      "from_guide": false
+     },
+     {
+      "n": 13,
+      "operation": "subtract",
+      "a": 895,
+      "b": 324,
+      "prompt_text": "",
+      "box_pct": [
+       7.0,
+       85.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 571,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [],
+      "wrong": {},
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 571,
+      "from_guide": false
+     },
+     {
+      "n": 14,
+      "operation": "subtract",
+      "a": 703,
+      "b": 468,
+      "prompt_text": "",
+      "box_pct": [
+       25.0,
+       85.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 235,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [
+       "SUB-SFL",
+       "SUB-NODEC"
+      ],
+      "wrong": {
+       "SUB-SFL": [
+        365
+       ],
+       "SUB-NODEC": [
+        245
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 235,
+      "from_guide": false
+     },
+     {
+      "n": 15,
+      "operation": "subtract",
+      "a": 542,
+      "b": 179,
+      "prompt_text": "",
+      "box_pct": [
+       43.0,
+       85.0,
+       13.0,
+       8.0
+      ],
+      "unsure": false,
+      "supported": true,
+      "reason": null,
+      "include": true,
+      "correct": 363,
+      "competency": "C3",
+      "skill": "Subtract whole numbers",
+      "error_probes": [
+       "SUB-SFL",
+       "SUB-NODEC"
+      ],
+      "wrong": {
+       "SUB-SFL": [
+        437
+       ],
+       "SUB-NODEC": [
+        373
+       ]
+      },
+      "key_mismatch": false,
+      "findings": [],
+      "user_excluded": false,
+      "disagreement": false,
+      "acknowledged": false,
+      "from_key": false,
+      "key_file": 363,
+      "from_guide": false
+     }
+    ],
+    "class_id": "shared",
+    "kind": "pre",
+    "form": "A",
+    "coverage": {
+     "PV-HEARD": [
+      1,
+      2
+     ],
+     "PV-REVERSE": [
+      1,
+      2
+     ],
+     "ADD-NOCARRY": [
+      3,
+      4,
+      5,
+      11
+     ],
+     "SUB-SFL": [
+      7,
+      8,
+      9,
+      10,
+      14,
+      15
+     ],
+     "SUB-NODEC": [
+      7,
+      8,
+      9,
+      10,
+      14,
+      15
+     ]
+    },
+    "coverage_warnings": [],
+    "open_questions": [],
+    "changes": {
+     "items.1.a": {
+      "old": 346,
+      "via": "user"
+     },
+     "items.2.a": {
+      "old": 728,
+      "via": "user"
+     }
+    }
+   },
+   "history": [
+    {
+     "field": "items.1.a",
+     "old": 346,
+     "new": 305,
+     "via": "user",
+     "at": "2026-11-02T11:44:26.594303+00:00"
+    },
+    {
+     "field": "items.2.a",
+     "old": 728,
+     "new": 496,
+     "via": "user",
+     "at": "2026-11-02T11:44:31.750358+00:00"
+    }
+   ],
+   "pages": 3,
+   "paper_id": "P-f6ebe1811643",
+   "cost_usd": 0.00151396,
+   "created_at": "2026-11-02T11:44:17.235029",
+   "expires_at": "2026-11-03T11:44:17.233069"
+  }
+ ],
+ "paper_event": [
+  {
+   "id": 1,
+   "at": "2026-11-02T11:44:34.262296",
+   "event": "imported",
+   "actor": "teacher-c-2fa8da7fc6",
+   "paper_id": "P-f6ebe1811643",
+   "class_id": "shared",
+   "check_id": null,
+   "blueprint": null,
+   "rules_version": null,
+   "seed": null,
+   "hash": "f6ebe1811643de894953d38911a98a525d4400c72048bfb8d270277989fc9e91",
+   "detail": "15 items, 1 sheet(s)"
+  },
+  {
+   "id": 2,
+   "at": "2026-11-02T11:54:20.297385",
+   "event": "frozen",
+   "actor": "teacher-demo",
+   "paper_id": "P-f6ebe1811643",
+   "class_id": "shared",
+   "check_id": "shared:import",
+   "blueprint": "imported",
+   "rules_version": 1,
+   "seed": "imported",
+   "hash": "f6ebe1811643de894953d38911a98a525d4400c72048bfb8d270277989fc9e91",
+   "detail": "first sheet entered"
+  }
+ ]
+}

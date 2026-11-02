@@ -105,6 +105,20 @@ def create_app() -> FastAPI:
     app.include_router(modules_router)
     app.include_router(cohort_chat_router)
 
+    if os.environ.get("SEED_PAPERS_FILE"):  # fresh deployment: papers copied in once
+
+        @app.on_event("startup")
+        def _seed_papers() -> None:
+            from pathlib import Path
+
+            from services.api.profiles import _factory
+            from services.api.seed import load_papers
+
+            path = Path(os.environ["SEED_PAPERS_FILE"])
+            if path.is_file():
+                with _factory()() as db:
+                    load_papers(db, path)
+
     if os.environ.get("CHAT_POLLER", "1") == "1":  # the server owns the chat's AI timer
 
         @app.on_event("startup")

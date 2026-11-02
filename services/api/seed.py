@@ -1,86 +1,56 @@
-"""Write a generated block into the database. Counts only, every row marked simulated."""
+# ruff: noqa: E501
+"""Copy papers between databases: a one-time seed for a fresh deployment.
+
+`export_papers(db, path)` writes the paper tables to a JSON file. `load_papers(db, path)` inserts them
+when the target has no papers yet, so a restart never doubles or overwrites anything. Papers hold the
+printed questions and their keys only: no child data, no sheet photo. The startup hook runs only when
+`SEED_PAPERS_FILE` is set."""
 
 from __future__ import annotations
 
+import json
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
-from sqlalchemy import delete
+from sqlalchemy import DateTime, insert, select
 from sqlalchemy.orm import Session
 
-from services.api.db import Assignment, ClassRoom, ClassTermCount, Cohort, School
+from services.papers.models import PaperEvent, PaperItemRow, PaperRow
+from services.papers_hub.models import PaperImport
+
+# parents first, so a foreign key always finds its row
+MODELS = (PaperRow, PaperItemRow, PaperImport, PaperEvent)
 
 
-def seed_database(session: Session, block: dict[str, Any]) -> None:
-    """Replace the simulated rows with this block. Safe to run twice."""
-    for model in (Cohort, Assignment, ClassTermCount, ClassRoom, School):
-        session.execute(delete(model).where(model.simulated))
-    session.add_all(
-        School(
-            school_id=s["school_id"],
-            name=s["name"],
-            school_type=s["school_type"],
-            medium=s["medium"],
-            simulated=True,
-        )
-        for s in block["schools"]
-    )
-    session.flush()
-    session.add_all(
-        ClassRoom(
-            class_id=c["class_id"],
-            school_id=c["school_id"],
-            block_id=block["block_id"],
-            grade=block["grade"],
-            section=c["section"],
-            medium=c["medium"],
-            teacher_id=c["teacher_id"],
-            teacher_name=c["teacher_name"],
-            simulated=True,
-        )
-        for c in block["classes"]
-    )
-    session.flush()
-    for term, data in block["terms"].items():
-        session.add_all(
-            ClassTermCount(
-                class_id=class_id,
-                term=term,
-                form_label=data["form_label"],
-                children_checked=rec["children_checked"],
-                counts=rec["counts"],
-                anchor_wrong_count=rec["anchor_wrong_count"],
-                untracked=rec["untracked"],
-                simulated=True,
-            )
-            for class_id, rec in data["classes"].items()
-        )
-    session.add_all(
-        Assignment(
-            class_id=a["class_id"],
-            track=a["track"],
-            version=a["version"],
-            arm=a["arm"],
-            stratum=a["stratum"],
-            reason=a["reason"],
-            children_checked=a["children_checked"],
-            children_showing=a["children_showing"],
-            simulated=True,
-        )
-        for a in block["assignments"]
-    )
-    session.add_all(
-        Cohort(
-            cohort_id=c["cohort_id"],
-            error=c["error"],
-            medium=c["medium"],
-            size=c["size"],
-            class_ids=c["class_ids"],
-            block_id=c["block_id"],
-            cross_block=c["cross_block"],
-            undersized=c["undersized"],
-            mentor_slot=c["mentor_slot"],
-            simulated=True,
-        )
-        for c in block["cohorts"]
-    )
-    session.commit()
+def _cell(value: Any) -> Any:
+    return value.isoformat() if isinstance(value, datetime) else value
+
+
+def export_papers(db: Session, path: Path) -> dict[str, int]:
+    out: dict[str, list[dict[str, Any]]] = {}
+    for model in MODELS:
+        cols = [c.name for c in model.__table__.columns]
+        rows = db.execute(select(model.__table__)).mappings().all()
+        out[model.__tablename__] = [{c: _cell(r[c]) for c in cols} for r in rows]
+    path.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    return {k: len(v) for k, v in out.items()}
+
+
+def load_papers(db: Session, path: Path) -> dict[str, int]:
+    if db.execute(select(PaperRow.id).limit(1)).first() is not None:
+        return {}  # the target already has papers: leave them alone
+    data = json.loads(path.read_text(encoding="utf-8"))
+    loaded: dict[str, int] = {}
+    for model in MODELS:
+        table = model.__table__
+        stamps = {c.name for c in table.columns if isinstance(c.type, DateTime)}
+        rows = [
+            {k: (datetime.fromisoformat(v) if k in stamps and isinstance(v, str) else v) for k, v in row.items()}
+            for row in data.get(model.__tablename__, [])
+        ]
+        if rows:
+            db.execute(insert(table), rows)
+        loaded[model.__tablename__] = len(rows)
+    db.commit()
+    return loaded
