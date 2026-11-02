@@ -56,13 +56,10 @@ export function ClassCohortMaker({ onlyConfirmed }: { onlyConfirmed: boolean }) 
       </section>
     );
   }
+  if (peers.length === 0) return null; // nothing to say until another teacher's class shows the same mistake
   return (
     <section className="card stack" data-testid="class-cohort-start">
-      {peers.length > 0 ? (
-        <p data-testid="class-cohort-peers">{tr("cohort.mine.peers", { names: peers.map((p) => (p.class ? `${p.teacher} (${p.class})` : p.teacher)).join("; ") })}</p>
-      ) : (
-        <p className="muted">{tr("cohort.mine.label")}</p>
-      )}
+      <p data-testid="class-cohort-peers">{tr("cohort.mine.peers", { names: peers.map((p) => (p.class ? `${p.teacher} (${p.class})` : p.teacher)).join("; ") })}</p>
     </section>
   );
 }
