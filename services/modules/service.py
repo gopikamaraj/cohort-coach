@@ -530,6 +530,27 @@ def mark_downloaded(
     return module
 
 
+def refresh_narration(
+    db: Session, track_id: str, number: int, teacher_id: str, lang: str, total: int
+) -> bool:
+    """Testing only (DEV_TESTING=1): word the module's script again from its current text. True when call
+    18's wording is now stored; False when the code-built script (headings, then the approved text) stands."""
+    from services.modules import narration  # here to avoid an import loop
+
+    track = _owned(db, track_id, teacher_id)
+    module = _by_number(db, track.id, number)
+    if module.status in (states.PLANNED, states.SKIPPED):
+        raise ModulesError("not_made", "That module is not made yet.")
+    mt = module_view(db, track, module, lang, total)["text"]
+    said = narration.run({**mt, "language": mt.get("language", lang)})
+    stored = {k: v for k, v in (module.text or {}).items() if k != "narration"}
+    if said is not None:
+        stored["narration"] = said
+    module.text = stored
+    db.commit()
+    return said is not None
+
+
 def next_for_teacher(db: Session, track_id: str, teacher_id: str, now: datetime) -> Generated:
     """ "Get the next module": only after feedback on the newest one."""
     track = _owned(db, track_id, teacher_id)

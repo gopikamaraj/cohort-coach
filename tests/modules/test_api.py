@@ -227,3 +227,20 @@ def test_the_job_endpoint_runs_the_job_with_the_token(
     assert again.json()["generated"] == 0
     got = client.get(f"/api/modules/tracks/{tid}", headers=h("teacher", DEV1)).json()
     assert got["modules"][1]["branch"] == "no_feedback"
+
+
+def test_refreshing_the_tts_text_is_testing_only_and_keeps_the_code_script_when_ai_is_off(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    view = start(client, make_cohort(client))
+    url = f"/api/modules/tracks/{view['id']}/modules/1/narration/refresh"
+    monkeypatch.setenv("DEV_TESTING", "0")
+    assert client.post(url, headers=h("teacher", DEV1)).status_code == 404
+    monkeypatch.setenv("DEV_TESTING", "1")
+    monkeypatch.setenv("AI_MODE", "off")
+    r = client.post(url, headers=h("teacher", DEV1))
+    assert r.status_code == 200, r.text
+    assert r.json()["reworded"] is False
+    spoken = r.json()["track"]["modules"][0]["spoken"]
+    assert "What this does. [pause] " in spoken
+    assert client.post(url.replace("modules/1", "modules/3"), headers=h("teacher", DEV1)).status_code == 409

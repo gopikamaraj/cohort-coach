@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
-import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
+import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, refreshNarration, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
 import { useDevTesting } from "../lib/aiMode";
 import { exportStem } from "../lib/packAudio";
 import { href } from "../lib/router";
@@ -166,12 +166,26 @@ function ModuleItem({ m, track, code, current, onTrack }: { m: ModuleView; track
 }
 
 function ModuleBody({ m, track, code, current, onTrack }: { m: ModuleView; track: TrackView; code: string; current: boolean; onTrack: (t: TrackView) => void }) {
-  const { tr, lang } = useApp();
+  const { tr, lang, online } = useApp();
   const parts: TextPart[] = m.text?.parts ?? [];
   const fallback = parts.some((p) => p.fallback);
   const draft = parts.some((p) => p.draft);
   const speakLang = m.language ?? track.language;
   const devTesting = useDevTesting();
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshed, setRefreshed] = useState<boolean | null>(null);
+  const refresh = async () => {
+    setRefreshing(true);
+    try {
+      const r = await refreshNarration(track.id, m.number, lang);
+      setRefreshed(r.reworded);
+      onTrack(r.track);
+    } catch {
+      setRefreshed(null);
+    } finally {
+      setRefreshing(false);
+    }
+  };
   return (
     <div className="stack module-body">
       {draft ? <span className="chip chip-draft">{tr("module.draft")}</span> : null}
@@ -212,6 +226,14 @@ function ModuleBody({ m, track, code, current, onTrack }: { m: ModuleView; track
           <p lang={speakLang} style={{ whiteSpace: "pre-wrap" }}>
             {m.spoken}
           </p>
+          <button type="button" className="btn btn-secondary" disabled={refreshing || !online} onClick={() => void refresh()} data-testid={`module-${m.number}-tts-refresh`}>
+            {refreshing ? tr("audio.dev_refreshing") : tr("audio.dev_refresh")}
+          </button>
+          {refreshed !== null ? (
+            <p role="status" className="muted" data-testid={`module-${m.number}-tts-refreshed`}>
+              {tr(refreshed ? "audio.dev_refreshed_ai" : "audio.dev_refreshed_code")}
+            </p>
+          ) : null}
         </details>
       ) : null}
       {m.spoken ? (

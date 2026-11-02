@@ -429,6 +429,30 @@ def downloaded(
     return service.track_view(db, track, lang, clock())
 
 
+@router.post("/tracks/{track_id}/modules/{number}/narration/refresh")
+def narration_refresh(
+    track_id: str,
+    number: int,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    """Testing only: DEV_TESTING=1 on the server, a 404 anywhere else."""
+    from ai.config import dev_testing
+
+    if not dev_testing():
+        raise HTTPException(status_code=404, detail="not found")
+    track, teacher = _own(db, track_id, x_device_id)
+    try:
+        total = len([m for m in service.modules_of(db, track.id) if m.status != "skipped"])
+        reworded = service.refresh_narration(db, track_id, number, teacher.teacher_id, lang, total)
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    db.refresh(track)
+    return {"reworded": reworded, "track": service.track_view(db, track, lang, clock())}
+
+
 # ---- coach ---------------------------------------------------------------------------------------
 
 
