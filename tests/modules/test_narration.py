@@ -92,3 +92,23 @@ def test_ordinary_numbers_are_said_in_words_and_602_digit_by_digit() -> None:
     assert speech_input.digit_words("602") == "six zero two"
     mt = library.module_text("ADD-NOCARRY", "show_bundles", False, "en").to_dict()
     assert narration.validate(_out(mt), mt) is not None
+
+
+def test_a_bad_first_answer_is_retried_once_then_the_code_script_is_kept(monkeypatch) -> None:
+    from ai.calls.c18_module_narration import NarrationRun
+
+    mt = _mt()
+    calls = []
+    good, bad = _out(mt), ModuleNarration(sections=[])
+
+    def fake(**kw):
+        calls.append(kw["module"])
+        return NarrationRun(bad if len(calls) == 1 else good, False, None)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(narration, "narrate", fake)
+    monkeypatch.setattr(narration.ai_config, "ai_mode", lambda: "live")
+    monkeypatch.setattr(narration, "run_gates", lambda *a, **k: type("G", (), {"passed_automatic": True})())
+    assert narration.run(mt, number=1, count=2) is not None and len(calls) == 2
+    calls.clear()
+    monkeypatch.setattr(narration, "narrate", lambda **kw: calls.append(1) or NarrationRun(bad, False, None))  # type: ignore[arg-type]
+    assert narration.run(mt, number=1, count=2) is None and len(calls) == 2

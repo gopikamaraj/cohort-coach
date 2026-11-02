@@ -121,8 +121,12 @@ def run(
             prompt_version=load_prompt("c18_module_narration").version,
             model=ai_config.model_for("MODEL_NARRATION"),
         )
-        got = narrate(facts=si.facts, module=si.module_block, context=context)
-        checked = None if got.fell_back else validate(got.output, mt)
+        checked = None
+        for _attempt in range(2):  # one retry, then the code-built script
+            got = narrate(facts=si.facts, module=si.module_block, context=context)
+            checked = None if got.fell_back else validate(got.output, mt)
+            if checked is not None:
+                break
         if checked is None:
             return None
         heard = " ".join(library.display(t) for t in checked.values())
