@@ -79,7 +79,7 @@ function CreatePaper({ onMade }: { onMade: () => void }) {
 }
 
 function TeacherPapers() {
-  const { tr, klass, online } = useApp();
+  const { tr, klass, online, reload } = useApp();
   const [rows, setRows] = useState<Paper[] | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [msg, setMsg] = useState("");
@@ -121,14 +121,15 @@ function TeacherPapers() {
 
   useEffect(() => {
     if (!klass?.id) {
-      setRows([]); // no class chosen yet: nothing to load, so never sit on the spinner
+      // a fresh phone has no class yet: make one now (papers are listed per class), then this runs again
+      void activeClass(false).then(() => reload());
       return;
     }
     pcall<Paper[]>(`/api/papers?class_id=${encodeURIComponent(klass.id)}`, "teacher")
       .then(setRows)
       .catch(() => setMsg(tr("papers.error")));
     void db.checks.where("classId").equals(klass.id).toArray().then(setChecks);
-  }, [klass?.id, tr, bump]);
+  }, [klass?.id, tr, bump, reload]);
 
   useEffect(() => {
     if (!klass?.id || !online) return;
