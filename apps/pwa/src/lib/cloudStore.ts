@@ -130,10 +130,15 @@ export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => f
     suppress += 1;
     try {
       await store.transaction("rw", SYNCED.map((t) => store.table(t)), async () => {
+        // a change made here that is still waiting to go up is newer than the server's copy: keep it
+        const waiting = readQueue();
         for (const t of SYNCED) {
-          await store.table(t).clear();
-          const docs = Object.values(cloud[t] ?? {});
-          if (docs.length > 0) await store.table(t).bulkPut(docs);
+          const keep = new Set(waiting.filter((p) => p.table === t).map((p) => p.id));
+          const table = store.table(t);
+          const pk = table.schema.primKey.name;
+          for (const k of await table.toCollection().primaryKeys()) if (!keep.has(String(k))) await table.delete(k);
+          const docs = Object.values(cloud[t] ?? {}).filter((d) => !keep.has(String((d as Record<string, unknown>)[pk])));
+          if (docs.length > 0) await table.bulkPut(docs);
         }
       });
     } finally {

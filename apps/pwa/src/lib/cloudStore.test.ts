@@ -76,6 +76,24 @@ describe("the cloud copy", () => {
     expect((await db.settings.get("activeClass"))?.value).toBe("c-1");
   });
 
+  it("keeps a change that has not gone up yet when the cache is refilled from the server", async () => {
+    const { cloud, fetchFn, offline } = setup();
+    cloud.settings = { term: { key: "term", value: 1 }, activeClass: { key: "activeClass", value: "c-1" } };
+    cloud.classes = { "c-1": klass };
+    const db = fresh();
+    watchTables(db);
+    offline(true);
+    await db.settings.put({ key: "term", value: 2 }); // she moved on to the next paper; the write is queued
+    offline(false);
+    cloud.settings["term"] = { key: "term", value: 1 }; // the server still has the old term when the read lands
+    const flushed = flushQueue;
+    void flushed; // (the queue is sent first by hydrate; here the send is held back by a failing server)
+    const failing = (async (url: string, init?: RequestInit) => (init?.method === "PUT" ? ({ ok: false, status: 503 } as Response) : fetchFn(url, init))) as typeof fetch;
+    await hydrate(db, failing);
+    expect((await db.settings.get("term"))?.value).toBe(2);
+    expect((await db.settings.get("activeClass"))?.value).toBe("c-1");
+  });
+
   it("sends a phone's old data up when the server has none of it, instead of wiping it", async () => {
     const { cloud, fetchFn } = setup();
     const db = fresh();
