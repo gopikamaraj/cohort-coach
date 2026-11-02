@@ -43,6 +43,7 @@ export default function Cards() {
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
   const [code, setCode] = useState<string | null>(null);
   const [onlyConfirmed, setOnlyConfirmed] = useState(false);
+  const [tab, setTab] = useState<"known" | "unknown">("known");
 
   if (!profile) {
     return (
@@ -125,7 +126,6 @@ export default function Cards() {
   others.sort((a, b) => b.count - a.count);
 
   const findings = [...stages, ...others];
-  const [tab, setTab] = useState<"known" | "unknown">("known");
   const kindLabel = { error: tr("cards.kind.error"), stage: tr("stage.title"), other: tr("cards.kind.other") };
 
   return (
