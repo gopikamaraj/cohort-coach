@@ -10998,6 +10998,32 @@
 "ts_start": null
 },
 {
+"heading": "Decisions log > 2026-11-02 · Every created paper is visible to every role (for now)",
+"id": "judge:docs/build/DECISIONS.md#decisions-log-2026-11-02-every-created-paper-is-visible-to-every-role-for-now:0",
+"kind": "file",
+"line": 986,
+"ns": "judge",
+"path": "docs/build/DECISIONS.md",
+"section": null,
+"slide_no": null,
+"text": "- **Decision:** the Papers list (`/api/papers`, `/api/paper-hub/papers`) and a paper's status and detail show every created, unarchived paper to every role, whatever class made it. Changing a paper (items, twin, archive, delete) is still scoped by `_own`. Entering a check and the results stay private to the class that owns them.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Decisions log > 2026-11-02 · Every created paper is visible to every role (for now)",
+"id": "judge:docs/build/DECISIONS.md#decisions-log-2026-11-02-every-created-paper-is-visible-to-every-role-for-now:1",
+"kind": "file",
+"line": 987,
+"ns": "judge",
+"path": "docs/build/DECISIONS.md",
+"section": null,
+"slide_no": null,
+"text": "- **Why:** the owner (Gopi) found a paper he had just made missing from the Papers page of another class and asked for all papers to be shared for now. - **Alternatives:** keep class scoping and add a share flag (more work, not asked for). - **Tests:** `test_a_teacher_sees_only_her_classes_papers_and_a_coach_sees_all` was replaced by `test_every_paper_is_listed_for_every_role_for_now`; the detail test now expects 200 for another class and still 404 for a change. - **Confirmed by:** Gopi, in the session of 2 Nov 2026.",
+"ts_end": null,
+"ts_start": null
+},
+{
 "heading": "Build progress",
 "id": "judge:docs/build/PROGRESS.md#build-progress:0",
 "kind": "file",
