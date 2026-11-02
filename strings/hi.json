@@ -2507,7 +2507,7 @@
   "coach.make.name": "समूह का नाम",
   "coach.make.create": "समूह बनाएँ",
   "coach.make.error": "समूह नहीं बन सका। नाम जाँचकर फिर कोशिश करें।",
-  "coach.make.none": "अभी कोई गलती दो या अधिक कक्षाओं में नहीं दिखती।",
+  "coach.make.none": "अभी किसी कक्षा में कोई गलती नहीं दिखती, इसलिए समूह बनाने को कुछ नहीं।",
   "coach.make.list": "समूह",
   "coach.make.row": "{name}: {classes} कक्षाएँ, जाँचे गए {total} बच्चों में से {n}",
   "officer.real.title": "जिन कक्षाओं ने जाँच दर्ज की",
@@ -2523,5 +2523,6 @@
   "officer.real.funnel": "फ़नल",
   "officer.real.funnel_grouped": "कोच ने समूह में रखा: {n} कक्षाएँ ({error}) (सिस्टम)",
   "officer.real.funnel_none": "अभी कोई समूह नहीं बना।",
-  "officer.real.funnel_wip": "इन कक्षाओं के लिए पहुँचा, आज़माया, अभ्यास, बदलाव: काम जारी है।"
+  "officer.real.funnel_wip": "इन कक्षाओं के लिए पहुँचा, आज़माया, अभ्यास, बदलाव: काम जारी है।",
+  "coach.make.need_two": "समूह बनाने से पहले कम से कम दो कक्षाओं में यह गलती दिखनी चाहिए।"
 }

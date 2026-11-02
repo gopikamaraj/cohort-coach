@@ -90,7 +90,8 @@ function EnteredClasses() {
   const latest = Math.max(0, ...sum.classes.map((c) => c.term));
   const now = sum.classes.filter((c) => c.term === latest);
   const byError = (e: string) => now.filter((c) => c.errors.includes(e));
-  const options = ERRORS.filter((e) => byError(e).length >= 2);
+  const options = ERRORS.filter((e) => byError(e).length >= 1);
+  const enough = code !== "" && byError(code).length >= 2;
   const label = (n: string) => n || "?";
   const pick = (e: string) => {
     setCode(e);
@@ -150,8 +151,9 @@ function EnteredClasses() {
               {tr("coach.make.name")}
               <input type="text" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} data-testid="coach-cohort-name" />
             </label>
+            {!enough ? <p className="muted">{tr("coach.make.need_two")}</p> : null}
             {msg ? <p role="alert">{msg}</p> : null}
-            <button type="button" className="btn btn-primary" disabled={busy || name.trim() === ""} onClick={() => void create()} data-testid="coach-cohort-create">
+            <button type="button" className="btn btn-primary" disabled={busy || !enough || name.trim() === ""} onClick={() => void create()} data-testid="coach-cohort-create">
               {tr("coach.make.create")}
             </button>
           </>

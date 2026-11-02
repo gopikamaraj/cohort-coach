@@ -2507,7 +2507,7 @@
   "coach.make.name": "Cohort name",
   "coach.make.create": "Create cohort",
   "coach.make.error": "The cohort could not be created. Check the name and try again.",
-  "coach.make.none": "No mistake is shown by two or more classes yet.",
+  "coach.make.none": "No class shows a mistake yet, so there is nothing to group.",
   "coach.make.list": "Cohorts",
   "coach.make.row": "{name}: {classes} classes, {n} of {total} children checked",
   "officer.real.title": "Classes that entered a check",
@@ -2523,5 +2523,6 @@
   "officer.real.funnel": "Funnel",
   "officer.real.funnel_grouped": "Grouped into a cohort by a coach: {n} classes ({error}) (system)",
   "officer.real.funnel_none": "No cohort has been created yet.",
-  "officer.real.funnel_wip": "Delivered, Tried, Practised and Changed for these classes: work in progress."
+  "officer.real.funnel_wip": "Delivered, Tried, Practised and Changed for these classes: work in progress.",
+  "coach.make.need_two": "At least two classes must show this mistake before a cohort can be created."
 }
