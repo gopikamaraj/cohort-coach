@@ -173,7 +173,7 @@ def test_the_officer_sees_the_entered_classes_as_groups_and_the_five_class_rule_
     monkeypatch.setenv("OFFICER_MIN_CLASSES", "2")
     o = client.get("/api/officer/entered", headers=on(ka, "officer")).json()
     pv = next(c for c in o["error_map"]["cells"] if c["error"] == "PV-HEARD")
-    assert o["lowered"] and pv["classes"] == 2 and pv["showing"] == 0 and pv["children_showing"] == 5 and pv["children_checked"] == 40
+    assert o["lowered"] and pv["classes"] == 2 and pv["showing"] == 2 and pv["children_showing"] == 5 and pv["children_checked"] == 40
     row = o["results"]["rows"][0]
     assert (row["error"], row["before"], row["after"], row["fall_points"]) == ("PV-HEARD", 11, 5, 15.0)
     assert o["funnel"]["wip"]

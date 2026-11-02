@@ -144,7 +144,7 @@ def entered(_: str = RESULTS, db: Session = SESSION) -> dict[str, Any]:
         if hidden:
             cells.append({"error": code, "hidden": True})
             continue
-        showing = sum(_shows(c["_counts"], c["children_checked"], code) for c in latest)
+        showing = sum(1 for c in latest if c["_counts"].get(code, 0) > 0)  # a mistake seen even once (possible) counts
         cells.append({"error": code, "hidden": False, "classes": len(latest), "showing": showing, "share_percent": round(100 * showing / len(latest), 1), "children_showing": sum(c["_counts"].get(code, 0) for c in latest), "children_checked": sum(c["children_checked"] for c in latest)})
     out["error_map"] = {"term": terms[-1] if terms else None, "classes": len(latest), "cells": cells}
     both = {k for k in {c["_class"] for c in classes} if len({c["term"] for c in classes if c["_class"] == k}) >= 2}
