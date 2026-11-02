@@ -74,6 +74,62 @@ function IntervalChart({ t, tr }: { t: Track; tr: (k: Key) => string }) {
   );
 }
 
+interface Entered {
+  min_classes: number;
+  lowered: boolean;
+  terms: number[];
+  error_map: { term: number | null; classes: number; cells: { error: string; hidden: boolean; classes?: number; showing?: number; share_percent?: number; children_showing?: number; children_checked?: number }[] };
+  results: { classes: number; hidden: boolean; rows: { error: string; before: number; before_of: number; after: number; after_of: number; fall_points: number | null }[] };
+  funnel: { cohorts: { error: string; classes: number }[] };
+}
+
+/** The classes that really entered a check (3A, 3B, ...): error map, track results and what of the funnel is counted. */
+function EnteredOfficer() {
+  const { tr } = useApp();
+  const [d, setD] = useState<Entered | null>(null);
+  useEffect(() => {
+    get<Entered>("entered").then(setD, () => setD(null));
+  }, []);
+  if (!d || d.terms.length === 0) return null;
+  return (
+    <div className="panel" data-testid="officer-entered">
+      <h2>{tr("officer.real.title")}</h2>
+      <p className="muted">{tr("officer.real.note", { classes: d.error_map.classes, term: d.error_map.term ?? 1 })}</p>
+      {d.lowered ? <p className="note">{tr("officer.real.lowered")}</p> : null}
+      <h3>{tr("officer.real.map")}</h3>
+      <ul className="plain" data-testid="entered-map">
+        {d.error_map.cells.map((c) => (
+          <li key={c.error}>
+            <strong>{tr(`err.${c.error}` as Key)}</strong>:{" "}
+            {c.hidden ? tr("officer.real.hidden", { min: d.min_classes }) : tr("officer.real.map_row", { pct: `${c.share_percent ?? 0}%`, showing: c.showing ?? 0, classes: c.classes ?? 0, n: c.children_showing ?? 0, total: c.children_checked ?? 0 })}
+          </li>
+        ))}
+      </ul>
+      <h3>{tr("officer.real.results")}</h3>
+      {d.results.hidden ? <p className="muted">{tr("officer.real.hidden", { min: d.min_classes })}</p> : null}
+      {d.results.classes === 0 ? <p>{tr("officer.real.results_none")}</p> : null}
+      {d.results.rows.length > 0 ? (
+        <>
+          <ul className="plain" data-testid="entered-results">
+            {d.results.rows.map((r) => (
+              <li key={r.error}>{tr("officer.real.results_row", { error: tr(`err.${r.error}` as Key), before: r.before, before_of: r.before_of, after: r.after, after_of: r.after_of, fall: r.fall_points ?? 0 })}</li>
+            ))}
+          </ul>
+          <p className="muted">{tr("officer.real.results_note", { classes: d.results.classes })}</p>
+        </>
+      ) : null}
+      <h3>{tr("officer.real.funnel")}</h3>
+      {d.funnel.cohorts.length === 0 ? <p>{tr("officer.real.funnel_none")}</p> : null}
+      <ul className="plain">
+        {d.funnel.cohorts.map((c, i) => (
+          <li key={i}>{tr("officer.real.funnel_grouped", { n: c.classes, error: tr(`err.${c.error}` as Key) })}</li>
+        ))}
+      </ul>
+      <p className="muted">{tr("officer.real.funnel_wip")}</p>
+    </div>
+  );
+}
+
 export default function OfficerHome() {
   const { tr } = useApp();
   const [map, setMap] = useState<{ cells: Cell[]; simulated: boolean } | null>(null);
@@ -110,6 +166,8 @@ export default function OfficerHome() {
           {tr("officer.error")}
         </p>
       ) : null}
+
+      <EnteredOfficer />
 
       <OfficerCohorts />
 

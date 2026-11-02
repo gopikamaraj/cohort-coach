@@ -1020,3 +1020,10 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Why:** a cohort is formed from the results of several teachers' classes, which needs each teacher's classes and checks kept apart. This replaces "the store is shared by default" (earlier the same day).
 - **Known limits:** the nickname is the whole login (no password): anyone who types the same nickname gets that teacher's data, and the same data under two nicknames is two teachers. Class ids copied between nicknames are the same class to the engine, so each teacher should make her own class. The coach and mentor "Entered checks" table labels teachers "Teacher 1, 2…" in key order, not by nickname.
 - **Confirmed by:** Gopi.
+
+## 2026-11-02 · Officer page shows the entered classes; a coach, not a teacher, creates a cohort
+
+- **Decision (Gopi):** the officer page (error map, track results, funnel) is filled from the classes that entered a check in the app (3A, 3B), added up by code (`GET /api/officer/entered`). Teachers no longer create a cohort; a coach does, on the Coach screen, from classes that show the same mistake (`POST /api/cohorts/class-only/coach`, at least two classes). The officer no longer starts cohorts; the lifecycle buttons stay.
+- **Five-class rule:** `OFFICER_MIN_CLASSES` (5 in production, so the rule in CLAUDE.md §4.3 holds) is set to 2 on the pilot and demo back end, and the page says so. Same pattern as `COHORT_MIN_CLASSES`.
+- **Results and funnel:** results show the fall in children showing each error between a class's first and latest check, as directional counts with no verdict (a verdict needs 15 classes per group and a comparison group). The funnel shows only what code counts (classes grouped into a cohort); Delivered, Tried, Practised and Changed are work in progress for these classes.
+- **Not done:** teachers in a coach-made cohort do not yet get its track; the e2e specs that clicked the teacher's create button need rewriting.

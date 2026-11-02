@@ -196,7 +196,7 @@ def entered_summary(db: Session) -> dict[str, Any]:
             for code, c in (prof.get("counts") or {}).items():
                 t["children_showing"][code] = t["children_showing"].get(code, 0) + int(c or 0)
             cname = str((d.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
-            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in (prof.get("counts") or {}).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in (prof.get("counts") or {}).items()}})
+            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in (prof.get("counts") or {}).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in (prof.get("counts") or {}).items()}, "_class": f"{n}:{prof.get('classId')}"})
     return {"terms": terms, "classes": classes}
 
 
@@ -206,7 +206,7 @@ def coach_summary(role: str = Depends(role_of), db: Session = SESSION) -> dict[s
     if role not in ("coach", "mentor"):
         raise HTTPException(403, "Only a coach or a mentor can see this.")
     s = entered_summary(db)
-    return {"terms": s["terms"], "classes": [{k: v for k, v in c.items() if k not in ("_counts", "children_checked")} for c in s["classes"]]}
+    return {"terms": s["terms"], "classes": [{k: v for k, v in c.items() if not k.startswith("_") and k != "children_checked"} for c in s["classes"]]}
 
 
 @router.get("/all/{collection}")

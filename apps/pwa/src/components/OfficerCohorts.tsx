@@ -6,7 +6,6 @@ import { ccall, type CohortSummary } from "../lib/cohort";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
 
-const ERRORS = ["PV-HEARD", "ADD-NOCARRY", "SUB-SFL", "SUB-NODEC"] as const;
 const NEXT: Record<string, string[]> = {
   proposed: ["active", "cancelled"],
   active: ["closing", "cancelled"],
@@ -19,9 +18,6 @@ export default function OfficerCohorts() {
   const { tr } = useApp();
   const [rows, setRows] = useState<CohortSummary[] | null>(null);
   const [failed, setFailed] = useState(false);
-  const [error, setError] = useState<string>(ERRORS[0]);
-  const [coach, setCoach] = useState("coach-demo");
-  const [schools, setSchools] = useState("0");
   const [reason, setReason] = useState<Record<string, string>>({});
 
   const load = useCallback(() => {
@@ -50,34 +46,7 @@ export default function OfficerCohorts() {
     <div className="panel" data-testid="officer-cohorts">
       <h2>{tr("officer.cohorts")}</h2>
       <p className="muted">{tr("officer.cohorts_help")}</p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void act("/officer/cohorts", { error, coach_id: coach.trim(), mentor_ids: [], school_count: Number(schools) || 0 });
-        }}
-        data-testid="cohort-form"
-      >
-        <h3>{tr("officer.cohort_new")}</h3>
-        <label className="field">
-          {tr("officer.cohort_error")}
-          <select value={error} onChange={(e) => setError(e.target.value)} data-testid="cohort-error">
-            {ERRORS.map((x) => (
-              <option key={x}>{x}</option>
-            ))}
-          </select>
-        </label>
-        <label className="field">
-          {tr("officer.cohort_coach")}
-          <input value={coach} onChange={(e) => setCoach(e.target.value)} maxLength={30} data-testid="cohort-coach" />
-        </label>
-        <label className="field">
-          {tr("officer.cohort_schools")}
-          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} autoComplete="off" value={schools} onChange={(e) => setSchools(e.target.value.replace(/\D/g, ""))} data-testid="cohort-schools" />
-        </label>
-        <button type="submit" className="btn btn-primary" disabled={!coach.trim()} data-testid="cohort-create">
-          {tr("officer.cohort_create")}
-        </button>
-      </form>
+      {/* A coach starts a cohort now (Coach screen); the officer moves existing ones through their lifecycle. */}
       {failed ? (
         <p role="alert" data-testid="cohort-failed">
           {tr("officer.cohort_failed")}

@@ -2509,5 +2509,19 @@
   "coach.make.error": "समूह नहीं बन सका। नाम जाँचकर फिर कोशिश करें।",
   "coach.make.none": "अभी कोई गलती दो या अधिक कक्षाओं में नहीं दिखती।",
   "coach.make.list": "समूह",
-  "coach.make.row": "{name}: {classes} कक्षाएँ, जाँचे गए {total} बच्चों में से {n}"
+  "coach.make.row": "{name}: {classes} कक्षाएँ, जाँचे गए {total} बच्चों में से {n}",
+  "officer.real.title": "जिन कक्षाओं ने जाँच दर्ज की",
+  "officer.real.note": "ऐप में दर्ज जाँचों से: सत्र T{term} में {classes} कक्षाएँ। केवल समूह; किसी कक्षा, शिक्षक या स्कूल का नाम नहीं।",
+  "officer.real.lowered": "पायलट: यहाँ 5 से कम कक्षाएँ दिखाई गई हैं क्योंकि पायलट में कुछ ही हैं। ब्लॉक स्तर पर 5 से कम कक्षाओं के आँकड़े छिपे रहते हैं।",
+  "officer.real.hidden": "{min} से कम कक्षाएँ: छिपा है।",
+  "officer.real.map": "गलतियों का नक्शा",
+  "officer.real.map_row": "{pct} कक्षाओं में दिखती है ({classes} में से {showing}); जाँचे गए {total} बच्चों में से {n}",
+  "officer.real.results": "ट्रैक के नतीजे",
+  "officer.real.results_row": "{error}: तब {before_of} में से {before} बच्चों में, अब {after_of} में से {after} ({fall} अंक की गिरावट)",
+  "officer.real.results_none": "अगली जाँच का इंतज़ार: किसी कक्षा की अभी दो जाँचें नहीं हैं।",
+  "officer.real.results_note": "{classes} कक्षाओं की दो जाँचें। अभी कोई निर्णय नहीं: इसके लिए प्रति समूह 15 कक्षाएँ और तुलना समूह चाहिए। संकेत भर मानें।",
+  "officer.real.funnel": "फ़नल",
+  "officer.real.funnel_grouped": "कोच ने समूह में रखा: {n} कक्षाएँ ({error}) (सिस्टम)",
+  "officer.real.funnel_none": "अभी कोई समूह नहीं बना।",
+  "officer.real.funnel_wip": "इन कक्षाओं के लिए पहुँचा, आज़माया, अभ्यास, बदलाव: काम जारी है।"
 }

@@ -2509,5 +2509,19 @@
   "coach.make.error": "The cohort could not be created. Check the name and try again.",
   "coach.make.none": "No mistake is shown by two or more classes yet.",
   "coach.make.list": "Cohorts",
-  "coach.make.row": "{name}: {classes} classes, {n} of {total} children checked"
+  "coach.make.row": "{name}: {classes} classes, {n} of {total} children checked",
+  "officer.real.title": "Classes that entered a check",
+  "officer.real.note": "From the checks entered in the app: {classes} classes in term T{term}. Groups only; no class, teacher or school is named.",
+  "officer.real.lowered": "Pilot: fewer than 5 classes are shown here because the pilot has only a few. At block scale, figures over fewer than 5 classes are hidden.",
+  "officer.real.hidden": "Fewer than {min} classes: hidden.",
+  "officer.real.map": "Error map",
+  "officer.real.map_row": "{pct} of classes show it ({showing} of {classes}); {n} of {total} children checked",
+  "officer.real.results": "Track results",
+  "officer.real.results_row": "{error}: children showing it, {before} of {before_of} then, {after} of {after_of} now ({fall} points fall)",
+  "officer.real.results_none": "Awaiting next check: no class has two checks yet.",
+  "officer.real.results_note": "{classes} classes with two checks. No verdict yet: it needs 15 classes per group and a comparison group. Read as directional.",
+  "officer.real.funnel": "Funnel",
+  "officer.real.funnel_grouped": "Grouped into a cohort by a coach: {n} classes ({error}) (system)",
+  "officer.real.funnel_none": "No cohort has been created yet.",
+  "officer.real.funnel_wip": "Delivered, Tried, Practised and Changed for these classes: work in progress."
 }

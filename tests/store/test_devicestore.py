@@ -151,3 +151,27 @@ def test_a_coach_sees_the_entered_classes_added_up_and_makes_a_cohort_from_them(
     one = {"name": "Borrowing group", "error": "SUB-SFL"}
     assert client.post("/api/cohorts/class-only/coach", json=one, headers=on(ka, "coach")).status_code == 422  # only one class shows it
     assert client.post("/api/cohorts/class-only/coach", json=body, headers=on(ka)).status_code == 403
+
+
+def test_the_officer_sees_the_entered_classes_as_groups_and_the_five_class_rule_holds_unless_lowered(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    ka, kb = f"{11:016x}", f"{22:016x}"
+
+    def on(key: str, role: str = "teacher") -> dict[str, str]:
+        return {"X-Device-Id": A, "X-Store-Key": key, "X-Role": role}
+
+    for key, nick, counts in ((ka, "3A", {"PV-HEARD": 6}), (kb, "3B", {"PV-HEARD": 5})):
+        client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": nick}}, headers=on(key))
+        client.put("/api/store/profiles/p1", json={"data": {"id": "p1", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": counts}}, headers=on(key))
+    client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 2}}}, headers=on(ka))
+    client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 3}}}, headers=on(kb))
+    monkeypatch.delenv("OFFICER_MIN_CLASSES", raising=False)
+    o = client.get("/api/officer/entered", headers=on(ka, "officer")).json()
+    assert o["min_classes"] == 5 and all(c["hidden"] for c in o["error_map"]["cells"])  # two classes: hidden by the rule
+    assert client.get("/api/officer/entered", headers=on(ka)).status_code == 403
+    monkeypatch.setenv("OFFICER_MIN_CLASSES", "2")
+    o = client.get("/api/officer/entered", headers=on(ka, "officer")).json()
+    pv = next(c for c in o["error_map"]["cells"] if c["error"] == "PV-HEARD")
+    assert o["lowered"] and pv["classes"] == 2 and pv["showing"] == 0 and pv["children_showing"] == 5 and pv["children_checked"] == 40
+    row = o["results"]["rows"][0]
+    assert (row["error"], row["before"], row["after"], row["fall_points"]) == ("PV-HEARD", 11, 5, 15.0)
+    assert o["funnel"]["wip"]

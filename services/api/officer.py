@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Officer views: aggregates only (P12, reduced scope).
 
 The error map, the funnel and the track results. Every figure is computed by code from class-level
@@ -10,6 +11,7 @@ not the teacher.
 from __future__ import annotations
 
 import json
+import os
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from functools import cache
@@ -111,6 +113,55 @@ def results(_: str = RESULTS) -> dict[str, Any]:
         "tracks": out,
         "note": "A failed track counts against the track, not the teacher.",
     }
+
+
+def _min_entered() -> int:
+    """Classes needed before a figure over the entered classes is shown. 5 in production (the rule); the pilot
+    and demo lower it with OFFICER_MIN_CLASSES, and the page says so (DECISIONS 2026-11-02)."""
+    try:
+        return max(1, int(os.environ.get("OFFICER_MIN_CLASSES", MIN_CLASSES_SHOWN)))
+    except ValueError:
+        return MIN_CLASSES_SHOWN
+
+
+@router.get("/entered")
+def entered(_: str = RESULTS, db: Session = SESSION) -> dict[str, Any]:
+    """The classes that really entered a check (the cloud store), added up: error map, change between two
+    checks, and what of the funnel the system can count. Counts per group; no class, teacher or school."""
+    from services.api.db import ClassCohort
+    from services.api.devicestore import entered_summary
+
+    floor = _min_entered()
+    classes = entered_summary(db)["classes"]
+    terms = sorted({c["term"] for c in classes})
+    codes = [e.value for e in ErrorCode]
+    out: dict[str, Any] = {"min_classes": floor, "lowered": floor < MIN_CLASSES_SHOWN, "terms": terms, "source": "system: class counts from the entered checks"}
+    latest = [c for c in classes if terms and c["term"] == terms[-1]]
+    hidden = len(latest) < floor
+    cells = []
+    for code in codes:
+        if hidden:
+            cells.append({"error": code, "hidden": True})
+            continue
+        showing = sum(_shows(c["_counts"], c["children_checked"], code) for c in latest)
+        cells.append({"error": code, "hidden": False, "classes": len(latest), "showing": showing, "share_percent": round(100 * showing / len(latest), 1), "children_showing": sum(c["_counts"].get(code, 0) for c in latest), "children_checked": sum(c["children_checked"] for c in latest)})
+    out["error_map"] = {"term": terms[-1] if terms else None, "classes": len(latest), "cells": cells}
+    both = {k for k in {c["_class"] for c in classes} if len({c["term"] for c in classes if c["_class"] == k}) >= 2}
+    first, last = (terms[0], terms[-1]) if len(terms) >= 2 else (None, None)
+    rows = []
+    if first is not None and both:
+        for code in codes:
+            a = [c for c in classes if c["_class"] in both and c["term"] == first]
+            b = [c for c in classes if c["_class"] in both and c["term"] == last]
+            na, nb = sum(c["children_checked"] for c in a), sum(c["children_checked"] for c in b)
+            sa, sb = sum(c["_counts"].get(code, 0) for c in a), sum(c["_counts"].get(code, 0) for c in b)
+            if sa == 0:
+                continue
+            rows.append({"error": code, "before": sa, "before_of": na, "after": sb, "after_of": nb, "fall_points": round(100 * (sa / na - sb / nb), 1) if na and nb else None})
+    out["results"] = {"from_term": first, "to_term": last, "classes": len(both), "rows": rows if len(both) >= floor else [], "hidden": bool(both) and len(both) < floor, "verdict_needs": "15 classes per arm and a comparison group, so no verdict yet"}
+    cohorts = list(db.execute(select(ClassCohort).where(ClassCohort.scope == "coach")).scalars())
+    out["funnel"] = {"cohorts": [{"error": c.errors[0] if c.errors else "", "classes": int(c.counts.get("_classes", 1))} for c in cohorts], "grouped_source": "system: cohorts a coach created", "wip": ["Delivered", "Tried", "Practised", "Changed"]}
+    return out
 
 
 def _review_waiting(db: Session) -> dict[str, Any]:
