@@ -49,6 +49,7 @@ from services.api.db import (
     SimObservation,
     ThreadPost,
 )
+from services.api.devicestore import DeviceDoc
 from services.api.feedback import ADMIN
 from services.api.profiles import SESSION
 from services.cohort_chat.models import ChatTimeout, PostMeta
@@ -75,7 +76,7 @@ SCOPES: dict[str, tuple[Any, ...]] = {
     "testers": (TesterFeedback, TesterEvent, TesterDevice),
     "demo": (DemoAiRead, DemoSession),
     "papers": (PaperItemRow, PaperReview, PaperAssignment, PaperImport, PaperEvent, PaperRow),
-    "results": (ClassTermCount, KeptSheet, ProfileSync, ClassProfileRow, Cohort),
+    "results": (DeviceDoc, ClassTermCount, KeptSheet, ProfileSync, ClassProfileRow, Cohort),
     "modules": (CheckinShare, ModuleReview, ModuleFeedback, ModuleEvent, TrackModule, Track),
     "cohorts": (ClassCohort, CohortRun),
     "cohort_chat": (

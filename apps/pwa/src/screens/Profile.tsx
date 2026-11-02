@@ -6,6 +6,7 @@ import { useToast } from "../components/toast";
 import { buildBackup, openBackup, restoreBackup, sealBackup } from "../lib/backup";
 import { addClass, deleteClass, listClasses, renameClass, setActive, type ClassItem } from "../lib/classes";
 import { setConsent, getConsent, withdrawAll, recordOnServer, type Choices, type Scope, countsOn } from "../lib/consent";
+import { clearCloud } from "../lib/cloudStore";
 import { clearPhone, db } from "../lib/db";
 import { footerAllowed, footerOn, setFooterOn, subscribe } from "../lib/action";
 import { costOf, getPrice, getUsage, resetUsage, setPrice, type Usage } from "../lib/meter";
@@ -335,6 +336,7 @@ function Privacy() {
           if (!window.confirm(tr("profile.erase_confirm"))) return;
           void (async () => {
             for (const c of await listClasses()) await deleteClass(c.id);
+            await clearCloud();
             await clearPhone();
             resetUsage();
             for (const k of Object.keys(localStorage)) if (k.startsWith("cc.")) localStorage.removeItem(k); // settings, consent, device id

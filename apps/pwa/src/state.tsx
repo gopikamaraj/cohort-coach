@@ -3,6 +3,7 @@
 import { reconcileWithServer } from "./lib/serverTruth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { isLang, t as translate, type Key, type Lang } from "./i18n";
+import { clearCloud, hydrate, watchTables } from "./lib/cloudStore";
 import { activeClass, clearPhone, db, getSetting, setSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
 import { demoPair } from "./lib/demo";
 import { fetchPaperKey } from "./lib/paperKeys";
@@ -81,7 +82,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (online) void reconcileWithServer(); // the server is the truth: drop pointers to records it no longer has
     void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
-    void reload().then(async () => {
+    watchTables(); // every change to the classes, checks and results is written to the cloud copy
+    void hydrate().then(() => reload()).then(async () => { // the cloud copy is the record: read it back first
       await flushAllowed(isOnline());
       setPending(await pendingCount());
     });
@@ -152,6 +154,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [reload]);
 
   const reset = useCallback(async () => {
+    await clearCloud();
     await clearPhone();
     await reload();
   }, [reload]);

@@ -39,18 +39,19 @@ test("a made-up class is entered and approved, and the error card says where it 
   await expect(stages).not.toContainText("%");
 });
 
-test("the sheets never leave the phone: no request carries the answers and the stage lines still show", async ({ page }) => {
-  const posts: string[] = [];
+test("answers go only to the device store (decided 2026-11-02) and the stage lines still show", async ({ page }) => {
+  const sent: { method: string; url: string }[] = [];
   page.on("request", (r) => {
-    if (r.method() === "POST") posts.push(r.url());
+    if (r.method() === "POST" || r.method() === "PUT") sent.push({ method: r.method(), url: r.url() });
   });
   await enterJudgeSample(page);
   await finishEntering(page);
   await expect(page).toHaveURL(/#\/cards/);
   await expect(page.getByTestId("stage-lines")).toBeVisible();
-  expect(posts.filter((u) => u.includes("/api/stages"))).toHaveLength(0);
-  // counts only; making the test paper asks the server for that paper, with no child data and the sheet read adds none
-  expect(posts.filter((u) => !u.includes("/api/papers/")).every((u) => /\/api\/classes\/c-[0-9a-f]+\/profile$/.test(u))).toBe(true);
+  expect(sent.filter((r) => r.url.includes("/api/stages"))).toHaveLength(0);
+  // the entered check is written to the cloud copy of this phone, and nowhere else but the class counts and the paper
+  const allowed = (u: string) => /\/api\/store\/(classes|checks|profiles|settings)\//.test(u) || /\/api\/classes\/c-[0-9a-f]+\/profile$/.test(u) || u.includes("/api/papers/");
+  expect(sent.filter((r) => !allowed(r.url))).toEqual([]);
 });
 
 test("the stage lines are in her language", async ({ page }) => {

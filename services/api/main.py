@@ -15,6 +15,7 @@ from services.api.channels.pwa import router as flow_router
 from services.api.channels.telegram.webhook import router as telegram_router
 from services.api.cohorts.class_only import router as class_only_router
 from services.api.cohorts.routes import router as cohorts_router
+from services.api.devicestore import router as devicestore_router
 from services.api.feedback import router as feedback_router
 from services.api.judge import router as judge_router
 from services.api.lesson_audio_api import router as lesson_audio_router
@@ -104,6 +105,7 @@ def create_app() -> FastAPI:
     app.include_router(class_only_router)
     app.include_router(modules_router)
     app.include_router(cohort_chat_router)
+    app.include_router(devicestore_router)
 
     if os.environ.get("SEED_ALL_FILE"):  # fresh deployment: every table copied in once
 

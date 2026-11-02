@@ -7,6 +7,59 @@ import { API_BASE } from "../lib/api";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
 
+interface EnteredCheck {
+  teacher: string;
+  id: string;
+  data: { kind?: string; term?: number; checkDate?: string; status?: string; entered?: number; absent?: number };
+}
+
+/** Every teacher's entered checks as counts: who (a label), which check, how many children, how many absent. */
+function EnteredChecks() {
+  const { tr, role } = useApp();
+  const [rows, setRows] = useState<EnteredCheck[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    fetch(`${API_BASE}/api/store/all/checks`, { headers: { "X-Role": role } })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => setRows(d as EnteredCheck[]))
+      .catch(() => setFailed(true));
+  }, [role]);
+  return (
+    <section className="panel" aria-labelledby="entered-title" data-testid="entered-checks">
+      <h2 id="entered-title">{tr("entered.title")}</h2>
+      <p className="muted">{tr("entered.note")}</p>
+      {failed ? <p role="alert">{tr("prog.offline")}</p> : null}
+      {rows && rows.length === 0 ? <p>{tr("entered.none")}</p> : null}
+      {rows && rows.length > 0 ? (
+        <div className="table-scroll" role="region" tabIndex={0} aria-label={tr("entered.title")}>
+          <table className="mistakes" data-testid="entered-table">
+            <thead>
+              <tr>
+                <th scope="col">{tr("entered.col_teacher")}</th>
+                <th scope="col">{tr("entered.col_check")}</th>
+                <th scope="col">{tr("entered.col_entered")}</th>
+                <th scope="col">{tr("entered.col_absent")}</th>
+                <th scope="col">{tr("entered.col_status")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={`${r.teacher}-${r.id}`}>
+                  <th scope="row">{r.teacher}</th>
+                  <td>{[r.data.kind, r.data.term ? `T${r.data.term}` : null, r.data.checkDate].filter(Boolean).join(" · ")}</td>
+                  <td>{r.data.entered ?? 0}</td>
+                  <td>{r.data.absent ?? 0}</td>
+                  <td>{r.data.status ?? ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 interface Block {
   classes: number;
   schools: number;
@@ -52,6 +105,7 @@ export function Coach() {
           </div>
         ))
       ) : null}
+      <EnteredChecks />
       <p className="muted">{tr("coach.later")}</p>
     </section>
   );
@@ -75,6 +129,7 @@ export function Mentor() {
           </li>
         ))}
       </ol>
+      <EnteredChecks />
       <p className="muted">{tr("mentor.later")}</p>
     </section>
   );

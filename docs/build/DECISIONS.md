@@ -988,3 +988,13 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Alternatives:** keep class scoping and add a share flag (more work, not asked for).
 - **Tests:** `test_a_teacher_sees_only_her_classes_papers_and_a_coach_sees_all` was replaced by `test_every_paper_is_listed_for_every_role_for_now`; the detail test now expects 200 for another class and still 404 for a change.
 - **Confirmed by:** Gopi, in the session of 2 Nov 2026.
+
+## 2026-11-02 · Cloud-first storage: the server is the record, the phone is a cache
+
+- **Decision (Gopi, in session):** while online, every change to a teacher's classes, entered checks, results and settings is written to the server (`device_docs`, `services/api/devicestore.py`, `/api/store`), and each time the app opens online it reads everything back from the server (`apps/pwa/src/lib/cloudStore.ts`). Offline, changes queue on the phone and are sent when the connection returns. Coaches and mentors see every teacher's entered checks as counts under a label (`GET /api/store/all/checks`); a teacher cannot read another teacher's documents.
+- **Why:** judges should see existing data without creating any, a cleared browser should not lose a class, and a coach or mentor needs to see entered checks. The earlier rule kept per-child answers on the phone only.
+- **Changes to earlier rules, so this entry needs a human to confirm it:** CLAUDE.md rule 2 (per-child answers stay on the device; no per-child tag on the server) is amended; the judging claim "sheets never leave the phone" no longer holds for the check's own record; the offline story now rests on the queue. `docs/privacy.md`, the privacy notice screen and the deck still say the old thing and need updating before submission.
+- **Still never stored:** rehearsal transcripts (the teacher's private words), sheet photos, and the outbox of unread photos.
+- **Known gaps:** a check's `missedConcepts` ("Missed the teaching on this") is per-child and now goes with the check; identity is the random device id, so clearing the browser's storage loses access to the stored data (there is no sign-in); the device store has no retention limit yet.
+- **Alternatives:** cloud-first for judge mode only (recommended in session, not chosen); keep device storage and seed demo data (not chosen).
+- **Confirmed by:** Gopi (chose "Cloud-first for everything" when asked).
