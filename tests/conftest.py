@@ -103,6 +103,12 @@ def _practice_speed_switches_off_for_the_suite(monkeypatch: pytest.MonkeyPatch) 
 
 
 @pytest.fixture(autouse=True)
+def _no_chat_poller(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The chat poller is off in tests: a test runs `tick` itself with a frozen clock."""
+    monkeypatch.setenv("CHAT_POLLER", "0")
+
+
+@pytest.fixture(autouse=True)
 def _developer_switches_out_of_the_suite(monkeypatch: pytest.MonkeyPatch) -> None:
     """The same for the switches added on 1 Nov: speech provider keys and order, the child model and
     the testing shortcuts. The suite tests the defaults; a test of a switch sets it itself."""

@@ -602,6 +602,7 @@ class ChatConfig(Base):
 
 # Paper Studio and Demo Studio tables share this Base (imported last, so create_all builds them).
 # The demo tables hold judge-demo data only: simulated, keyed by the demo session.
+from services.cohort_chat import models as _chat_models  # noqa: E402, F401
 from services.content import lesson_audio as _lesson_audio  # noqa: E402, F401
 from services.demo import models as _demo_models  # noqa: E402, F401
 from services.modules import models as _module_models  # noqa: E402, F401

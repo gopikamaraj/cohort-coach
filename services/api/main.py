@@ -30,6 +30,7 @@ from services.api.review import router as review_router
 from services.api.roles import router as roles_router
 from services.api.sheets import router as sheets_router
 from services.api.stages import router as stages_router
+from services.cohort_chat.api import router as cohort_chat_router
 from services.cohort_run.api import router as cohort_run_router
 from services.demo.api import router as demo_router
 from services.media.api import router as media_router
@@ -102,6 +103,15 @@ def create_app() -> FastAPI:
     app.include_router(lessons_router)
     app.include_router(class_only_router)
     app.include_router(modules_router)
+    app.include_router(cohort_chat_router)
+
+    if os.environ.get("CHAT_POLLER", "1") == "1":  # the server owns the chat's AI timer
+
+        @app.on_event("startup")
+        def _start_chat_poller() -> None:
+            from services.cohort_chat.poller import start
+
+            start()
     app.include_router(pack_audio_router)
     app.include_router(cohorts_router)
     app.include_router(officer_router)
