@@ -57,7 +57,8 @@ def test_strategies_are_drafts_until_a_person_approves_them() -> None:
 
 def test_worked_examples_are_correct_and_never_check_items() -> None:
     for strategy in load_strategies().values():
-        for example in strategy.worked_examples:
+        by_error = [x for xs in strategy.worked_by_error.values() for x in xs]
+        for example in (*strategy.worked_examples, *by_error):
             assert check_arithmetic(example) == [], (strategy.id, example)
             assert check_items(example) == [], (strategy.id, example)
 

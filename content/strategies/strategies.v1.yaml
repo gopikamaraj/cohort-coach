@@ -20,6 +20,12 @@ strategies:
       en: The teacher builds the number with bundles of ten sticks and loose sticks, so the child sees tens and ones as things she can hold.
     worked_examples:
       - "83 - 47 = 36: 8 bundles and 3 loose sticks; take away 4 bundles and 7 sticks."
+    # the example above is a subtraction; a module on another error uses the one for its own error
+    worked_by_error:
+      PV-HEARD:
+        - "Say sixty-two. Build it with 6 bundles and 2 loose sticks, then ask the child to write what she built."
+      ADD-NOCARRY:
+        - "38 + 27: 3 bundles and 8 sticks, 2 bundles and 7 sticks. 8 + 7 is 15 sticks, so make a new bundle: 6 bundles and 5 sticks."
   exchange_ten:
     status: draft
     fits: [SUB-SFL, SUB-NODEC]
@@ -41,7 +47,16 @@ strategies:
     description:
       en: The teacher asks "How did you get that?" and listens before saying whether it is right.
     worked_examples:
-      - "Ask: how did you get 38 for 62 - 29? The child says: 9 minus 2 is 7."
+      - "Ask: how did you get 47 for 62 - 29? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
+    worked_by_error:
+      PV-HEARD:
+        - "Ask: how did you get 602 for sixty-two? The child says: I wrote sixty, then two."
+      ADD-NOCARRY:
+        - "Ask: how did you get 55 for 38 + 27? The child says: 8 plus 7 is 15, I wrote 5 and forgot the ten."
+      SUB-SFL:
+        - "Ask: how did you get 47 for 62 - 29? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
+      SUB-NODEC:
+        - "Ask: how did you get 44 for 72 - 38? The child says: I took a ten for the 2, then took 3 from 7."
   check_back:
     status: draft
     fits: [ADD-NOCARRY, SUB-SFL, SUB-NODEC]

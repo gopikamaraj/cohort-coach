@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -44,6 +44,7 @@ class Strategy:
     label: dict[str, str]
     description: dict[str, str]
     worked_examples: tuple[str, ...]
+    worked_by_error: dict[str, tuple[str, ...]] = field(default_factory=dict)
 
 
 def _yaml(path: Path) -> dict[str, Any]:
@@ -94,6 +95,7 @@ def load_strategies() -> dict[str, Strategy]:
             label=dict(r["label"]),
             description=dict(r["description"]),
             worked_examples=tuple(r.get("worked_examples") or ()),
+            worked_by_error={e: tuple(xs) for e, xs in (r.get("worked_by_error") or {}).items()},
         )
     return out
 

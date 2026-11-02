@@ -106,6 +106,7 @@ def build() -> dict[str, Any]:
                 "label": s["label"],
                 "description": s["description"],
                 "worked_examples": s.get("worked_examples", []),
+                "worked_by_error": s.get("worked_by_error", {}),
             }
             for sid, s in st["strategies"].items()
         },

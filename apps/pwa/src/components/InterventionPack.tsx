@@ -10,6 +10,9 @@ import { buildAnswerMap, inThisClass, rollsFor } from "../lib/results";
 import { useApp } from "../state";
 import { exportStem } from "../lib/packAudio";
 import { runAction } from "../lib/action";
+import { useDevTesting } from "../lib/aiMode";
+import type { TrackView } from "../lib/modules";
+import { DevAudioAll } from "./DevAudioAll";
 import { ModuleTrack } from "./ModuleTrack";
 import { PackSectionView } from "./PackSection";
 import { PrintPack } from "./PrintPack";
@@ -20,6 +23,8 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
   const [active, setActive] = useState(cohort.errors[0] ?? "");
   const [printing, setPrinting] = useState(false);
   const [sheets, setSheets] = useState<PrintSheet[]>([]);
+  const [modTrack, setModTrack] = useState<TrackView | null>(null);
+  const devTesting = useDevTesting();
   const map = useMemo(() => (check && check.id === cohort.checkId ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null), [check, cohort.checkId]);
   const code = cohort.errors.includes(active) ? active : (cohort.errors[0] ?? "");
   const pack = useMemo(
@@ -94,7 +99,7 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
       ) : null}
       <h3>{tr(`err.${code}` as Key)}</h3>
       <div className="no-print">
-        <ModuleTrack cohort={cohort} code={code} />
+        <ModuleTrack cohort={cohort} code={code} onTrackChange={setModTrack} />
       </div>
       <PrintPack pack={pack} lang={lang} draft={draft} rolls={rollList} sheets={sheets} />
       <div className="pack-actions no-print">
@@ -106,6 +111,7 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
             {rollsNote ? tr("pack.print_note_rolls", { rolls: rollsNote }) : tr("pack.print_note")}
           </span>
         </div>
+        {devTesting ? <DevAudioAll track={modTrack} code={code} /> : null}
       </div>
       <div className="stack">
         {pack.sections.map((s) => (

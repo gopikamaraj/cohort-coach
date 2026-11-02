@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
 import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
+import { useDevTesting } from "../lib/aiMode";
 import { exportStem } from "../lib/packAudio";
 import { href } from "../lib/router";
 import { useApp } from "../state";
@@ -33,9 +34,12 @@ export function shortDate(iso: string, lang: string): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString(lang === "hi" ? "hi-IN" : lang === "ta" ? "ta-IN" : "en-IN", { day: "numeric", month: "short" });
 }
 
-export function ModuleTrack({ cohort, code }: { cohort: ClassCohort; code: string }) {
+export function ModuleTrack({ cohort, code, onTrackChange }: { cohort: ClassCohort; code: string; onTrackChange?: (t: TrackView | null) => void }) {
   const { tr, lang, online } = useApp();
   const [track, setTrack] = useState<TrackView | null>(null);
+  useEffect(() => {
+    onTrackChange?.(track);
+  }, [track, onTrackChange]);
   const [offlineCopy, setOfflineCopy] = useState(false);
   const [busy, setBusy] = useState<"" | "start" | "next">("");
   const [failed, setFailed] = useState(false);
@@ -167,6 +171,7 @@ function ModuleBody({ m, track, code, current, onTrack }: { m: ModuleView; track
   const fallback = parts.some((p) => p.fallback);
   const draft = parts.some((p) => p.draft);
   const speakLang = m.language ?? track.language;
+  const devTesting = useDevTesting();
   return (
     <div className="stack module-body">
       {draft ? <span className="chip chip-draft">{tr("module.draft")}</span> : null}
@@ -201,6 +206,14 @@ function ModuleBody({ m, track, code, current, onTrack }: { m: ModuleView; track
           </div>
         ))}
       </details>
+      {devTesting && m.spoken ? (
+        <details className="module-text" data-testid={`module-${m.number}-tts-text`}>
+          <summary>{tr("audio.dev_tts_text")}</summary>
+          <p lang={speakLang} style={{ whiteSpace: "pre-wrap" }}>
+            {m.spoken}
+          </p>
+        </details>
+      ) : null}
       {m.spoken ? (
         <AudioDownload
           request={{ text: m.spoken }}

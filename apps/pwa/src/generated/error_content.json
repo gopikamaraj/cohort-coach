@@ -596,8 +596,22 @@
         "ta": "குழந்தையிடம் தன் படிகளை விளக்கச் சொல்லுதல்"
       },
       "status": "draft",
+      "worked_by_error": {
+        "ADD-NOCARRY": [
+          "Ask: how did you get 55 for 38 + 27? The child says: 8 plus 7 is 15, I wrote 5 and forgot the ten."
+        ],
+        "PV-HEARD": [
+          "Ask: how did you get 602 for sixty-two? The child says: I wrote sixty, then two."
+        ],
+        "SUB-NODEC": [
+          "Ask: how did you get 44 for 72 - 38? The child says: I took a ten for the 2, then took 3 from 7."
+        ],
+        "SUB-SFL": [
+          "Ask: how did you get 47 for 62 - 29? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
+        ]
+      },
       "worked_examples": [
-        "Ask: how did you get 38 for 62 - 29? The child says: 9 minus 2 is 7."
+        "Ask: how did you get 47 for 62 - 29? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
       ]
     },
     "check_back": {
@@ -617,6 +631,7 @@
         "ta": "கூட்டிச் சரிபார்த்தல்"
       },
       "status": "draft",
+      "worked_by_error": {},
       "worked_examples": [
         "72 - 38 = 34, check: 34 + 38 = 72."
       ]
@@ -637,6 +652,7 @@
         "ta": "அருகிலுள்ள பத்தைக் கழித்துச் சரிசெய்தல்"
       },
       "status": "draft",
+      "worked_by_error": {},
       "worked_examples": [
         "63 - 29: take away 30 (63 - 30 = 33), then give 1 back, so 63 - 29 = 34."
       ]
@@ -657,6 +673,7 @@
         "ta": "பகுதிகளாகக் கழித்தல்"
       },
       "status": "draft",
+      "worked_by_error": {},
       "worked_examples": [
         "63 - 28: take away 2 bundles (63 - 20 = 43), then 8 sticks in two steps: 3 to reach 40, then 5 more, so 63 - 28 = 35."
       ]
@@ -677,6 +694,7 @@
         "ta": "ஒரு கட்டைப் பிரித்துப் பத்து தனிக்குச்சிகள் எடுத்தல்"
       },
       "status": "draft",
+      "worked_by_error": {},
       "worked_examples": [
         "91 - 56 = 35: 1 loose stick is too few to take 6; open a bundle, now 11 loose sticks and 8 bundles."
       ]
@@ -696,6 +714,7 @@
         "ta": "வரிசைச் சோதனை (2 - 6 என்பதும் 6 - 2 என்பதும் ஒன்றா?)"
       },
       "status": "draft",
+      "worked_by_error": {},
       "worked_examples": [
         "Ask: is 2 - 6 the same as 6 - 2? Listen for why."
       ]
@@ -718,6 +737,14 @@
         "ta": "பத்து கட்டுகளால் காட்டுதல்"
       },
       "status": "draft",
+      "worked_by_error": {
+        "ADD-NOCARRY": [
+          "38 + 27: 3 bundles and 8 sticks, 2 bundles and 7 sticks. 8 + 7 is 15 sticks, so make a new bundle: 6 bundles and 5 sticks."
+        ],
+        "PV-HEARD": [
+          "Say sixty-two. Build it with 6 bundles and 2 loose sticks, then ask the child to write what she built."
+        ]
+      },
       "worked_examples": [
         "83 - 47 = 36: 8 bundles and 3 loose sticks; take away 4 bundles and 7 sticks."
       ]

@@ -18,6 +18,7 @@ from typing import Any
 
 import yaml
 
+from services.api import strings
 from services.content import error_content
 from services.modules.branch import Plan, Template
 
@@ -134,7 +135,8 @@ def _strategy(error: str, approach: str) -> dict[str, Any] | None:
         "description": s["description"],
         "materials": details.get("materials"),
         "steps": details.get("steps"),
-        "worked": s.get("worked_examples", []),
+        # the example is for the error the module is on: a subtraction sum never appears in a PV-HEARD module
+        "worked": s.get("worked_by_error", {}).get(error) or ([] if s.get("worked_by_error") else s.get("worked_examples", [])),
         "draft": s.get("status") != "approved",
     }
 
@@ -205,7 +207,10 @@ def module_text(error: str, approach: str, smaller: bool, language: str) -> Modu
         if got is None:
             out.omitted.append(pid)
             return
-        out.parts.append(Part(pid, text=str(got[0]), fallback=got[1], draft=draft, source=source))
+        value = str(got[0])
+        if value.strip().lower() == "none":  # the content files write "None" for "no materials"
+            value = strings.text(lang, "module.materials_none")
+        out.parts.append(Part(pid, text=value, fallback=got[1], draft=draft, source=source))
 
     if smaller:
         text_part("smaller_step", config()["smaller_step"]["intro"], SRC_MOD, True)

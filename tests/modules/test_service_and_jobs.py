@@ -592,3 +592,15 @@ def test_the_start_date_is_an_indian_calendar_date(db: Session) -> None:
     late = datetime(2026, 11, 2, 20, 0, tzinfo=UTC)  # 01:30 on the 3rd in India
     track = service.start_track(db, cohort(db), "ADD-NOCARRY", "en", late)
     assert track.start_date == date(2026, 11, 3)
+
+
+def test_the_spoken_text_pauses_after_the_module_line_and_has_no_none_or_off_error_example() -> None:
+    from services.api import strings
+    from services.modules import library
+
+    intro = strings.text("en", "module.spoken.intro", n=1, total=2, title="Ask the child to explain her steps")
+    mt = library.module_text("PV-HEARD", "ask_explain", False, "en")
+    spoken = library.spoken(mt, intro)
+    assert spoken.startswith("Module 1 of 2. [pause] Ask the child")
+    assert "None" not in spoken and "No materials needed." in spoken
+    assert "62 - 29" not in spoken and "sixty-two" in spoken
