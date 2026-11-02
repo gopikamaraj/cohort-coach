@@ -289,7 +289,7 @@ export default function Admin() {
           <select value={scope} onChange={(e) => setScope(e.target.value as (typeof SCOPES)[number])} data-testid="admin-scope-select">
             {SCOPES.map((sc) => (
               <option key={sc} value={sc}>
-                {tr(`admin.scope.${sc}` as "admin.scope.all")}
+                {tr("admin.scope.option", { n: sc === "all" ? Object.values(data?.scopes ?? {}).reduce((a, b) => a + b.rows, 0) : (data?.scopes[sc]?.rows ?? 0), name: tr(`admin.scope.${sc}` as "admin.scope.all") })}
               </option>
             ))}
           </select>

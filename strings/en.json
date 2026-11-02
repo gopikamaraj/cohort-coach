@@ -2245,6 +2245,7 @@
   "admin.scope.cohort_spaces": "Cohort spaces: members, mentor items and audit rows",
   "admin.kept_tables": "Schools and classes, teacher identities and consent, the paper rules, the published content with its approvals, and the cost ledgers stay.",
   "admin.scope.pick": "What to delete",
+  "admin.scope.option": "{n} rows - {name}",
   "admin.kept_pack_audio": "Not deleted here: audio files already made for the improvement track (making them again costs a paid speech call).",
   "admin.delete_ok": "Deleted {n} rows from {name}. Checked: none are left.",
   "admin.delete_left": "Not fully deleted: {n} rows are still in {name}.",
