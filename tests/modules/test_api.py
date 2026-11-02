@@ -244,3 +244,19 @@ def test_refreshing_the_tts_text_is_testing_only_and_keeps_the_code_script_when_
     spoken = r.json()["track"]["modules"][0]["spoken"]
     assert "What this does. " in spoken and spoken.rstrip().endswith("[pause]")  # the English template
     assert client.post(url.replace("modules/1", "modules/3"), headers=h("teacher", DEV1)).status_code == 409
+
+
+def test_generate_all_is_testing_only_and_makes_every_module_without_feedback(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    view = start(client, make_cohort(client))
+    url = f"/api/modules/tracks/{view['id']}/generate-all"
+    monkeypatch.setenv("DEV_TESTING", "0")
+    assert client.post(url, headers=h("teacher", DEV1)).status_code == 404
+    monkeypatch.setenv("DEV_TESTING", "1")
+    r = client.post(url, headers=h("teacher", DEV1))
+    assert r.status_code == 200, r.text
+    mods = r.json()["modules"]
+    assert all(m["status"] != "planned" and m["text"] for m in mods)
+    assert [m["number"] for m in mods] == list(range(1, len(mods) + 1))
+    assert client.post(url, headers=h("teacher", DEV1)).status_code == 200  # safe to press twice

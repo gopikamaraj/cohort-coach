@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
-import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, refreshNarration, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
+import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, generateAllModules, nextBlocked, refreshNarration, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
 import { useDevTesting } from "../lib/aiMode";
 import { exportStem } from "../lib/packAudio";
 import { href } from "../lib/router";
@@ -36,6 +36,7 @@ export function shortDate(iso: string, lang: string): string {
 
 export function ModuleTrack({ cohort, code, onTrackChange }: { cohort: ClassCohort; code: string; onTrackChange?: (t: TrackView | null) => void }) {
   const { tr, lang, online } = useApp();
+  const devTesting = useDevTesting();
   const [track, setTrack] = useState<TrackView | null>(null);
   useEffect(() => {
     onTrackChange?.(track);
@@ -133,6 +134,11 @@ export function ModuleTrack({ cohort, code, onTrackChange }: { cohort: ClassCoho
             {!online || offlineCopy ? tr("module.next_offline") : blocked ? tr(blocked.key, { n: blocked.slots.n, next: blocked.slots.next, date: shortDate(blocked.slots.date, lang) }) : ""}
           </p>
         </div>
+      ) : null}
+      {devTesting && hasMore ? (
+        <button type="button" className="btn btn-secondary" disabled={!online || busy === "next"} onClick={() => void run("next", () => generateAllModules(track.id, lang))} data-testid="module-dev-all">
+          {tr("module.dev_generate_all")}
+        </button>
       ) : null}
       {lastMade ? <p className="muted">{tr("module.last_one")}</p> : null}
       {failed ? <p role="alert">{tr("module.err")}</p> : null}

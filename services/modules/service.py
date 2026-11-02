@@ -531,6 +531,19 @@ def mark_downloaded(
     return module
 
 
+def generate_all_for_testing(db: Session, track_id: str, teacher_id: str, now: datetime) -> int:
+    """Testing only (DEV_TESTING=1): make every module still planned, one after another, without waiting
+    for feedback or a due date (audited as trigger "coach"). Returns how many were made."""
+    track = _owned(db, track_id, teacher_id)
+    made = 0
+    for _ in range(len(modules_of(db, track.id))):
+        got = generate_module(db, track.id, len(_generated(modules_of(db, track.id))) + 1, "coach", now)
+        if not got.created:
+            break
+        made += 1
+    return made
+
+
 def refresh_narration(
     db: Session, track_id: str, number: int, teacher_id: str, lang: str, total: int
 ) -> bool:

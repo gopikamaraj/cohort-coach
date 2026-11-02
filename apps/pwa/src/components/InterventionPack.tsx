@@ -101,7 +101,7 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
       <div className="no-print">
         <ModuleTrack cohort={cohort} code={code} onTrackChange={setModTrack} />
       </div>
-      <PrintPack pack={pack} lang={lang} draft={draft} rolls={rollList} sheets={sheets} />
+      <PrintPack pack={pack} lang={lang} draft={draft} rolls={rollList} sheets={sheets} track={modTrack} />
       <div className="pack-actions no-print">
         <div className="pack-action">
           <button type="button" className="btn btn-secondary" disabled={printing} onClick={() => void printPack()} data-testid="pack-print">

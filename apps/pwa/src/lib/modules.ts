@@ -170,6 +170,11 @@ export async function markDownloaded(trackId: string, number: number, audioRef: 
   return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/downloaded?lang=${lang}`, { method: "POST", body: { audio_ref: audioRef } }, fetchFn));
 }
 
+/** Testing only (DEV_TESTING=1): make every module that is still planned, without feedback. */
+export async function generateAllModules(trackId: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
+  return remember(await call<TrackView>(`/tracks/${trackId}/generate-all?lang=${lang}`, { method: "POST" }, fetchFn));
+}
+
 /** Testing only (DEV_TESTING=1): word the module's script again; `reworded` says whether call 18's wording is stored. */
 export async function refreshNarration(trackId: string, number: number, lang: string, fetchFn?: typeof fetch): Promise<{ reworded: boolean; track: TrackView }> {
   const r = await call<{ reworded: boolean; track: TrackView }>(`/tracks/${trackId}/modules/${number}/narration/refresh?lang=${lang}`, { method: "POST" }, fetchFn);

@@ -429,6 +429,28 @@ def downloaded(
     return service.track_view(db, track, lang, clock())
 
 
+@router.post("/tracks/{track_id}/generate-all")
+def generate_all(
+    track_id: str,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    """Testing only: DEV_TESTING=1 on the server, a 404 anywhere else."""
+    from ai.config import dev_testing
+
+    if not dev_testing():
+        raise HTTPException(status_code=404, detail="not found")
+    track, teacher = _own(db, track_id, x_device_id)
+    try:
+        service.generate_all_for_testing(db, track_id, teacher.teacher_id, clock())
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    db.refresh(track)
+    return service.track_view(db, track, lang, clock())
+
+
 @router.post("/tracks/{track_id}/modules/{number}/narration/refresh")
 def narration_refresh(
     track_id: str,
