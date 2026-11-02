@@ -1,10 +1,11 @@
 // The title bar on every screen: the brand, the current page with a one-line description, the
 // connection (online or works offline, with the network speed), the language switch, the current
 // role (a link back to the role picker), the Assistant and, when the AI is not live, its badge.
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { Key } from "../i18n";
 import { LANGS } from "../i18n";
 import { href, useRoute } from "../lib/router";
+import { getPrefs, subscribePrefs } from "../lib/tester";
 import { useApp } from "../state";
 import { Icon } from "./icons";
 import { AiModeBadge, StatusLine } from "./parts";
@@ -14,6 +15,7 @@ const PAGES = new Set(["roles", "judge", "home", "papers", "check", "cards", "pr
 export function TopBar({ assistant }: { assistant: React.ReactNode }) {
   const { tr, role, lang, setLang } = useApp();
   const route = useRoute().slice(1);
+  const nickname = useSyncExternalStore(subscribePrefs, getPrefs, getPrefs).nickname;
   const page = PAGES.has(route) ? route : null;
   const [info, setInfo] = useState(false); // phone: the description opens from the info icon
   return (
@@ -48,7 +50,7 @@ export function TopBar({ assistant }: { assistant: React.ReactNode }) {
         </div>
         {route === "roles" ? null : ( // the picker is where the role is chosen: no chip there
           <a className="role-chip" href={href("/roles")} title={tr("top.change_role")} data-testid="role-chip">
-            {tr("top.as", { role: tr(`role.${role}` as Key) })}
+            {nickname ? tr("top.as_named", { role: tr(`role.${role}` as Key), name: nickname }) : tr("top.as", { role: tr(`role.${role}` as Key) })}
           </a>
         )}
         {assistant}

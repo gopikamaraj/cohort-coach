@@ -279,6 +279,11 @@ export function changeNickname(nickname: string, isPublic: boolean): void {
   save({ nickname: nickname.trim().slice(0, 30), isPublic, profileKey: "" });
   scheduleFlush(300);
 }
+/** The name shown beside the role in the title bar. It lives on this phone; it is sent only if she shares testing data. */
+export function setNickname(nickname: string): void {
+  save({ nickname: nickname.trim().slice(0, 30), profileKey: "" });
+  if (sharing()) scheduleFlush(300);
+}
 export function pauseSharing(paused: boolean): void {
   save({ paused });
   if (paused) {
