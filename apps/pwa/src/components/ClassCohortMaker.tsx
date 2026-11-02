@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import { create, forCheck, syncPending, type ClassCohort } from "../lib/classCohort";
+import { peersFor, type Peer } from "../lib/cloudStore";
 import { CohortError } from "../lib/cohort";
 import { href } from "../lib/router";
 import { shownClassName } from "../lib/checks";
@@ -26,6 +27,7 @@ export function ClassCohortMaker({ onlyConfirmed }: { onlyConfirmed: boolean }) 
   const [name, setName] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  const [peers, setPeers] = useState<Peer[]>([]); // other teachers whose classes show the same mistakes
 
   useEffect(() => {
     setMade(checkId ? forCheck(checkId) : null);
@@ -33,6 +35,12 @@ export function ClassCohortMaker({ onlyConfirmed }: { onlyConfirmed: boolean }) 
   useEffect(() => {
     if (online) void syncPending(lang).then(() => setMade(checkId ? forCheck(checkId) : null));
   }, [online, lang, checkId]);
+
+  const codes = found.map(([c]) => c).join(",");
+  useEffect(() => {
+    if (!online || !codes) return setPeers([]);
+    void peersFor(codes.split(",")).then(setPeers);
+  }, [online, codes]);
 
   if ((role !== "teacher" && role !== "judge") || !profile || found.length === 0) return null;
   const nameFor = (codes: string[]) =>
@@ -89,7 +97,11 @@ export function ClassCohortMaker({ onlyConfirmed }: { onlyConfirmed: boolean }) 
         <button type="button" className="btn btn-primary" onClick={start} data-testid="class-cohort-open">
           {tr("cohort.mine.cta")}
         </button>
-        <p className="muted">{tr("cohort.mine.label")}</p>
+        {peers.length > 0 ? (
+          <p data-testid="class-cohort-peers">{tr("cohort.mine.peers", { names: peers.map((p) => (p.class ? `${p.teacher} (${p.class})` : p.teacher)).join("; ") })}</p>
+        ) : (
+          <p className="muted">{tr("cohort.mine.label")}</p>
+        )}
       </section>
     );
   }

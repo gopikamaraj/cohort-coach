@@ -102,3 +102,26 @@ def test_a_teacher_is_her_store_key_so_the_same_nickname_on_two_browsers_shares_
     assert client.get("/api/store", headers=on(A, key_ravi)).json()["checks"] == {}  # even on Priya's browser
     labels = [r["teacher"] for r in client.get("/api/store/all/checks", headers=h(A, "coach")).json()]
     assert labels == ["Teacher 1"]
+
+
+def test_peers_lists_other_teachers_who_show_the_same_mistake_by_nickname_and_never_a_count(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    ka, kb, kc = f"{11:016x}", f"{22:016x}", f"{33:016x}"
+
+    def on(key: str) -> dict[str, str]:
+        return {"X-Device-Id": A, "X-Store-Key": key, "X-Role": "teacher"}
+
+    def teacher(key: str, nickname: str, class_name: str, counts: dict[str, int]) -> None:
+        client.put("/api/store/settings/nickname", json={"data": {"key": "nickname", "value": nickname}}, headers=on(key))
+        client.put("/api/store/classes/c-" + nickname[:2], json={"data": {"id": "c-" + nickname[:2], "name": class_name}}, headers=on(key))
+        client.put("/api/store/profiles/p", json={"data": {"id": "p", "classId": "c-" + nickname[:2], "counts": counts}}, headers=on(key))
+
+    teacher(ka, "3A Math Teacher", "3A Class", {"PV-HEARD": 4, "SUB-SFL": 0})
+    teacher(kb, "3B Math Teacher", "3B Class", {"PV-HEARD": 2})
+    teacher(kc, "4C Math Teacher", "4C Class", {"SUB-SFL": 5})
+    seen = client.get("/api/store/peers?errors=PV-HEARD", headers=on(ka)).json()
+    assert seen == [{"teacher": "3B Math Teacher", "class": "3B Class", "errors": ["PV-HEARD"]}]  # not herself, not 4C, no counts
+    both = client.get("/api/store/peers?errors=PV-HEARD,SUB-SFL", headers=on(kb)).json()
+    assert [p["teacher"] for p in both] == ["3A Math Teacher", "4C Math Teacher"]
+    assert client.get("/api/store/peers?errors=not-a-code", headers=on(ka)).json() == []
+    monkeypatch.setenv("STORE_SHARED", "1")
+    assert client.get("/api/store/peers?errors=PV-HEARD", headers=on(ka)).json() == []

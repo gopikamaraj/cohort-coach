@@ -138,6 +138,8 @@ type Everything = Record<SyncedTable, Record<string, unknown>>;
 export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => fetch(...a)): Promise<"synced" | "offline"> {
   if (!isOnline()) return "offline";
   try {
+    const nick = getPrefs().nickname.trim();
+    if (nick && (await store.settings.get("nickname"))?.value !== nick) await store.settings.put({ key: "nickname", value: nick });
     await flushQueue(store, fetchFn);
     const res = await fetchFn(`${API_BASE}/api/store`, { headers: headers() });
     if (!res.ok) return "offline";
@@ -170,6 +172,23 @@ export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => f
     return "synced";
   } catch {
     return "offline";
+  }
+}
+
+export interface Peer {
+  teacher: string; // a nickname she chose, or "Teacher N"
+  class: string;
+  errors: string[];
+}
+
+/** The other teachers whose class results show any of these mistakes. Names and classes only, never a count. */
+export async function peersFor(errors: string[], fetchFn: Fetch = (...a) => fetch(...a)): Promise<Peer[]> {
+  if (errors.length === 0 || !isOnline()) return [];
+  try {
+    const res = await fetchFn(`${API_BASE}/api/store/peers?errors=${encodeURIComponent(errors.join(","))}`, { headers: headers() });
+    return res.ok ? ((await res.json()) as Peer[]) : [];
+  } catch {
+    return [];
   }
 }
 

@@ -2130,6 +2130,7 @@
   "results.title": "Results",
   "cohort.mine.cta": "Create a cohort for my class",
   "cohort.mine.label": "Just my class: no other teachers yet",
+  "cohort.mine.peers": "Other teachers whose classes also show these mistakes: {names}.",
   "cohort.mine.form_title": "A cohort for my class",
   "cohort.mine.pick": "Choose the errors to work on",
   "cohort.mine.pick_line": "{name}: {n} of {total} children",

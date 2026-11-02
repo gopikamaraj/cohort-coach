@@ -136,6 +136,43 @@ def _counts_only(coll: str, data: Any) -> Any:
     return {**{k: data[k] for k in keep if k in data}, "entered": entered, "absent": len(data.get("absent") or [])}
 
 
+ERROR_CODE = re.compile(r"^[A-Z0-9-]{3,16}$")
+
+
+@router.get("/peers")
+def peers(
+    errors: str,
+    x_device_id: str | None = Header(default=None),
+    x_store_key: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> list[dict[str, Any]]:
+    """The other teachers whose latest class result shows any of these mistakes: a label and a class name,
+    never a count (a teacher sees no number about another teacher's class). Empty while everyone shares."""
+    me = _device(x_store_key or x_device_id)
+    wanted = {e for e in errors.split(",") if ERROR_CODE.match(e)}
+    if not wanted or os.environ.get("STORE_SHARED") == "1":
+        return []
+    rows = db.scalars(
+        select(DeviceDoc).where(DeviceDoc.device.notin_([me, SHARED]), DeviceDoc.collection.in_(("profiles", "classes", "settings")))
+    ).all()
+    by_device: dict[str, dict[str, dict[str, Any]]] = {}
+    for r in rows:
+        by_device.setdefault(r.device, {}).setdefault(r.collection, {})[r.doc_id] = r.data if isinstance(r.data, dict) else {}
+    out: list[dict[str, Any]] = []
+    for n, (_device_key, docs) in enumerate(sorted(by_device.items()), start=1):
+        shared: list[str] = []
+        class_name = ""
+        for prof in docs.get("profiles", {}).values():
+            hit = [e for e in wanted if int((prof.get("counts") or {}).get(e, 0) or 0) > 0]
+            if hit:
+                shared = sorted(set(shared) | set(hit))
+                class_name = str((docs.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
+        if shared:
+            nick = str((docs.get("settings", {}).get("nickname") or {}).get("value") or "").strip()
+            out.append({"teacher": nick or f"Teacher {n}", "class": class_name, "errors": shared})
+    return sorted(out, key=lambda p: p["teacher"].lower())
+
+
 @router.get("/all/{collection}")
 def read_everyone(collection: str, role: str = Depends(role_of), db: Session = SESSION) -> list[dict[str, Any]]:
     """Coaches and mentors: every phone's documents in one collection, labelled, never by device id.

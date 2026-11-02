@@ -2130,6 +2130,7 @@
   "results.title": "परिणाम",
   "cohort.mine.cta": "मेरी कक्षा के लिए कोहोर्ट बनाएँ",
   "cohort.mine.label": "सिर्फ़ मेरी कक्षा: अभी कोई और शिक्षक नहीं",
+  "cohort.mine.peers": "अन्य शिक्षक जिनकी कक्षाओं में भी ये गलतियाँ दिखती हैं: {names}।",
   "cohort.mine.form_title": "मेरी कक्षा का कोहोर्ट",
   "cohort.mine.pick": "जिन गलतियों पर काम करना है उन्हें चुनें",
   "cohort.mine.pick_line": "{name}: {total} में से {n} बच्चे",
