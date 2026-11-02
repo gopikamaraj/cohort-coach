@@ -2321,5 +2321,16 @@
   "module.hold.chosen": "Thank you. We noted: {reason}.",
   "module.hold.short": "Try a shorter version",
   "module.hold.ask": "Ask my mentor or coach",
-  "module.hold.again": "When you have tried it, tell us how it went below."
+  "module.hold.again": "When you have tried it, tell us how it went below.",
+  "module.review.title": "A quick question",
+  "module.review.intro": "This helps the next module fit you better. You can skip it.",
+  "module.review.free_label": "Your answer (short, no names)",
+  "module.review.send": "Send",
+  "module.review.skip": "Skip",
+  "module.review.thanks": "Thank you. This is kept private.",
+  "module.review.safety": "Thank you for telling us. That sounds hard. We have not shared anything. If you would like someone to call you, you can ask your coach.",
+  "module.changed.title": "What changes next",
+  "module.changed.none": "Nothing changes: the plan stays as it is.",
+  "module.changed.sections": "Because you told us: {told}, the next module puts {sections} first.",
+  "module.changed.approach": "It also leans toward a different approach."
 }

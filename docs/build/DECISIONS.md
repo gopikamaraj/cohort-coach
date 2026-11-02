@@ -930,6 +930,16 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 
 **Confirmed by.** Not confirmed: for Gopi to review (the defaults above).
 
+## 2026-11-02 · AI review of the note, with follow-up questions (Part B, call 17)
+
+**Decision.** A small model (call 17, `MODEL_FEEDBACK_REVIEW`, Haiku) reads the masked note after her answer and picks barrier and focus tags and up to two follow-up questions from closed lists in `content/modules/feedback_review.v1.yaml`. Code validates every id (an unknown tag or question drops the whole output), allows at most one free question and only if it passes a checker (120 characters, a question, no name or number, no judging her, no diagnosing a child, no advice), ignores tags below confidence 0.5, and shows a gentle message on a safety flag (welfare words are also caught in code before any model). The branch table still decides the branch; tags only (1) put preferred approaches first among the alternatives for "not yet" and (2) move matching sections to the top, and code writes the "What changes next" line. AI off, offline or any failure: feedback is saved and only the branch table applies. The review, questions and answers are private to her.
+
+**Not built.** The optional AI-worded intro ("What we changed because of what you told us", through review, omitted if not approved by the due date): not built, so nothing is claimed. No recorded fixture of a real model reply is committed (none was made; no live call was run); tests use a canned reply and a temporary recording. The eval (`python tasks.py eval feedback_review`) runs its code side free (0 of 4 made-up names leaked, 0 injected outputs accepted); the model side needs `--live`.
+
+**Findings.** Two welfare-style notes in Hindi and Tamil (a complaint about a head teacher, distress) are not caught by the code word list, so for them the model's safety flag is the only guard until Shivani extends `content/safety/welfare_terms.yaml`. A YAML pitfall was fixed: unquoted `yes` and `no` become booleans.
+
+**Confirmed by.** Not confirmed: for Gopi.
+
 ## 2026-11-02 · Four answers on a module, and the not-tried hold (Part A)
 
 **Decision.** The answers are `worked`, `partly`, `not_yet` and `not_tried` (the old `tried` is now `worked`; rows made earlier are rewritten by `services/modules/migrate.py` at start). `not_tried` is a HOLD, never a result: the module stays open (not `feedback_given`), the planned dates and the end date move by `MODULE_DEFER_DAYS` (7) at most `MODULE_MAX_DEFERRALS` (2) times, the second deferral records a `coach_notified` event, and after it the daily job makes the planned module as `no_feedback` with the reason "you had not tried it yet". "Get the next module" always works while held. Why-not-yet chips (no time, materials, not sure how, absent, other) are kept as private events; coaches see only counts, with "not tried" in its own column.

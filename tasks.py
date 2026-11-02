@@ -108,6 +108,7 @@ AVAILABLE_EVALS = {
     "statistics": "evals.runners.statistics",
     "redteam": "evals.runners.redteam",
     "sim_fidelity": "evals.runners.sim_fidelity",
+    "feedback_review": "evals.runners.feedback_review",
 }
 
 

@@ -220,6 +220,24 @@ ChatClassLabel = Literal[
 ]
 
 
+class FollowUpPick(BaseModel):
+    """One follow-up the model chose: an approved-bank id, or (at most one) a short question."""
+
+    bank_id: str | None = Field(default=None, max_length=40)
+    free_text: str | None = Field(default=None, max_length=200)
+
+
+class FeedbackReview(BaseModel):
+    """Call 17: tags and follow-ups from a teacher's note about a module. Tags are ids from the
+    closed lists in content/modules/feedback_review.v1.yaml; code rejects anything else."""
+
+    barrier_tags: list[str] = Field(default_factory=list, max_length=4)
+    focus_tags: list[str] = Field(default_factory=list, max_length=4)
+    follow_ups: list[FollowUpPick] = Field(default_factory=list, max_length=2)
+    safety: bool = False
+    confidence: float = Field(ge=0.0, le=1.0)
+
+
 class ChatClass(BaseModel):
     """Call 12: what kind of question a teacher asked her mentor. Low confidence means unclear."""
 

@@ -27,7 +27,24 @@ def api(sink: SqlAuditSink):  # type: ignore[no-untyped-def]
 def test_ai_map_lists_all_calls_and_layers(api: TestClient) -> None:
     body = api.get("/api/judge/ai-map").json()
     assert body["layers"] == list(LAYERS)
-    assert [c["id"] for c in body["calls"]] == [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]
+    assert [c["id"] for c in body["calls"]] == [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+    ]
     for call in body["calls"]:
         assert set(call["layers"]) == set(LAYERS)
         assert call["prompt_version"] >= 1 and call["model"].startswith("claude-")

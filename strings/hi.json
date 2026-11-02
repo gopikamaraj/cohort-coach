@@ -2321,5 +2321,16 @@
   "module.hold.chosen": "धन्यवाद। हमने लिखा: {reason}।",
   "module.hold.short": "छोटा संस्करण आज़माइए",
   "module.hold.ask": "अपने मेंटर या कोच से पूछिए",
-  "module.hold.again": "आज़माने के बाद नीचे बताइए कि कैसा रहा।"
+  "module.hold.again": "आज़माने के बाद नीचे बताइए कि कैसा रहा।",
+  "module.review.title": "एक छोटा सवाल",
+  "module.review.intro": "इससे अगला मॉड्यूल आपके लिए बेहतर बैठता है। आप इसे छोड़ सकती हैं।",
+  "module.review.free_label": "आपका उत्तर (छोटा, कोई नाम नहीं)",
+  "module.review.send": "भेजें",
+  "module.review.skip": "छोड़ें",
+  "module.review.thanks": "धन्यवाद। यह निजी रखा जाता है।",
+  "module.review.safety": "बताने के लिए धन्यवाद। यह कठिन लगता है। हमने कुछ भी साझा नहीं किया। अगर आप चाहें कि कोई आपको फ़ोन करे, तो आप अपने कोच से कह सकती हैं।",
+  "module.changed.title": "आगे क्या बदलता है",
+  "module.changed.none": "कुछ नहीं बदलता: योजना वैसी ही रहती है।",
+  "module.changed.sections": "क्योंकि आपने बताया: {told}, अगला मॉड्यूल {sections} को पहले रखता है।",
+  "module.changed.approach": "यह एक अलग तरीके की ओर भी झुकता है।"
 }

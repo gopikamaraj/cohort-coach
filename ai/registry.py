@@ -413,6 +413,43 @@ CALLS: tuple[CallSpec, ...] = (
         evaluation="No accuracy claim yet. The importer's code-side checks are tested on recorded reads (tests/papers_hub); a live run on real papers is pending.",
         output="A draft paper for a person to review item by item, with a coverage grid and open questions. Nothing is used until it is confirmed.",
     ),
+    CallSpec(
+        id=17,
+        key="c17_feedback_review",
+        name="Note review",
+        purpose="Read the short note a teacher adds to her answer about a module, and pick tags and up to two follow-up questions from approved lists, so the next module fits her better.",
+        model_env="MODEL_FEEDBACK_REVIEW",
+        when="after she sends an answer, when online and AI is on (skipped when there is no note and it worked)",
+        output_model=schemas.FeedbackReview,
+        input_fields=(
+            "language",
+            "answer",
+            "error",
+            "approach",
+            "sections",
+            "approaches_used",
+            "note",
+        ),
+        validators=(
+            "schema",
+            "every tag is in the closed lists",
+            "every follow-up id is in the approved bank",
+            "at most one free question, which passes the question checker",
+            "confidence floor",
+        ),
+        gates=(
+            "names and numbers masked before the call",
+            "safety words checked in code first",
+            "output that does not validate is dropped",
+        ),
+        eval_id="eval_feedback_review",
+        eval_bar="synthetic notes: 0 names leaked, 0 injected instructions followed; tag agreement and follow-up appropriateness reported",
+        input="The masked note, her answer, the error, the module's approach and section titles, the approaches already used and the language. No names, no class data.",
+        processing="A small model picks barrier and focus tags and up to two follow-up questions, all from closed lists kept in the content library, with a confidence and a safety flag.",
+        guardrails="The note is data, never an instruction. Code validates every tag and question id against the library and the one free question against a checker (120 characters, no names, no judging, no diagnosing a child, no advice). A safety flag shows a gentle message and tells nobody unless she asks. Any failure, AI off or offline means only the branch table applies.",
+        evaluation="About 30 synthetic notes in three languages, some with names and some with injected instructions (evals/sets/feedback_review.yaml). The code-side checks run free; tag agreement and follow-up appropriateness need a live run.",
+        output="Tags that code uses to prefer an alternative approach and to put matching sections first, and at most two follow-up questions for her to answer or skip. No AI text reaches her except a validated question.",
+    ),
 )
 
 BY_ID: dict[int, CallSpec] = {c.id: c for c in CALLS}

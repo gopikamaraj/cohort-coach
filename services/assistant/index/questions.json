@@ -1295,6 +1295,23 @@
    "text": {
     "en": "What happens when the AI is unavailable, and how are recorded answers labelled?"
    }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j51",
+   "query": "improvement track modules next module feedback worked partly not yet not tried due date daily job no feedback silence",
+   "rubric_rows": [
+    "E1.7"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How does the improvement track decide which module comes next, and what if a teacher gives no feedback?"
+   }
   }
  ],
  "judge_path": {

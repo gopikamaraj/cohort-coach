@@ -111,9 +111,11 @@ def next_module(
     cap: int,
     *,
     past_end: bool = False,
+    prefer: tuple[str, ...] = (),
 ) -> NextModule:
     """`history`: the modules already made, in order. `previous_feedback`: the answer on the last one
-    (worked, partly, not_yet, not_tried) or None. `past_end`: the track's end date has passed."""
+    (worked, partly, not_yet, not_tried) or None. `past_end`: the track's end date has passed. `prefer`: approaches to try first among the
+    alternatives for "not yet" (from the validated tags of her note); it never changes the branch."""
     if previous_feedback is not None and previous_feedback not in states.ANSWERS:
         raise ValueError(f"feedback must be one of {states.ANSWERS} or None")
     n = len(history) + 1
@@ -136,6 +138,10 @@ def next_module(
     if previous_feedback == "not_yet":
         template = next((t for t in plan.templates if t.approach == last.approach), None)
         candidates = [*(template.alternatives if template else ()), *plan.approaches()]
+        # tags from her note (validated by code) put matching approaches first; none match: unchanged
+        candidates = sorted(
+            candidates, key=lambda a: prefer.index(a) if a in prefer else len(prefer)
+        )
         pick = next((a for a in candidates if a not in used), None)
         if pick is None:
             return _stop(STOP_EXHAUSTED, n, last.number)

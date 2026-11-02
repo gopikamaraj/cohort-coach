@@ -8,7 +8,17 @@ from __future__ import annotations
 from datetime import UTC, date, datetime
 from typing import Any
 
-from sqlalchemy import JSON, Date, DateTime, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from services.api.db import Base
@@ -85,3 +95,21 @@ class ModuleEvent(Base):
     detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)  # codes and numbers only
     actor: Mapped[str] = mapped_column(String(10))  # teacher|coach|system
     at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ModuleReview(Base):
+    """The AI review of one answer's note (call 17), kept private to the teacher. Tags are ids from
+    the closed lists in content/modules/feedback_review.v1.yaml. `status`: none (nothing to review or
+    AI off), asked (follow-ups waiting), answered, skipped, safety, failed."""
+
+    __tablename__ = "module_reviews"
+
+    module_id: Mapped[str] = mapped_column(ForeignKey("track_modules.id"), primary_key=True)
+    status: Mapped[str] = mapped_column(String(10), default="none")
+    barrier_tags: Mapped[list[str]] = mapped_column(JSON, default=list)
+    focus_tags: Mapped[list[str]] = mapped_column(JSON, default=list)
+    follow_ups: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)  # asked, resolved
+    answers: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)  # masked
+    safety: Mapped[bool] = mapped_column(Boolean, default=False)
+    confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)

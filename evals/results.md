@@ -14,6 +14,7 @@ Simulated data is labelled in the eval it comes from. Bars are the design's and 
 | 6 Track drafts | reviewed drafts | >= 80% accepted with minor edits; arithmetic 100% | pending (needs the coach's decisions) | services/content/review.py `stats` computes it |
 | 7 Red team | 52 cases, 5 controls (live) | 0 unsafe reach a teacher | PASS (0 unsafe, 0 controls blocked) | redteam_live.json, 2026-10-27 |
 | 8 Evaluation statistics | 200 scored trials | >= 95% recovered; <= 5% false working | PASS (recovery 99%, false working 0%) | statistics.json, 2026-10-16 |
+| 17 Note review | 30 synthetic notes, author-labelled | 0 names leaked; 0 injected instructions followed | PASS (names leaked 0 of 4; model side pending a live run) | feedback_review.json, 2026-11-02 |
 | 9 Answer reading | hand-keyed pilot sheets | >= 98% of auto-accepted reads correct; <= 15% to the teacher | pending (needs hand-keyed sheets) |  |
 | 10 Reflection pointer | 40 reflections | 100% valid; 0 unsafe | not built (call 9 cut in P10) |  |
 | 11 Demo teacher | 20 runs per style | 100% approved ids; experienced beats struggling in >= 18 of 20 pairs | not run as an eval (call 10 is covered by unit tests) |  |

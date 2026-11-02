@@ -232,6 +232,15 @@ def module_text(error: str, approach: str, smaller: bool, language: str) -> Modu
     return out
 
 
+def reorder(parts: list[dict[str, Any]], first: list[str]) -> list[dict[str, Any]]:
+    """Put the sections named in `first` at the top (a smaller-step note stays first); the order of the
+    others is kept."""
+    lead = [p for p in parts if p["id"] == "smaller_step"]
+    rest = [p for p in parts if p["id"] != "smaller_step"]
+    ordered = [p for s in first for p in rest if p["id"] == s]
+    return lead + ordered + [p for p in rest if p not in ordered]
+
+
 def display(text: str) -> str:
     """The reading text: a {pv:602} slot shows as 602."""
     return PV.sub(lambda m: m.group(1), text)

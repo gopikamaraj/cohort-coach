@@ -146,6 +146,26 @@ export async function sendWhyNot(trackId: string, number: number, chip: Chip, la
   return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/why?lang=${lang}`, { method: "POST", body: { chip } }, fetchFn));
 }
 
+export interface ReviewView {
+  state: "none" | "asked" | "answered" | "skipped" | "safety" | "failed";
+  follow_ups: { id: string; kind: "bank" | "free"; text: string; chips: { id: string; label: string }[] }[];
+  safety: boolean;
+  changes: string | null; // "What changes next", written by code from the validated tags
+}
+
+/** After her answer: the AI review of her note. Never blocks: any failure reads as "no questions". */
+export async function runReview(trackId: string, number: number, lang: string, fetchFn?: typeof fetch): Promise<ReviewView> {
+  try {
+    return await call<ReviewView>(`/tracks/${trackId}/modules/${number}/review?lang=${lang}`, { method: "POST" }, fetchFn);
+  } catch {
+    return { state: "none", follow_ups: [], safety: false, changes: null };
+  }
+}
+
+export async function answerReview(trackId: string, number: number, answers: { id: string; chip?: string; text?: string }[], skip: boolean, lang: string, fetchFn?: typeof fetch): Promise<ReviewView> {
+  return call<ReviewView>(`/tracks/${trackId}/modules/${number}/review/answers?lang=${lang}`, { method: "POST", body: { answers, skip } }, fetchFn);
+}
+
 export async function markDownloaded(trackId: string, number: number, audioRef: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
   return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/downloaded?lang=${lang}`, { method: "POST", body: { audio_ref: audioRef } }, fetchFn));
 }

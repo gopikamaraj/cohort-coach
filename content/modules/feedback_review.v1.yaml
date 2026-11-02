@@ -1,0 +1,131 @@
+# Closed vocabularies and the approved follow-up bank for the AI review of a teacher's note (call 17).
+# The model may only pick ids from here; code rejects anything else. Code also decides what each tag
+# DOES (focus_effects): which approaches to prefer among the alternatives, and which sections go first.
+# status: draft. TODO-HUMAN(Seema, Shivani): review every id, label and question in the three
+# languages. Hindi and Tamil are Claude drafts.
+version: 1
+status: draft
+barrier_tags:
+  no_time:
+    en: Not enough time
+    hi: समय कम पड़ा
+    ta: நேரம் போதவில்லை
+  no_materials:
+    en: Materials were missing
+    hi: सामग्री नहीं थी
+    ta: பொருட்கள் இல்லை
+  unsure_how:
+    en: Not sure how to do it
+    hi: पक्का पता नहीं था कैसे करें
+    ta: எப்படிச் செய்வது என்று தெரியவில்லை
+  children_absent:
+    en: Children were absent
+    hi: बच्चे अनुपस्थित थे
+    ta: குழந்தைகள் வரவில்லை
+  too_long:
+    en: It took too long
+    hi: इसमें बहुत समय लगा
+    ta: அதிக நேரம் எடுத்தது
+  children_confused:
+    en: The children were confused
+    hi: बच्चे उलझन में थे
+    ta: குழந்தைகள் குழம்பினர்
+  too_hard:
+    en: It was too hard for the children
+    hi: बच्चों के लिए बहुत कठिन था
+    ta: குழந்தைகளுக்கு மிகக் கடினமாக இருந்தது
+  language_gap:
+    en: The words were hard to explain in class
+    hi: कक्षा में शब्द समझाना कठिन था
+    ta: சொற்களை வகுப்பில் விளக்குவது கடினமாக இருந்தது
+focus_tags:
+  place_value:
+    en: Tens and ones
+    hi: दहाई और इकाई
+    ta: பத்துகளும் ஒன்றுகளும்
+  regrouping:
+    en: Opening a ten
+    hi: दहाई खोलना
+    ta: பத்தைப் பிரித்தல்
+  bundles:
+    en: Working with bundles
+    hi: गड्डियों से काम करना
+    ta: கட்டுகளுடன் வேலை செய்தல்
+  explaining:
+    en: Children explaining their steps
+    hi: बच्चों का अपने क़दम समझाना
+    ta: குழந்தைகள் தங்கள் படிகளை விளக்குதல்
+  checking:
+    en: Checking an answer
+    hi: उत्तर की जाँच
+    ta: விடையைச் சரிபார்த்தல்
+  practice:
+    en: More practice
+    hi: और अभ्यास
+    ta: கூடுதல் பயிற்சி
+  materials_help:
+    en: Using simple materials
+    hi: सरल सामग्री का उपयोग
+    ta: எளிய பொருட்களைப் பயன்படுத்துதல்
+# What a focus tag does. `approaches`: preferred first among the alternatives for "not yet".
+# `sections`: shown first in the next module (the order of the others is kept).
+focus_effects:
+  place_value: {approaches: [show_bundles], sections: [purpose, steps]}
+  regrouping: {approaches: [exchange_ten, decomposition], sections: [steps, example]}
+  bundles: {approaches: [show_bundles], sections: [materials, steps]}
+  explaining: {approaches: [ask_explain], sections: [check, purpose]}
+  checking: {approaches: [check_back], sections: [check]}
+  practice: {approaches: [], sections: [steps, example]}
+  materials_help: {approaches: [show_bundles], sections: [materials]}
+# Follow-up questions the model may choose (by id). Each has answer chips. Max 2 per answer, one round.
+follow_up_bank:
+  fu_where_stuck:
+    text:
+      en: Where did the children get stuck?
+      hi: बच्चे कहाँ अटक गए?
+      ta: குழந்தைகள் எங்கே சிக்கிக்கொண்டனர்?
+    chips:
+      start: {en: At the start, hi: शुरू में, ta: தொடக்கத்தில்}
+      middle: {en: In the middle, hi: बीच में, ta: நடுவில்}
+      end: {en: At the end, hi: अंत में, ta: முடிவில்}
+      all: {en: Throughout, hi: पूरे समय, ta: முழுவதும்}
+  fu_materials:
+    text:
+      en: Did you have the materials you needed?
+      hi: क्या आपके पास ज़रूरी सामग्री थी?
+      ta: உங்களுக்குத் தேவையான பொருட்கள் இருந்தனவா?
+    chips:
+      "yes": {en: "Yes", hi: हाँ, ta: ஆம்}
+      some: {en: Some of them, hi: कुछ थी, ta: சில}
+      "no": {en: "No", hi: नहीं, ta: இல்லை}
+  fu_time:
+    text:
+      en: How was the time?
+      hi: समय कैसा रहा?
+      ta: நேரம் எப்படி இருந்தது?
+    chips:
+      short: {en: Too short, hi: कम पड़ा, ta: குறைவு}
+      right: {en: About right, hi: ठीक था, ta: சரியாக இருந்தது}
+      long: {en: Too long, hi: ज़्यादा लगा, ta: அதிகம்}
+  fu_help:
+    text:
+      en: What would help most next time?
+      hi: अगली बार सबसे ज़्यादा क्या मदद करेगा?
+      ta: அடுத்த முறை எது அதிகம் உதவும்?
+    chips:
+      example: {en: A clearer example, hi: एक साफ़ उदाहरण, ta: தெளிவான எடுத்துக்காட்டு}
+      shorter: {en: A shorter version, hi: छोटा संस्करण, ta: குறுகிய வடிவம்}
+      materials: {en: Simple materials, hi: सरल सामग्री, ta: எளிய பொருட்கள்}
+      talk: {en: Talking to someone, hi: किसी से बात करना, ta: யாரிடமாவது பேசுதல்}
+  fu_children_reaction:
+    text:
+      en: How did most children respond?
+      hi: ज़्यादातर बच्चों ने कैसा जवाब दिया?
+      ta: பெரும்பாலான குழந்தைகள் எப்படி பதிலளித்தனர்?
+    chips:
+      keen: {en: They joined in, hi: वे शामिल हुए, ta: ஆர்வமாகப் பங்கேற்றனர்}
+      quiet: {en: They were quiet, hi: वे चुप रहे, ta: அமைதியாக இருந்தனர்}
+      mixed: {en: Some did, some did not, hi: कुछ ने किया, कुछ ने नहीं, ta: சிலர் செய்தனர், சிலர் இல்லை}
+# The one free-text question: the checker's limits (code, services/modules/review.py).
+free_question:
+  max_chars: 120

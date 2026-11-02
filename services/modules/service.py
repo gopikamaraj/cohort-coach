@@ -261,12 +261,16 @@ def generate_module(
         raise ModulesError("needs_feedback", "Give feedback on the last module first.")
     answer = fb.answer if fb else None
     plan = library.plan_for(track.error)
+    from services.modules import review  # here to avoid an import loop
+
+    prefs = review.prefs_for(db, prev) if prev else review.Prefs()
     due = (
         row.due_date
         if row
         else (prev.due_date if prev else track.start_date) + timedelta(days=library.gap_days())
     )
-    result = branch.next_module(plan, _history(rows), answer, track.cap)
+    default = branch.next_module(plan, _history(rows), answer, track.cap)
+    result = branch.next_module(plan, _history(rows), answer, track.cap, prefer=prefs.approaches)
     if row is None and not result.stops:
         # the plan has no row for it (it was dropped at the end date, or never planned)
         result = branch.next_module(plan, _history(rows), answer, track.cap, past_end=True)
@@ -276,6 +280,15 @@ def generate_module(
         return Generated(None, result.stop, True)
     smaller = result.smaller
     mt = library.module_text(track.error, result.approach or "", smaller, track.language)
+    text = mt.to_dict()
+    if prefs:  # what code changed because of her note (validated tags only)
+        text["parts"] = library.reorder(text["parts"], list(prefs.sections))
+        text["emphasis"] = list(prefs.sections)
+        text["changed"] = {
+            "barrier": list(prefs.barrier),
+            "focus": list(prefs.focus),
+            "approach": result.approach != default.approach,
+        }
     claim = {
         "template_id": _template_id(track.error, result.approach or "", smaller),
         "approach_id": result.approach,
@@ -285,7 +298,7 @@ def generate_module(
         "generated_by": trigger,
         "branch": result.branch,
         "reason": result.reason.to_dict(),
-        "text": mt.to_dict(),
+        "text": text,
         "language": mt.language,
     }
     if row is None:
@@ -556,6 +569,20 @@ def module_view(db: Session, track: Track, m: TrackModule, lang: str, total: int
     )
     mt = live.to_dict() if live is not None and not live.omitted else stored
     out["title"] = mt.get("title") or m.title
+    if stored.get("emphasis"):
+        from services.modules import review
+
+        mt = {**mt, "parts": library.reorder(mt["parts"], stored["emphasis"])}
+        ch = stored.get("changed", {})
+        out["changed_text"] = review.changes_line(
+            review.Prefs(
+                sections=tuple(stored["emphasis"]),
+                barrier=tuple(ch.get("barrier", [])),
+                focus=tuple(ch.get("focus", [])),
+            ),
+            lang,
+            bool(ch.get("approach")),
+        )
     out["text"] = mt
     out["language"] = mt.get("language", m.language)
     out["reason"] = m.reason

@@ -109,6 +109,25 @@ def rows() -> list[tuple[str, ...]]:
                 f"statistics.json, {e8['date']}",
             )
         )
+    e17 = load("feedback_review_live") or load("feedback_review")
+    if e17:
+        cs = e17["code_side"]
+        live = isinstance(e17.get("model_side"), dict)
+        out.append(
+            (
+                "17 Note review",
+                f"{cs['cases']} synthetic notes, author-labelled",
+                "0 names leaked; 0 injected instructions followed",
+                f"{passfail(e17)} (names leaked {cs['names_leaked']} of {cs['names_in_notes']}"
+                + (
+                    f"; injected followed {e17['model_side']['injected_followed']}"
+                    if live
+                    else "; model side pending a live run"
+                )
+                + ")",
+                f"feedback_review{'_live' if live else ''}.json, {e17['date']}",
+            )
+        )
     out.append(
         (
             "9 Answer reading",

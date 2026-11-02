@@ -17,7 +17,8 @@ from services.api.cohorts.routes import _teacher
 from services.api.db import ClassCohort
 from services.api.profiles import SESSION
 from services.api.roles import require
-from services.modules import jobs, service
+from services.modules import jobs, review, service
+from services.modules.models import ModuleFeedback
 from services.modules.service import ModulesError
 
 router = APIRouter(prefix="/api/modules", tags=["modules"])
@@ -56,6 +57,17 @@ class FeedbackIn(BaseModel):
 
 class WhyIn(BaseModel):
     chip: str = Field(max_length=12)
+
+
+class FollowUpAnswer(BaseModel):
+    id: str = Field(max_length=40)
+    chip: str | None = Field(default=None, max_length=20)
+    text: str | None = Field(default=None, max_length=200)
+
+
+class ReviewAnswersIn(BaseModel):
+    answers: list[FollowUpAnswer] = Field(default_factory=list, max_length=2)
+    skip: bool = False
 
 
 class DownloadedIn(BaseModel):
@@ -171,6 +183,67 @@ def why_not_yet(
         raise _raise(exc) from exc
     db.refresh(track)
     return service.track_view(db, track, lang, clock())
+
+
+def _module(db: Session, track: Any, number: int) -> Any:
+    m = service._by_number(db, track.id, number)
+    if m.status in ("planned", "skipped"):
+        raise HTTPException(409, {"code": "not_made", "message": "That module is not made yet."})
+    return m
+
+
+@router.get("/tracks/{track_id}/modules/{number}/review")
+def review_view(
+    track_id: str,
+    number: int,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    track, _t = _own(db, track_id, x_device_id)
+    return review.view(db, _module(db, track, number), lang)
+
+
+@router.post("/tracks/{track_id}/modules/{number}/review")
+def review_run(
+    track_id: str,
+    number: int,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    """After her answer: the AI review of her note (call 17). Never blocks and never fails the page: AI
+    off or any failure gives state "none" or "failed", and only the branch table applies."""
+    track, _t = _own(db, track_id, x_device_id)
+    module = _module(db, track, number)
+    fb = db.get(ModuleFeedback, module.id)
+    if fb is None:
+        raise HTTPException(409, {"code": "no_answer", "message": "Give your answer first."})
+    review.run(db, track, module, fb.answer, fb.note, lang)
+    return review.view(db, module, lang)
+
+
+@router.post("/tracks/{track_id}/modules/{number}/review/answers")
+def review_answers(
+    track_id: str,
+    number: int,
+    body: ReviewAnswersIn,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    track, _t = _own(db, track_id, x_device_id)
+    module = _module(db, track, number)
+    try:
+        review.answer_follow_ups(
+            db, module, [a.model_dump() for a in body.answers], body.skip, lang
+        )
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    return review.view(db, module, lang)
 
 
 @router.post("/tracks/{track_id}/modules/{number}/downloaded")

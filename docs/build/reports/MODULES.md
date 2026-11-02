@@ -108,6 +108,22 @@ Existing failures that are not from this work (seen again, unchanged): `src/lib/
 
 ---
 
+# Part B: AI review of the note (2 Nov 2026)
+
+**What exists now.** Call 17 (`ai/calls/c17_feedback_review.py`, prompt `c17_feedback_review.v1.md`, light model, policy 10 s / 1 retry), output schema `FeedbackReview`, registry entry, `AI_USAGE.md` row (Built, not Verified), README regenerated. Closed vocabularies and the approved follow-up bank (en/hi/ta) in `content/modules/feedback_review.v1.yaml`. Logic in `services/modules/review.py`; table `module_reviews`; endpoints `GET/POST .../modules/{n}/review` and `POST .../review/answers`; client calls in `lib/modules.ts`.
+
+**What it does.** Runs after her answer when online and AI mode is not off; skipped silently with no note and "worked". The model sees only the masked note and facts about the module (error, approach, section ids, approaches used, language). Output must validate against the closed lists or it is dropped. Tags change two things, by code: the "not yet" alternatives are ordered with preferred approaches first, and matching sections move to the top of the next module; the stored text records what changed, and the module shows a code-written "What changes next" line. No match means the branch default.
+
+**Guardrails.** Names and numbers masked again before the call; welfare words checked in code first; injected instructions have no path to an effect (unknown ids are rejected whole); one free question at most, checked; one round, a Skip, never blocking; retry once (policy) then skip; the call is in the AI call log with the usual audit row.
+
+**Evaluation.** `evals/sets/feedback_review.yaml` (30 synthetic notes: 10 per language, 4 with a made-up child name, 4 with an injected instruction, 4 safety cases), runner `evals/runners/feedback_review.py`, row 17 in `evals/results.md`. Code side measured: 0 of 4 names leaked; 0 injected outputs accepted. Model side (tag agreement, follow-up appropriateness, injected instructions followed) is **pending a live run** and the labels are the author's until Seema re-labels them.
+
+**Tests.** `tests/modules/test_review.py` (37): registry, schema bounds, no class data sent, closed-list validation (each rejection), confidence floor, safety, the free-question checker (12 blocks, 4 passes in three languages), saved state, skip rules, offline, AI off, failure, welfare words, injection, a recorded fixture round trip, follow-up answering rules, tag effects (approach, section order, no match, safety), the changes line in three languages, vocabulary completeness, strings, endpoints and privacy. Module suite: 110 before, 163 after. Existing tests updated for the new call: the registry id lists (`tests/ai/test_registry.py`, `tests/ai/test_judge_api.py`), plus a judge question (j51) so that rubric row E1.7 is reachable.
+
+**Incomplete.** The AI-worded intro is not built. The follow-up and "What changes next" screens are built in Part C's check-in flow.
+
+---
+
 # Part A: four answers and the not-tried hold (2 Nov 2026)
 
 **What existed (Step 0).** Answers `tried`, `partly`, `not_yet`; the pure branch function (`branch.next_module`); the daily job (`jobs.run_due`); the feedback card in `ModuleTrack.tsx`; the cohort chat is a separate system (`ThreadPost` in `services/api/cohorts/thread.py` for a cohort space, and `ChatMessage` for the question and AI-draft flow), which a class-only cohort does not have. **What differed from the brief:** three answers, no hold, no deferral, no migration.
