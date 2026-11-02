@@ -44,7 +44,7 @@ try {
     return
   }
   # the same local settings run-backend.bat uses
-  $env:ADMIN_OPEN = "1"; $env:JUDGE_MODE = "1"; $env:MEDIA_LOCAL_STORE = "1"
+  $env:ADMIN_OPEN = "1"; $env:OFFICER_MIN_CLASSES = "2"; $env:JUDGE_MODE = "1"; $env:MEDIA_LOCAL_STORE = "1"
   $env:PWA_ORIGIN = "http://localhost:5173"
   Write-Host "Back end: http://localhost:8000  ->  CLOUD database '$database' (shared with the live site)"
   & ".venv\Scripts\python.exe" -m uvicorn services.api.main:app --reload --port 8000

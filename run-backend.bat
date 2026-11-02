@@ -5,6 +5,7 @@ rem Reads keys from .env. Stop with Ctrl+C.
 cd /d "%~dp0"
 rem Local testing only: leaves the admin page open. A real server sets ADMIN_KEY instead.
 set ADMIN_OPEN=1
+set OFFICER_MIN_CLASSES=2
 set JUDGE_MODE=1
 rem lesson audio is kept in .media-local\ on this machine (local only)
 set MEDIA_LOCAL_STORE=1
