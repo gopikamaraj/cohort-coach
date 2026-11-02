@@ -598,20 +598,20 @@
       "status": "draft",
       "worked_by_error": {
         "ADD-NOCARRY": [
-          "Ask: how did you get 55 for 38 + 27? The child says: 8 plus 7 is 15, I wrote 5 and forgot the ten."
+          "A child wrote 55 for 38 + 27, which is the mistake. Ask: how did you get 55? The child says: 8 plus 7 is 15, I wrote 5 and forgot the ten."
         ],
         "PV-HEARD": [
-          "Ask: how did you get 602 for sixty-two? The child says: I wrote sixty, then two."
+          "A child wrote 602 for sixty-two, which is the mistake. Ask: how did you get 602? The child says: I wrote sixty, then two."
         ],
         "SUB-NODEC": [
-          "Ask: how did you get 44 for 72 - 38? The child says: I took a ten for the 2, then took 3 from 7."
+          "A child wrote 44 for 72 - 38, which is the mistake. Ask: how did you get 44? The child says: I took a ten for the 2, then took 3 from 7."
         ],
         "SUB-SFL": [
-          "Ask: how did you get 47 for 62 - 29? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
+          "A child wrote 47 for 62 - 29, which is the mistake. Ask: how did you get 47? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
         ]
       },
       "worked_examples": [
-        "Ask: how did you get 47 for 62 - 29? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
+        "A child wrote 47 for 62 - 29, which is the mistake. Ask: how did you get 47? The child says: 9 minus 2 is 7, and 6 minus 2 is 4."
       ]
     },
     "check_back": {
