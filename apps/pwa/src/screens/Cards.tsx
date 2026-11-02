@@ -125,6 +125,7 @@ export default function Cards() {
   others.sort((a, b) => b.count - a.count);
 
   const findings = [...stages, ...others];
+  const [tab, setTab] = useState<"known" | "unknown">("known");
   const kindLabel = { error: tr("cards.kind.error"), stage: tr("stage.title"), other: tr("cards.kind.other") };
 
   return (
@@ -139,34 +140,62 @@ export default function Cards() {
       <p className="muted">{tr("cards.checked", { n: view.childrenChecked })}</p>
       {view.tooSmall ? <p>{tr("cards.small", { min: view.minChildren })}</p> : null}
       {findings.length + view.cards.length > 0 ? <p data-testid="findings-intro">{tr("cards.all_here", { n: findings.length + view.cards.length })}</p> : null}
-      <MistakesTable rows={rows} activeCode={code} onCode={setCode} onlyConfirmed={onlyConfirmed} onOnlyConfirmed={(on) => { setOnlyConfirmed(on); if (on && code && !rows.some((r) => r.code === code && r.confirmed > 0)) setCode(null); }} flagged={flagged} onFlag={flag} canHighlight={canMap} />
-      <ul className="cards findings" data-testid="findings">
-        {findings.map((f) => (
-          <li key={f.id} className={f.focus ? "card card-focus" : "card"} data-testid={f.testId} data-kind={f.kind}>
-            <p className={`chip finding-kind finding-kind-${f.kind}`}>{kindLabel[f.kind]}</p>
-            <h2>{f.title}</h2>
-            <p className="count">
-              <span className="numeral">{f.count}</span>{" "}
-              <span className="muted">{f.total === null ? tr("cards.unit_answers") : `/ ${f.total}`}</span>
-            </p>
-            {f.total !== null ? <Sticks count={f.count} total={f.total} label={f.lines[0] ?? f.title} /> : null}
-            {f.lines.length === 1 ? (
-              <p data-testid={f.lineTestId}>{f.lines[0]}</p>
-            ) : (
-              <ul className="finding-lines">
-                {f.lines.map((l) => (
-                  <li key={l}>{l}</li>
-                ))}
-              </ul>
-            )}
-            {f.extra}
-            <div className="row">
-              <IconButton icon="speaker" label={tr("cards.audio")} iconOnly testId={`listen-${f.id}`} onClick={() => toast(tr("cards.audio_soon"))} />
-              <IconButton icon="flag" label={tr("cards.flag")} iconOnly variant="flag" testId={`flag-${f.id}`} onClick={() => flag(f.id)} disabled={flagged.has(f.id)} />
-            </div>
-          </li>
+      <div className="subtabs" role="tablist" aria-label={tr("cards.tabs")}>
+        {(["known", "unknown"] as const).map((t) => (
+          <button key={t} type="button" role="tab" id={`mistakes-tab-${t}`} aria-selected={tab === t} aria-controls={`mistakes-panel-${t}`} className={tab === t ? "subtab subtab-on" : "subtab"} onClick={() => setTab(t)} data-testid={`tab-${t}`}>
+            {tr(t === "known" ? "cards.tab_known" : "cards.tab_unknown")}
+          </button>
         ))}
-      </ul>
+      </div>
+      <div role="tabpanel" id="mistakes-panel-known" aria-labelledby="mistakes-tab-known" hidden={tab !== "known"} data-testid="panel-known">
+        <MistakesTable rows={rows} activeCode={code} onCode={setCode} onlyConfirmed={onlyConfirmed} onOnlyConfirmed={(on) => { setOnlyConfirmed(on); if (on && code && !rows.some((r) => r.code === code && r.confirmed > 0)) setCode(null); }} flagged={flagged} onFlag={flag} canHighlight={canMap} />
+      </div>
+      <div role="tabpanel" id="mistakes-panel-unknown" aria-labelledby="mistakes-tab-unknown" hidden={tab !== "unknown"} data-testid="panel-unknown">
+        {findings.length === 0 ? <p className="muted">{tr("cards.unknown_none")}</p> : (
+          <div className="table-scroll mistakes-scroll" role="region" tabIndex={0} aria-label={tr("cards.tab_unknown")}>
+            <table className="mistakes" data-testid="findings">
+              <caption className="sr-only">{tr("cards.tab_unknown")}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{tr("cards.col_seen")}</th>
+                  <th scope="col">{tr("results.table.col_children")}</th>
+                  <th scope="col">
+                    <span className="sr-only">{tr("cards.audio")}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {findings.map((f) => (
+                  <tr key={f.id} className={f.focus ? "mistake-focus" : undefined} data-testid={f.testId} data-kind={f.kind}>
+                    <th scope="row" className="mistake-name">
+                      <p className={`chip finding-kind finding-kind-${f.kind}`}>{kindLabel[f.kind]}</p>
+                      <strong>{f.title}</strong>
+                      {f.lines.length === 1 ? (
+                        <p data-testid={f.lineTestId}>{f.lines[0]}</p>
+                      ) : (
+                        <ul className="finding-lines">
+                          {f.lines.map((l) => (
+                            <li key={l}>{l}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {f.extra}
+                    </th>
+                    <td className="mistake-count">
+                      <span className="numeral">{f.count}</span> <span className="muted">{f.total === null ? tr("cards.unit_answers") : `/ ${f.total}`}</span>
+                      {f.total !== null ? <Sticks count={f.count} total={f.total} label={f.lines[0] ?? f.title} /> : null}
+                    </td>
+                    <td className="mistake-actions">
+                      <IconButton icon="speaker" label={tr("cards.audio")} iconOnly testId={`listen-${f.id}`} onClick={() => toast(tr("cards.audio_soon"))} />
+                      <IconButton icon="flag" label={tr("cards.flag")} iconOnly variant="flag" testId={`flag-${f.id}`} onClick={() => flag(f.id)} disabled={flagged.has(f.id)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
       {stages.length > 0 ? (
         <p className="muted" data-testid="stage-lines">
           {tr("stage.note")}

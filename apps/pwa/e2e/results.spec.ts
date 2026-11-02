@@ -272,7 +272,7 @@ test.describe("show only confirmed mistakes", () => {
     }
     await expect(page.getByTestId("card-SUB-SFL")).toContainText("This is the focus for your class.");
     await expect(page.getByTestId("card-SUB-SFL")).toContainText("From your class: 74 − 36 → 42");
-    expect(await page.locator(".cards.findings [data-kind=error]").count()).toBe(0); // no separate mistake cards any more
+    expect(await page.locator("[data-testid=findings] [data-kind=error]").count()).toBe(0); // no separate mistake cards any more
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
     await page.getByTestId("mistakes-table").scrollIntoViewIfNeeded();
