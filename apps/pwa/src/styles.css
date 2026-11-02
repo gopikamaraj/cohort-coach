@@ -2932,13 +2932,11 @@ main:focus:not(:focus-visible) {
   min-height: 48px;
 }
 .finish-bar {
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
+  /* in the page, not pinned to the screen: a pinned bar took up space on a phone */
   display: grid;
   gap: var(--s2);
-  padding: var(--s3);
-  background: var(--paper);
+  padding: var(--s3) 0 0;
+  margin-top: var(--s3);
   border-top: 1px solid var(--rule);
 }
 .finish-bar .btn-primary {
