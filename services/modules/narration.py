@@ -61,6 +61,27 @@ def _tokens(text: str) -> list[str]:
     return sorted(_TOKENS.findall(text))
 
 
+def _numbers_kept(text: str, src: str, mt: dict[str, Any]) -> bool:
+    """English: every number of the approved text is said in words (digit by digit for the sidecar's
+    numbers, as an ordinary number for the rest) and no digit is left. Other languages keep the digits."""
+    if mt.get("language", "en") != "en":
+        return _tokens(text) == _tokens(src)
+    if re.search(r"[0-9]", text):
+        return False
+    said = re.sub(r"[-\s]+", " ", text.lower())
+    by_digit = speech_input.readings_for(mt)
+    for n in re.findall(r"\d+", src):
+        if n in by_digit:
+            want = speech_input.digit_words(n)
+        elif int(n) < 1000:
+            want = speech_input.number_words(int(n)).replace("-", " ")
+        else:
+            return False
+        if want not in said:
+            return False
+    return True
+
+
 def validate(out: ModuleNarration, mt: dict[str, Any]) -> dict[str, str] | None:
     """Every part present in order; numbers and slots kept and none added; length close; no markup."""
     parts = speakable(mt)
@@ -70,7 +91,7 @@ def validate(out: ModuleNarration, mt: dict[str, Any]) -> dict[str, str] | None:
     for s, p in zip(out.sections, parts, strict=True):
         text = " ".join(s.text.split())
         src = body(p)
-        if not text or _BAD.search(_SLOT.sub("", text)) or _tokens(text) != _tokens(src):
+        if not text or _BAD.search(_SLOT.sub("", text)) or not _numbers_kept(text, src, mt):
             return None
         words, src_words = len(text.split()), max(1, len(src.split()))
         if words > src_words * 1.8 + 15 or words < src_words * 0.4:

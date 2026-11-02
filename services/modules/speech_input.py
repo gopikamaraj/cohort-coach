@@ -194,3 +194,23 @@ def unmatched(sections: list[Section], readings: tuple[str, ...]) -> list[str]:
     """Entries that wrapped nothing: stale (the module text changed or the number is not there)."""
     said = " ".join(s.lines() for s in sections)
     return [d for d in readings if f"{{digits:{d}}}" not in said]
+
+
+_ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split()
+_TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+
+
+def number_words(n: int) -> str:
+    """An ordinary number in English words, 0 to 999: 52 -> fifty-two."""
+    if n < 20:
+        return _ONES[n]
+    if n < 100:
+        return _TENS[n // 10] + ("-" + _ONES[n % 10] if n % 10 else "")
+    if n < 1000:
+        return _ONES[n // 100] + " hundred" + (" " + number_words(n % 100) if n % 100 else "")
+    raise ValueError(n)
+
+
+def digit_words(digits: str) -> str:
+    """A number read digit by digit: 602 -> six zero two."""
+    return " ".join(_ONES[int(c)] for c in digits)

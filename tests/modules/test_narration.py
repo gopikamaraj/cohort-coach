@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import re
+
 from ai.schemas import ModuleNarration, NarrationSection
-from services.modules import library, narration
+from services.modules import library, narration, speech_input
 
 INTRO = "Module 1 of 2. [pause] Ask the child to explain her steps."
 
@@ -13,10 +15,20 @@ def _mt() -> dict:
     return library.module_text("PV-HEARD", "ask_explain", False, "en").to_dict()
 
 
+def _spoken(mt: dict, text: str) -> str:
+    """The approved text with its numbers in words, as prompt v2 asks: digit by digit for the sidecar's."""
+    by_digit = speech_input.readings_for(mt)
+    return re.sub(
+        r"\d+",
+        lambda m: speech_input.digit_words(m[0]) if m[0] in by_digit else speech_input.number_words(int(m[0])),
+        text,
+    )
+
+
 def _out(mt: dict, edit: dict[str, str] | None = None) -> ModuleNarration:
     return ModuleNarration(
         sections=[
-            NarrationSection(id=p["id"], text=(edit or {}).get(p["id"], narration.body(p)))
+            NarrationSection(id=p["id"], text=(edit or {}).get(p["id"], _spoken(mt, narration.body(p))))
             for p in narration.speakable(mt)
         ]
     )
@@ -46,7 +58,9 @@ def test_reworded_parts_keep_the_code_headings() -> None:
 def test_output_that_adds_or_drops_a_number_or_a_part_is_refused() -> None:
     mt = _mt()
     assert narration.validate(_out(mt), mt) is not None
-    assert narration.validate(_out(mt, {"example": "Ask how she got 603 for sixty-two."}), mt) is None
+    assert narration.validate(_out(mt, {"example": "A child wrote six zero three for sixty-two. Ask: how did you get six zero three? The child says: I wrote sixty, then two."}), mt) is None
+    assert narration.validate(_out(mt, {"example": "A child wrote six hundred two for sixty-two. Ask: how did you get six hundred two? The child says: I wrote sixty, then two."}), mt) is None
+    assert narration.validate(_out(mt, {"example": narration.body(mt["parts"][3])}), mt) is None  # digits left in
     assert narration.validate(_out(mt, {"example": "Ask how she got it. The child says: I wrote sixty."}), mt) is None
     short = _out(mt)
     assert narration.validate(ModuleNarration(sections=short.sections[:-1]), mt) is None
@@ -71,3 +85,10 @@ def test_any_failure_keeps_the_code_script(monkeypatch) -> None:
     assert narration.run(mt) is None
     monkeypatch.setattr(narration.ai_config, "ai_mode", lambda: "off")
     assert narration.run(mt) is None
+
+
+def test_ordinary_numbers_are_said_in_words_and_602_digit_by_digit() -> None:
+    assert speech_input.number_words(52) == "fifty-two" and speech_input.number_words(105) == "one hundred five"
+    assert speech_input.digit_words("602") == "six zero two"
+    mt = library.module_text("ADD-NOCARRY", "show_bundles", False, "en").to_dict()
+    assert narration.validate(_out(mt), mt) is not None
