@@ -2,6 +2,7 @@
 // this file only reads her cells and fills the class-level profile.
 import { classProfile, diagnoseChild, normalizeAnswer, type ChildDiagnosis, type Reading } from "./diagnosis";
 import { db, type CohortDb, type ProfileRow } from "./db";
+import { buildAnswerMap } from "./results";
 import { enqueueProfile } from "./sync";
 import type { StageCounts } from "./stagecalc";
 
@@ -37,6 +38,29 @@ export function diagnoseAll(formKey: string, rows: string[][]): ChildDiagnosis[]
   return enteredChildren(rows).map((row) => diagnoseChild(formKey, readRow(row)));
 }
 
+/** Children per mistake who made it at least once: those who show it and those with one matching answer only. */
+export function anyCounts(formKey: string, rows: string[][]): Record<string, number> {
+  const map = buildAnswerMap(formKey, rows);
+  const out: Record<string, number> = {};
+  for (const r of map?.rolls ?? []) {
+    for (const code of new Set(r.cells.flatMap((c) => c.codes))) out[code] = (out[code] ?? 0) + 1;
+  }
+  return out;
+}
+
+/** Results saved before `anyCounts` existed get it from the check's answers (the cloud copy follows). */
+export async function backfillAnyCounts(store: CohortDb = db): Promise<number> {
+  let n = 0;
+  for (const p of await store.profiles.toArray()) {
+    if (p.anyCounts) continue;
+    const c = await store.checks.get(p.id);
+    if (!c?.children?.length) continue;
+    await store.profiles.update(p.id, { anyCounts: anyCounts(p.formKey, c.children) });
+    n += 1;
+  }
+  return n;
+}
+
 export function profileRow(
   classId: string,
   term: number,
@@ -52,6 +76,7 @@ export function profileRow(
     formKey,
     childrenChecked: profile.children_checked,
     counts: profile.counts,
+    anyCounts: anyCounts(formKey, rows),
     eligible: profile.eligible,
     track: profile.track,
     anchorWrongCount: profile.anchor_wrong_count,

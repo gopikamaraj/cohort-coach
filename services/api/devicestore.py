@@ -136,6 +136,13 @@ def _counts_only(coll: str, data: Any) -> Any:
     return {**{k: data[k] for k in keep if k in data}, "entered": entered, "absent": len(data.get("absent") or [])}
 
 
+def _seen(prof: dict[str, Any]) -> dict[str, Any]:
+    """Children per mistake counting a mistake seen even once (confirmed or possible): `anyCounts`, which the app
+    writes with each class result. An older result without it falls back to its confirmed counts."""
+    got = prof.get("anyCounts")
+    return got if isinstance(got, dict) else (prof.get("counts") or {})
+
+
 ERROR_CODE = re.compile(r"^[A-Z0-9-]{3,16}$")
 
 
@@ -163,7 +170,7 @@ def peers(
         shared: list[str] = []
         class_name = ""
         for prof in docs.get("profiles", {}).values():
-            hit = [e for e in wanted if int((prof.get("counts") or {}).get(e, 0) or 0) > 0]
+            hit = [e for e in wanted if int(_seen(prof).get(e, 0) or 0) > 0]
             if hit:
                 shared = sorted(set(shared) | set(hit))
                 class_name = str((docs.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
@@ -193,10 +200,10 @@ def entered_summary(db: Session) -> dict[str, Any]:
             t = terms.setdefault(term, {"classes": 0, "children_checked": 0, "children_showing": {}})
             t["classes"] += 1
             t["children_checked"] += int(prof["childrenChecked"])
-            for code, c in (prof.get("counts") or {}).items():
+            for code, c in _seen(prof).items():
                 t["children_showing"][code] = t["children_showing"].get(code, 0) + int(c or 0)
             cname = str((d.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
-            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in (prof.get("counts") or {}).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in (prof.get("counts") or {}).items()}, "_class": f"{n}:{prof.get('classId')}"})
+            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof).items()}, "_class": f"{n}:{prof.get('classId')}"})
     return {"terms": terms, "classes": classes}
 
 

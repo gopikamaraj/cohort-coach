@@ -175,3 +175,17 @@ def test_the_officer_sees_the_entered_classes_as_groups_and_the_five_class_rule_
     row = o["results"]["rows"][0]
     assert (row["error"], row["before"], row["after"], row["fall_points"]) == ("PV-HEARD", 11, 5, 15.0)
     assert o["funnel"]["wip"]
+
+
+def test_coach_and_peers_count_a_mistake_seen_even_once_and_ignore_the_confirmed_count(client: TestClient) -> None:
+    ka, kb = f"{11:016x}", f"{22:016x}"
+
+    def on(key: str, role: str = "teacher") -> dict[str, str]:
+        return {"X-Device-Id": A, "X-Store-Key": key, "X-Role": role}
+
+    for key, n in ((ka, 3), (kb, 2)):
+        client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": "c"}}, headers=on(key))
+        client.put("/api/store/profiles/p", json={"data": {"id": "p", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": {}, "anyCounts": {"SUB-SFL": n}}}, headers=on(key))
+    s = client.get("/api/store/coach-summary", headers=on(ka, "coach")).json()
+    assert s["terms"]["1"]["children_showing"] == {"SUB-SFL": 5} and all(c["errors"] == ["SUB-SFL"] for c in s["classes"])
+    assert client.get("/api/store/peers?errors=SUB-SFL", headers=on(ka)).json()[0]["errors"] == ["SUB-SFL"]

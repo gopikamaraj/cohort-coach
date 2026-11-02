@@ -53,6 +53,7 @@ export interface ProfileRow {
   formKey: string;
   childrenChecked: number;
   counts: Record<string, number>;
+  anyCounts?: Record<string, number>; // children who made the mistake even once (confirmed or possible), for coach and officer views
   eligible: string[];
   track: string | null;
   anchorWrongCount: number;

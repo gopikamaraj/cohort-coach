@@ -8,7 +8,7 @@
 #
 # Use:  .\run-backend-cloud-db.ps1            (Ctrl+C to stop; the proxy stops with it)
 
-param([switch]$Clear)   # -Clear: delete every row of the cloud database (asks you to type its name), then stop
+param([switch]$Clear, [string]$Script = "", [string[]]$ScriptArgs = @())   # -Script: run scripts\<name> against the cloud database, then stop   # -Clear: delete every row of the cloud database (asks you to type its name), then stop
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 $project  = "fln-cohort-coach"
@@ -37,6 +37,10 @@ else {
 try {
   if ($Clear) {
     & ".venv\Scripts\python.exe" scripts\clear_all_rows.py
+    return
+  }
+  if ($Script) {
+    & ".venv\Scripts\python.exe" "scripts\$Script" @ScriptArgs
     return
   }
   # the same local settings run-backend.bat uses

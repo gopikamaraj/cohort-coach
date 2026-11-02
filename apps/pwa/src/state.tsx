@@ -9,7 +9,7 @@ import { demoPair } from "./lib/demo";
 import { fetchPaperKey } from "./lib/paperKeys";
 import { samplePaper } from "./lib/papers";
 import { keys } from "./lib/diagnosis";
-import { finishCheck } from "./lib/check";
+import { backfillAnyCounts, finishCheck } from "./lib/check";
 import { pendingCount } from "./lib/sync";
 import { flushAllowed } from "./lib/sendnow";
 import { requestPersistence } from "./lib/storage";
@@ -83,7 +83,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (online) void reconcileWithServer(); // the server is the truth: drop pointers to records it no longer has
     void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
     watchTables(); // every change to the classes, checks and results is written to the cloud copy
-    void hydrate().then(() => reload()).then(async () => { // the cloud copy is the record: read it back first
+    void hydrate().then(() => backfillAnyCounts()).then(() => reload()).then(async () => { // the cloud copy is the record: read it back first
       await flushAllowed(isOnline());
       setPending(await pendingCount());
     });
