@@ -17,7 +17,7 @@ $port     = 5433
 
 $proxy = (Get-Command cloud-sql-proxy -ErrorAction SilentlyContinue)
 if (-not $proxy) { $proxy = Get-Command cloud-sql-proxy.x64.exe -ErrorAction SilentlyContinue }
-if (-not $proxy -and (Test-Path "C:	ools\cloud-sql-proxy.exe")) { $proxy = Get-Item "C:	ools\cloud-sql-proxy.exe"; $proxy | Add-Member -NotePropertyName Source -NotePropertyValue $proxy.FullName -Force }
+if (-not $proxy -and (Test-Path "C:\tools\cloud-sql-proxy.exe")) { $proxy = Get-Item "C:\tools\cloud-sql-proxy.exe"; $proxy | Add-Member -NotePropertyName Source -NotePropertyValue $proxy.FullName -Force }
 if (-not $proxy) { throw "cloud-sql-proxy is not installed. See the note at the top of this file." }
 
 $pw = (gcloud secrets versions access latest --secret db-password --project $project).Trim()
