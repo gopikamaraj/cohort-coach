@@ -10,6 +10,7 @@ import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
 import { ClassOnlyForCoach } from "../components/MyClassCohorts";
 import { GatedChat } from "../components/GatedChat";
+import { loadMine, type MyCohort } from "../lib/gatedChat";
 
 export default function Cohort() {
   const { tr, role, lang, klass } = useApp();
@@ -50,14 +51,14 @@ export default function Cohort() {
 type Tr = (key: Key, params?: Record<string, string | number>) => string;
 
 function TeacherView({ tr }: { tr: Tr }) {
-  const [cohorts, setCohorts] = useState<CohortSummary[]>([]);
-  const [current, setCurrent] = useState<CohortSummary | null>(null);
+  const [cohorts, setCohorts] = useState<MyCohort[]>([]);
+  const [current, setCurrent] = useState<MyCohort | null>(null);
   const [agree, setAgree] = useState(false);
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
 
   const loadList = useCallback(async () => {
     try {
-      setCohorts(await ccall<CohortSummary[]>("/open", "teacher"));
+      setCohorts(await loadMine());
     } catch {
       setMsg({ text: tr("cohort.error"), bad: true });
     }
@@ -65,7 +66,7 @@ function TeacherView({ tr }: { tr: Tr }) {
   useEffect(() => {
     void loadList();
   }, [loadList]);
-  async function join(c: CohortSummary) {
+  async function join(c: MyCohort) {
     try {
       await ccall(`/${c.id}/join`, "teacher", { method: "POST", body: { consent: agree } });
       setCurrent({ ...c, joined: true });
@@ -98,7 +99,8 @@ function TeacherView({ tr }: { tr: Tr }) {
             {cohorts.map((c) => (
               <li key={c.id} className="class-row" data-testid={`cohort-${c.id}`}>
                 <span className="class-name">
-                  {c.error} · {tr(`cohort.st.${c.status}` as Key)} · {c.members === null ? tr("cohort.members_hidden") : tr("cohort.members", { n: c.members })}
+                  {c.name ? `${c.name} · ` : ""}
+                  {tr(`err.${c.error}` as Key)} · {tr(`cohort.st.${c.status}` as Key)} · {c.members === null ? tr("cohort.members_hidden") : tr("cohort.members", { n: c.members })}
                 </span>
                 {c.joined ? (
                   <button type="button" className="btn btn-secondary" onClick={() => setCurrent(c)} data-testid="open-cohort">

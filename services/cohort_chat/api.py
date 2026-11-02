@@ -57,6 +57,15 @@ class TimeoutIn(BaseModel):
     seconds: int
 
 
+@router.get("/mine")
+def mine(role: str = Depends(role_of), x_device_id: str | None = Header(default=None), db: Session = SESSION) -> list[dict[str, Any]]:
+    """The cohorts a teacher can chat in: made for her own class, joined, or open to join."""
+    actor = _actor(role, db, x_device_id, None)
+    if actor.role != "teacher":
+        raise HTTPException(403, "This list is for teachers.")
+    return service.my_cohorts(db, actor.person)
+
+
 @router.get("/inbox")
 def inbox(role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, Any]:
     actor = _actor(role, db, x_device_id, x_person)

@@ -341,3 +341,21 @@ def test_a_post_made_in_the_older_thread_still_shows(db: Session, cohort: str) -
     thread.post_as_staff(db, cohort, "coach", COACH, "This week: talk about bundles.", "en")
     msgs = service.thread_view(db, cohort, TEACHER_A)["messages"]
     assert [m["text"] for m in msgs] == ["This week: talk about bundles."] and msgs[0]["kind"] == "system"
+
+
+def test_a_cohort_of_one_class_gets_a_chat_she_can_join_and_other_teachers_do_not_see_it(db: Session, cohort: str) -> None:
+    from services.api.db import ClassCohort
+
+    db.add(ClassCohort(id="cc-abc123", teacher_id=T1, check_id="c:1", name="My class: carrying", errors=["ADD-NOCARRY", "SUB-SFL"], counts={"ADD-NOCARRY": 6, "SUB-SFL": 4}, children_checked=20, simulated=True))
+    db.commit()
+    mine = service.my_cohorts(db, T1)
+    cls = next(r for r in mine if r["kind"] == "class")
+    assert cls["id"] == "co-cc-abc123" and cls["name"] == "My class: carrying" and cls["error"] == "ADD-NOCARRY" and cls["joined"] is False and cls["status"] == "active"
+    assert any(r["id"] == cohort and r["joined"] for r in mine)  # the officer-made cohort she is in
+    assert service.my_cohorts(db, T1) == mine  # made once
+    assert all(r["id"] != "co-cc-abc123" for r in service.my_cohorts(db, T2))
+    thread.join(db, "co-cc-abc123", T1)  # her own tap
+    msgs = service.thread_view(db, "co-cc-abc123", TEACHER_A)["messages"]
+    assert len(msgs) == 2 and all(m["demo"] for m in msgs)  # a demo class never opens empty
+    service.post_message(db, "co-cc-abc123", TEACHER_A, "question", "Where do I start?", "en")
+    assert service.inbox(db, COACH_A)["count"] == 1  # the demo coach sees it

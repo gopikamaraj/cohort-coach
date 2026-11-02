@@ -84,6 +84,10 @@ async function call<T>(path: string, role: ChatRole, init: { method?: string; bo
   return (await res.json()) as T;
 }
 
+import type { CohortSummary } from "./cohort";
+
+export type MyCohort = CohortSummary & { name: string | null; kind: "class" | "cohort" };
+export const loadMine = () => call<MyCohort[]>("/mine", "teacher");
 export const loadThread = (cohortId: string, role: ChatRole) => call<ChatThread>(`/${cohortId}`, role);
 export const loadInbox = (role: ChatRole) => call<{ items: InboxItem[]; count: number; ai_mode: string }>("/inbox", role);
 export const postMessage = (cohortId: string, role: ChatRole, kind: "question" | "reply" | "tip", text: string, language: string, replyTo?: string) =>

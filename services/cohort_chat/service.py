@@ -37,7 +37,7 @@ from ai.client import CallContext
 from ai.validators.mask import mask_personal
 from ai.validators.thread import check_personal, check_thread_post
 from services.api.cohorts import lifecycle, thread
-from services.api.db import CohortMember, CohortSpace, ThreadPost
+from services.api.db import ClassCohort, CohortMember, CohortSpace, ThreadPost
 from services.chat import draft as chat_draft
 from services.cohort_chat.models import ChatTimeout, PostMeta
 
@@ -417,6 +417,48 @@ def _why_not(out: chat_draft.DraftOutcome | None) -> str | None:
     if _words(out.text) > MAX_AI_WORDS:
         return "too_long"
     return None
+
+
+# ---- which cohorts she can chat in -----------------------------------------------------------
+
+CLASS_SPACE = "co-"  # + the class cohort's id: the chat space made for a cohort of one class
+DEMO_COACH, DEMO_MENTOR, DEMO_OFFICER = "coach-demo", "mentor-demo", "officer-demo"
+
+
+def space_for_class_cohort(db: Session, cc: ClassCohort) -> CohortSpace:
+    """A cohort of one class has no chat space of its own, so one is made for it (once): active, with the
+    demo coach and mentor, simulated like the class. She still joins it with her own tap."""
+    space = db.get(CohortSpace, CLASS_SPACE + cc.id)
+    if space is not None:
+        return space
+    space = lifecycle.create(db, error=cc.errors[0], coach_id=DEMO_COACH, mentor_ids=[DEMO_MENTOR], officer_id=DEMO_OFFICER, school_count=1, simulated=cc.simulated, cohort_id=CLASS_SPACE + cc.id)
+    lifecycle.transition(db, space.id, "active", role="officer", actor=DEMO_OFFICER)
+    return space
+
+
+def my_cohorts(db: Session, teacher_id: str) -> list[dict[str, Any]]:
+    """Every cohort a teacher can chat in: the one made for each of her own classes, any cohort she has
+    joined, and the open cohorts she may join. Counts and labels only."""
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def add(c: CohortSpace, name: str | None, kind: str) -> None:
+        if c.id in seen:
+            return
+        seen.add(c.id)
+        row = lifecycle.summary(db, c)
+        row.update(name=name, kind=kind, joined=db.get(CohortMember, (c.id, teacher_id)) is not None)
+        out.append(row)
+
+    for cc in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == teacher_id).order_by(ClassCohort.created_at)).scalars():
+        add(space_for_class_cohort(db, cc), cc.name, "class")
+    mine = select(CohortSpace).join(CohortMember, CohortMember.cohort_id == CohortSpace.id).where(CohortMember.teacher_id == teacher_id)
+    for c in db.execute(mine).scalars():
+        add(c, None, "cohort")
+    for c in db.execute(select(CohortSpace).where(CohortSpace.status.in_(("proposed", "active")))).scalars():
+        if not c.id.startswith((CLASS_SPACE + "cc-", "co-run-")):  # another teacher's class chat, or a run's own
+            add(c, None, "cohort")
+    return out
 
 
 # ---- views -----------------------------------------------------------------------------------
