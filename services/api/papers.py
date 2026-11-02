@@ -126,15 +126,10 @@ def generate(
 
 
 @router.get("")
-def list_papers(class_id: str, _: str = GENERATE, db: Session = SESSION) -> list[dict[str, Any]]:
-    from services.papers_hub.service import SHARED  # papers common to a block or school
-
+def list_papers(class_id: str | None = None, _: str = GENERATE, db: Session = SESSION) -> list[dict[str, Any]]:
+    # every created paper is listed for everyone for now (`class_id` is kept so old callers still work)
     db = _db(db)
-    rows = db.scalars(
-        select(PaperRow)
-        .where(PaperRow.class_id.in_([class_id, SHARED]))
-        .order_by(PaperRow.created_at)
-    ).all()
+    rows = db.scalars(select(PaperRow).order_by(PaperRow.created_at)).all()
     return [store.summary(r) for r in rows]
 
 

@@ -297,12 +297,11 @@ def list_papers(
     rows = db.scalars(select(PaperRow).order_by(PaperRow.created_at.desc())).all()
     out = []
     for r in rows:
-        if not _visible(db, w, r) or r.status == "archived":
+        if r.status == "archived":  # every created paper is listed for everyone; only changes stay scoped
             continue
         v = _row(db, r)
         if (
-            (class_id and v["class_id"] not in (class_id, svc.SHARED))
-            or (form and v["form"] != form)
+            (form and v["form"] != form)
             or (kind and v["kind"] != kind)
             or (status and v["status"] != status)
             or (source and v["source"] != source)
@@ -310,6 +309,14 @@ def list_papers(
             continue
         out.append(v)
     return out
+
+
+def _read(db: Session, paper_id: str) -> PaperRow:
+    """Reading a paper is open to every role for now; changing one still goes through `_own`."""
+    row = db.get(PaperRow, paper_id)
+    if row is None:
+        raise HTTPException(404, "No such paper.")
+    return row
 
 
 def _own(db: Session, w: Who, paper_id: str) -> PaperRow:
@@ -321,12 +328,12 @@ def _own(db: Session, w: Who, paper_id: str) -> PaperRow:
 
 @router.get("/papers/{paper_id}/status")
 def status_of(paper_id: str, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
-    return paper_status(db, _own(db, w, paper_id))
+    return paper_status(db, _read(db, paper_id))
 
 
 @router.get("/papers/{paper_id}/detail")
 def detail(paper_id: str, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
-    row = _own(db, w, paper_id)
+    row = _read(db, paper_id)
     body = row.body or {}
     asg = db.scalars(
         select(PaperAssignment)

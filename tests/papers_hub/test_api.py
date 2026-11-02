@@ -308,10 +308,10 @@ def make_generated(env: Env, cls: str, pilot: bool = True) -> str:
     return str(r.json()["paper"]["id"])
 
 
-def test_a_teacher_sees_only_her_classes_papers_and_a_coach_sees_all(env: Env) -> None:
+def test_every_paper_is_listed_for_every_role_for_now(env: Env) -> None:
     mine, theirs = make_generated(env, "c-own1"), make_generated(env, "c-zzz9")
     ids = {p["id"] for p in env.client.get("/api/paper-hub/papers", headers=hdr("teacher")).json()}
-    assert mine in ids and theirs not in ids
+    assert {mine, theirs} <= ids  # decided 2026-11-02: papers are open to all; entering and results stay private
     ids = {
         p["id"]
         for p in env.client.get("/api/paper-hub/papers", headers=hdr("coach", "coach-aaa")).json()
@@ -339,12 +339,10 @@ def test_the_detail_has_the_tabs_and_no_child_data(env: Env) -> None:
     d = env.client.get(f"/api/paper-hub/papers/{pid}/detail", headers=hdr("teacher")).json()
     assert set(d) >= {"overview", "questions", "coverage", "usage", "history", "files"}
     assert "answers" not in str(d).lower() or "answers" not in d
-    assert (
-        env.client.get(
-            f"/api/paper-hub/papers/{pid}/detail", headers=hdr("teacher", cls="c-other")
-        ).status_code
-        == 404
-    )
+    # papers are readable by every role for now; changing one is still scoped
+    other = env.client.get(f"/api/paper-hub/papers/{pid}/detail", headers=hdr("teacher", cls="c-other"))
+    assert other.status_code == 200
+    assert env.client.delete(f"/api/paper-hub/papers/{pid}", headers=hdr("teacher", cls="c-other")).status_code == 404
 
 
 # --- assignments ------------------------------------------------------------------------------------------

@@ -980,3 +980,11 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Built on what existed:** a message is a `thread_posts` row plus a `chat_post_meta` row, so masking, labels, hide, report and retention are the existing ones; drafting is `services/chat/draft.py` (call 13 and call 7); audit rows are `cohort_audit`. The older private question flow (mentor sends or edits a draft, auto-send off by default, timeout in hours) is untouched.
 - **Alternatives:** new `chat_thread` and `chat_member` tables (rejected: two membership lists to keep in step); the browser owns the timer (rejected by the brief).
 - **Confirmed by:** not yet.
+
+## 2026-11-02 · Every created paper is visible to every role (for now)
+
+- **Decision:** the Papers list (`/api/papers`, `/api/paper-hub/papers`) and a paper's status and detail show every created, unarchived paper to every role, whatever class made it. Changing a paper (items, twin, archive, delete) is still scoped by `_own`. Entering a check and the results stay private to the class that owns them.
+- **Why:** the owner (Gopi) found a paper he had just made missing from the Papers page of another class and asked for all papers to be shared for now.
+- **Alternatives:** keep class scoping and add a share flag (more work, not asked for).
+- **Tests:** `test_a_teacher_sees_only_her_classes_papers_and_a_coach_sees_all` was replaced by `test_every_paper_is_listed_for_every_role_for_now`; the detail test now expects 200 for another class and still 404 for a change.
+- **Confirmed by:** Gopi, in the session of 2 Nov 2026.
