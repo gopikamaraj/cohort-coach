@@ -716,9 +716,12 @@ def coach_counts(db: Session, cohort_id: str, now: datetime) -> dict[str, Any]:
                     s["overdue"] += 1
                 if m.failures:
                     s["failed"] += 1
+    from services.modules import checkin
+
     return {
         "cohort_id": cohort_id,
         "tracks": len(tracks),
+        "call_me": checkin.call_me_count(db, cohort_id),
         "modules": [per[k] for k in sorted(per)],
         "stopped": stopped,
     }

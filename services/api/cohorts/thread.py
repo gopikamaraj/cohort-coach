@@ -126,6 +126,32 @@ def post_as_teacher(
     return post
 
 
+ANONYMOUS_NAME = "A teacher in this cohort"
+
+
+def post_checkin(
+    db: Session, cohort_id: str, teacher_id: str, body: str, language: str, *, anonymous: bool
+) -> ThreadPost:
+    """A check-in summary the teacher confirmed. Same rules as any post (member, open thread, the
+    posting check); the author shows as "A teacher in this cohort" unless she chose her chat
+    name."""
+    cohort = lifecycle.get(db, cohort_id)
+    member = db.get(CohortMember, (cohort_id, teacher_id))
+    if member is None:
+        raise NotMember("Join the cohort first.")
+    if lifecycle.thread_state(db, cohort) != "open":
+        raise ThreadClosed("This thread is read-only.")
+    try:
+        problems = check_thread_post(body, language)
+    except Exception as exc:  # the check could not run: hold, never pass
+        raise PostRejected(["check_unavailable"]) from exc
+    if problems:
+        raise PostRejected([p.code for p in problems])
+    name = ANONYMOUS_NAME if anonymous else member.display_name
+    post = _new_post(db, cohort_id, "teacher", name, body, teacher_id)
+    return post
+
+
 def post_as_staff(
     db: Session, cohort_id: str, kind: str, actor: str, body: str, language: str
 ) -> ThreadPost:
@@ -224,7 +250,17 @@ def posts_for(db: Session, cohort_id: str, *, moderator: bool = False) -> list[d
     ).scalars()
     shown = [p for p in rows if moderator or p.status == "visible"]
     shown.sort(key=lambda p: (not p.pinned, _aware(p.created_at)))
-    return [view(p) for p in shown]
+    from services.modules.checkin import card_for  # a check-in summary shows as a card
+
+    out = []
+    for p in shown:
+        v = view(p)
+        card = card_for(db, p.id)
+        if card is not None:
+            v["kind"] = "checkin_summary"
+            v["checkin"] = card
+        out.append(v)
+    return out
 
 
 def purge(db: Session, *, now: datetime | None = None) -> dict[str, int]:

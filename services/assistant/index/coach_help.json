@@ -466,5 +466,31 @@
 "text": "It is safe to run twice and catches up a missed day. If a module still cannot be made after three tries, you are told and the count shows as failed.",
 "ts_end": null,
 "ts_start": null
+},
+{
+"heading": "Coach and reviewer help > Check-ins and the cohort chat",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-check-ins-and-the-cohort-chat:0",
+"kind": "file",
+"line": 71,
+"ns": "coach_help",
+"path": "docs/help/coach.md",
+"section": null,
+"slide_no": null,
+"text": "Teachers' check-ins are private. You see counts of answers per module (worked, partly, not yet, not tried), never a note. A teacher may choose to share a short, masked summary with her cohort; it shows in the chat as a Check-in card (\"Shared by a teacher in this cohort\"), and you can moderate it like any post.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Coach and reviewer help > Check-ins and the cohort chat",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-check-ins-and-the-cohort-chat:1",
+"kind": "file",
+"line": 71,
+"ns": "coach_help",
+"path": "docs/help/coach.md",
+"section": null,
+"slide_no": null,
+"text": "If a teacher presses Ask my coach to call me, the cohort table shows a count of call requests; no content comes with it. Each cohort on your page has an Open cohort chat button.",
+"ts_end": null,
+"ts_start": null
 }
 ]

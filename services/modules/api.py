@@ -17,7 +17,7 @@ from services.api.cohorts.routes import _teacher
 from services.api.db import ClassCohort
 from services.api.profiles import SESSION
 from services.api.roles import require
-from services.modules import jobs, review, service
+from services.modules import checkin, jobs, review, service
 from services.modules.models import ModuleFeedback
 from services.modules.service import ModulesError
 
@@ -31,6 +31,12 @@ STATUS = {
     "not_made": 409,
     "fixed_date": 409,
     "not_held": 409,
+    "share_closed": 409,
+    "no_peers": 409,
+    "thread_closed": 409,
+    "not_shared": 409,
+    "not_needed": 409,
+    "no_answer": 409,
 }
 
 
@@ -40,6 +46,15 @@ def clock() -> datetime:
 
 
 def _raise(exc: ModulesError) -> HTTPException:
+    if exc.code.startswith("blocked:"):  # Share is blocked: say what to remove
+        return HTTPException(
+            422,
+            {
+                "code": "blocked",
+                "problems": exc.code.split(":", 1)[1].split(","),
+                "message": str(exc),
+            },
+        )
     return HTTPException(STATUS.get(exc.code, 422), {"code": exc.code, "message": str(exc)})
 
 
@@ -68,6 +83,18 @@ class FollowUpAnswer(BaseModel):
 class ReviewAnswersIn(BaseModel):
     answers: list[FollowUpAnswer] = Field(default_factory=list, max_length=2)
     skip: bool = False
+
+
+class DraftIn(BaseModel):
+    fields: dict[str, bool] | None = None
+    text: str | None = Field(default=None, max_length=1500)
+
+
+class ShareIn(BaseModel):
+    text: str = Field(min_length=1, max_length=1500)
+    fields: dict[str, bool] | None = None
+    named: bool = False
+    ai_help: bool = False
 
 
 class DownloadedIn(BaseModel):
@@ -244,6 +271,143 @@ def review_answers(
     except ModulesError as exc:
         raise _raise(exc) from exc
     return review.view(db, module, lang)
+
+
+# ---- the private check-in, and sharing a summary --------------------------------------------------
+
+
+def _since(since: str | None) -> datetime | None:
+    if not since:
+        return None
+    try:
+        t = datetime.fromisoformat(since.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=UTC)
+
+
+@router.get("/tracks/{track_id}/chat")
+def chat_button(
+    track_id: str,
+    since: str | None = None,
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    """For the Open cohort chat button: whether there is a chat, and how many new posts since `since`."""
+    track, teacher = _own(db, track_id, x_device_id)
+    return checkin.chat_state(db, teacher.teacher_id, track, _since(since))
+
+
+@router.get("/tracks/{track_id}/modules/{number}/checkin")
+def checkin_state(
+    track_id: str,
+    number: int,
+    lang: str = "en",
+    since: str | None = None,
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    track, teacher = _own(db, track_id, x_device_id)
+    return checkin.state(
+        db, track, _module(db, track, number), teacher.teacher_id, lang, _since(since)
+    )
+
+
+@router.post("/tracks/{track_id}/modules/{number}/checkin/draft")
+def checkin_draft(
+    track_id: str,
+    number: int,
+    body: DraftIn,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    """The exact text that would be posted (built by code from the ticked parts), and what would block it.
+    With `text` it only checks her edited text."""
+    track, _t = _own(db, track_id, x_device_id)
+    module = _module(db, track, number)
+    text = (
+        body.text
+        if body.text is not None
+        else checkin.build_draft(db, track, module, body.fields, lang)
+    )
+    return {"text": text, "problems": checkin.problems(text, lang) if text else []}
+
+
+@router.post("/tracks/{track_id}/modules/{number}/checkin/share")
+def checkin_share(
+    track_id: str,
+    number: int,
+    body: ShareIn,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    track, teacher = _own(db, track_id, x_device_id)
+    module = _module(db, track, number)
+    try:
+        checkin.share(
+            db,
+            track,
+            module,
+            teacher.teacher_id,
+            text=body.text,
+            fields=body.fields,
+            named=body.named,
+            ai_help=body.ai_help,
+            lang=lang,
+            now=clock(),
+        )
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    return checkin.state(db, track, module, teacher.teacher_id, lang)
+
+
+@router.post("/tracks/{track_id}/modules/{number}/checkin/retract")
+def checkin_retract(
+    track_id: str,
+    number: int,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    track, teacher = _own(db, track_id, x_device_id)
+    module = _module(db, track, number)
+    try:
+        checkin.retract(db, track, module, teacher.teacher_id, clock())
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    return checkin.state(db, track, module, teacher.teacher_id, lang)
+
+
+@router.post("/tracks/{track_id}/modules/{number}/checkin/call-me")
+def checkin_call_me(
+    track_id: str,
+    number: int,
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, str]:
+    """The only way the coach hears of a safety flag: she presses this. No content is sent."""
+    track, _t = _own(db, track_id, x_device_id)
+    try:
+        checkin.call_me(db, track, _module(db, track, number), clock())
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    return {"status": "your coach has been asked to call you"}
+
+
+@router.get("/mentor/cohorts/{cohort_id}")
+def mentor_counts(
+    cohort_id: str, _: str = Depends(require("mentor.items_view")), db: Session = SESSION
+) -> dict[str, Any]:
+    """Counts of answers per module, never a note (a note is only ever seen if she shared it in the chat)."""
+    return service.coach_counts(db, cohort_id, clock())
 
 
 @router.post("/tracks/{track_id}/modules/{number}/downloaded")

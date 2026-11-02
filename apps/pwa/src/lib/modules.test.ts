@@ -1,6 +1,6 @@
 // The module screen's helpers and calls: the closed-button reason, the end banner, and the offline copy.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { endBanner, getNext, loadTrack, ModuleError, nextBlocked, type TrackView } from "./modules";
+import { chatState, endBanner, getNext, loadTrack, ModuleError, nextBlocked, shareCheckin, type TrackView } from "./modules";
 import en from "../../../../strings/en.json";
 import hi from "../../../../strings/hi.json";
 import ta from "../../../../strings/ta.json";
@@ -100,5 +100,32 @@ describe("loading the track", () => {
   });
   it("a closed button (409) comes back with its code", async () => {
     await expect(getNext("trk-1", "en", reply({ detail: { code: "needs_feedback" } }, 409))).rejects.toMatchObject({ status: 409, code: "needs_feedback" });
+  });
+});
+
+describe("sharing a check-in", () => {
+  it("a blocked share comes back as the list of what to remove, not a generic error", async () => {
+    const body = { text: "Ravi could not", fields: { how: true }, named: false, ai_help: false };
+    await expect(shareCheckin("trk-1", 1, "en", body, reply({ detail: { code: "blocked", problems: ["child_name"] } }, 422))).rejects.toMatchObject({ problems: ["child_name"] });
+  });
+  it("any other refusal is an ordinary error with its status", async () => {
+    const body = { text: "x", fields: {}, named: false, ai_help: false };
+    await expect(shareCheckin("trk-1", 1, "en", body, reply({ detail: { code: "no_peers" } }, 409))).rejects.toBeInstanceOf(ModuleError);
+  });
+  it("the chat button asks for new posts since she last opened it", async () => {
+    let seen = "";
+    const f = (async (url: string) => {
+      seen = url;
+      return new Response(JSON.stringify({ available: true, reason: null, cohort_id: "co-1", open: true, unread: 2 }), { status: 200 });
+    }) as unknown as typeof fetch;
+    const got = await chatState("trk-1", "2026-11-02T04:00:00.000Z", f);
+    expect(got.unread).toBe(2);
+    expect(seen).toContain("/api/modules/tracks/trk-1/chat?since=2026-11-02T04%3A00%3A00.000Z");
+  });
+  it("every blocking reason the screen can show has a sentence in all three languages", () => {
+    for (const t of [en, hi, ta] as Record<string, string>[]) {
+      for (const k of ["child_name", "relative", "roll_number", "phone_or_id", "email", "percent", "class_code", "other", "empty", "length"]) expect(t[`module.share.block.${k}`], k).toBeTruthy();
+      expect(t["module.checkin.private"]).toBeTruthy();
+    }
   });
 });

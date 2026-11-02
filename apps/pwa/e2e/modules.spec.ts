@@ -149,3 +149,73 @@ test("I didn't try it yet holds the module: one question, a shorter version, a w
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
   }
 });
+
+// ---- Part C: the private check-in and sharing (written, not run) ------------------------------------------------
+
+const mockCheckin = (chat: { available: boolean; open: boolean }, over: Record<string, unknown> = {}) => ({
+  answer: "partly",
+  note: "The children were quiet.",
+  review: { state: "none", follow_ups: [], safety: false, changes: "Nothing changes: the plan stays as it is." },
+  chat: { ...chat, reason: chat.available ? null : "no_peers", cohort_id: "co-1", unread: 2 },
+  share: { shared: false, retracted: false, posted_text: null, fields: null, anonymous: null, can_share: chat.available, share_later_open: true, default_fields: { how: true, note: true, help: true, counts: false, name: false }, draft: "Module 1, Ask the child to explain her steps: it partly worked. Any ideas that could help?", ...over },
+});
+
+test("the check-in is private on every step, nothing is posted until she shares, and Don't share closes it", async ({ page }) => {
+  await trackStarted(page);
+  let posted = 0;
+  await page.route("**/api/modules/tracks/*/modules/1/checkin/share*", (r) => {
+    posted++;
+    return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(mockCheckin({ available: true, open: true }, { shared: true, posted_text: "x" })) });
+  });
+  await page.route("**/api/modules/tracks/*/modules/1/checkin?*", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(mockCheckin({ available: true, open: true })) }));
+  await page.getByTestId("module-1-fb-partly").check();
+  await page.getByTestId("module-1-fb-send").click();
+  await expect(page.getByTestId("checkin-private").first()).toContainText("Private: only you can see this. Nothing is shared unless you choose.");
+  await page.getByTestId("module-1-share-open").click();
+  await expect(page.getByTestId("module-1-share")).toContainText("Share a summary with your cohort?");
+  await expect(page.getByTestId("module-1-share-text")).toHaveValue(/Module 1/);
+  await expect(page.getByTestId("module-1-field-counts")).not.toBeChecked(); // counts and name are off by default
+  await expect(page.getByTestId("module-1-field-name")).not.toBeChecked();
+  for (const b of ["share-go", "share-edit", "share-no"]) expect((await page.getByTestId(`module-1-${b}`).boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+  expect(posted).toBe(0); // nothing was sent
+  await page.getByTestId("module-1-share-no").click();
+  await expect(page.getByTestId("module-1-share-closed")).toContainText("Not shared. Only you can see this check-in.");
+  expect(posted).toBe(0);
+  const found = (await new AxeBuilder({ page }).include("[data-testid=module-1-checkin]").withTags(["wcag2a", "wcag2aa"]).analyze()).violations;
+  expect(found.map((v) => v.id)).toEqual([]);
+});
+
+test("a cohort with no chat shows No peers yet and no Open cohort chat button", async ({ page }) => {
+  await trackStarted(page);
+  await page.route("**/api/modules/tracks/*/chat*", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ available: false, reason: "no_peers", cohort_id: null, open: false, unread: 0 }) }));
+  await page.reload();
+  await expect(page.getByTestId("open-chat-header-none")).toContainText("No peers yet");
+  await expect(page.getByTestId("open-chat-header")).toHaveCount(0);
+});
+
+test("the Open cohort chat button has a badge for new posts and says new messages need a connection when offline", async ({ page, context }) => {
+  await trackStarted(page);
+  await page.route("**/api/modules/tracks/*/chat*", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ available: true, reason: null, cohort_id: "co-1", open: true, unread: 3 }) }));
+  await page.reload();
+  await expect(page.getByTestId("open-chat-header")).toContainText("Open cohort chat");
+  await expect(page.getByTestId("open-chat-header-unread")).toContainText("3 new");
+  await context.setOffline(true);
+  await expect(page.getByTestId("open-chat-header-offline")).toContainText("New messages need a connection.");
+  await context.setOffline(false);
+});
+
+test("a blocked share says what to remove, and the sharing step fits in Hindi and Tamil at 360 px", async ({ page }) => {
+  await trackStarted(page);
+  await page.route("**/api/modules/tracks/*/modules/1/checkin?*", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(mockCheckin({ available: true, open: true })) }));
+  await page.route("**/api/modules/tracks/*/modules/1/checkin/share*", (r) => r.fulfill({ status: 422, contentType: "application/json", body: JSON.stringify({ detail: { code: "blocked", problems: ["child_name"] } }) }));
+  await page.getByTestId("module-1-fb-partly").check();
+  await page.getByTestId("module-1-fb-send").click();
+  await page.getByTestId("module-1-share-open").click();
+  await page.getByTestId("module-1-share-go").click();
+  await expect(page.getByTestId("module-1-share-problems")).toContainText("Please remove: a child's name");
+  for (const lang of ["hi", "ta"]) {
+    await chooseLanguage(page, lang);
+    await page.goto("/#/cohort");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  }
+});

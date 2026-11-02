@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { coachGenerate, coachModules, coachShift, type CoachModules as Counts } from "../lib/modules";
 import { useApp } from "../state";
+import { href } from "../lib/router";
 import { useToast } from "./toast";
 
 export function CoachModules({ cohortId }: { cohortId: string }) {
@@ -63,6 +64,10 @@ export function CoachModules({ cohortId }: { cohortId: string }) {
   return (
     <div className="stack coach-modules" data-testid={`coach-modules-${cohortId}`}>
       <h3>{tr("module.coach.title")}</h3>
+      <a className="btn btn-secondary" href={href("/cohort_chat")} data-testid={`coach-open-chat-${cohortId}`}>
+        {tr("module.chat.open")}
+      </a>
+      {data.call_me ? <p data-testid="coach-call-me">{tr("module.coach.call_me", { n: data.call_me })}</p> : null}
       <div className="table-scroll">
         <table className="coach-table">
           <thead>

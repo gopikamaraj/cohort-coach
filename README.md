@@ -244,6 +244,8 @@ After a check is finished, **My class** shows the findings, then an **answer map
 
 **Improvement-track modules.** A track is a plan of up to six modules with due dates; only the next one is made (`services/modules/`, report in [docs/build/reports/MODULES.md](docs/build/reports/MODULES.md)). Code picks it from her answer (tried, partly, not yet, or none); the text is the strategy library's, not AI. A daily job (`python tasks.py modules-due`, 06:00 IST) makes a due module with no feedback and records that silence is not a result.
 
+**Private check-in.** A teacher's answer, note and the follow-up questions of the AI note review (call 17) are visible only to her. She may share a masked summary, built by code and shown to her word for word, with her cohort chat; nothing is posted unless she confirms, and she can retract it. Coaches and mentors see counts of answers, never a note.
+
 ## Tester stats (public demo and tester links)
 
 When the server runs with `TESTER_STATS=1`, the web app asks a new visitor once how they would like to be called and whether the team may save which screens they open and the feedback they give. Declining ("Use without sharing") sends nothing and the app works in full. The judge-mode **Testing evidence** screen (guided tour, last step, or `#/testing`) shows what was collected, with the date range; nothing is seeded. Counts for judges are in [docs/evidence/user_testing_snapshot.md](docs/evidence/user_testing_snapshot.md) (regenerate with `python scripts/export_testing_stats.py`), and what testers said and what we changed is in [docs/YOU_SAID_WE_CHANGED.md](docs/YOU_SAID_WE_CHANGED.md).

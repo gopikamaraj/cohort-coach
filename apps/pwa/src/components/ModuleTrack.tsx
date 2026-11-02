@@ -5,11 +5,13 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
-import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, sendFeedback, startTrack, CHIPS, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
+import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
 import { exportStem } from "../lib/packAudio";
 import { href } from "../lib/router";
 import { useApp } from "../state";
 import { AudioDownload } from "./AudioDownload";
+import { CheckIn } from "./CheckIn";
+import { OpenChat } from "./OpenChat";
 import { Icon, type IconName } from "./icons";
 
 const STATUS_ICON: Record<ModuleStatus, IconName> = {
@@ -106,6 +108,7 @@ export function ModuleTrack({ cohort, code }: { cohort: ClassCohort; code: strin
   return (
     <section className="stack module-track" data-testid="module-track" aria-label={tr("module.timeline")}>
       <h3>{tr("module.timeline")}</h3>
+      <OpenChat trackId={track.id} testId="open-chat-header" />
       {track.note ? <p className="muted" data-testid="module-one-only">{tr("module.one_only")}</p> : null}
       {banner ? (
         <p className="module-banner" role="status" data-testid="module-banner">
@@ -211,6 +214,7 @@ function ModuleBody({ m, track, code, current, onTrack }: { m: ModuleView; track
           }}
         />
       ) : null}
+      {current ? <OpenChat trackId={track.id} testId={`open-chat-${m.number}`} hideWhenNone /> : null}
       <FeedbackCard m={m} track={track} onTrack={onTrack} late={!current} />
     </div>
   );
@@ -224,18 +228,16 @@ function FeedbackCard({ m, track, onTrack, late }: { m: ModuleView; track: Track
   const [err, setErr] = useState(false);
   const held = m.feedback?.answer === "not_tried";
   if (m.feedback && !held) {
-    return (
-      <p className="module-answered" role="status" data-testid={`module-${m.number}-answered`}>
-        <Icon name="ok" size={18} /> {tr("module.feedback.saved", { answer: tr(`module.feedback.${m.feedback.answer}` as Key) })}
-      </p>
-    );
+    return <CheckIn track={track} number={m.number} answerWord={tr(`module.feedback.${m.feedback.answer}` as Key)} />;
   }
   const send = async () => {
     if (!answer) return;
     setBusy(true);
     setErr(false);
     try {
-      onTrack(await sendFeedback(track.id, m.number, answer, note, lang));
+      const view = await sendFeedback(track.id, m.number, answer, note, lang);
+      if (answer !== "not_tried") await runReview(track.id, m.number, lang); // never blocks: a failure reads as no questions
+      onTrack(view);
       setAnswer(null);
       setNote("");
     } catch {

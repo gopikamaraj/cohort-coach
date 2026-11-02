@@ -108,6 +108,28 @@ Existing failures that are not from this work (seen again, unchanged): `src/lib/
 
 ---
 
+# Part C: private check-in, then a masked summary shared to the cohort chat only if she agrees (2 Nov 2026)
+
+**What existed (Step 0).** The cohort chat is two systems: a moderated thread (`ThreadPost`, `services/api/cohorts/thread.py`: members with system labels like "Teacher 7", posting check, report and hide, open only with 5 members) and a question flow (`ChatMessage`, `services/chat/`: masking, an AI draft from approved sources, the coach inbox, the 60 second timeout, labelled and correctable). The masking function is `ai/validators/mask.py`. A cohort of one class has no chat space. **What differed from the brief:** no check-in flow, no share record, no card type, no Open chat button, no mentor counts route.
+
+**Built.**
+
+| Item | Where |
+| --- | --- |
+| Share record (post id, fields shared, posted text, time, retracted) | `CheckinShare` in `services/modules/models.py` |
+| Draft built by code, problem check, share, retract, call-me, chat state, card | `services/modules/checkin.py` |
+| Posting as "A teacher in this cohort" or her chat name through the same posting rules | `thread.post_checkin` |
+| Card type `checkin_summary` in the thread (peers, mentor, coach) | `thread.posts_for` |
+| Endpoints: state, draft, share, retract, call-me, chat button, mentor counts | `services/modules/api.py` |
+| Flow, share step, card, safety message, Open cohort chat button | `CheckIn.tsx`, `OpenChat.tsx`, `ModuleTrack.tsx`, `CoachModules.tsx` |
+| Audit: `checkin_shared`, `checkin_retracted` in the cohort audit; events in the module log | `lifecycle.audit`, `ModuleEvent` |
+
+**Tests.** `tests/modules/test_checkin.py` (23): nothing in the chat before she confirms or when she does not share; her note invisible to peers, coach, mentor and officer, and counts without notes for coach and mentor; the draft is built by code and masked; unticked parts left out and counts and name off by default; share blocked for a name, roll number, phone, percentage, class code, email and a relative; one anonymous card seen by a peer, the mentor and the coach, naming posts under her chat name; Share twice makes one post; edits stored with fields and time; Retract hides and is audited, sharing again works; share later until the next module; the help request goes through the existing question flow; an outsider and an officer cannot read the chat; a closed thread refuses; the chat button for a member (with the badge) and for a cohort with no chat; the safety path tells the coach nothing until she presses the button, and then sends no content; two end-to-end runs (T1 shares and T2 and the coach see the card; T1 does not share and T2 sees nothing); strings in three languages. Front end: `modules.test.ts` gains 4. `modules.spec.ts` gains 4 browser tests (private banner, no post before Share, 44 px, axe, No peers yet, badge and offline note, a blocked share, Hindi and Tamil at 360 px): **written, not run**. Module Python suite: 163 before, 193 after.
+
+**Not built / incomplete.** A read-only cached copy of the chat thread when offline (the button opens the page and says new messages need a connection). No officer view of modules (they have no route, which is the safe default). The AI-worded intro of Part B.
+
+---
+
 # Part B: AI review of the note (2 Nov 2026)
 
 **What exists now.** Call 17 (`ai/calls/c17_feedback_review.py`, prompt `c17_feedback_review.v1.md`, light model, policy 10 s / 1 retry), output schema `FeedbackReview`, registry entry, `AI_USAGE.md` row (Built, not Verified), README regenerated. Closed vocabularies and the approved follow-up bank (en/hi/ta) in `content/modules/feedback_review.v1.yaml`. Logic in `services/modules/review.py`; table `module_reviews`; endpoints `GET/POST .../modules/{n}/review` and `POST .../review/answers`; client calls in `lib/modules.ts`.

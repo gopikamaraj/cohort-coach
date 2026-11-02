@@ -65,3 +65,7 @@ Each cohort's improvement track is a plan of modules with due dates. Under Cohor
 You can move all the remaining dates earlier or later (for a holiday), with a reason, and make the next module now. A module that is already made keeps its date. Every change is recorded.
 
 A daily job makes each module that is due, at 06:00 Indian time. Run it with python tasks.py modules-due. In production, call POST /api/modules/jobs/due once a day at 06:00 Asia/Kolkata (for example from Cloud Scheduler), with the header X-Job-Token set to MODULES_JOB_TOKEN. It is safe to run twice and catches up a missed day. If a module still cannot be made after three tries, you are told and the count shows as failed.
+
+## Check-ins and the cohort chat
+
+Teachers' check-ins are private. You see counts of answers per module (worked, partly, not yet, not tried), never a note. A teacher may choose to share a short, masked summary with her cohort; it shows in the chat as a Check-in card ("Shared by a teacher in this cohort"), and you can moderate it like any post. If a teacher presses Ask my coach to call me, the cohort table shows a count of call requests; no content comes with it. Each cohort on your page has an Open cohort chat button.

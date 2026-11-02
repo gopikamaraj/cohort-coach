@@ -113,3 +113,24 @@ class ModuleReview(Base):
     safety: Mapped[bool] = mapped_column(Boolean, default=False)
     confidence: Mapped[float] = mapped_column(Float, default=0.0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class CheckinShare(Base):
+    """A check-in summary the teacher chose to share with her cohort. One per module (sharing twice makes
+    one post). The row keeps the post id, which parts were shared, the exact posted text and the time;
+    `retracted_at` is set when she takes it back (the post is soft-deleted). Nothing is shared unless she
+    read the text and confirmed."""
+
+    __tablename__ = "checkin_shares"
+
+    module_id: Mapped[str] = mapped_column(ForeignKey("track_modules.id"), primary_key=True)
+    cohort_id: Mapped[str] = mapped_column(
+        String(40), index=True
+    )  # the cohort space it was posted to
+    thread_post_id: Mapped[str] = mapped_column(String(32), index=True)
+    fields: Mapped[dict[str, bool]] = mapped_column(JSON, default=dict)
+    posted_text: Mapped[str] = mapped_column(String(1200), default="")
+    anonymous: Mapped[bool] = mapped_column(Boolean, default=True)
+    help_asked: Mapped[bool] = mapped_column(Boolean, default=False)
+    shared_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    retracted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

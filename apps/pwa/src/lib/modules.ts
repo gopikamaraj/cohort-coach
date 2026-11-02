@@ -190,6 +190,7 @@ export interface CoachModules {
   stopped: { cap: number; exhausted: number };
   moved?: number;
   generated?: number;
+  call_me?: number;
 }
 
 export async function coachModules(cohortId: string, fetchFn?: typeof fetch): Promise<CoachModules> {
@@ -217,4 +218,83 @@ export function endBanner(t: TrackView): "module.cap_banner" | "module.exhausted
   if (t.stop_reason === "cap") return "module.cap_banner";
   if (t.stop_reason === "exhausted") return "module.exhausted_banner";
   return "module.end_banner";
+}
+
+// ---- the private check-in, and sharing a summary ----------------------------------------------------------
+
+export type ShareField = "how" | "note" | "help" | "counts" | "name";
+export const SHARE_FIELDS: ShareField[] = ["how", "note", "help", "counts", "name"];
+
+export interface ChatState {
+  available: boolean;
+  reason: string | null;
+  cohort_id: string | null;
+  open: boolean;
+  unread: number;
+}
+
+export interface CheckinState {
+  answer: Answer | null;
+  note: string;
+  review: ReviewView;
+  chat: ChatState;
+  share: {
+    shared: boolean;
+    retracted: boolean;
+    posted_text: string | null;
+    fields: Record<ShareField, boolean> | null;
+    anonymous: boolean | null;
+    can_share: boolean;
+    share_later_open: boolean;
+    default_fields: Record<ShareField, boolean>;
+    draft: string;
+  };
+}
+
+export class BlockedError extends Error {
+  constructor(public problems: string[]) {
+    super("blocked");
+  }
+}
+
+export async function getCheckin(trackId: string, number: number, lang: string, since?: string, fetchFn?: typeof fetch): Promise<CheckinState> {
+  const q = `lang=${lang}${since ? `&since=${encodeURIComponent(since)}` : ""}`;
+  return call<CheckinState>(`/tracks/${trackId}/modules/${number}/checkin?${q}`, {}, fetchFn);
+}
+
+export async function draftCheckin(trackId: string, number: number, lang: string, body: { fields?: Record<string, boolean>; text?: string }, fetchFn?: typeof fetch): Promise<{ text: string; problems: string[] }> {
+  return call(`/tracks/${trackId}/modules/${number}/checkin/draft?lang=${lang}`, { method: "POST", body }, fetchFn);
+}
+
+/** Share the text she confirmed. A 422 "blocked" comes back as a BlockedError naming what to remove. */
+export async function shareCheckin(trackId: string, number: number, lang: string, body: { text: string; fields: Record<string, boolean>; named: boolean; ai_help: boolean }, fetchFn?: typeof fetch): Promise<CheckinState> {
+  let res: Response;
+  try {
+    res = await (fetchFn ?? ((...a: Parameters<typeof fetch>) => fetch(...a)))(`${API_BASE}/api/modules/tracks/${trackId}/modules/${number}/checkin/share?lang=${lang}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Role": "teacher", "X-Device-Id": deviceId() },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new ModuleError(0);
+  }
+  if (res.status === 422) {
+    const d = ((await res.json().catch(() => ({}))) as { detail?: { code?: string; problems?: string[] } }).detail;
+    if (d?.code === "blocked") throw new BlockedError(d.problems ?? []);
+  }
+  if (!res.ok) throw new ModuleError(res.status);
+  return (await res.json()) as CheckinState;
+}
+
+export async function retractCheckin(trackId: string, number: number, lang: string, fetchFn?: typeof fetch): Promise<CheckinState> {
+  return call<CheckinState>(`/tracks/${trackId}/modules/${number}/checkin/retract?lang=${lang}`, { method: "POST" }, fetchFn);
+}
+
+export async function callMe(trackId: string, number: number, fetchFn?: typeof fetch): Promise<void> {
+  await call(`/tracks/${trackId}/modules/${number}/checkin/call-me`, { method: "POST" }, fetchFn);
+}
+
+/** For the Open cohort chat button: is there a chat, and how many new posts since she last opened it. */
+export async function chatState(trackId: string, since?: string, fetchFn?: typeof fetch): Promise<ChatState> {
+  return call<ChatState>(`/tracks/${trackId}/chat${since ? `?since=${encodeURIComponent(since)}` : ""}`, {}, fetchFn);
 }
