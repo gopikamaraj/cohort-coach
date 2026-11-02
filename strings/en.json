@@ -1469,7 +1469,7 @@
   "ph.create_title": "Create a paper",
   "ph.route_rules": "Generate from rules",
   "ph.route_rules_note": "Made by code from the approved rules, for your class.",
-  "ph.route_pdf": "From a PDF or an answered sheet",
+  "ph.route_pdf": "Upload pre-built files elsewhere",
   "ph.route_pdf_note": "Bring in a paper you already used.",
   "ph.kind_for_paper": "What is this paper for?",
   "ph.upload_note": "Only the printed questions are read. Handwriting and names are ignored and not kept. The file is sent to the AI to read, so use sheets your school has agreed to share. The upload is deleted when you confirm, or after 24 hours.",
