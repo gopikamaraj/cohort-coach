@@ -52,7 +52,9 @@ class TrackModule(Base):
     status: Mapped[str] = mapped_column(String(14), default="planned")
     generated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     generated_by: Mapped[str | None] = mapped_column(String(10))  # start|teacher|due_date|coach
-    branch: Mapped[str | None] = mapped_column(String(12))  # first|tried|partly|not_yet|no_feedback
+    branch: Mapped[str | None] = mapped_column(
+        String(12)
+    )  # first|worked|partly|not_yet|no_feedback
     reason: Mapped[dict[str, Any] | None] = mapped_column(
         JSON
     )  # {code, n, prev}: the screen words it
@@ -68,7 +70,7 @@ class ModuleFeedback(Base):
     __tablename__ = "module_feedback"
 
     module_id: Mapped[str] = mapped_column(ForeignKey("track_modules.id"), primary_key=True)
-    answer: Mapped[str] = mapped_column(String(8))  # tried|partly|not_yet
+    answer: Mapped[str] = mapped_column(String(10))  # worked|partly|not_yet|not_tried
     note: Mapped[str] = mapped_column(String(320), default="")  # masked
     given_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 

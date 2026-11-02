@@ -6,7 +6,9 @@ import { API_BASE } from "./api";
 import { deviceId } from "./consent";
 
 export type ModuleStatus = "planned" | "ready" | "downloaded" | "feedback_given" | "completed" | "skipped" | "expired";
-export type Answer = "tried" | "partly" | "not_yet";
+export type Answer = "worked" | "partly" | "not_yet" | "not_tried";
+export const CHIPS = ["no_time", "materials", "not_sure", "absent", "other"] as const;
+export type Chip = (typeof CHIPS)[number];
 export type NextCode = "ok" | "needs_feedback" | "no_more" | "track_cap" | "track_exhausted" | "track_done" | "track_end_date";
 
 export interface TextPart {
@@ -30,6 +32,7 @@ export interface ModuleView {
   generated_by?: string | null;
   audio_ref?: string | null;
   feedback?: { answer: Answer; note: string } | null;
+  hold?: { deferrals: number; max: number; days: number; short: { parts: TextPart[] } | null };
   spoken?: string;
 }
 
@@ -137,6 +140,10 @@ export async function getNext(trackId: string, lang: string, fetchFn?: typeof fe
 
 export async function sendFeedback(trackId: string, number: number, answer: Answer, note: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
   return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/feedback?lang=${lang}`, { method: "POST", body: { answer, note } }, fetchFn));
+}
+
+export async function sendWhyNot(trackId: string, number: number, chip: Chip, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
+  return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/why?lang=${lang}`, { method: "POST", body: { chip } }, fetchFn));
 }
 
 export async function markDownloaded(trackId: string, number: number, audioRef: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {

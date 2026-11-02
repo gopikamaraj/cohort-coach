@@ -929,3 +929,11 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 **Needs review.** Hindi and Tamil strings for the module screens and the smaller-step sentence are Claude drafts (TODO-HUMAN(Seema, Shivani)). The strategy text is still `status: draft` (Seema). The Tamil word *தொகுதி* and Hindi *मॉड्यूल* are the words you suggested.
 
 **Confirmed by.** Not confirmed: for Gopi to review (the defaults above).
+
+## 2026-11-02 · Four answers on a module, and the not-tried hold (Part A)
+
+**Decision.** The answers are `worked`, `partly`, `not_yet` and `not_tried` (the old `tried` is now `worked`; rows made earlier are rewritten by `services/modules/migrate.py` at start). `not_tried` is a HOLD, never a result: the module stays open (not `feedback_given`), the planned dates and the end date move by `MODULE_DEFER_DAYS` (7) at most `MODULE_MAX_DEFERRALS` (2) times, the second deferral records a `coach_notified` event, and after it the daily job makes the planned module as `no_feedback` with the reason "you had not tried it yet". "Get the next module" always works while held. Why-not-yet chips (no time, materials, not sure how, absent, other) are kept as private events; coaches see only counts, with "not tried" in its own column.
+
+**Defaults I chose.** (1) The first deferral happens when she answers; the second is made by the daily job when the moved date arrives (a repeated "not tried" press does not defer twice). (2) A deferral moves every planned date after the held module and the end date, so the spacing is kept. (3) The Postgres answer column is widened to 10 characters at start (create_all cannot alter it). (4) The Hindi and Tamil strings are Claude drafts for Seema and Shivani.
+
+**Confirmed by.** Not confirmed: for Gopi.

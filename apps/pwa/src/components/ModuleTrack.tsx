@@ -5,8 +5,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
-import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, sendFeedback, startTrack, type Answer, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
+import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, nextBlocked, sendFeedback, startTrack, CHIPS, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
 import { exportStem } from "../lib/packAudio";
+import { href } from "../lib/router";
 import { useApp } from "../state";
 import { AudioDownload } from "./AudioDownload";
 import { Icon, type IconName } from "./icons";
@@ -21,7 +22,8 @@ const STATUS_ICON: Record<ModuleStatus, IconName> = {
   expired: "warning",
 };
 
-const ANSWERS: Answer[] = ["tried", "partly", "not_yet"];
+const ANSWERS: Answer[] = ["worked", "partly", "not_yet", "not_tried"];
+const ANSWER_ICON: Record<Answer, IconName> = { worked: "ok", partly: "refresh", not_yet: "warning", not_tried: "history" };
 
 /** "17 Nov" in her language; the server's date is a plain calendar date. */
 export function shortDate(iso: string, lang: string): string {
@@ -220,7 +222,8 @@ function FeedbackCard({ m, track, onTrack, late }: { m: ModuleView; track: Track
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
-  if (m.feedback) {
+  const held = m.feedback?.answer === "not_tried";
+  if (m.feedback && !held) {
     return (
       <p className="module-answered" role="status" data-testid={`module-${m.number}-answered`}>
         <Icon name="ok" size={18} /> {tr("module.feedback.saved", { answer: tr(`module.feedback.${m.feedback.answer}` as Key) })}
@@ -233,6 +236,8 @@ function FeedbackCard({ m, track, onTrack, late }: { m: ModuleView; track: Track
     setErr(false);
     try {
       onTrack(await sendFeedback(track.id, m.number, answer, note, lang));
+      setAnswer(null);
+      setNote("");
     } catch {
       setErr(true);
     } finally {
@@ -240,25 +245,85 @@ function FeedbackCard({ m, track, onTrack, late }: { m: ModuleView; track: Track
     }
   };
   return (
-    <fieldset className="module-feedback" data-testid={`module-${m.number}-feedback`}>
-      <legend>{tr("module.feedback.title", { n: m.number })}</legend>
-      <div className="module-answers" role="radiogroup">
-        {ANSWERS.map((a) => (
-          <label key={a} className={answer === a ? "module-answer module-answer-on" : "module-answer"}>
-            <input type="radio" name={`fb-${m.number}`} value={a} checked={answer === a} onChange={() => setAnswer(a)} data-testid={`module-${m.number}-fb-${a}`} />
-            <span>{tr(`module.feedback.${a}` as Key)}</span>
-          </label>
+    <div className="stack">
+      {held ? <HoldPanel m={m} track={track} onTrack={onTrack} /> : null}
+      <fieldset className="module-feedback" data-testid={`module-${m.number}-feedback`}>
+        <legend>{tr("module.feedback.title", { n: m.number })}</legend>
+        {held ? <p className="muted">{tr("module.hold.again")}</p> : null}
+        <div className="module-answers" role="radiogroup">
+          {ANSWERS.map((a) => (
+            <label key={a} className={answer === a ? "module-answer module-answer-on" : "module-answer"}>
+              <input type="radio" name={`fb-${m.number}`} value={a} checked={answer === a} onChange={() => setAnswer(a)} data-testid={`module-${m.number}-fb-${a}`} />
+              <Icon name={ANSWER_ICON[a]} size={20} />
+              <span>{tr(`module.feedback.${a}` as Key)}</span>
+            </label>
+          ))}
+        </div>
+        <label className="field">
+          <span>{tr("module.feedback.note")}</span>
+          <textarea rows={2} maxLength={300} value={note} onChange={(e) => setNote(e.target.value)} />
+        </label>
+        {late ? <p className="muted">{tr("module.feedback.late")}</p> : null}
+        <button type="button" className="btn btn-secondary" disabled={!answer || busy || !online} onClick={() => void send()} data-testid={`module-${m.number}-fb-send`}>
+          {tr("module.feedback.save")}
+        </button>
+        {err ? <p role="alert">{tr("module.err")}</p> : null}
+      </fieldset>
+    </div>
+  );
+}
+
+/** She has not tried it yet: nothing advances, nothing is counted. One question (approved chips), a shorter
+ *  version, and a way to ask a person. The next date has moved; "Get the next module" still works. */
+function HoldPanel({ m, track, onTrack }: { m: ModuleView; track: TrackView; onTrack: (t: TrackView) => void }) {
+  const { tr, lang, online } = useApp();
+  const [chip, setChip] = useState<Chip | null>(null);
+  const [err, setErr] = useState(false);
+  const next = track.modules.find((x) => x.status === "planned");
+  const pick = async (c: Chip) => {
+    setErr(false);
+    try {
+      onTrack(await sendWhyNot(track.id, m.number, c, lang));
+      setChip(c);
+    } catch {
+      setErr(true);
+    }
+  };
+  const short = m.hold?.short?.parts ?? [];
+  return (
+    <section className="module-hold" aria-labelledby={`hold-${m.number}`} data-testid={`module-${m.number}-hold`}>
+      <h4 id={`hold-${m.number}`}>{tr("module.hold.title")}</h4>
+      {next ? <p>{tr("module.hold.intro", { date: shortDate(next.due_date, lang) })}</p> : null}
+      <div className="module-chips" role="group" aria-label={tr("module.hold.title")}>
+        {CHIPS.map((c) => (
+          <button key={c} type="button" className={chip === c ? "chip-btn chip-btn-on" : "chip-btn"} aria-pressed={chip === c} disabled={!online} onClick={() => void pick(c)} data-testid={`module-${m.number}-chip-${c}`}>
+            {tr(`module.hold.chip.${c}` as Key)}
+          </button>
         ))}
       </div>
-      <label className="field">
-        <span>{tr("module.feedback.note")}</span>
-        <textarea rows={2} maxLength={300} value={note} onChange={(e) => setNote(e.target.value)} />
-      </label>
-      {late ? <p className="muted">{tr("module.feedback.late")}</p> : null}
-      <button type="button" className="btn btn-secondary" disabled={!answer || busy || !online} onClick={() => void send()} data-testid={`module-${m.number}-fb-send`}>
-        {tr("module.feedback.save")}
-      </button>
+      {chip ? <p role="status">{tr("module.hold.chosen", { reason: tr(`module.hold.chip.${chip}` as Key) })}</p> : null}
       {err ? <p role="alert">{tr("module.err")}</p> : null}
-    </fieldset>
+      {short.length > 0 ? (
+        <details data-testid={`module-${m.number}-short`}>
+          <summary>{tr("module.hold.short")}</summary>
+          {short.map((p) => (
+            <div key={p.id} className="module-part">
+              <h4>{tr(`module.part.${p.id}` as Key)}</h4>
+              {p.text ? <p>{p.text}</p> : null}
+              {p.list ? (
+                <ol>
+                  {p.list.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ol>
+              ) : null}
+            </div>
+          ))}
+        </details>
+      ) : null}
+      <a className="btn btn-secondary" href={href("/cohort_chat")} data-testid={`module-${m.number}-ask`}>
+        {tr("module.hold.ask")}
+      </a>
+    </section>
   );
 }

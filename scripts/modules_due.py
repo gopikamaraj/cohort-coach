@@ -30,7 +30,13 @@ from services.modules.service import IST, JOB_HOUR  # noqa: E402
 def once(now: datetime) -> dict[str, object]:
     engine = make_engine()
     Base.metadata.create_all(engine)
-    return jobs.run_due(sessionmaker(engine, expire_on_commit=False), now)
+    from services.modules import migrate
+
+    migrate.widen_answer_column(engine)
+    factory = sessionmaker(engine, expire_on_commit=False)
+    with factory() as db:
+        migrate.tried_to_worked(db)
+    return jobs.run_due(factory, now)
 
 
 def seconds_to_next(now: datetime) -> float:

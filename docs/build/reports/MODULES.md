@@ -105,3 +105,24 @@ Existing failures that are not from this work (seen again, unchanged): `src/lib/
 - Not run in a browser; only type-checked and unit-tested. No push, no merge, no commit.
 - "Notify the coach" is a recorded event shown as counts, not a push message.
 - A coach sees per-module counts for a cohort of one teacher, which is that teacher's progress; no id, no name.
+
+---
+
+# Part A: four answers and the not-tried hold (2 Nov 2026)
+
+**What existed (Step 0).** Answers `tried`, `partly`, `not_yet`; the pure branch function (`branch.next_module`); the daily job (`jobs.run_due`); the feedback card in `ModuleTrack.tsx`; the cohort chat is a separate system (`ThreadPost` in `services/api/cohorts/thread.py` for a cohort space, and `ChatMessage` for the question and AI-draft flow), which a class-only cohort does not have. **What differed from the brief:** three answers, no hold, no deferral, no migration.
+
+**Changed.**
+
+| Item | Where |
+| --- | --- |
+| Answers `worked / partly / not_yet / not_tried`; `tried` removed everywhere (code, branch names, reason codes, strings, tests, docs) | `services/modules/states.py`, `branch.py`, `models.py`, `strings/*.json`, `tests/modules/` |
+| Hold: module stays open; dates move by `MODULE_DEFER_DAYS`, at most `MODULE_MAX_DEFERRALS`; coach event after the second; the job defers again before making a held module's successor | `service.py` (`_defer`, `maybe_defer`), `jobs.py` |
+| Why not yet? chips; shorter version (first step only); link to ask the mentor or coach | `POST /api/modules/tracks/{id}/modules/{n}/why`, `ModuleTrack.tsx` (`HoldPanel`) |
+| Migration `tried` -> `worked` (answer, branch, reason code, event details), idempotent; Postgres column widened | `services/modules/migrate.py`, called from `services/api/profiles.py` and `scripts/modules_due.py` |
+| Coach table: Worked, Partly, Not yet, Not tried (own column; never a result) | `CoachModules.tsx` |
+| Reason strings for the new case (en, hi, ta) | `module.reason.worked`, `module.reason.not_tried` |
+
+**Tests.** `tests/modules/test_not_tried.py` (26): the four answers and refusals, branch for not tried and worked, the hold (open module, +7 days, end date, no coach event yet), the shorter version, Get next always works, a repeated press defers once, a real answer closes the hold, the job's second deferral with the coach event then the module as `no_feedback` with a frozen clock and a repeat run, the env settings, counts, a held last module is not finished, chips, the migration (and a second run changes nothing), the endpoint over HTTP, strings in three languages. `modules.spec.ts` gains the four-option card, the hold (chips, shorter version, 44 px, axe, Hindi and Tamil fit at 360 px); **written, not run**. Module suites: 84 before, 110 after.
+
+**Not changed.** The two-class demo flow (`TwoClasses.tsx`, `cohort_run`) still has its own "Tried it" answer; it is a different flow.

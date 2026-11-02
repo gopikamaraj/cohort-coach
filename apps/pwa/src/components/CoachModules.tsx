@@ -71,9 +71,10 @@ export function CoachModules({ cohortId }: { cohortId: string }) {
               <th scope="col">{tr("module.coach.at")}</th>
               <th scope="col">{tr("module.coach.made")}</th>
               <th scope="col">{tr("module.coach.downloaded")}</th>
-              <th scope="col">{tr("module.coach.tried")}</th>
+              <th scope="col">{tr("module.coach.worked")}</th>
               <th scope="col">{tr("module.coach.partly")}</th>
               <th scope="col">{tr("module.coach.not_yet")}</th>
+              <th scope="col">{tr("module.coach.not_tried")}</th>
               <th scope="col">{tr("module.coach.overdue")}</th>
               <th scope="col">{tr("module.coach.failed")}</th>
               <th scope="col">{tr("module.coach.flag")}</th>
@@ -86,9 +87,10 @@ export function CoachModules({ cohortId }: { cohortId: string }) {
                 <td>{m.at}</td>
                 <td>{m.generated}</td>
                 <td>{m.downloaded}</td>
-                <td>{m.feedback.tried}</td>
+                <td>{m.feedback.worked}</td>
                 <td>{m.feedback.partly}</td>
                 <td>{m.feedback.not_yet}</td>
+                <td>{m.feedback.not_tried}</td>
                 <td>{m.overdue}</td>
                 <td>{m.failed}</td>
                 <td>{m.not_downloaded_flag}</td>

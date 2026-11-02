@@ -8,7 +8,7 @@ FEEDBACK_GIVEN, COMPLETED, SKIPPED, EXPIRED = "feedback_given", "completed", "sk
 STATES = (PLANNED, READY, DOWNLOADED, FEEDBACK_GIVEN, COMPLETED, SKIPPED, EXPIRED)
 
 # planned: only title and due date shown. ready: generated. downloaded: audio taken.
-# feedback_given: tried / partly / not yet answered. completed: the next module was made after the answer
+# feedback_given: worked / partly / not yet answered. completed: the next module was made after the answer
 # (or the track ended). skipped: left out because the track stopped. expired: the next module came
 # on its due date with no answer; a late answer can still attach (expired -> feedback_given).
 TRANSITIONS: dict[str, frozenset[str]] = {
@@ -22,8 +22,10 @@ TRANSITIONS: dict[str, frozenset[str]] = {
 }
 
 TRIGGERS = ("start", "teacher", "due_date", "coach")
-BRANCHES = ("first", "tried", "partly", "not_yet", "no_feedback")
-ANSWERS = ("tried", "partly", "not_yet")
+BRANCHES = ("first", "worked", "partly", "not_yet", "no_feedback")
+# not_tried is a HOLD, not a result: it never advances the track and is never counted as one
+ANSWERS = ("worked", "partly", "not_yet", "not_tried")
+RESULTS = ("worked", "partly", "not_yet")
 TRACK_STATES = ("active", "completed", "stopped")
 
 

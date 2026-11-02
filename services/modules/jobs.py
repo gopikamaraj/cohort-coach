@@ -69,6 +69,11 @@ def _track(
             if nxt is None or nxt.due_date > day:
                 break
             number = nxt.number
+        with (
+            factory() as db
+        ):  # a held module (not tried) is deferred again before the planned one is made
+            if service.maybe_defer(db, track_id, number, now):
+                continue
         made = _generate_with_retry(factory, track_id, number, now, sleep, attempts, out)
         if not made:
             return  # still failing: the coach was told; the next run tries again

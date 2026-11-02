@@ -32,8 +32,8 @@ def test_the_first_module_is_the_first_in_the_plan() -> None:
 
 
 def test_tried_goes_to_the_next_module_in_the_plan() -> None:
-    got = next_module(PLAN, hist("a"), "tried", 6)
-    assert (got.approach, got.branch, got.smaller) == ("b", "tried", False)
+    got = next_module(PLAN, hist("a"), "worked", 6)
+    assert (got.approach, got.branch, got.smaller) == ("b", "worked", False)
 
 
 def test_partly_repeats_the_same_approach_as_a_smaller_step() -> None:
@@ -42,7 +42,7 @@ def test_partly_repeats_the_same_approach_as_a_smaller_step() -> None:
 
 
 def test_after_a_smaller_step_the_plan_is_rejoined_on_tried() -> None:
-    got = next_module(PLAN, [Done(1, "a"), Done(2, "a", "partly")], "tried", 6)
+    got = next_module(PLAN, [Done(1, "a"), Done(2, "a", "partly")], "worked", 6)
     assert got.approach == "b"
 
 
@@ -59,11 +59,11 @@ def test_not_yet_skips_approaches_already_used() -> None:
 def test_no_feedback_is_the_planned_next_module_and_is_not_read_as_tried() -> None:
     got = next_module(PLAN, hist("a"), None, 6)
     assert (got.approach, got.branch, got.reason.code) == ("b", "no_feedback", "no_feedback")
-    assert got.branch != "tried"
+    assert got.branch != "worked"
 
 
 def test_an_approach_is_never_repeated_except_after_partly() -> None:
-    for answers in itertools.product(("tried", "not_yet", None), repeat=5):
+    for answers in itertools.product(("worked", "not_yet", None), repeat=5):
         done: list[Done] = []
         for answer in (None, *answers):
             got = next_module(PLAN, done, answer, 9)
@@ -75,7 +75,7 @@ def test_an_approach_is_never_repeated_except_after_partly() -> None:
 
 
 def test_the_cap_stops_the_track_with_a_person_to_talk_to() -> None:
-    got = next_module(PLAN, hist("a", "b"), "tried", 2)
+    got = next_module(PLAN, hist("a", "b"), "worked", 2)
     assert got.stop == branch.STOP_CAP and got.reason.code == "stop_cap" and got.approach is None
 
 
@@ -86,7 +86,7 @@ def test_when_the_plan_and_alternatives_run_out_it_stops_and_says_so() -> None:
 
 
 def test_a_finished_plan_is_a_normal_end_not_a_referral() -> None:
-    got = next_module(PLAN, hist("a", "b", "c"), "tried", 9)
+    got = next_module(PLAN, hist("a", "b", "c"), "worked", 9)
     assert got.stop == branch.STOP_DONE
 
 
@@ -152,7 +152,7 @@ def test_every_reason_code_has_a_sentence_in_every_language(lang: str) -> None:
     for code in branch.REASONS:
         text = table.get(f"module.reason.{code}")
         assert text, (lang, code)
-        if code in ("tried", "partly", "not_yet", "no_feedback"):
+        if code in ("worked", "partly", "not_yet", "no_feedback"):
             assert "{n}" in text and "{prev}" in text, (lang, code)
         if code == "first":
             assert "{n}" in text

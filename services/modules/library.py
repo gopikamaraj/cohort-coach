@@ -60,6 +60,14 @@ def gap_days() -> int:
     return _env_int("MODULE_GAP_DAYS", int(config()["gap_days"]))
 
 
+def defer_days() -> int:
+    return _env_int("MODULE_DEFER_DAYS", 7)
+
+
+def max_deferrals() -> int:
+    return _env_int("MODULE_MAX_DEFERRALS", 2)
+
+
 def no_download_days() -> int:
     return _env_int("MODULE_NO_DOWNLOAD_DAYS", 5)
 

@@ -73,7 +73,13 @@ class ProfileIn(BaseModel):
 def _factory() -> sessionmaker[Session]:
     engine = make_engine()
     Base.metadata.create_all(engine)
-    return sessionmaker(engine, expire_on_commit=False)
+    from services.modules import migrate
+
+    migrate.widen_answer_column(engine)
+    factory = sessionmaker(engine, expire_on_commit=False)
+    with factory() as db:
+        migrate.tried_to_worked(db)  # rows made before "tried" became "worked"
+    return factory
 
 
 def get_session() -> Iterator[Session]:

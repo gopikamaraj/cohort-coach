@@ -383,7 +383,7 @@ def give_feedback(
     now: datetime,
 ) -> ModuleFeedback:
     if answer not in states.ANSWERS:
-        raise ModulesError("bad_answer", "Choose tried, partly or not yet.")
+        raise ModulesError("bad_answer", "Choose worked, partly, not yet or not tried.")
     track = _owned(db, track_id, teacher_id)
     rows = modules_of(db, track.id)
     module = next((m for m in rows if m.number == number), None)
@@ -395,12 +395,14 @@ def give_feedback(
         raise ModulesError("note_held", "That note was held by a check. Change it and try again.")
     fb = _feedback(db, module)
     late = module.number < len(_generated(rows))
+    was = fb.answer if fb else None
     if fb is None:
         fb = ModuleFeedback(module_id=module.id, answer=answer, note="", given_at=_utc(now))
         db.add(fb)
     fb.answer, fb.note, fb.given_at = answer, masked.text if masked else "", _utc(now)
-    if states.can(module.status, states.FEEDBACK_GIVEN):
-        _move(module, states.FEEDBACK_GIVEN)
+    held = answer == "not_tried"
+    if not held and states.can(module.status, states.FEEDBACK_GIVEN):
+        _move(module, states.FEEDBACK_GIVEN)  # a hold keeps the module open
     _event(
         db,
         track,
@@ -412,7 +414,9 @@ def give_feedback(
         late=late,
         note=bool(masked),
     )
-    if not late and track.status == "active":
+    if held and not late and was != "not_tried" and track.status == "active":
+        _defer(db, track, module, now)  # the first deferral; the daily job makes the second
+    elif not held and not late and track.status == "active":
         # her answer on the newest module decides what is planned next (and may end the track)
         preview = _replan(db, track, modules_of(db, track.id), answer)
         if not any(m.status == states.PLANNED for m in modules_of(db, track.id)):
@@ -426,6 +430,69 @@ def give_feedback(
             )
     db.commit()
     return fb
+
+
+def deferrals_of(db: Session, module: TrackModule) -> int:
+    return int(
+        db.execute(
+            select(func.count())
+            .select_from(ModuleEvent)
+            .where(ModuleEvent.module_id == module.id, ModuleEvent.event == "deferred")
+        ).scalar_one()
+    )
+
+
+def _defer(
+    db: Session, track: Track, module: TrackModule, now: datetime, actor: str = "teacher"
+) -> bool:
+    """Hold: the next planned dates (and the end date) move by MODULE_DEFER_DAYS, at most
+    MODULE_MAX_DEFERRALS times per module. The second deferral tells the coach. Returns True when
+    the dates moved. Not tried is never counted as a result."""
+    done = deferrals_of(db, module)
+    if done >= library.max_deferrals():
+        return False
+    days = library.defer_days()
+    planned = [m for m in modules_of(db, track.id) if m.status == states.PLANNED]
+    for m in planned:
+        m.due_date = m.due_date + timedelta(days=days)
+    track.end_date = track.end_date + timedelta(days=days)
+    nxt = planned[0].due_date.isoformat() if planned else None
+    _event(db, track, "deferred", actor, now, module, n=done + 1, days=days, next_due=nxt)
+    if done + 1 >= library.max_deferrals():
+        _event(db, track, "coach_notified", "system", now, module, reason="deferred_twice")
+    return True
+
+
+def maybe_defer(db: Session, track_id: str, number: int, now: datetime) -> bool:
+    """For the daily job, before it makes module `number`: if the module before it is held (her answer
+    is not tried) and has deferrals left, defer again instead of making it. After the last deferral
+    the job makes the planned module as no_feedback."""
+    track = get_track(db, track_id)
+    prev = next((m for m in modules_of(db, track.id) if m.number == number - 1), None)
+    fb = _feedback(db, prev) if prev else None
+    if prev is None or fb is None or fb.answer != "not_tried":
+        return False
+    moved = _defer(db, track, prev, now, "system")
+    db.commit()
+    return moved
+
+
+CHIPS = ("no_time", "materials", "not_sure", "absent", "other")
+
+
+def record_reason(
+    db: Session, track_id: str, number: int, teacher_id: str, chip: str, now: datetime
+) -> None:
+    """Why not yet?: one approved chip, kept as an event (private to her; coaches see only counts)."""
+    if chip not in CHIPS:
+        raise ModulesError("bad_chip", "Choose one of the reasons.")
+    track = _owned(db, track_id, teacher_id)
+    module = _by_number(db, track.id, number)
+    fb = _feedback(db, module)
+    if fb is None or fb.answer != "not_tried":
+        raise ModulesError("not_held", "Say you have not tried it yet first.")
+    _event(db, track, "not_tried_reason", "teacher", now, module, chip=chip)
+    db.commit()
 
 
 def mark_downloaded(
@@ -497,6 +564,14 @@ def module_view(db: Session, track: Track, m: TrackModule, lang: str, total: int
     out["audio_ref"] = m.audio_ref
     fb = _feedback(db, m)
     out["feedback"] = {"answer": fb.answer, "note": fb.note} if fb else None
+    if fb is not None and fb.answer == "not_tried":
+        short = library.module_text(track.error, m.approach_id or "", True, lang)
+        out["hold"] = {
+            "deferrals": deferrals_of(db, m),
+            "max": library.max_deferrals(),
+            "days": library.defer_days(),
+            "short": None if short.omitted else short.to_dict(),
+        }
     if live is not None and not live.omitted:
         intro = strings.text(lang, "module.spoken.intro", n=m.number, total=total, title=live.title)
         out["spoken"] = library.spoken(live, intro)
@@ -579,7 +654,7 @@ def coach_counts(db: Session, cohort_id: str, now: datetime) -> dict[str, Any]:
                 "at": 0,
                 "generated": 0,
                 "downloaded": 0,
-                "feedback": {"tried": 0, "partly": 0, "not_yet": 0},
+                "feedback": {"worked": 0, "partly": 0, "not_yet": 0, "not_tried": 0},
                 "overdue": 0,
                 "failed": 0,
                 "not_downloaded_flag": 0,

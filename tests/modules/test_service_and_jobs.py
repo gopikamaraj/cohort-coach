@@ -128,7 +128,7 @@ def test_get_next_is_refused_until_feedback_is_given(db: Session) -> None:
 @pytest.mark.parametrize(
     ("answer", "branch_", "smaller", "same_approach"),
     [
-        ("tried", "tried", False, False),
+        ("worked", "worked", False, False),
         ("partly", "partly", True, True),
         ("not_yet", "not_yet", False, False),
     ],
@@ -155,10 +155,10 @@ def test_partly_adds_a_module_the_plan_did_not_have(db: Session) -> None:
     assert len(mods(db, track)) == 2
     service.give_feedback(db, track.id, 1, "t-one", "partly", "", T0)
     service.next_for_teacher(db, track.id, "t-one", at(1))  # 2: smaller step of module 1's approach
-    service.give_feedback(db, track.id, 2, "t-one", "tried", "", at(2))
+    service.give_feedback(db, track.id, 2, "t-one", "worked", "", at(2))
     got = service.next_for_teacher(db, track.id, "t-one", at(3))
     assert [m.number for m in mods(db, track)] == [1, 2, 3] and got.module is not None
-    assert got.module.branch == "tried" and got.module.approach_id == "show_bundles"
+    assert got.module.branch == "worked" and got.module.approach_id == "show_bundles"
 
 
 def test_not_yet_with_nothing_left_stops_and_tells_the_coach(db: Session) -> None:
@@ -175,9 +175,9 @@ def test_the_cap_stops_the_track(db: Session, monkeypatch: pytest.MonkeyPatch) -
     monkeypatch.setenv("MODULE_CAP", "2")
     track = service.start_track(db, cohort(db, errors=["SUB-SFL"]), "SUB-SFL", "en", T0)
     assert len(mods(db, track)) == 2
-    service.give_feedback(db, track.id, 1, "t-one", "tried", "", T0)
+    service.give_feedback(db, track.id, 1, "t-one", "worked", "", T0)
     service.next_for_teacher(db, track.id, "t-one", at(1))
-    service.give_feedback(db, track.id, 2, "t-one", "tried", "", at(2))
+    service.give_feedback(db, track.id, 2, "t-one", "worked", "", at(2))
     db.refresh(track)
     assert track.status == "stopped" and track.stop_reason == branch.STOP_CAP
     assert len(events(db, track, "coach_notified")) == 1
@@ -185,7 +185,7 @@ def test_the_cap_stops_the_track(db: Session, monkeypatch: pytest.MonkeyPatch) -
 
 def test_finishing_the_plan_completes_the_track_without_a_referral(db: Session) -> None:
     track = service.start_track(db, cohort(db, errors=["PV-REVERSE"]), "PV-REVERSE", "en", T0)
-    service.give_feedback(db, track.id, 1, "t-one", "tried", "", T0)
+    service.give_feedback(db, track.id, 1, "t-one", "worked", "", T0)
     db.refresh(track)
     assert track.status == "completed" and track.stop_reason == branch.STOP_DONE
     assert events(db, track, "coach_notified") == []
@@ -204,14 +204,14 @@ def test_late_feedback_attaches_to_its_module_and_changes_nothing_made(db: Sessi
 
 def test_a_note_is_masked_and_a_name_never_reaches_the_record(db: Session) -> None:
     track = service.start_track(db, cohort(db), "ADD-NOCARRY", "en", T0)
-    fb = service.give_feedback(db, track.id, 1, "t-one", "tried", "call me on a.b@example.com", T0)
+    fb = service.give_feedback(db, track.id, 1, "t-one", "worked", "call me on a.b@example.com", T0)
     assert "example.com" not in fb.note
 
 
 def test_a_teacher_cannot_touch_another_teachers_track(db: Session) -> None:
     track = service.start_track(db, cohort(db), "ADD-NOCARRY", "en", T0)
     with pytest.raises(ModulesError) as err:
-        service.give_feedback(db, track.id, 1, "t-two", "tried", "", T0)
+        service.give_feedback(db, track.id, 1, "t-two", "worked", "", T0)
     assert err.value.code == "not_hers"
 
 
@@ -244,7 +244,7 @@ def test_a_repeated_generate_returns_the_same_module(db: Session) -> None:
 def test_two_simultaneous_presses_make_one_module(factory: sessionmaker[Session]) -> None:
     with factory() as db:
         track = service.start_track(db, cohort(db), "ADD-NOCARRY", "en", T0)
-        service.give_feedback(db, track.id, 1, "t-one", "tried", "", T0)
+        service.give_feedback(db, track.id, 1, "t-one", "worked", "", T0)
         tid = track.id
     barrier = threading.Barrier(2)
     results: list[object] = []
@@ -502,7 +502,7 @@ def test_the_text_follows_the_language_asked_for_with_english_fallback(db: Sessi
 def test_two_teachers_in_one_cohort_can_be_at_different_modules(db: Session) -> None:
     a = service.start_track(db, cohort(db, "t-a", cid="cc-a"), "ADD-NOCARRY", "en", T0)
     b = service.start_track(db, cohort(db, "t-b", cid="cc-b"), "ADD-NOCARRY", "en", T0)
-    service.give_feedback(db, a.id, 1, "t-a", "tried", "", T0)
+    service.give_feedback(db, a.id, 1, "t-a", "worked", "", T0)
     service.next_for_teacher(db, a.id, "t-a", at(1))
     assert service.track_view(db, a, "en", at(1))["current"] == 2
     assert service.track_view(db, b, "en", at(1))["current"] == 1
@@ -522,7 +522,12 @@ def test_the_coach_numbers_hold_no_teacher_id_or_name(db: Session) -> None:
     flat = repr(counts)
     assert "t-one" not in flat and "teacher" not in flat
     first = counts["modules"][0]
-    assert first["generated"] == 1 and first["feedback"] == {"tried": 0, "partly": 1, "not_yet": 0}
+    assert first["generated"] == 1 and first["feedback"] == {
+        "worked": 0,
+        "partly": 1,
+        "not_yet": 0,
+        "not_tried": 0,
+    }
 
 
 # ---- a whole track, end to end -------------------------------------------------------------------
@@ -542,10 +547,10 @@ def test_a_three_module_track_from_start_to_the_coach_screen(
         assert [m["due_date"] for m in v["modules"]] == [
             at(d).date().isoformat() for d in (0, 7, 14)
         ]
-        # 2. feedback "tried", then she gets Module 2
-        service.give_feedback(db, tid, 1, "t-one", "tried", "worked with the sticks", at(2))
+        # 2. feedback "worked", then she gets Module 2
+        service.give_feedback(db, tid, 1, "t-one", "worked", "worked with the sticks", at(2))
         got = service.next_for_teacher(db, tid, "t-one", at(3))
-        assert got.module is not None and got.module.number == 2 and got.module.branch == "tried"
+        assert got.module is not None and got.module.number == 2 and got.module.branch == "worked"
         # 3. a coach moves Module 3 from day 14 to day 16 (audited)
         service.set_due_date(db, tid, 3, at(16).date(), "school function", at(4))
     # 4. no feedback on Module 2: nothing on day 14, Module 3 on day 16 with no_feedback
@@ -556,7 +561,7 @@ def test_a_three_module_track_from_start_to_the_coach_screen(
         assert track is not None
         rows = service.modules_of(db, tid)
         assert [m.status for m in rows] == [states.COMPLETED, states.EXPIRED, states.READY]
-        assert [m.branch for m in rows] == ["first", "tried", "no_feedback"]
+        assert [m.branch for m in rows] == ["first", "worked", "no_feedback"]
         assert [m.generated_by for m in rows] == ["start", "teacher", "due_date"]
         assert rows[2].reason and rows[2].reason["code"] == "no_feedback"
         # the timeline the teacher sees
@@ -564,18 +569,20 @@ def test_a_three_module_track_from_start_to_the_coach_screen(
         assert v["current"] == 3 and v["total"] == 3 and v["can_next"]["enabled"] is False
         assert v["can_next"]["code"] == "no_more"
         assert v["modules"][2]["reason_text"].startswith("Module 3 came on its due date")
-        # the coach's counts: one teacher at Module 3, Module 1 answered "tried", the date change audited
+        # the coach's counts: one teacher at Module 3, Module 1 answered "worked", the date change audited
         counts = service.coach_counts(db, "cc-1", at(16))
         by = {m["number"]: m for m in counts["modules"]}
         assert (
-            by[3]["at"] == 1 and by[1]["feedback"]["tried"] == 1 and by[2]["feedback"]["tried"] == 0
+            by[3]["at"] == 1
+            and by[1]["feedback"]["worked"] == 1
+            and by[2]["feedback"]["worked"] == 0
         )
         assert by[1]["downloaded"] == 0 and by[3]["overdue"] == 0
         assert [e.detail["new"] for e in events(db, track, "due_changed")] == [
             at(16).date().isoformat()
         ]
         # 5. she answers Module 3 (the last): the track completes and says it is time for the next check
-        service.give_feedback(db, tid, 3, "t-one", "tried", "", at(17))
+        service.give_feedback(db, tid, 3, "t-one", "worked", "", at(17))
         db.refresh(track)
         assert track.status == "completed" and track.stop_reason == "done"
         assert service.track_view(db, track, "en", at(17))["can_next"]["code"] == "track_done"

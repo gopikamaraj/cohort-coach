@@ -107,3 +107,45 @@ test("a coach sees counts per module and can move the remaining dates", async ({
   const text = await box.innerText();
   expect(text).not.toMatch(/[0-9a-f]{16}/); // no device id
 });
+
+test("the feedback card has four answers with icons, and Send is closed until one is chosen", async ({ page }) => {
+  await trackStarted(page);
+  const card = page.getByTestId("module-1-feedback");
+  await expect(card).toContainText("How did Module 1 go?");
+  for (const a of ["worked", "partly", "not_yet", "not_tried"]) await expect(page.getByTestId(`module-1-fb-${a}`)).toBeVisible();
+  await expect(card).toContainText("It worked");
+  await expect(card).toContainText("It partly worked");
+  await expect(card).toContainText("Not yet working");
+  await expect(card).toContainText("I didn't try it yet");
+  await expect(card).toContainText("A short note (optional, no names)");
+  await expect(page.getByTestId("module-1-fb-send")).toBeDisabled();
+  await page.getByTestId("module-1-fb-worked").check();
+  await expect(page.getByTestId("module-1-fb-send")).toBeEnabled();
+});
+
+test("I didn't try it yet holds the module: one question, a shorter version, a way to ask, and the next module still works", async ({ page }) => {
+  await trackStarted(page);
+  await page.getByTestId("module-1-fb-not_tried").check();
+  await page.getByTestId("module-1-fb-send").click();
+  const hold = page.getByTestId("module-1-hold");
+  await expect(hold).toContainText("Why not yet?");
+  await expect(hold).toContainText("not counted as a result");
+  for (const c of ["no_time", "materials", "not_sure", "absent", "other"]) await expect(page.getByTestId(`module-1-chip-${c}`)).toBeVisible();
+  await page.getByTestId("module-1-chip-no_time").click();
+  await expect(hold).toContainText("We noted: No time");
+  await hold.getByText("Try a shorter version").click();
+  await expect(page.getByTestId("module-1-short")).toBeVisible();
+  await expect(page.getByTestId("module-1-ask")).toBeVisible();
+  await expect(page.getByTestId("module-1-status")).not.toContainText("Done"); // the module stays open
+  await expect(page.getByTestId("module-next")).toBeEnabled(); // always works for her
+  const box = await page.getByTestId("module-1-chip-no_time").boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  const found = (await new AxeBuilder({ page }).include("[data-testid=module-track]").withTags(["wcag2a", "wcag2aa"]).analyze()).violations;
+  expect(found.map((v) => v.id)).toEqual([]);
+  for (const lang of ["hi", "ta"]) {
+    await chooseLanguage(page, lang);
+    await page.goto("/#/cohort");
+    await expect(page.getByTestId("module-1-hold")).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  }
+});

@@ -2,10 +2,13 @@
 """Which module comes next, chosen by code. The AI only words it (and in this build, does not even do
 that: the text is the library's own).
 
-    tried        -> the next approach in the plan
+    worked       -> the next approach in the plan
     partly       -> the same approach as a smaller step, then rejoin the plan
     not yet      -> a different approach for the same error, skipping approaches already used
-    none by due  -> the planned next module. Silence is never read as "tried".
+    not tried    -> a HOLD: the track does not advance on it. If a next module is made anyway
+                    (her press, or the date after the deferrals) it is the planned one, and it is
+                    recorded as no_feedback: never a result.
+    none by due  -> the planned next module. Silence is never read as "worked".
 
 An approach is never used twice, except for "partly". The cap and the end of the plan stop the track
 with a reason; stopping on the cap or on "no approach left" sends the teacher to a person (a mentor or
@@ -26,7 +29,8 @@ STOP_END_DATE = "end_date"  # the track's end date (the next check) passed
 # Reason codes. Each has a fixed sentence in strings/{en,hi,ta}.json as `module.reason.<code>`.
 REASONS = (
     "first",
-    "tried",
+    "worked",
+    "not_tried",
     "partly",
     "not_yet",
     "no_feedback",
@@ -109,7 +113,7 @@ def next_module(
     past_end: bool = False,
 ) -> NextModule:
     """`history`: the modules already made, in order. `previous_feedback`: the answer on the last one
-    (tried, partly, not_yet) or None. `past_end`: the track's end date has passed."""
+    (worked, partly, not_yet, not_tried) or None. `past_end`: the track's end date has passed."""
     if previous_feedback is not None and previous_feedback not in states.ANSWERS:
         raise ValueError(f"feedback must be one of {states.ANSWERS} or None")
     n = len(history) + 1
@@ -126,7 +130,7 @@ def next_module(
     in_plan = [t.approach for t in plan.templates]
 
     if previous_feedback == "partly":
-        # the same approach, smaller; the plan is rejoined by the next "tried" or silence
+        # the same approach, smaller; the plan is rejoined by the next "worked" or silence
         return NextModule(last.approach, "partly", Reason("partly", n, last.number), smaller=True)
 
     if previous_feedback == "not_yet":
@@ -138,11 +142,13 @@ def next_module(
         skipped = tuple(a for a in candidates[: candidates.index(pick)] if a in used)
         return NextModule(pick, "not_yet", Reason("not_yet", n, last.number), fallback_from=skipped)
 
-    # tried, or no answer by the due date: the planned next module. Silence is not "tried".
-    branch = "tried" if previous_feedback == "tried" else "no_feedback"
+    # worked, or no answer by the due date: the planned next module. Silence is not "worked", and
+    # "not tried" is not a result either: both are recorded as no_feedback.
+    branch = "worked" if previous_feedback == "worked" else "no_feedback"
+    code = "not_tried" if previous_feedback == "not_tried" else branch
     pick = next((a for a in in_plan if a not in used), None)
     if pick is None:
         # a plan that finished normally; if it only finished because of "not yet" detours the
         # remaining approaches are used up too, which is the same: nothing is left to give
         return _stop(STOP_DONE, n, last.number)
-    return NextModule(pick, branch, Reason(branch, n, last.number))
+    return NextModule(pick, branch, Reason(code, n, last.number))

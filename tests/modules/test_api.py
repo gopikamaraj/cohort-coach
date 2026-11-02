@@ -106,7 +106,7 @@ def test_a_double_press_gives_one_module(client: TestClient) -> None:
     tid = start(client, make_cohort(client))["id"]
     client.post(
         f"/api/modules/tracks/{tid}/modules/1/feedback",
-        json={"answer": "tried"},
+        json={"answer": "worked"},
         headers=h("teacher", DEV1),
     )
     a = client.post(f"/api/modules/tracks/{tid}/next", headers=h("teacher", DEV1))
@@ -121,7 +121,7 @@ def test_another_teacher_cannot_see_or_change_the_track(client: TestClient) -> N
     assert client.get(f"/api/modules/tracks/{tid}", headers=h("teacher", DEV2)).status_code == 403
     r = client.post(
         f"/api/modules/tracks/{tid}/modules/1/feedback",
-        json={"answer": "tried"},
+        json={"answer": "worked"},
         headers=h("teacher", DEV2),
     )
     assert r.status_code == 403
@@ -153,13 +153,13 @@ def test_the_coach_sees_counts_and_no_teacher(client: TestClient) -> None:
     tid = start(client, cid)["id"]
     client.post(
         f"/api/modules/tracks/{tid}/modules/1/feedback",
-        json={"answer": "tried"},
+        json={"answer": "worked"},
         headers=h("teacher", DEV1),
     )
     r = client.get(f"/api/modules/coach/cohorts/{cid}", headers=h("coach"))
     assert r.status_code == 200
     body = r.json()
-    assert body["modules"][0]["feedback"]["tried"] == 1 and body["tracks"] == 1
+    assert body["modules"][0]["feedback"]["worked"] == 1 and body["tracks"] == 1
     assert DEV1 not in r.text and "teacher_id" not in r.text
 
 

@@ -29,6 +29,7 @@ STATUS = {
     "not_ready": 409,
     "not_made": 409,
     "fixed_date": 409,
+    "not_held": 409,
 }
 
 
@@ -51,6 +52,10 @@ class StartIn(BaseModel):
 class FeedbackIn(BaseModel):
     answer: str
     note: str = Field(default="", max_length=400)
+
+
+class WhyIn(BaseModel):
+    chip: str = Field(max_length=12)
 
 
 class DownloadedIn(BaseModel):
@@ -142,6 +147,26 @@ def feedback(
         service.give_feedback(
             db, track_id, number, teacher.teacher_id, body.answer, body.note, clock()
         )
+    except ModulesError as exc:
+        raise _raise(exc) from exc
+    db.refresh(track)
+    return service.track_view(db, track, lang, clock())
+
+
+@router.post("/tracks/{track_id}/modules/{number}/why")
+def why_not_yet(
+    track_id: str,
+    number: int,
+    body: WhyIn,
+    lang: str = "en",
+    _: str = Depends(require("cohort.chat")),
+    x_device_id: str | None = Header(default=None),
+    db: Session = SESSION,
+) -> dict[str, Any]:
+    """Why not yet?: one approved reason chip for a module she has not tried (private to her)."""
+    track, teacher = _own(db, track_id, x_device_id)
+    try:
+        service.record_reason(db, track_id, number, teacher.teacher_id, body.chip, clock())
     except ModulesError as exc:
         raise _raise(exc) from exc
     db.refresh(track)
