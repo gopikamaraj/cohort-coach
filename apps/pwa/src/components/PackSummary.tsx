@@ -9,7 +9,7 @@ import { useApp } from "../state";
 
 const plain = (t: string) => t.replace(/\{pv:(\d+)\}/g, "$1"); // {pv:N} marks a spoken-only reading
 
-export function PackSummary({ pack, lang, draft, audioName }: { pack: Pack; lang: Lang; draft: boolean; audioName: string }) {
+export function PackSummary({ pack, lang, draft }: { pack: Pack; lang: Lang; draft: boolean }) {
   const { tr } = useApp();
   const ex = explanationFor(pack.code);
   const part = (key: Key, field: Parameters<typeof pick>[0]) => {
@@ -57,7 +57,6 @@ export function PackSummary({ pack, lang, draft, audioName }: { pack: Pack; lang
         <h2>{tr("pack.sec.working")}</h2>
         <p>{tr("pack.summary_working", { n: keys.rules.min_hits })}</p>
       </section>
-      <p>{tr("pack.summary_audio", { name: `${audioName}.mp3` })}</p>
       {fallback ? <p>{tr("pack.lang_missing", { language: lang })}</p> : null}
     </div>
   );

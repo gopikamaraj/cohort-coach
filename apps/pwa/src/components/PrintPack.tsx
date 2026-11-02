@@ -11,7 +11,7 @@ import { useApp } from "../state";
 import { PackSectionView } from "./PackSection";
 import { PackSummary } from "./PackSummary";
 
-export function PrintPack({ pack, lang, draft, audioName, rolls, sheets }: { pack: Pack; lang: Lang; draft: boolean; audioName: string; rolls: { confirmed: number[]; possible: number[] }; sheets: PrintSheet[] }) {
+export function PrintPack({ pack, lang, draft, rolls, sheets }: { pack: Pack; lang: Lang; draft: boolean; rolls: { confirmed: number[]; possible: number[] }; sheets: PrintSheet[] }) {
   const { tr } = useApp();
   const name = tr(`err.${pack.code}` as Key);
   return createPortal(
@@ -39,7 +39,7 @@ export function PrintPack({ pack, lang, draft, audioName, rolls, sheets }: { pac
       </section>
       <section className="pp-page">
         <h2>{tr("pack.print_part1")}</h2>
-        <PackSummary pack={pack} lang={lang} draft={draft} audioName={audioName} />
+        <PackSummary pack={pack} lang={lang} draft={draft} />
       </section>
       <section className="pp-page">
         <h2>{tr("pack.print_part2")}</h2>

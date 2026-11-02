@@ -2,14 +2,12 @@
 // the class's own results and approved content, text first: a bold title and plain text for each, all open,
 // and it prints. Nothing plays by itself: one "Download audio" button per error makes a single file, only
 // when pressed. Sections with no content are left out, never invented.
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { LANG_NAMES, type Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
 import { buildPack } from "../lib/pack";
-import { previewScript, type SpokenPreview } from "../lib/packAudio";
 import { buildAnswerMap, inThisClass, rollsFor } from "../lib/results";
 import { useApp } from "../state";
-import { AudioDownload } from "./AudioDownload";
 import { exportStem } from "../lib/packAudio";
 import { runAction } from "../lib/action";
 import { ModuleTrack } from "./ModuleTrack";
@@ -18,12 +16,10 @@ import { PrintPack } from "./PrintPack";
 import { loadSheets, type PrintSheet } from "../lib/printPack";
 
 export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
-  const { tr, lang, check, online, role, klass } = useApp();
+  const { tr, lang, check, role, klass } = useApp();
   const [active, setActive] = useState(cohort.errors[0] ?? "");
-  const [review, setReview] = useState(false);
   const [printing, setPrinting] = useState(false);
   const [sheets, setSheets] = useState<PrintSheet[]>([]);
-  const [edit, setEdit] = useState<{ key: string; text: string } | null>(null);
   const map = useMemo(() => (check && check.id === cohort.checkId ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null), [check, cohort.checkId]);
   const code = cohort.errors.includes(active) ? active : (cohort.errors[0] ?? "");
   const pack = useMemo(
@@ -33,30 +29,6 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
       }),
     [code, lang, cohort, map],
   );
-  // What is voiced is not the screen text: the server writes a spoken script from the content and these
-  // counts (no titles, no Source or Draft tags, numbers as words). She can read it and change it.
-  const here = map ? inThisClass(map, code) : null;
-  const request = useMemo(
-    () => ({
-      code,
-      children: cohort.counts[code] ?? 0,
-      total: cohort.childrenChecked,
-      rolls: map ? rollsFor(map, code) : null,
-      example: here?.example ? { question: String(here.example.question), wrote: String(here.example.wrote), correct: String(here.example.correct) } : null,
-    }),
-    [code, cohort, map, here],
-  );
-  const [preview, setPreview] = useState<SpokenPreview | null>(null);
-  useEffect(() => {
-    if (!review || !online || !code) return;
-    let live = true;
-    previewScript({ ...request, language: lang, name: "preview" })
-      .then((p) => live && setPreview(p))
-      .catch(() => live && setPreview(null));
-    return () => {
-      live = false;
-    };
-  }, [review, online, request, lang, code]);
   if (!code) return null;
   // One button prints the whole pack: contents, summary, the pack and the answer sheets with boxes. The
   // browser names the PDF after the page title, so the title is set while it prints (the same name as the
@@ -81,7 +53,7 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
         await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
         await Promise.all(Array.from(document.querySelectorAll<HTMLImageElement>(".print-pack-only img")).map((i) => i.decode().catch(() => undefined)));
       });
-      document.title = exportStem(code, speakLang, "Improvement-Track");
+      document.title = exportStem(code, lang, "Improvement-Track");
       document.body.classList.add("print-pack"); // the page is hidden while the pack prints
       window.addEventListener("afterprint", done);
       window.print();
@@ -90,10 +62,6 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
     }
   };
   const draft = pack.sections.some((s) => s.draft);
-  const editKey = `${code}|${lang}|${preview?.text ?? ""}`; // a change to the pack or the language drops her edit
-  const edited = edit && edit.key === editKey ? edit.text : null;
-  const whole = edited ?? preview?.text ?? "";
-  const speakLang = edited !== null ? (preview?.language ?? lang) : lang;
   const missingLang = lang !== "en" && pack.sections.some((s) => s.fallback);
   return (
     <section className="stack pack" aria-labelledby="pack-title" data-testid="pack">
@@ -128,7 +96,7 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
       <div className="no-print">
         <ModuleTrack cohort={cohort} code={code} />
       </div>
-      <PrintPack pack={pack} lang={lang} draft={draft} audioName={exportStem(code, speakLang)} rolls={rollList} sheets={sheets} />
+      <PrintPack pack={pack} lang={lang} draft={draft} rolls={rollList} sheets={sheets} />
       <div className="pack-actions no-print">
         <div className="pack-action">
           <button type="button" className="btn btn-secondary" disabled={printing} onClick={() => void printPack()} data-testid="pack-print">
@@ -138,29 +106,6 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
             {rollsNote ? tr("pack.print_note_rolls", { rolls: rollsNote }) : tr("pack.print_note")}
           </span>
         </div>
-        <AudioDownload request={edited !== null ? { text: edited } : request} language={speakLang} code={code} label="audio.download" note={tr("audio.note")} testId={`audio-${code}-all`} />
-      </div>
-      <div className="pack-review no-print">
-        <button type="button" className="btn pack-review-toggle" aria-expanded={review} onClick={() => setReview((v) => !v)} data-testid="pack-audio-review">
-          {tr(review ? "pack.audio_hide" : "pack.audio_review")}
-        </button>
-        {review ? (
-          <>
-            {!online ? <p className="muted">{tr("pack.audio_offline")}</p> : null}
-            <label className="field">
-              <span>{tr("pack.audio_label")}</span>
-              <textarea rows={10} maxLength={8000} value={whole} disabled={!preview} onChange={(e) => setEdit({ key: editKey, text: e.target.value })} data-testid="pack-audio-text" />
-            </label>
-            {edited !== null ? (
-              <p className="muted">
-                {tr("pack.audio_edited")}{" "}
-                <button type="button" className="btn btn-secondary" onClick={() => setEdit(null)} data-testid="pack-audio-reset">
-                  {tr("pack.audio_reset")}
-                </button>
-              </p>
-            ) : null}
-          </>
-        ) : null}
       </div>
       <div className="stack">
         {pack.sections.map((s) => (
