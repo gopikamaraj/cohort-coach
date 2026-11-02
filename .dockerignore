@@ -4,9 +4,12 @@ node_modules
 apps
 docs
 !docs/design/pilot_forms.golden.json
+!docs/YOU_SAID_WE_CHANGED.md
 tests
 evals
 scripts
+!scripts/__init__.py
+!scripts/make_synthetic_sheets.py
 data/pilot
 data/private
 .env
