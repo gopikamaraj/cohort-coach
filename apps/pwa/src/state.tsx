@@ -83,7 +83,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (online) void reconcileWithServer(); // the server is the truth: drop pointers to records it no longer has
     void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
     watchTables(); // every change to the classes, checks and results is written to the cloud copy
-    void hydrate().then(() => backfillAnyCounts()).then(() => reload()).then(async () => { // the cloud copy is the record: read it back first
+    void hydrate().then(() => backfillAnyCounts().catch(() => 0)).then(() => reload()).then(async () => { // the cloud copy is the record: read it back first
       await flushAllowed(isOnline());
       setPending(await pendingCount());
     });
