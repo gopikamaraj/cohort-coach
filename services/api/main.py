@@ -84,6 +84,7 @@ def create_app() -> FastAPI:
                 "Content-Type",
                 "X-Admin-Key",
                 "X-Device-Id",
+                "X-Store-Key",
                 "X-Device-Hash",
                 "X-Team-Token",
                 "X-Judge",
