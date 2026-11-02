@@ -180,11 +180,46 @@ def peers(
     return sorted(out, key=lambda p: p["teacher"].lower())
 
 
+def _with_any(db: Session, prof: dict[str, Any], check: dict[str, Any] | None) -> dict[str, Any]:
+    """A class result saved before `anyCounts` existed: work it out from the check's answers and the paper's own
+    key (engine-built from the paper's numbers), the same way the phone does. Children who made a mistake at
+    least once, confirmed or possible, per mistake. Anything that cannot be read leaves the result as it was."""
+    got = prof.get("anyCounts")
+    if isinstance(got, dict) and got:
+        return prof
+    paper_id = str(prof.get("formKey") or "")
+    rows = (check or {}).get("children")
+    if not paper_id.startswith("P-") or not isinstance(rows, list):
+        return prof
+    from engine.normalize import normalize_answer
+    from services.papers import keys as paper_keys
+    from services.papers.models import PaperRow
+
+    paper = db.get(PaperRow, paper_id)
+    if paper is None:
+        return prof
+    items = paper_keys.key_of(paper.id, paper.body, "")["forms"][paper.id]["items"]
+    absent = {int(i) for i in (check or {}).get("absent") or []}
+    out: dict[str, int] = {}
+    for i, row in enumerate(rows):
+        if i in absent or not isinstance(row, list) or not any(str(c).strip() for c in row):
+            continue
+        codes: set[str] = set()
+        for q, item in enumerate(items):
+            raw = row[q] if q < len(row) else ""
+            ans = normalize_answer(str(raw) if str(raw).strip() else None)
+            if isinstance(ans, int):
+                codes.update(item["wrong"].get(str(ans), []))
+        for code in codes:
+            out[code] = out.get(code, 0) + 1
+    return {**prof, "anyCounts": out}
+
+
 def entered_summary(db: Session) -> dict[str, Any]:
     """Every teacher's entered classes, added up for a coach: per term the number of classes, children checked
     and children showing each mistake, plus a label per class ("Teacher 1", class name). Counts only."""
     rows = db.scalars(
-        select(DeviceDoc).where(DeviceDoc.collection.in_(("profiles", "classes", "settings"))).order_by(DeviceDoc.device)
+        select(DeviceDoc).where(DeviceDoc.collection.in_(("profiles", "classes", "settings", "checks"))).order_by(DeviceDoc.device)
     ).all()
     docs: dict[str, dict[str, dict[str, Any]]] = {}
     for r in rows:
@@ -196,6 +231,7 @@ def entered_summary(db: Session) -> dict[str, Any]:
         for prof in d.get("profiles", {}).values():
             if not int(prof.get("childrenChecked", 0) or 0):
                 continue
+            prof = _with_any(db, prof, d.get("checks", {}).get(str(prof.get("id"))))
             term = str(prof.get("term", 1))
             t = terms.setdefault(term, {"classes": 0, "children_checked": 0, "children_showing": {}})
             t["classes"] += 1
