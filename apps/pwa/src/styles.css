@@ -4295,3 +4295,11 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
 .gchat-card .row button {
   min-height: 44px;
 }
+
+/* a stack inside a stack is spaced by the grid gap alone: margins on both piled up as blank bands */
+.stack > .stack,
+.stack > h2,
+.stack > h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
