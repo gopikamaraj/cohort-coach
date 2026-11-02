@@ -1107,6 +1107,8 @@
   "check.make_termly": "Make it a termly check",
   "check.date_label": "Date of the check",
   "check.expected_label": "Total children in the class",
+  "check.class_label": "Class name",
+  "check.class_hint": "For example 3A Math",
   "check.exists_title": "Saved for this class",
   "check.exists_none": "No check is saved yet for this class.",
   "check.exists_line": "{kind}, {f}, {date}, {n} papers",

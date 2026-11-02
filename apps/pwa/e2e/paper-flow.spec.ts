@@ -35,6 +35,7 @@ test("Enter check asks for a paper, not a form, and reads its answers with the p
   await makePaper(page);
   await page.goto("/#/check");
   await expect(page.getByTestId("paper-attached")).toBeVisible(); // the only paper is chosen for her
+  await page.getByTestId("check-class-name").fill("3A Class");
   await page.getByTestId("check-expected").fill("1");
   await page.getByTestId("start-check-go").click();
   await expect(page.getByTestId("check-paper-code")).toBeVisible();

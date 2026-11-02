@@ -82,6 +82,7 @@ async function enterCheckA(page: Page) {
   await page.getByTestId("paper-make").click();
   await expect(page.getByTestId("paper-view")).toBeVisible({ timeout: 30_000 });
   await page.goto("/#/check");
+  await page.getByTestId("check-class-name").fill("3A Class");
   await page.getByTestId("check-expected").fill("2");
   await page.getByTestId("start-check-go").click();
   await expect(page.getByTestId("check-label")).toBeVisible();

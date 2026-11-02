@@ -1107,6 +1107,8 @@
   "check.make_termly": "इसे सत्र की जाँच बनाएँ",
   "check.date_label": "जाँच की तारीख",
   "check.expected_label": "कक्षा में कुल बच्चे",
+  "check.class_label": "कक्षा का नाम",
+  "check.class_hint": "जैसे 3A गणित",
   "check.exists_title": "इस कक्षा के लिए सहेजा गया",
   "check.exists_none": "इस कक्षा की कोई जाँच अभी सहेजी नहीं है।",
   "check.exists_line": "{kind}, {f}, {date}, {n} पेपर",

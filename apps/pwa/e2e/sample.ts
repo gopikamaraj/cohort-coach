@@ -57,6 +57,7 @@ export async function openWithPaper(page: Page, opts: { kind?: "pre" | "post" } 
 
 /** Give the class size and press Start the check. */
 export async function begin(page: Page, size = 1): Promise<void> {
+  await page.getByTestId("check-class-name").fill("3A Class");
   await page.getByTestId("check-expected").fill(String(size));
   await page.getByTestId("start-check-go").click();
   await expect(page.getByTestId("child-title")).toBeVisible();

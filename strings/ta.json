@@ -1107,6 +1107,8 @@
   "check.make_termly": "பருவச் சோதனையாக மாற்று",
   "check.date_label": "சோதனை நடந்த தேதி",
   "check.expected_label": "வகுப்பில் மொத்தக் குழந்தைகள்",
+  "check.class_label": "வகுப்பின் பெயர்",
+  "check.class_hint": "எ.கா. 3A கணிதம்",
   "check.exists_title": "இந்த வகுப்புக்குச் சேமித்தவை",
   "check.exists_none": "இந்த வகுப்புக்கு இன்னும் சோதனை எதுவும் சேமிக்கப்படவில்லை.",
   "check.exists_line": "{kind}, {f}, {date}, {n} தாள்கள்",

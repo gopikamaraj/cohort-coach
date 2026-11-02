@@ -93,6 +93,7 @@ test("a paper made from the rules is attached to the check, and its code shows i
   await page.goto("/#/check"); // Enter check only chooses a paper that exists
   await expect(page.getByTestId("paper-chooser")).toBeVisible();
   await expect(page.getByTestId("paper-attached")).toContainText("PRE ·");
+  await page.getByTestId("check-class-name").fill("3A Class");
   await page.getByTestId("check-expected").fill("2");
   await page.getByTestId("start-check-go").click();
   await expect(page.getByTestId("check-paper-code")).toContainText("PRE ·");
