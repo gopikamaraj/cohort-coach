@@ -37,3 +37,7 @@ The basics are the same as for a teacher. A paper is the printed set of question
 ## How is the next module chosen?
 
 Code chooses it; the AI only words it. After module 1 the teacher plays it or marks it heard, then answers Tried it, Partly or Not yet, with an optional note (a child's name is removed before it is saved). Then she can press Generate next module, and the coach can press it for her. Tried it gives the next module in the track. Partly gives the same approach again, as a smaller step with more practice. Not yet gives another approach for the same mistake from the strategy library, leaving out the approaches she has already had. If she has not answered by the set date (3 days in the demo), the planned next module is queued, and her silence is never counted as a result. Call 5 words the module from the approved module topic and strategies; if no draft comes back, code writes it from the same content. Every module goes to the coach's review queue before it reaches her, voiced in her language with her class's numbers filled in by code. A failed voice leaves the text, with a retry.
+
+## The cohort chat
+
+Open Cohort chat and choose your cohort. You see the cohort's thread and an Open questions tab with the questions still waiting. A reply from you cancels the AI's answer for that question; a reply from a teacher does not. You can share tips, reply and mark a question resolved. Only the coach can correct an AI answer, hide or pin a message, or change how long the AI waits.

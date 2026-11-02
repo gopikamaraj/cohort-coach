@@ -26,7 +26,7 @@ export interface Post {
   created_at: string;
 }
 
-export type Who = "teacher" | "coach" | "officer";
+export type Who = "teacher" | "mentor" | "coach" | "officer";
 
 export class CohortError extends Error {
   constructor(

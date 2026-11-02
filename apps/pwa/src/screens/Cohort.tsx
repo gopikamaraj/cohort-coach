@@ -5,15 +5,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import type { Key } from "../i18n";
-import { ccall, CohortError, ordered, showsText, type CohortSummary, type Post, type Who } from "../lib/cohort";
+import { ccall, CohortError, type CohortSummary, type Who } from "../lib/cohort";
 import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
 import { ClassOnlyForCoach } from "../components/MyClassCohorts";
+import { GatedChat } from "../components/GatedChat";
 
 export default function Cohort() {
   const { tr, role, lang, klass } = useApp();
   const [view, setView] = useState<Who>(role === "coach" ? "coach" : "teacher");
-  const who: Who = role === "coach" ? "coach" : role === "judge" ? view : "teacher";
+  const who: Who = role === "coach" ? "coach" : role === "mentor" ? "mentor" : role === "judge" ? view : "teacher";
   return (
     <section aria-labelledby="co-title" data-testid="cohort">
       <h1 id="co-title">
@@ -35,9 +36,11 @@ export default function Cohort() {
           <ClassOnlyForCoach />
           <CoachView tr={tr} lang={lang} />
         </>
+      ) : who === "mentor" ? (
+        <MentorView tr={tr} />
       ) : (
         <>
-          <TeacherView tr={tr} lang={lang} />
+          <TeacherView tr={tr} />
         </>
       )}
     </section>
@@ -46,50 +49,9 @@ export default function Cohort() {
 
 type Tr = (key: Key, params?: Record<string, string | number>) => string;
 
-function Posts({ posts, tr, moderator, onAct }: { posts: Post[]; tr: Tr; moderator: boolean; onAct?: (p: Post, action: string, identifier?: boolean) => void }) {
-  if (posts.length === 0) return <p className="muted">{tr("cohort.empty")}</p>;
-  return (
-    <ul className="plain" data-testid="posts">
-      {ordered(posts).map((p) => (
-        <li key={p.id} className="panel" data-testid={`post-${p.id}`} data-status={p.status}>
-          <strong>{p.author_name}</strong>
-          {p.pinned ? <span className="chip"> {tr("cohort.post.pinned")}</span> : null}
-          {p.status !== "visible" ? <span className="chip"> {tr(`cohort.post.${p.status}` as Key)}</span> : null}
-          {showsText(p, moderator) ? <p style={{ whiteSpace: "pre-line" }}>{p.body}</p> : null}
-          {onAct ? (
-            <div className="row">
-              {p.status === "visible" || p.status === "reported" ? (
-                <>
-                  <button type="button" className="btn btn-secondary" onClick={() => onAct(p, "hide")}>
-                    {tr("cohort.coach.hide")}
-                  </button>
-                  <button type="button" className="btn btn-secondary" onClick={() => onAct(p, "hide", true)} data-testid={`erase-${p.id}`}>
-                    {tr("cohort.coach.erase")}
-                  </button>
-                </>
-              ) : null}
-              {p.status === "reported" || p.status === "hidden" ? (
-                <button type="button" className="btn btn-secondary" onClick={() => onAct(p, "restore")}>
-                  {tr("cohort.coach.restore")}
-                </button>
-              ) : null}
-              <button type="button" className="btn btn-secondary" onClick={() => onAct(p, p.pinned ? "unpin" : "pin")}>
-                {tr(p.pinned ? "cohort.coach.unpin" : "cohort.coach.pin")}
-              </button>
-            </div>
-          ) : null}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
+function TeacherView({ tr }: { tr: Tr }) {
   const [cohorts, setCohorts] = useState<CohortSummary[]>([]);
   const [current, setCurrent] = useState<CohortSummary | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [state, setState] = useState<"open" | "read_only">("read_only");
-  const [text, setText] = useState("");
   const [agree, setAgree] = useState(false);
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
 
@@ -100,55 +62,14 @@ function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
       setMsg({ text: tr("cohort.error"), bad: true });
     }
   }, [tr]);
-  const loadThread = useCallback(async () => {
-    if (!current) return;
-    try {
-      const t = await ccall<{ state: "open" | "read_only"; posts: Post[] }>(`/${current.id}/thread`, "teacher");
-      setPosts(t.posts);
-      setState(t.state);
-    } catch {
-      setMsg({ text: tr("cohort.error"), bad: true });
-    }
-  }, [current, tr]);
-
   useEffect(() => {
     void loadList();
   }, [loadList]);
-  useEffect(() => {
-    void loadThread();
-    if (!current) return;
-    const id = setInterval(() => void loadThread(), 30_000);
-    return () => clearInterval(id);
-  }, [current, loadThread]);
-
   async function join(c: CohortSummary) {
     try {
       await ccall(`/${c.id}/join`, "teacher", { method: "POST", body: { consent: agree } });
       setCurrent({ ...c, joined: true });
       await loadList();
-    } catch {
-      setMsg({ text: tr("cohort.error"), bad: true });
-    }
-  }
-
-  async function send() {
-    if (!current || !text.trim()) return;
-    try {
-      await ccall(`/${current.id}/posts`, "teacher", { method: "POST", body: { body: text.trim(), language: lang } });
-      setText("");
-      setMsg(null);
-      await loadThread();
-    } catch (e) {
-      if (e instanceof CohortError && e.status === 422) setMsg({ text: tr("cohort.blocked", { codes: e.codes.join(", ") }), bad: true });
-      else setMsg({ text: tr("cohort.error"), bad: true });
-    }
-  }
-
-  async function report(p: Post) {
-    try {
-      await ccall(`/posts/${p.id}/report`, "teacher", { method: "POST" });
-      setMsg({ text: tr("cohort.reported") });
-      await loadThread();
     } catch {
       setMsg({ text: tr("cohort.error"), bad: true });
     }
@@ -161,7 +82,11 @@ function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
           {msg.text}
         </p>
       ) : null}
-      {!current && cohorts.length === 0 ? null : !current ? (
+      {!current && cohorts.length === 0 ? (
+        <p className="muted" data-testid="gchat-no-cohorts">
+          {tr("gchat.no_cohorts")}
+        </p>
+      ) : !current ? (
         <div className="panel">
           <h2>{tr("cohort.list")}</h2>
           {cohorts.length === 0 ? <p className="muted">{tr("cohort.none")}</p> : null}
@@ -189,36 +114,7 @@ function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
           </ul>
         </div>
       ) : (
-        <>
-          <Posts posts={posts} tr={tr} moderator={false} />
-          {posts.length > 0 ? (
-            <div className="row">
-              {ordered(posts).filter((p) => p.author_kind === "teacher").slice(-1).map((p) => (
-                <button key={p.id} type="button" className="btn btn-secondary" onClick={() => void report(p)} data-testid="report">
-                  {tr("cohort.report")}
-                </button>
-              ))}
-            </div>
-          ) : null}
-          {state === "open" ? (
-            <div className="panel">
-              <p className="note" data-testid="cohort-notice">
-                <Icon name="shield" size={18} /> {tr("cohort.notice")}
-              </p>
-              <label className="field">
-                <span>{tr("cohort.compose")}</span>
-                <textarea rows={4} maxLength={500} value={text} onChange={(e) => setText(e.target.value)} data-testid="compose" />
-              </label>
-              <button type="button" className="btn btn-primary" disabled={!text.trim()} onClick={() => void send()} data-testid="send-post">
-                {tr("cohort.send")}
-              </button>
-            </div>
-          ) : (
-            <p className="note" data-testid="read-only">
-              {tr("cohort.read_only")}
-            </p>
-          )}
-        </>
+        <GatedChat cohortId={current.id} role="teacher" />
       )}
     </>
   );
@@ -227,14 +123,12 @@ function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
 function CoachView({ tr, lang }: { tr: Tr; lang: string }) {
   const [cohorts, setCohorts] = useState<CohortSummary[]>([]);
   const [current, setCurrent] = useState<string | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
   const [text, setText] = useState("");
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
 
   const load = useCallback(async () => {
     try {
       setCohorts(await ccall<CohortSummary[]>("/coach/cohorts", "coach"));
-      if (current) setPosts(await ccall<Post[]>(`/coach/cohorts/${current}/thread`, "coach"));
     } catch {
       setMsg({ text: tr("cohort.error"), bad: true });
     }
@@ -243,14 +137,6 @@ function CoachView({ tr, lang }: { tr: Tr; lang: string }) {
     void load();
   }, [load]);
 
-  async function act(p: Post, action: string, identifier = false) {
-    try {
-      await ccall(`/coach/posts/${p.id}/decide`, "coach", { method: "POST", body: { action, identifier } });
-      await load();
-    } catch {
-      setMsg({ text: tr("cohort.error"), bad: true });
-    }
-  }
   async function prompt() {
     if (!current || !text.trim()) return;
     try {
@@ -295,7 +181,7 @@ function CoachView({ tr, lang }: { tr: Tr; lang: string }) {
       </ul>
       {current ? (
         <>
-          <Posts posts={posts} tr={tr} moderator onAct={(p, a, i) => void act(p, a, i)} />
+          <GatedChat cohortId={current} role="coach" />
           <div className="panel">
             <label className="field">
               <span>{tr("cohort.coach.prompt")}</span>
@@ -312,6 +198,34 @@ function CoachView({ tr, lang }: { tr: Tr; lang: string }) {
           </div>
         </>
       ) : null}
+    </>
+  );
+}
+
+function MentorView({ tr }: { tr: Tr }) {
+  const [cohorts, setCohorts] = useState<CohortSummary[]>([]);
+  const [current, setCurrent] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    ccall<CohortSummary[]>("/mentor/cohorts", "mentor").then(setCohorts, () => setFailed(true));
+  }, []);
+  return (
+    <>
+      {failed ? <p role="alert">{tr("cohort.error")}</p> : null}
+      {cohorts.length === 0 && !failed ? <p className="muted" data-testid="gchat-no-cohorts">{tr("gchat.no_cohorts")}</p> : null}
+      <ul className="plain">
+        {cohorts.map((c) => (
+          <li key={c.id} className="class-row" data-testid={`mentor-cohort-${c.id}`}>
+            <span className="class-name">
+              {c.error} · {tr(`cohort.st.${c.status}` as Key)}
+            </span>
+            <button type="button" className="btn btn-secondary" onClick={() => setCurrent(c.id)}>
+              {tr("cohort.chat")}
+            </button>
+          </li>
+        ))}
+      </ul>
+      {current ? <GatedChat cohortId={current} role="mentor" /> : null}
     </>
   );
 }

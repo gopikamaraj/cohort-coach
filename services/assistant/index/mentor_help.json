@@ -271,5 +271,18 @@
 "text": "Every module goes to the coach's review queue before it reaches her, voiced in her language with her class's numbers filled in by code. A failed voice leaves the text, with a retry.",
 "ts_end": null,
 "ts_start": null
+},
+{
+"heading": "Mentor help > The cohort chat",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-the-cohort-chat:0",
+"kind": "file",
+"line": 43,
+"ns": "mentor_help",
+"path": "docs/help/mentor.md",
+"section": null,
+"slide_no": null,
+"text": "Open Cohort chat and choose your cohort. You see the cohort's thread and an Open questions tab with the questions still waiting. A reply from you cancels the AI's answer for that question; a reply from a teacher does not. You can share tips, reply and mark a question resolved. Only the coach can correct an AI answer, hide or pin a message, or change how long the AI waits.",
+"ts_end": null,
+"ts_start": null
 }
 ]

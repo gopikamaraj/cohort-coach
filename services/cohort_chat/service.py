@@ -437,6 +437,10 @@ def _seed_demo(db: Session, cohort: CohortSpace, now: datetime) -> None:
     db.commit()
 
 
+def _legacy(p: ThreadPost) -> PostMeta:
+    return PostMeta(post_id=p.id, cohort_id=p.cohort_id, kind="tip" if p.author_kind in ("teacher", "mentor") else "system", language="en", sources=[], masked=[], corrected=False, abstained=False, demo=False, created_at=p.created_at)
+
+
 def _message(db: Session, p: ThreadPost, m: PostMeta, moderator: bool) -> dict[str, Any]:
     hidden = p.status in ("hidden", "deleted", "reported") and not moderator
     return {
@@ -470,9 +474,10 @@ def thread_view(db: Session, cohort_id: str, actor: Actor, *, now: datetime | No
     tick(db, now=now, cohort_id=cohort_id, drafter=drafter)  # catch up: a restart loses nothing
     moderator = actor.role == "coach"
     rows = db.execute(
-        select(ThreadPost, PostMeta).join(PostMeta, PostMeta.post_id == ThreadPost.id).where(ThreadPost.cohort_id == cohort_id).order_by(ThreadPost.created_at)
+        select(ThreadPost, PostMeta).outerjoin(PostMeta, PostMeta.post_id == ThreadPost.id).where(ThreadPost.cohort_id == cohort_id).order_by(ThreadPost.created_at)
     ).all()
-    msgs = [_message(db, p, m, moderator) for p, m in rows if moderator or p.status != "deleted"]
+    # a post made before the gated chat (the older thread) has no meta row: it shows as a tip, or a notice from staff
+    msgs = [_message(db, p, m or _legacy(p), moderator) for p, m in rows if moderator or p.status != "deleted"]
     teachers = _members(db, cohort_id)
     seconds, source = timeout_seconds(db, cohort_id)
     pinned = next((x for x in msgs if x["pinned"] and not x["hidden"]), None)

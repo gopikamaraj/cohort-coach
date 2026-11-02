@@ -69,3 +69,7 @@ A daily job makes each module that is due, at 06:00 Indian time. Run it with pyt
 ## Check-ins and the cohort chat
 
 Teachers' check-ins are private. You see counts of answers per module (worked, partly, not yet, not tried), never a note. A teacher may choose to share a short, masked summary with her cohort; it shows in the chat as a Check-in card ("Shared by a teacher in this cohort"), and you can moderate it like any post. If a teacher presses Ask my coach to call me, the cohort table shows a count of call requests; no content comes with it. Each cohort on your page has an Open cohort chat button.
+
+## The cohort chat
+
+In Cohort chat you see the thread of each cohort you coach and an Open questions tab (waiting first, with the time left; a question the AI could not answer from approved sources comes first). You can reply, mark a question resolved, hide, restore or pin a message, correct an AI answer (it gets a Corrected by a coach badge and nothing is deleted), and set how many seconds the AI waits for a mentor or coach (5 to 86400; the demo uses 5). To show the AI path in a demo: Teacher A asks, nobody replies, after 5 seconds the AI answers with its sources, you correct it, Teacher B sees both; then Teacher B asks another question and the mentor replies in time, so the AI stays silent.

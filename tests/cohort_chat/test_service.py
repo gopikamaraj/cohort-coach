@@ -335,3 +335,9 @@ def test_a_demo_cohort_never_opens_empty(db: Session) -> None:
     msgs = service.thread_view(db, c.id, TEACHER_A)["messages"]
     assert len(msgs) == 2 and all(m["demo"] for m in msgs)
     assert len(service.thread_view(db, c.id, TEACHER_A)["messages"]) == 2  # seeded once
+
+
+def test_a_post_made_in_the_older_thread_still_shows(db: Session, cohort: str) -> None:
+    thread.post_as_staff(db, cohort, "coach", COACH, "This week: talk about bundles.", "en")
+    msgs = service.thread_view(db, cohort, TEACHER_A)["messages"]
+    assert [m["text"] for m in msgs] == ["This week: talk about bundles."] and msgs[0]["kind"] == "system"

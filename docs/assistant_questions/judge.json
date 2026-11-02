@@ -993,5 +993,22 @@
     ],
     "steps": [],
     "query": "improvement track modules next module feedback worked partly not yet not tried due date daily job no feedback silence"
+  },
+  {
+    "id": "j52",
+    "text": {
+      "en": "How does the cohort chat work, and when does the AI answer a teacher's question?"
+    },
+    "screens": [
+      "any"
+    ],
+    "criteria": [
+      "efficacy"
+    ],
+    "rubric_rows": [
+      "E1.8"
+    ],
+    "steps": [],
+    "query": "cohort chat gated labels no names question timeout mentor coach reply AI answer approved sources correct"
   }
 ]

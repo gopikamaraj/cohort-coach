@@ -492,5 +492,44 @@
 "text": "If a teacher presses Ask my coach to call me, the cohort table shows a count of call requests; no content comes with it. Each cohort on your page has an Open cohort chat button.",
 "ts_end": null,
 "ts_start": null
+},
+{
+"heading": "Coach and reviewer help > The cohort chat",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-the-cohort-chat:0",
+"kind": "file",
+"line": 75,
+"ns": "coach_help",
+"path": "docs/help/coach.md",
+"section": null,
+"slide_no": null,
+"text": "In Cohort chat you see the thread of each cohort you coach and an Open questions tab (waiting first, with the time left; a question the AI could not answer from approved sources comes first).",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Coach and reviewer help > The cohort chat",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-the-cohort-chat:1",
+"kind": "file",
+"line": 75,
+"ns": "coach_help",
+"path": "docs/help/coach.md",
+"section": null,
+"slide_no": null,
+"text": "You can reply, mark a question resolved, hide, restore or pin a message, correct an AI answer (it gets a Corrected by a coach badge and nothing is deleted), and set how many seconds the AI waits for a mentor or coach (5 to 86400; the demo uses 5).",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Coach and reviewer help > The cohort chat",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-the-cohort-chat:2",
+"kind": "file",
+"line": 75,
+"ns": "coach_help",
+"path": "docs/help/coach.md",
+"section": null,
+"slide_no": null,
+"text": "To show the AI path in a demo: Teacher A asks, nobody replies, after 5 seconds the AI answers with its sources, you correct it, Teacher B sees both; then Teacher B asks another question and the mentor replies in time, so the AI stays silent.",
+"ts_end": null,
+"ts_start": null
 }
 ]

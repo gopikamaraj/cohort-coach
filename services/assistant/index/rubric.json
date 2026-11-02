@@ -176,6 +176,29 @@
   "video": []
  },
  {
+  "bullet": "Impact potential",
+  "claim": "A cohort has one gated chat for its teachers, mentor and coach. Everyone is a label. A question starts a server-side timer; a mentor or coach reply cancels it; otherwise the AI answers from approved sources, labelled, and the coach can correct it.",
+  "code": [
+   "services/cohort_chat/service.py",
+   "services/cohort_chat/api.py",
+   "apps/pwa/src/components/GatedChat.tsx"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · Cohort chat as teacher, mentor, coach",
+  "differs": [],
+  "feature": "Cohort chat",
+  "id": "E1.8",
+  "limit": "No recorded AI fixtures yet, so with AI recorded the AI path falls back to the notice; no queued offline posts; the browser test is not written.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/cohort_chat/test_service.py",
+   "tests/cohort_chat/test_api.py",
+   "apps/pwa/src/lib/gatedChat.test.ts"
+  ],
+  "video": []
+ },
+ {
   "bullet": "An intuitive interface",
   "claim": "Every teacher screen works in Tamil, Hindi and English, with one main action per screen and large tap targets.",
   "code": [

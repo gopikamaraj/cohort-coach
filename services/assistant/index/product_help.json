@@ -869,5 +869,44 @@
 "text": "If your note suggests you or a child may be in difficulty, the app says so gently and shows Ask my coach to call me. Your coach is told only if you press it, and nothing you wrote is sent.",
 "ts_end": null,
 "ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > The cohort chat",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-the-cohort-chat:0",
+"kind": "file",
+"line": 95,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "Under Cohort chat, join your cohort (a separate tap, with your agreement) and you will see one thread with the other teachers, your mentor and your coach. Everyone shows as a label such as Teacher 7, Mentor or Coach, never a name. Ask a question or share a tip. Names, roll numbers, phone numbers and links are hidden before a message is posted, and you are told what was hidden.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > The cohort chat",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-the-cohort-chat:1",
+"kind": "file",
+"line": 97,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "When you ask a question, a mentor or coach may reply. If nobody does in the time shown at the top (30 minutes normally; 5 seconds in the demo), your question, with details hidden, goes to an AI assistant, which answers only from approved material, names its sources and says it is an AI answer. If it has no approved source it says so and a mentor or coach will see your question. A coach can correct the AI answer.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > The cohort chat",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-the-cohort-chat:2",
+"kind": "file",
+"line": 97,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "A reply from another teacher does not stop the AI.",
+"ts_end": null,
+"ts_start": null
 }
 ]

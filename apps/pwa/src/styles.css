@@ -4260,3 +4260,38 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
 .open-chat-badge {
   background: var(--warn-container);
 }
+
+.gchat-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: var(--s2);
+}
+.gchat-day {
+  text-align: center;
+  margin: 0;
+}
+.gchat-card {
+  padding: var(--s3);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.gchat-ai_reply {
+  background: var(--warn-container);
+}
+.gchat-reply {
+  margin: var(--s2) 0 0 var(--s4);
+}
+.gchat-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1);
+  margin: 0;
+}
+.gchat-card .row button {
+  min-height: 44px;
+}

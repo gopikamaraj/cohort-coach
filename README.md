@@ -253,6 +253,8 @@ After a check is finished, **My class** shows the findings, then an **answer map
 
 **Improvement-track modules.** A track is a plan of up to six modules with due dates; only the next one is made (`services/modules/`, report in [docs/build/reports/MODULES.md](docs/build/reports/MODULES.md)). Code picks it from her answer (tried, partly, not yet, or none); the text is the strategy library's, not AI. A daily job (`python tasks.py modules-due`, 06:00 IST) makes a due module with no feedback and records that silence is not a result.
 
+**Cohort chat.** One gated thread per cohort for its teachers, mentor and coach, everyone a label (`services/cohort_chat/`, report in [docs/build/reports/COHORT-CHAT.md](docs/build/reports/COHORT-CHAT.md)). A teacher's question starts a timer on the server; a mentor or coach reply cancels it, otherwise call 13 answers from approved sources, labelled, and the coach can correct it. Settings: `CHAT_AI_TIMEOUT_SECONDS` (empty: 1800, or 5 in demo mode with `JUDGE_MODE=1`; a coach can set 5 to 86400 per cohort), `CHAT_AI_CANCELLED_BY` (default `mentor,coach`), `CHAT_RATE_PER_MINUTE`, `CHAT_POLLER`.
+
 **Private check-in.** A teacher's answer, note and the follow-up questions of the AI note review (call 17) are visible only to her. She may share a masked summary, built by code and shown to her word for word, with her cohort chat; nothing is posted unless she confirms, and she can retract it. Coaches and mentors see counts of answers, never a note.
 
 ## Tester stats (public demo and tester links)

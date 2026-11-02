@@ -1312,6 +1312,23 @@
    "text": {
     "en": "How does the improvement track decide which module comes next, and what if a teacher gives no feedback?"
    }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j52",
+   "query": "cohort chat gated labels no names question timeout mentor coach reply AI answer approved sources correct",
+   "rubric_rows": [
+    "E1.8"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How does the cohort chat work, and when does the AI answer a teacher's question?"
+   }
   }
  ],
  "judge_path": {
