@@ -15,10 +15,11 @@ $instance = "fln-cohort-coach:asia-south1:cohort-coach-db"
 $database = "ccapp2"
 $port     = 5433
 
+$already = [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue)
 $proxy = (Get-Command cloud-sql-proxy -ErrorAction SilentlyContinue)
 if (-not $proxy) { $proxy = Get-Command cloud-sql-proxy.x64.exe -ErrorAction SilentlyContinue }
 if (-not $proxy -and (Test-Path "C:\tools\cloud-sql-proxy.exe")) { $proxy = Get-Item "C:\tools\cloud-sql-proxy.exe"; $proxy | Add-Member -NotePropertyName Source -NotePropertyValue $proxy.FullName -Force }
-if (-not $proxy) { throw "cloud-sql-proxy is not installed. See the note at the top of this file." }
+if (-not $proxy -and -not $already) { throw "cloud-sql-proxy is not installed. See the note at the top of this file." }
 
 $pw = (gcloud secrets versions access latest --secret db-password --project $project).Trim()
 if (-not $pw) { throw "Could not read the database password from Secret Manager (run: gcloud auth login)." }
@@ -26,8 +27,12 @@ $enc = [uri]::EscapeDataString($pw)
 $env:DATABASE_URL = "postgresql+psycopg://postgres:$enc@127.0.0.1:$port/$database"
 Remove-Variable pw, enc
 
-$p = Start-Process -FilePath $proxy.Source -ArgumentList "$instance --port $port" -PassThru -WindowStyle Hidden
-Start-Sleep -Seconds 4
+$p = $null
+if ($already) { Write-Host "Using the proxy already running on port $port." }
+else {
+  $p = Start-Process -FilePath $proxy.Source -ArgumentList "$instance --port $port" -PassThru -WindowStyle Hidden
+  Start-Sleep -Seconds 4
+}
 try {
   # the same local settings run-backend.bat uses
   $env:ADMIN_OPEN = "1"; $env:JUDGE_MODE = "1"; $env:MEDIA_LOCAL_STORE = "1"
