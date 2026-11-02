@@ -231,8 +231,8 @@ export function PaperImport({ who, kind, onConfirmed }: { who: HubIdentity; kind
             <tr>
               <th scope="col">{tr("ph.col_item")}</th>
               <th scope="col">{tr("ph.col_op")}</th>
-              <th scope="col">{tr("ph.col_a")}</th>
-              <th scope="col">{tr("ph.col_b")}</th>
+              <th scope="col" className="import-num">{tr("ph.col_a")}</th>
+              <th scope="col" className="import-num">{tr("ph.col_b")}</th>
               <th scope="col">{tr("ph.col_key")}</th>
               <th scope="col">{tr("ph.col_include")}</th>
             </tr>
@@ -306,6 +306,7 @@ function ItemRow({ it, apply, tag }: { it: DraftItem; apply: (e: { field: string
   const num = (field: "a" | "b", cur: number | null) => (
     <input
       {...DIGITS}
+      className="import-num-input"
       aria-label={`${tr(field === "a" ? "ph.col_a" : "ph.col_b")} ${it.n}`}
       defaultValue={cur ?? ""}
       key={`${it.n}-${field}-${cur}`}

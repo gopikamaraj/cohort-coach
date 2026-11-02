@@ -4303,3 +4303,13 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   margin-top: 0;
   margin-bottom: 0;
 }
+
+/* the two operand columns of an imported paper hold up to three digits: keep them narrow */
+.import-num {
+  width: 5rem;
+}
+.import-num-input {
+  width: 4.25rem;
+  min-width: 0;
+  text-align: center;
+}
