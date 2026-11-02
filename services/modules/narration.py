@@ -1,17 +1,15 @@
 # ruff: noqa: E501
 """The spoken script of a module, made for listening.
 
-Code builds the script from the approved text: the module line, then each part with its heading
-("What this does", "What you need", "Steps", ...) spoken by code, then the part. Call 18 may reword the
-parts so a listener can follow them by ear. The headings never come from the model, and its output is
-used only if every part is there in order, every number and {slot} of the approved text is kept (none
-added), the length is close, and the gates (pre-filter and call 7) pass. Otherwise the code-built script
-is used. It runs once, when a module is made, and the result is stored with the module.
+Call 18 writes the whole script from the input built in speech_input.py. Its output is used only if
+speech_check.check_speech_output finds nothing wrong and the gates (pre-filter and call 7) pass; it is asked
+twice, then the fallback is used: the English template (speech_check.template_script) or, for another
+language, the script code builds from the approved text. It runs once, when a module is made (and on
+Refresh in testing), and the result is stored with the module.
 """
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
 from ai import config as ai_config
@@ -19,13 +17,8 @@ from ai.calls.c18_module_narration import narrate
 from ai.client import CallContext
 from ai.guard.gates import ContentType, GateInput, run_gates
 from ai.prompt_loader import load_prompt
-from ai.schemas import ModuleNarration
 from services.api import strings
-from services.modules import library, speech_input
-
-_TOKENS = re.compile(r"\{pv:\d+\}|\d+")
-_SLOT = re.compile(r"\{pv:\d+\}")
-_BAD = re.compile(r"[\[\]*#`<>{}]")
+from services.modules import speech_check, speech_input
 
 
 def heading(part_id: str, lang: str) -> str:
@@ -45,59 +38,27 @@ def speakable(mt: dict[str, Any]) -> list[dict[str, Any]]:
     return [p for p in mt.get("parts", []) if p["id"] != "example" or lang == "en"]
 
 
-def script(mt: dict[str, Any], intro: str, narrated: dict[str, str] | None = None) -> str:
-    """Intro (already ends with a pause after "Module n of N."), then heading, pause, body for each part."""
+def script(mt: dict[str, Any], intro: str) -> str:
+    """The code-built script: the intro, then each part under its spoken heading (Hindi and Tamil fallback)."""
     lang = mt.get("language", "en")
     lines = [intro]
     for p in speakable(mt):
-        text = (narrated or {}).get(p["id"]) or body(p)
+        text = body(p)
         if text:
             lines.append(f"{heading(p['id'], lang)}.")
             lines.append(text)
     return " [pause] ".join(lines)
 
 
-def _tokens(text: str) -> list[str]:
-    return sorted(_TOKENS.findall(text))
-
-
-def _numbers_kept(text: str, src: str, mt: dict[str, Any]) -> bool:
-    """English: every number of the approved text is said in words (digit by digit for the sidecar's
-    numbers, as an ordinary number for the rest) and no digit is left. Other languages keep the digits."""
-    if mt.get("language", "en") != "en":
-        return _tokens(text) == _tokens(src)
-    if re.search(r"[0-9]", text):
-        return False
-    said = re.sub(r"[-\s]+", " ", text.lower())
-    by_digit = speech_input.readings_for(mt)
-    for n in re.findall(r"\d+", src):
-        if n in by_digit:
-            want = speech_input.digit_words(n)
-        elif int(n) < 1000:
-            want = speech_input.number_words(int(n)).replace("-", " ")
-        else:
-            return False
-        if want not in said:
-            return False
-    return True
-
-
-def validate(out: ModuleNarration, mt: dict[str, Any]) -> dict[str, str] | None:
-    """Every part present in order; numbers and slots kept and none added; length close; no markup."""
-    parts = speakable(mt)
-    if [s.id for s in out.sections] != [p["id"] for p in parts]:
-        return None
-    got: dict[str, str] = {}
-    for s, p in zip(out.sections, parts, strict=True):
-        text = " ".join(s.text.split())
-        src = body(p)
-        if not text or _BAD.search(_SLOT.sub("", text)) or not _numbers_kept(text, src, mt):
-            return None
-        words, src_words = len(text.split()), max(1, len(src.split()))
-        if words > src_words * 1.8 + 15 or words < src_words * 0.4:
-            return None
-        got[p["id"]] = text
-    return got
+def _input(mt: dict[str, Any], number: int | None, count: int | None) -> speech_input.SpeechInput:
+    return speech_input.build_speech_input(
+        mt,
+        language=mt.get("language", "en"),
+        number=number,
+        count=count,
+        prompt_version=load_prompt("c18_module_narration").version,
+        model=ai_config.model_for("MODEL_NARRATION"),
+    )
 
 
 def run(
@@ -107,39 +68,33 @@ def run(
     count: int | None = None,
     context: CallContext | None = None,
 ) -> dict[str, Any] | None:
-    """{language, sections: {id: text}} or None (AI off, offline, anything invalid, or a gate held it)."""
+    """{language, script} or None (AI off, offline, two bad answers, or a gate held it)."""
     if ai_config.ai_mode() == "off":
         return None
     lang = mt.get("language", "en")
     try:
-        si = speech_input.build_speech_input(
-            mt,
-            language=lang,
-            number=number,
-            count=count,
-            digit_readings=speech_input.readings_for(mt),
-            prompt_version=load_prompt("c18_module_narration").version,
-            model=ai_config.model_for("MODEL_NARRATION"),
-        )
-        checked = None
-        for _attempt in range(2):  # one retry, then the code-built script
+        si = _input(mt, number, count)
+        readings = speech_input.readings_for(mt)
+        for _attempt in range(2):  # one retry, then the fallback
             got = narrate(facts=si.facts, module=si.module_block, context=context)
-            checked = None if got.fell_back else validate(got.output, mt)
-            if checked is not None:
-                break
-        if checked is None:
-            return None
-        heard = " ".join(library.display(t) for t in checked.values())
-        gate = run_gates(GateInput(text=heard, content_type=ContentType.FEEDBACK_CARD, language=lang), context=context)
-        return {"language": lang, "sections": checked} if gate.passed_automatic else None
+            text = got.output.script.strip()
+            if got.fell_back or speech_check.check_speech_output(text, si, readings):
+                continue
+            heard = text.replace(speech_check.PAUSE, " ")
+            gate = run_gates(GateInput(text=heard, content_type=ContentType.FEEDBACK_CARD, language=lang), context=context)
+            return {"language": lang, "script": text} if gate.passed_automatic else None
     except Exception:  # noqa: BLE001 - narration is a nicety: it must never block making a module
         return None
+    return None
 
 
-def stored_for(stored: dict[str, Any], mt: dict[str, Any]) -> dict[str, str] | None:
-    """The narration saved with the module, if it is in the language being voiced and covers these parts."""
+def spoken_for(mt: dict[str, Any], stored: dict[str, Any], intro: str, number: int | None, count: int | None) -> str:
+    """What the voice is sent: the stored AI script if there is one in this language, else the fallback."""
     n = stored.get("narration")
-    if not n or n.get("language") != mt.get("language"):
-        return None
-    secs = n.get("sections", {})
-    return secs if all(p["id"] in secs for p in speakable(mt)) else None
+    if n and n.get("language") == mt.get("language") and n.get("script"):
+        return str(n["script"])
+    try:
+        fallback = speech_check.template_script(_input(mt, number, count), speech_input.readings_for(mt))
+    except speech_input.SpeechInputError:
+        fallback = None
+    return fallback or script(mt, intro)

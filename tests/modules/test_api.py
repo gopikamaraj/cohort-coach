@@ -74,7 +74,7 @@ def test_a_teacher_starts_a_track_and_gets_module_one_only(client: TestClient) -
     assert [m["status"] for m in view["modules"]] == ["ready", "planned", "planned"]
     assert view["current"] == 1 and view["total"] == 3
     assert view["modules"][0]["reason_text"] and view["modules"][0]["spoken"].startswith(
-        "Module 1 of 3"
+        "This is the first of three modules. [pause] "
     )
     assert "text" not in view["modules"][1]
 
@@ -242,5 +242,5 @@ def test_refreshing_the_tts_text_is_testing_only_and_keeps_the_code_script_when_
     assert r.status_code == 200, r.text
     assert r.json()["reworded"] is False
     spoken = r.json()["track"]["modules"][0]["spoken"]
-    assert "What this does. [pause] " in spoken
+    assert "What this does. " in spoken and spoken.rstrip().endswith("[pause]")  # the English template
     assert client.post(url.replace("modules/1", "modules/3"), headers=h("teacher", DEV1)).status_code == 409

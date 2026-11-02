@@ -602,7 +602,7 @@ def test_the_spoken_text_pauses_after_the_module_line_and_has_no_none_or_off_err
     mt = library.module_text("PV-HEARD", "ask_explain", False, "en")
     spoken = library.spoken(mt, intro)
     assert "What this does. [pause] " in spoken and "What you need. [pause] No materials needed." in spoken
-    assert "An example. [pause] " in spoken and "How to know it worked. [pause] " in spoken
+    assert "An example. [pause] " in spoken and "How to know it worked. [pause] " in spoken  # the code-built script
     assert spoken.startswith("Module 1 of 2. [pause] Ask the child")
     assert "None" not in spoken and "No materials needed." in spoken
     assert "62 - 29" not in spoken and "sixty-two" in spoken

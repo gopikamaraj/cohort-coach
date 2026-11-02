@@ -1,6 +1,6 @@
 # Speech input: what the voice-script call is sent
 
-The call that writes the text sent to TTS (call 18, `ai/prompts/c18_module_narration.v2.md`) is sent an input built by code from the same module the screen shows. Code: `services/modules/speech_input.py`. Checks and fallback: `services/modules/speech_check.py`. Report of every built input: `docs/build/reports/SPEECH-INPUTS.md` (`python scripts/speech_inputs_report.py`, no AI or network call).
+The call that writes the text sent to TTS (call 18, `ai/prompts/c18_module_narration.v3.md`) is sent an input built by code from the same module the screen shows. Code: `services/modules/speech_input.py`. Checks and fallback: `services/modules/speech_check.py`. Report of every built input: `docs/build/reports/SPEECH-INPUTS.md` (`python scripts/speech_inputs_report.py`, no AI or network call).
 
 ## The input
 
@@ -24,11 +24,15 @@ The call that writes the text sent to TTS (call 18, `ai/prompts/c18_module_narra
 
 `content/speech/digit_readings.v1.yaml` lists, per module id (`PV-HEARD:ask_explain`), digit strings read digit by digit ("six zero two"). Whole-number matches are wrapped as `{digits:602}` in the text sent to the model (6020 and 1602 are not). Every other number is said as an ordinary number. To add an entry, add the module id and the exact string; an entry that matches nothing in the English module raises (stale). Only 602 in the explain-her-steps module is listed; the report lists every digit number and whether it is marked.
 
+## Output and fallback
+
+Prompt v3 writes the whole spoken script (signposts, `[pause]` after each section, numerals a child writes read digit by digit). The model is not given `{digits:N}` tokens; `readings_for` lists the digit strings that must be said digit by digit and the check enforces them.
+
 ## Checks and fallback
 
 - `check_speech_output(text, speech_input)` returns codes: digits, quotes, brackets, markup, pause_count, step_count, digits_reading, length (1.0 to 1.6 times the section words), opening ("first of two modules").
 - `template_script` builds the English fallback from the same sections. Other languages have none.
-- Today's wiring: the call returns one text per section and `narration.validate` checks it (parts present in order, numbers said in words, none added, length, no markup); `narration.run` retries once, then runs the pre-filter and call 7, then the code-built script is used. `check_speech_output` and `template_script` are built and tested but not wired, because the call does not return a whole script with `[pause]`.
+- Wiring: `narration.run` asks the model, runs `check_speech_output`, retries once on any failure, then runs the pre-filter and call 7. A script that passes is stored with the module. On failure, English uses `template_script`; Hindi and Tamil use the code-built script (heading, pause, text). The length bound is 1.0 to 1.8 times the section words, because the supplied prompt's own example is 1.63 times.
 
 ## Not covered
 

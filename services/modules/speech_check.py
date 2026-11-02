@@ -13,12 +13,12 @@ from __future__ import annotations
 
 import re
 
-from services.modules.speech_input import SpeechInput, digit_words, number_words
+from services.modules.speech_input import SpeechInput, digit_words, number_words, wrap_digits
 
 PAUSE = "[pause]"
 _QUOTES = '"“”‘’«»„'  # an apostrophe in a word is allowed
 _ORDINAL = "_ first second third fourth fifth sixth seventh eighth ninth tenth".split()
-_WORDS_LO, _WORDS_HI = 1.0, 1.6
+_WORDS_LO, _WORDS_HI = 1.0, 1.8  # the supplied prompt's own example is 1.63 times its input: signposts and an opening add words
 
 
 def _words(text: str) -> int:
@@ -31,10 +31,11 @@ def _count_word(n: int) -> str:
 
 def opening_phrase(number: int, count: int) -> str:
     """"first of two modules"."""
-    return f"{_ORDINAL[number] if number < len(_ORDINAL) else number_words(number)} of {_count_word(count)} modules"
+    ordinal = "last" if number == count else (_ORDINAL[number] if number < len(_ORDINAL) else number_words(number))
+    return f"{ordinal} of {_count_word(count)} modules"
 
 
-def check_speech_output(text: str, si: SpeechInput) -> list[str]:
+def check_speech_output(text: str, si: SpeechInput, readings: tuple[str, ...] = ()) -> list[str]:
     fails: list[str] = []
     bare = text.replace(PAUSE, "")
     if re.search(r"[0-9]", text):
@@ -49,10 +50,11 @@ def check_speech_output(text: str, si: SpeechInput) -> list[str]:
     if text.count(PAUSE) != 1 + len(sections) or text.rstrip().endswith(PAUSE) is False:
         fails.append("pause_count")  # once after the opening and once after each section, none between steps
     steps = next((s for s in sections if s.tag == "steps"), None)
-    if steps is not None and not re.search(rf"\b{number_words(len(steps.steps))}\s+steps?\b", text.lower().replace("-", " ")):
+    if steps is not None and not re.search(rf"\bthere (?:is|are) {number_words(len(steps.steps))}\b", text.lower().replace("-", " ")):
         fails.append("step_count")
     said = re.sub(r"[-\s]+", " ", text.lower())
-    for n in re.findall(r"\{digits:(\d+)\}", si.text):
+    listed = [r for r in readings if re.search(rf"(?<!\d){r}(?!\d)", si.text)]
+    for n in (*re.findall(r"\{digits:(\d+)\}", si.text), *listed):
         if digit_words(n) not in said:
             fails.append("digits_reading")
             break
@@ -84,7 +86,7 @@ _SIGNPOST = {
 _STEP_LEAD = ["First,", "Then,", "After that,", "Next,"]
 
 
-def template_script(si: SpeechInput) -> str | None:
+def template_script(si: SpeechInput, readings: tuple[str, ...] = ()) -> str | None:
     """The English fallback, or None for another language."""
     if si.facts.get("language") != "en":
         return None
@@ -97,11 +99,11 @@ def template_script(si: SpeechInput) -> str | None:
             lines = [f"There {'is' if k == 1 else 'are'} {number_words(k)} step{'s' if k != 1 else ''}."]
             for i, step in enumerate(s.steps):
                 lead = "" if k == 1 else ("Last," if i == k - 1 else _STEP_LEAD[min(i, len(_STEP_LEAD) - 1)])
-                body = _plain(step)
+                body = _plain(wrap_digits(step, readings))
                 body = body[:1].lower() + body[1:] if lead else body
                 lines.append(f"{lead} {body}".strip() + ("" if body[-1:] in ".?!" else "."))
             blocks.append(" ".join(lines))
         else:
-            body = _plain(s.body)
+            body = _plain(wrap_digits(s.body, readings))
             blocks.append(f"{_SIGNPOST[s.tag]} {body}" + ("" if body[-1:] in ".?!" else "."))
     return f" {PAUSE} ".join(blocks) + f" {PAUSE}"

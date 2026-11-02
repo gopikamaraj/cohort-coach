@@ -630,7 +630,9 @@ def module_view(db: Session, track: Track, m: TrackModule, lang: str, total: int
         from services.modules import narration  # here to avoid an import loop
 
         intro = strings.text(lang, "module.spoken.intro", n=m.number, total=total, title=live.title)
-        out["spoken"] = narration.script(mt, intro, narration.stored_for(stored, mt))
+        out["spoken"] = narration.spoken_for(
+            {**mt, "language": mt.get("language", lang)}, stored, intro, m.number, total
+        )
     return out
 
 
