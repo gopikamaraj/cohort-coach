@@ -120,7 +120,10 @@ function TeacherPapers() {
   useEffect(reloadHub, [reloadHub]);
 
   useEffect(() => {
-    if (!klass?.id) return;
+    if (!klass?.id) {
+      setRows([]); // no class chosen yet: nothing to load, so never sit on the spinner
+      return;
+    }
     pcall<Paper[]>(`/api/papers?class_id=${encodeURIComponent(klass.id)}`, "teacher")
       .then(setRows)
       .catch(() => setMsg(tr("papers.error")));
