@@ -119,6 +119,20 @@ def create_app() -> FastAPI:
                 with _factory()() as db:
                     load_papers(db, path)
 
+    if os.environ.get("SEED_ALL_FILE"):  # fresh deployment: every table copied in once
+
+        @app.on_event("startup")
+        def _seed_all() -> None:
+            from pathlib import Path
+
+            from services.api.profiles import _factory
+            from services.api.seed import load_all
+
+            path = Path(os.environ["SEED_ALL_FILE"])
+            if path.is_file():
+                with _factory()() as db:
+                    load_all(db, path)
+
     if os.environ.get("CHAT_POLLER", "1") == "1":  # the server owns the chat's AI timer
 
         @app.on_event("startup")

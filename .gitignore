@@ -56,3 +56,4 @@ audition/
 evals/speech-eval/
 data/speech-eval/
 .env.local
+deploy_seed/all.json

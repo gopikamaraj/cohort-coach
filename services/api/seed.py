@@ -9,7 +9,7 @@ printed questions and their keys only: no child data, no sheet photo. The startu
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -24,7 +24,7 @@ MODELS = (PaperRow, PaperItemRow, PaperImport, PaperEvent)
 
 
 def _cell(value: Any) -> Any:
-    return value.isoformat() if isinstance(value, datetime) else value
+    return value.isoformat() if isinstance(value, (datetime, date)) else value
 
 
 def export_papers(db: Session, path: Path) -> dict[str, int]:
@@ -52,5 +52,60 @@ def load_papers(db: Session, path: Path) -> dict[str, int]:
         if rows:
             db.execute(insert(table), rows)
         loaded[model.__tablename__] = len(rows)
+    db.commit()
+    return loaded
+
+
+# ---- every table: a copy of one whole database into another (a fresh deployment) -----------------
+
+
+def _all_tables() -> list[Any]:
+    import services.api.profiles  # noqa: F401  (imports every model)
+    from services.api.db import Base
+
+    return list(Base.metadata.sorted_tables)  # parents before children
+
+
+def export_all(db: Session, path: Path) -> dict[str, int]:
+    from sqlalchemy import inspect
+
+    insp = inspect(db.get_bind())
+    have = set(insp.get_table_names())
+    out: dict[str, list[dict[str, Any]]] = {}
+    for table in _all_tables():
+        if table.name not in have:
+            continue
+        # an older database may lack newer columns: copy the ones it has, the rest take their defaults
+        present = {c["name"] for c in insp.get_columns(table.name)}
+        cols = [c for c in table.columns if c.name in present]
+        rows = db.execute(select(*cols)).mappings().all()
+        out[table.name] = [{c.name: _cell(r[c.name]) for c in cols} for r in rows]
+    path.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
+    return {k: len(v) for k, v in out.items() if v}
+
+
+def load_all(db: Session, path: Path) -> dict[str, int]:
+    """Fill every table that is empty; a table that already has rows is left alone, so a restart is safe."""
+    from sqlalchemy import Date
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    loaded: dict[str, int] = {}
+    for table in _all_tables():
+        rows = data.get(table.name) or []
+        if not rows or db.execute(select(table).limit(1)).first() is not None:
+            continue
+        stamps = {c.name for c in table.columns if isinstance(c.type, DateTime)}
+        days = {c.name for c in table.columns if isinstance(c.type, Date) and not isinstance(c.type, DateTime)}
+
+        def fix(k: str, v: Any, stamps: set[str] = stamps, days: set[str] = days) -> Any:
+            if isinstance(v, str) and k in stamps:
+                return datetime.fromisoformat(v)
+            if isinstance(v, str) and k in days:
+                return datetime.fromisoformat(v).date()
+            return v
+
+        for i in range(0, len(rows), 500):
+            db.execute(insert(table), [{k: fix(k, v) for k, v in row.items()} for row in rows[i : i + 500]])
+        loaded[table.name] = len(rows)
     db.commit()
     return loaded
