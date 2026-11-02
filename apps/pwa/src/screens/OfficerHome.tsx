@@ -33,7 +33,6 @@ interface Entered {
   terms: number[];
   error_map: { term: number | null; classes: number; cells: { error: string; hidden: boolean; classes?: number; showing?: number; share_percent?: number; children_showing?: number; children_checked?: number }[] };
   results: { classes: number; hidden: boolean; rows: { error: string; before: number; before_of: number; after: number; after_of: number; fall_points: number | null }[] };
-  funnel: { cohorts: { error: string; classes: number }[] };
 }
 
 /** The classes that really entered a check (3A, 3B, ...): error map, track results and what of the funnel is counted. */
@@ -71,14 +70,6 @@ function EnteredOfficer() {
           <p className="muted">{tr("officer.real.results_note", { classes: d.results.classes })}</p>
         </>
       ) : null}
-      <h3>{tr("officer.real.funnel")}</h3>
-      {d.funnel.cohorts.length === 0 ? <p>{tr("officer.real.funnel_none")}</p> : null}
-      <ul className="plain">
-        {d.funnel.cohorts.map((c, i) => (
-          <li key={i}>{tr("officer.real.funnel_grouped", { n: c.classes, error: tr(`err.${c.error}` as Key) })}</li>
-        ))}
-      </ul>
-      <p className="muted">{tr("officer.real.funnel_wip")}</p>
     </div>
   );
 }

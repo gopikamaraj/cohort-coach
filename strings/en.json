@@ -881,7 +881,7 @@
   "flow.saved_offline": "Saved on this phone. It plays with no signal.",
   "flow.save_failed": "Could not save it. Check your signal and try again.",
   "officer.cohorts": "Cohorts",
-  "officer.cohorts_help": "Start a cohort for one error, then move it forward. Each change is recorded. Counts under 5 are hidden.",
+  "officer.cohorts_help": "Move a cohort forward. Each change is recorded. Counts under 5 are hidden. A coach creates cohorts.",
   "officer.cohort_new": "Start a cohort",
   "officer.cohort_error": "Error",
   "officer.cohort_coach": "Coach id",

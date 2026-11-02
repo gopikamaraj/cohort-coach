@@ -1,4 +1,4 @@
-// Coach (a DIET-like role) and Mentor (one of the teachers). Both are small for now and say plainly what is
+﻿// Coach (a DIET-like role) and Mentor (one of the teachers). Both are small for now and say plainly what is
 // built and what is not. The coach sees aggregates only, from the simulated block; nothing about one class.
 import { useEffect, useState } from "react";
 import { Icon } from "../components/icons";
@@ -48,7 +48,7 @@ function EnteredChecks() {
               {rows.map((r) => (
                 <tr key={`${r.teacher}-${r.id}`}>
                   <th scope="row">{r.teacher}</th>
-                  <td>{[r.data.kind, r.data.term ? `T${r.data.term}` : null, r.data.checkDate].filter(Boolean).join(" · ")}</td>
+                  <td>{[r.data.kind, r.data.term ? `T${r.data.term}` : null, r.data.checkDate].filter(Boolean).join(" Â· ")}</td>
                   <td>{r.data.entered ?? 0}</td>
                   <td>{r.data.absent ?? 0}</td>
                   <td>{r.data.status ?? ""}</td>
@@ -90,7 +90,7 @@ function EnteredClasses() {
   const latest = Math.max(0, ...sum.classes.map((c) => c.term));
   const now = sum.classes.filter((c) => c.term === latest);
   const byError = (e: string) => now.filter((c) => c.errors.includes(e));
-  const options = ERRORS.filter((e) => byError(e).length >= 1);
+  const options = [...ERRORS];
   const enough = code !== "" && byError(code).length >= 2;
   const label = (n: string) => n || "?";
   const pick = (e: string) => {
@@ -140,7 +140,7 @@ function EnteredClasses() {
             {options.map((e) => (
               <label key={e} className="check-line">
                 <input type="radio" name="coach-err" checked={code === e} onChange={() => pick(e)} data-testid={`coach-pick-${e}`} />{" "}
-                {tr("coach.make.pick_line", { name: tr(`err.${e}` as Key), classes: byError(e).length, who: byError(e).map((c) => label(c.class)).join(", ") })}
+                {tr("coach.make.pick_line", { name: tr(`err.${e}` as Key), classes: byError(e).length, who: byError(e).map((c) => label(c.class)).join(", ") || "-" })}
               </label>
             ))}
           </fieldset>
