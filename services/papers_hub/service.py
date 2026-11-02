@@ -508,6 +508,7 @@ def _persist_imported(
         body=body,
     )
     db.add(paper)
+    db.flush()  # the paper exists before its items point at it (Postgres checks the order)
     for it in body_items:
         db.add(
             PaperItemRow(
@@ -523,6 +524,7 @@ def _persist_imported(
                 twin_of=None,
             )
         )
+    db.flush()
     if review:
         db.add(PaperReview(paper_id=pid, reason=review))
     db.add(

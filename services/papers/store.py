@@ -412,6 +412,7 @@ def _store(
         frozen_at=_now() if frozen else None,
     )
     db.add(row)
+    db.flush()  # the paper exists before its items point at it (Postgres checks the order)
     for it in paper.items:
         db.add(
             PaperItemRow(
@@ -427,6 +428,7 @@ def _store(
                 twin_of=it.twin_of,
             )
         )
+    db.flush()
     _event(db, "generated", actor, row, detail=f"profile {profile.source}, layout {lang}")
     if reason:
         db.add(PaperReview(paper_id=pid, reason=reason))
