@@ -8,7 +8,7 @@ import type { Key } from "../i18n";
 import { ccall, CohortError, ordered, showsText, type CohortSummary, type Post, type Who } from "../lib/cohort";
 import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
-import { ClassOnlyForCoach, MyClassCohorts } from "../components/MyClassCohorts";
+import { ClassOnlyForCoach } from "../components/MyClassCohorts";
 
 export default function Cohort() {
   const { tr, role, lang, klass } = useApp();
@@ -37,7 +37,6 @@ export default function Cohort() {
         </>
       ) : (
         <>
-          <MyClassCohorts />
           <TeacherView tr={tr} lang={lang} />
         </>
       )}
@@ -162,7 +161,7 @@ function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
           {msg.text}
         </p>
       ) : null}
-      {!current ? (
+      {!current && cohorts.length === 0 ? null : !current ? (
         <div className="panel">
           <h2>{tr("cohort.list")}</h2>
           {cohorts.length === 0 ? <p className="muted">{tr("cohort.none")}</p> : null}
@@ -289,7 +288,7 @@ function CoachView({ tr, lang }: { tr: Tr; lang: string }) {
               {c.error} · {tr(`cohort.st.${c.status}` as Key)} · {c.members === null ? tr("cohort.members_hidden") : tr("cohort.members", { n: c.members })}
             </span>
             <button type="button" className="btn btn-secondary" onClick={() => setCurrent(c.id)} data-testid="coach-open">
-              {tr("cohort.title")}
+              {tr("cohort.chat")}
             </button>
           </li>
         ))}

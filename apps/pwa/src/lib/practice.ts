@@ -1,5 +1,6 @@
 // The Practice Class client. Each turn goes to the API (the one live feature); the transcript is
 // kept in IndexedDB on this phone and is sent nowhere else.
+import { runAction } from "./action";
 import { API_BASE } from "./api";
 import { db, type CohortDb } from "./db";
 
@@ -175,7 +176,7 @@ export function postTurn(
   body: { text?: string; material?: string },
   fetchFn: typeof fetch = (...a) => fetch(...a),
 ): Promise<TurnResponse> {
-  return call(`/api/practice/sessions/${sessionId}/turns`, body, fetchFn);
+  return runAction("practice_turn", () => call<TurnResponse>(`/api/practice/sessions/${sessionId}/turns`, body, fetchFn));
 }
 
 export function endSession(sessionId: string, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<EndResponse> {

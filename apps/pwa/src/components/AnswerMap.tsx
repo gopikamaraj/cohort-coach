@@ -19,16 +19,16 @@ export function AnswerMap({
   map,
   activeCode,
   activeItem,
-  onCode,
   onItem,
   onExplain,
+  onlyConfirmed,
 }: {
   map: Map;
   activeCode: string | null;
   activeItem: number | null;
-  onCode: (code: string | null) => void;
   onItem: (n: number | null) => void;
   onExplain: (code: string) => void;
+  onlyConfirmed: boolean;
 }) {
   const { tr, lang } = useApp();
   const [sort, setSort] = useState<SortBy>("roll");
@@ -40,7 +40,9 @@ export function AnswerMap({
   const nameOf = (code: string) => tr(`err.${code}` as Key);
   const markedCols = new Set<number>([...(activeCode ? (cov[activeCode] ?? []) : []), ...(activeItem !== null ? [activeItem] : [])]);
 
+  const hidden = (c: MapCell) => onlyConfirmed && c.kind === "error" && !c.confirmed; // one question only: not shown as a mistake
   const state = (c: MapCell): string => {
+    if (hidden(c)) return tr("results.map.state.other");
     if (c.kind === "error" && c.code) return tr(c.confirmed ? "results.map.state.error" : "results.map.state.error_possible", { name: nameOf(c.code) });
     return tr(`results.map.state.${c.kind}` as Key);
   };
@@ -66,34 +68,6 @@ export function AnswerMap({
   return (
     <div className="stack results-detail" data-testid="answer-map">
       <p className="muted">{tr("results.map.intro")}</p>
-
-      {map.legend.length > 0 ? (
-        <div>
-          <h3 className="amap-h">{tr("results.map.legend")}</h3>
-          <ul className="plain amap-legend" data-testid="amap-legend">
-            {map.legend.map((l) => (
-              <li key={l.code}>
-                <button
-                  type="button"
-                  className={`amap-chip amap-${slug(l.code)}${activeCode === l.code ? " amap-chip-on" : ""}`}
-                  aria-pressed={activeCode === l.code}
-                  onClick={() => onCode(activeCode === l.code ? null : l.code)}
-                  data-testid={`legend-${l.code}`}
-                >
-                  <span className="amap-swatch" aria-hidden="true">
-                    {SHORT[l.code]}
-                  </span>
-                  <span>
-                    {tr("results.map.legend_chip", { code: SHORT[l.code] ?? l.code, name: nameOf(l.code), n: l.confirmed })}
-                    {l.possible > 0 ? <span className="muted"> · {tr("results.map.legend_possible", { n: l.possible })}</span> : null}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className="muted">{tr("results.map.legend_hint")}</p>
-        </div>
-      ) : null}
 
       <div className="subtabs" role="group" aria-label={tr("results.map.sort_label")}>
         {(["roll", "errors"] as const).map((by) => (
@@ -129,12 +103,12 @@ export function AnswerMap({
                   {r.roll}
                 </th>
                 {r.cells.map((c, ci) => {
-                  const isActive = activeCode !== null && c.codes.includes(activeCode);
+                  const isActive = activeCode !== null && c.codes.includes(activeCode) && !hidden(c);
                   const dim = activeCode !== null && !isActive;
                   const cls = [
                     "amap-cell",
-                    c.kind === "error" && c.code ? `amap-err amap-${slug(c.code)}` : `amap-${c.kind}`,
-                    c.kind === "error" && !c.confirmed ? "amap-possible" : "",
+                    hidden(c) ? "amap-other" : c.kind === "error" && c.code ? `amap-err amap-${slug(c.code)}` : `amap-${c.kind}`,
+                    c.kind === "error" && !c.confirmed && !hidden(c) ? "amap-possible" : "",
                     dim ? "amap-dim" : "",
                     markedCols.has(c.n) ? "amap-col-on" : "",
                   ]
@@ -157,7 +131,7 @@ export function AnswerMap({
                         onFocus={() => setCursor({ r: ri, c: ci })}
                         onClick={() => setOpen(open && open.roll === r.roll && open.n === c.n ? null : { roll: r.roll, n: c.n })}
                       >
-                        <span aria-hidden="true">{c.kind === "error" && c.code ? (SHORT[c.code] ?? "×") : (GLYPH[c.kind] ?? "")}</span>
+                        <span aria-hidden="true">{hidden(c) ? "×" : c.kind === "error" && c.code ? (SHORT[c.code] ?? "×") : (GLYPH[c.kind] ?? "")}</span>
                       </button>
                     </td>
                   );

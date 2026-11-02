@@ -6,7 +6,8 @@ import { SimulatedBanner } from "../components/parts";
 import { href } from "../lib/router";
 import { useApp } from "../state";
 import type { Key } from "../i18n";
-import { forCheck } from "../lib/classCohort";
+import { forCheck, syncPending } from "../lib/classCohort";
+import { MyClassCohorts } from "../components/MyClassCohorts";
 
 interface Programme {
   simulated: boolean;
@@ -16,12 +17,16 @@ interface Programme {
   lessons: { status: string; items: { id: string; title: string; text?: string; audio?: string }[]; script: string | null };
 }
 
+// The step list (check, track, cohort, mentor, lessons) and "Where you will hear" are hidden for now.
+const SHOW_STEPS = false;
+
 type Step = { key: string; title: string; body: string; done: boolean };
 
 export default function ProgrammeScreen() {
-  const { tr, klass, profile, online } = useApp();
+  const { tr, lang, klass, profile, online } = useApp();
   const [data, setData] = useState<Programme | null>(null);
   const [failed, setFailed] = useState(false);
+  const [tab, setTab] = useState<"participant" | "mentor">("participant");
 
   const load = useCallback(async () => {
     if (!klass) return;
@@ -44,6 +49,10 @@ export default function ProgrammeScreen() {
   const p = data?.placement.status;
   const cohortBody =
     p === "this_term" ? tr("prog.s3.this", { n: data?.cohort?.size ?? 0 }) : p === "next_term" ? tr("prog.s3.next") : tr("prog.s3.wait");
+  const [, bump] = useState(0);
+  useEffect(() => {
+    if (online) void syncPending(lang).then(() => bump((n) => n + 1));
+  }, [online, lang]);
   const mine = profile ? forCheck(profile.id) : null;
   const steps: Step[] = [
     { key: "check", title: tr("prog.s1"), done: Boolean(profile), body: profile ? tr("prog.s1.done", { n: profile.childrenChecked }) : tr("prog.s1.none") },
@@ -67,10 +76,29 @@ export default function ProgrammeScreen() {
     <section aria-labelledby="pg-title" data-testid="programme">
       <h1 id="pg-title">{tr("prog.title")}</h1>
       <p>
-        <a className="btn btn-secondary" href={href("/cohort")} data-testid="to-cohort">
-          {tr("cohort.title")}
+        <a className="btn btn-secondary" href={href("/cohort_chat")} data-testid="to-cohort">
+          {tr("cohort.chat")}
         </a>
       </p>
+      <div className="subtabs" role="group" aria-label={tr("cohort.tab.label")}>
+        {(["participant", "mentor"] as const).map((t) => (
+          <button key={t} type="button" className={t === tab ? "subtab subtab-on" : "subtab"} aria-pressed={t === tab} onClick={() => setTab(t)} data-testid={`tab-${t}`}>
+            {tr(t === "participant" ? "cohort.tab.participant" : "cohort.tab.mentor")}
+          </button>
+        ))}
+      </div>
+      {tab === "mentor" ? (
+        <section className="stack" data-testid="as-mentor-panel">
+          <p>{tr("cohort.mentor.body")}</p>
+          <p>
+            <a className="btn btn-secondary" href={href("/mentor")} data-testid="to-mentor">
+              {tr("cohort.mentor.open")}
+            </a>
+          </p>
+        </section>
+      ) : null}
+      {tab === "mentor" ? null : (
+        <>
       {data?.simulated || klass?.simulated ? (
         <>
           <SimulatedBanner />
@@ -87,6 +115,8 @@ export default function ProgrammeScreen() {
           ) : null}
         </p>
       ) : null}
+      {SHOW_STEPS ? (
+        <>
       <ol className="steps prog">
         {steps.map((s) => (
           <li key={s.key} data-testid={`prog-${s.key}`} data-done={s.done ? "true" : "false"}>
@@ -111,11 +141,16 @@ export default function ProgrammeScreen() {
       ) : null}
       <h2>{tr("prog.where")}</h2>
       <p>{tr("prog.where_body")}</p>
+        </>
+      ) : null}
       {!profile ? (
         <a className="btn btn-primary" href={href("/check")}>
           {tr("home.action.check")}
         </a>
       ) : null}
+      <MyClassCohorts />
+        </>
+      )}
     </section>
   );
 }

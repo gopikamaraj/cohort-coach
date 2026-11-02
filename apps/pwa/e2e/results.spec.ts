@@ -90,14 +90,13 @@ test.describe("phone", () => {
     }
     for (const code of CODES) {
       const n = fx.class.counts[code] as number;
-      const chip = page.getByTestId(`legend-${code}`);
       if (n === 0 && !fx.children.some((c) => c.cells.some((x) => x.codes.includes(code)))) continue;
-      await expect(chip).toContainText(`${n} children`);
+      await expect(page.getByTestId(`card-${code}`).locator(".mistake-count")).toContainText(`${n} / 16`);
     }
     // children who made a mistake on one question only (rolls 6 and 13 for SUB-SFL) are "possible", not counted
     const possible = fx.children.filter((c) => c.cells.some((x) => x.codes.includes("SUB-SFL")) && !c.shows.includes("SUB-SFL")).length;
     expect(possible).toBe(2);
-    await expect(page.getByTestId("legend-SUB-SFL")).toContainText(`${possible} possible`);
+    await expect(page.getByTestId("card-SUB-SFL").locator(".mistake-count")).toContainText(`${possible} possible`);
     await expect(page.getByTestId("amap-local")).toHaveText("This table stays on this phone.");
   });
 
@@ -215,7 +214,7 @@ test.describe("phone", () => {
         .map((el) => `${el.tagName}.${el.className} ${(el.textContent ?? "").slice(0, 30)}`);
     });
     expect(wide).toEqual([]);
-    for (const [id, name] of [["amap-legend", "map"], ["results-why", "why"], ["explanations", "explain"]] as const) {
+    for (const [id, name] of [["mistakes-table", "map"], ["results-why", "why"], ["explanations", "explain"]] as const) {
       await page.getByTestId(id).scrollIntoViewIfNeeded();
       await page.getByTestId(id).evaluate((el) => el.scrollIntoView({ block: "start" }));
       await page.screenshot({ path: path.join(SHOTS, `results-${name}-view-phone.png`) });
@@ -236,6 +235,48 @@ test.describe("phone", () => {
       expect(text).not.toContain("undefined");
       await page.getByTestId("results-detail").screenshot({ path: path.join(SHOTS, `results-${lang}-360.png`) });
     }
+  });
+});
+
+test.describe("show only confirmed mistakes", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("the checkbox keeps only mistakes seen on 2 or more questions; unchecked shows confirmed and possible", async ({ page }) => {
+    await enter16(page);
+    const box = page.getByTestId("only-confirmed");
+    await expect(box).not.toBeChecked(); // everything is shown to begin with
+    await expect(page.getByTestId("mistakes-table").locator("tbody tr")).toHaveCount(5);
+    await expect(page.getByTestId("card-SUB-SFL").locator(".mistake-count")).toContainText("2 possible");
+    await expect(page.getByTestId("cell-6-8")).toHaveText("SF"); // roll 6 made it once: shown as a possible mistake
+    await expect(page.getByTestId("cell-6-8")).toHaveClass(/amap-possible/);
+    await box.check();
+    await expect(page.getByTestId("mistakes-table").getByText(/possible/)).toHaveCount(0);
+    await expect(page.getByTestId("card-SUB-SFL").locator(".numeral")).toHaveText(String(fx.class.counts["SUB-SFL"])); // confirmed counts do not change
+    await expect(page.getByTestId("cell-6-8")).toHaveText("×"); // once only: no longer drawn as a mistake
+    await expect(page.getByTestId("cell-4-7")).toHaveText("SF"); // a confirmed mistake stays
+    await expect(page.getByTestId("results-coverage-SUB-SFL-class")).not.toContainText("possible");
+    await box.uncheck();
+    await expect(page.getByTestId("cell-6-8")).toHaveText("SF");
+    await expect(page.getByTestId("results-coverage-SUB-SFL-class")).toContainText("2 possible");
+  });
+
+  test("the table is one table with a row per mistake, its letters, counts and the listen and flag buttons", async ({ page }) => {
+    await enter16(page);
+    const table = page.getByTestId("mistakes-table");
+    await expect(table.locator("thead th")).toHaveCount(3);
+    for (const code of CODES) {
+      const row = page.getByTestId(`card-${code}`);
+      await expect(row).toContainText(SHORT[code] as string);
+      await expect(page.getByTestId(`listen-${code}`)).toBeVisible();
+      await expect(page.getByTestId(`flag-${code}`)).toBeVisible();
+    }
+    await expect(page.getByTestId("card-SUB-SFL")).toContainText("This is the focus for your class.");
+    await expect(page.getByTestId("card-SUB-SFL")).toContainText("From your class: 74 − 36 → 42");
+    expect(await page.locator(".cards.findings [data-kind=error]").count()).toBe(0); // no separate mistake cards any more
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    await page.getByTestId("mistakes-table").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(SHOTS, "mistakes-table-phone.png") });
   });
 });
 

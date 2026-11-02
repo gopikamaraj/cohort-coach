@@ -1,0 +1,53 @@
+# Module plans for an improvement track (one ordered plan per error).
+# A module is one approach from the strategy library (content/strategies) with the steps and materials
+# from content/errors/intervention.v1.yaml. Titles, purposes, steps and materials are the library's own
+# text, so nothing here repeats it: this file only decides ORDER and ALTERNATIVES.
+# status: draft. TODO-HUMAN(Seema): review the order of every plan and the alternatives for "not yet".
+# Gaps (listed in docs/build/reports/MODULES.md):
+#   PV-HEARD has only two approaches in the library, so its plan has two modules and no alternatives.
+#   PV-REVERSE has one approach (say_build_write), so its plan has one module and no alternatives.
+#   ADD-NOCARRY has three approaches, all in the plan, so "not yet" on the last one ends in "talk to
+#   your mentor or coach".
+version: 1
+status: draft
+source: Written by the build from the strategy library; not yet reviewed by a person
+cap: 6          # most modules in one track (MODULE_CAP overrides)
+gap_days: 7     # days between due dates (MODULE_GAP_DAYS overrides)
+errors:
+  SUB-SFL:
+    plan:
+      - {approach: ask_explain, alternatives: [order_probe]}
+      - {approach: show_bundles, alternatives: [decomposition]}
+      - {approach: exchange_ten, alternatives: [compensation, decomposition]}
+      - {approach: check_back, alternatives: [compensation]}
+    extra: [order_probe, decomposition, compensation]
+  SUB-NODEC:
+    plan:
+      - {approach: ask_explain, alternatives: [show_bundles]}
+      - {approach: show_bundles, alternatives: [decomposition]}
+      - {approach: exchange_ten, alternatives: [compensation, decomposition]}
+      - {approach: check_back, alternatives: [compensation]}
+    extra: [decomposition, compensation]
+  ADD-NOCARRY:
+    plan:
+      - {approach: ask_explain, alternatives: [show_bundles]}
+      - {approach: show_bundles, alternatives: [check_back]}
+      - {approach: check_back, alternatives: [show_bundles]}
+    extra: []
+  PV-HEARD:
+    plan:
+      - {approach: ask_explain, alternatives: [show_bundles]}
+      - {approach: show_bundles, alternatives: [ask_explain]}
+    extra: []
+  PV-REVERSE:
+    plan:
+      - {approach: say_build_write, alternatives: []}
+    extra: []
+# How to know it worked: the error's own two-minute check (intervention.v1) is shown at the end of
+# every module. The smaller-step version of a module (answer "partly") is made by code from the same
+# approach: the first step only, then the check. These sentences are NEW text, draft:
+smaller_step:
+  intro:
+    en: This is the same approach as a smaller step. Do only the first step, with two or three children, and practise it until it feels easy.
+    hi: यह वही तरीका है, पर छोटे क़दम में। केवल पहला क़दम दो-तीन बच्चों के साथ कीजिए और तब तक अभ्यास कीजिए जब तक वह आसान न लगे।
+    ta: இது அதே முறைதான், ஆனால் சிறிய படியாக. முதல் படியை மட்டும் இரண்டு அல்லது மூன்று குழந்தைகளுடன் செய்து, எளிதாகும் வரை பயிற்சி செய்யுங்கள்.

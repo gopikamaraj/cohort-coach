@@ -3664,8 +3664,36 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
 @media print {
   .no-print,
   .navbar,
-  .topbar {
+  .topbar,
+  header.top,
+  .offline-note,
+  .toasts {
     display: none !important;
+  }
+  /* the app scrolls inside a fixed-height frame on screen; on paper everything flows, so the whole page
+     prints across as many sheets as it needs and not just what is visible */
+  html,
+  body,
+  #root,
+  .stage,
+  .frame,
+  main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: 0 !important;
+    padding: 0;
+    background: none;
+  }
+  main {
+    padding: 0 !important;
+  }
+  .table-scroll,
+  .coverage-scroll {
+    overflow: visible !important;
+    contain: none !important;
   }
   .pack-section {
     break-inside: avoid;
@@ -3696,4 +3724,494 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
    containing block, or that text escapes the box and widens the page */
 .table-scroll {
   position: relative;
+}
+
+/* Mistakes in this class: one table; the name column keeps its words, the count column stays narrow */
+.mistakes {
+  border-collapse: collapse;
+  width: 100%;
+}
+.mistakes th,
+.mistakes td {
+  padding: var(--s2);
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  text-align: left;
+}
+.mistakes thead th {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.mistake-name p {
+  margin: var(--s1) 0;
+  font-weight: 400;
+}
+.mistake-count {
+  white-space: nowrap;
+}
+.mistake-actions {
+  white-space: nowrap;
+}
+.mistake-focus {
+  background: color-mix(in srgb, var(--pen-container) 45%, var(--surface));
+}
+
+/* Print and Download audio side by side; the audio note and any message sit under its button */
+.pack-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  margin: var(--s3) 0;
+}
+.pack-actions > .btn,
+.pack-actions > .audio-dl {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+}
+.pack-actions .audio-dl {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Tighter on a phone: the pack's own gaps, not the page's, set the spacing between its buttons and text */
+.pack {
+  gap: var(--s2);
+}
+.pack > h2,
+.pack > h3,
+.pack > p {
+  margin: 0;
+}
+.pack-actions {
+  margin: 0;
+}
+.pack-review {
+  display: grid;
+  gap: var(--s2);
+  margin: 0;
+}
+.pack-review-toggle {
+  justify-content: flex-start;
+  min-height: 44px;
+  padding: 0 var(--s1);
+  border: 0;
+  background: none;
+  color: var(--pen);
+  text-decoration: underline;
+}
+
+/* The printed pack: never on screen, and on paper only while "Print this pack" prints it. */
+.print-pack-only {
+  display: none;
+}
+@page {
+  size: A4 portrait;
+  margin: 18mm 16mm 20mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 9pt;
+    color: var(--muted);
+  }
+}
+@media print {
+  /* only the pack is on paper: nothing else of the page, and no floating card, drawer or toast */
+  body.print-pack > *:not(.print-pack-only),
+  body.print-pack #root,
+  .toasts,
+  .fb-fab,
+  .sheet-drawer,
+  .demo-drawer,
+  dialog {
+    display: none !important;
+  }
+  body.print-pack {
+    background: none;
+  }
+  body.print-pack .print-pack-only {
+    display: block;
+    color: var(--ink);
+    font-size: 11pt;
+    line-height: 1.5;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .print-pack-only *,
+  .print-pack-only *::before {
+    box-shadow: none !important;
+  }
+  .print-pack-only h1 {
+    margin: 0 0 var(--s2);
+    font-size: 26pt;
+    line-height: 1.15;
+  }
+  .print-pack-only h2 {
+    margin: 0 0 var(--s3);
+    padding-bottom: var(--s1);
+    font-size: 16pt;
+    color: var(--pen);
+    border-bottom: 2px solid var(--pen);
+    break-after: avoid;
+  }
+  .print-pack-only h3,
+  .print-pack-only h4 {
+    margin: var(--s3) 0 var(--s1);
+    font-size: 12pt;
+    break-after: avoid;
+  }
+  .print-pack-only p,
+  .print-pack-only li {
+    margin: 0 0 var(--s2);
+    orphans: 3;
+    widows: 3;
+  }
+  .print-pack-only ul,
+  .print-pack-only ol {
+    margin: 0 0 var(--s3);
+    padding-left: var(--s5);
+  }
+  .pp-contents,
+  .pp-page {
+    break-after: page;
+  }
+  .pp-page:last-child {
+    break-after: auto;
+  }
+  .pp-brand {
+    margin: 0 0 var(--s5);
+    padding-bottom: var(--s2);
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pen);
+    border-bottom: 1px solid var(--rule);
+  }
+  .pp-sub {
+    margin: 0 0 var(--s6);
+    font-size: 13pt;
+    color: var(--muted);
+  }
+  .pp-toc {
+    margin: 0 0 var(--s6);
+    padding: 0;
+    list-style: none;
+    counter-reset: part;
+  }
+  .pp-toc li {
+    display: flex;
+    gap: var(--s3);
+    margin: 0;
+    padding: var(--s3) 0;
+    font-size: 13pt;
+    border-bottom: 1px solid var(--rule);
+    counter-increment: part;
+  }
+  .pp-toc li::before {
+    content: counter(part);
+    flex: none;
+    width: 1.8em;
+    height: 1.8em;
+    line-height: 1.8em;
+    text-align: center;
+    font-weight: 700;
+    color: var(--on-pen);
+    background: var(--pen);
+    border-radius: 50%;
+  }
+  .pp-toc small {
+    display: block;
+    font-size: 10.5pt;
+    color: var(--muted);
+  }
+  .pp-note {
+    margin-top: var(--s6);
+    padding: var(--s3) var(--s4);
+    font-size: 10pt;
+    color: var(--ink);
+    background: var(--pen-container);
+    border-left: 4px solid var(--pen);
+    border-radius: var(--r-chip);
+  }
+  /* the pack's sections: a bar down the left instead of a box */
+  .print-pack-only .pack-section {
+    margin: 0 0 var(--s4);
+    padding: 0 0 0 var(--s3);
+    background: none;
+    border: 0;
+    border-left: 3px solid var(--pen-container);
+    border-radius: 0;
+    break-inside: avoid;
+  }
+  .print-pack-only .muted {
+    font-size: 9.5pt;
+    color: var(--muted);
+  }
+  .print-pack-only .chip {
+    padding: 1px var(--s2);
+    font-size: 9pt;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-pill);
+  }
+  .pp-sheet {
+    margin: 0 0 var(--s5);
+    padding: var(--s3);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-card);
+    break-inside: avoid;
+  }
+  .pp-sheet figcaption {
+    margin-bottom: var(--s2);
+  }
+  .pp-sheet ul {
+    margin: var(--s1) 0 0;
+    font-size: 10pt;
+  }
+  .pp-sheet img {
+    display: block;
+    max-width: 100%;
+    max-height: 200mm;
+    margin: 0 auto;
+    object-fit: contain;
+    border: 1px solid var(--rule);
+  }
+}
+.pack-actions {
+  flex-wrap: wrap;
+}
+.pack-actions > .btn {
+  flex: 1 1 140px;
+}
+.pack-actions > .audio-dl {
+  flex: 1 1 140px;
+}
+
+/* A short note under each button says what is in the file */
+.pack-action {
+  display: flex;
+  flex: 1 1 140px;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+.pack-action .btn {
+  width: 100%;
+}
+.pack-note {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+/* The cost and time of the last action: a slim bar above the bottom tabs, never over them */
+.usage {
+  position: relative;
+  flex: none;
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+}
+.usage:last-child {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.usage-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s1) var(--s3);
+  font: inherit;
+  font-size: 14px;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.usage-busy {
+  color: var(--pen);
+  animation: usage-pulse 1.2s ease-in-out infinite;
+}
+@keyframes usage-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .usage-busy {
+    animation: none;
+  }
+}
+.usage-panel {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  z-index: 25;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: var(--s3);
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  box-shadow: var(--elev-float);
+}
+.usage-panel table {
+  width: 100%;
+  margin-bottom: var(--s3);
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.usage-panel th,
+.usage-panel td {
+  padding: var(--s1) var(--s2);
+  text-align: start;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.usage-only {
+  margin: 0 0 var(--s2);
+  font-weight: 700;
+}
+.usage-est {
+  font-weight: 400;
+  color: var(--muted);
+}
+.usage-total th,
+.usage-total td {
+  font-weight: 700;
+}
+@media print {
+  .usage {
+    display: none !important;
+  }
+}
+
+/* Improvement track: the modules timeline, the feedback card and the coach's table. Tokens only. */
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.module-item {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-btn);
+  background: var(--surface);
+  padding: var(--s2) var(--s3);
+}
+.module-current {
+  border-width: 2px;
+  border-color: var(--pen);
+}
+.module-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.module-n {
+  font-weight: 600;
+}
+.module-title {
+  margin: var(--s1) 0;
+  overflow-wrap: anywhere;
+}
+.module-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.module-status-planned,
+.module-status-skipped {
+  background: var(--tonal);
+}
+.module-status-ready,
+.module-status-downloaded {
+  background: var(--warn-container);
+}
+.module-status-feedback_given,
+.module-status-completed {
+  background: var(--good-container);
+}
+.module-status-expired {
+  background: var(--margin-container);
+}
+.module-body details > summary {
+  min-height: 44px;
+}
+.module-part h4 {
+  margin: var(--s2) 0 var(--s1);
+}
+.module-part ol,
+.module-part ul {
+  margin: 0;
+  padding-inline-start: 1.4em;
+}
+.module-feedback {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-btn);
+  padding: var(--s2) var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.module-answers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.module-answer {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: 0 var(--s3);
+  border: 2px solid var(--rule);
+  border-radius: var(--r-btn);
+}
+.module-answer-on {
+  border-color: var(--pen);
+  background: var(--tonal);
+}
+.module-answer input {
+  width: 22px;
+  height: 22px;
+}
+.module-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-btn);
+  background: var(--warn-container);
+}
+.module-next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.module-answered {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.coach-table {
+  border-collapse: collapse;
+  min-width: 36rem;
+}
+.coach-table th,
+.coach-table td {
+  padding: var(--s1) var(--s2);
+  text-align: start;
+  border-bottom: 1px solid var(--rule);
+}
+.module-shift {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-btn);
+  padding: var(--s2) var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
 }

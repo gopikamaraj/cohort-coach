@@ -28,14 +28,15 @@ import { DemoPanel } from "./components/DemoPanel";
 import Cohort from "./screens/Cohort";
 import Assistant, { AssistantButton, AssistantDrawer } from "./screens/Assistant";
 import TestingEvidence from "./screens/TestingEvidence";
+import { UsageFooter } from "./components/UsageFooter";
 import { TesterRoot } from "./components/TesterUI";
 import { useEffect, useState } from "react";
 import { href, useRoute, type Route } from "./lib/router";
 import { AppProvider, useApp, type Role } from "./state";
 
 const ICONS: Record<string, string> = {
-  "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/programme": "programme",
-  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/testing": "info", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check", "/cohort": "chat", "/assistant": "info", "/papers": "papers", "/demo": "judge", "/two-classes": "chat",
+  "/judge": "judge", "/home": "home", "/check": "check", "/cards": "cards", "/practice": "practice", "/cohort": "programme",
+  "/history": "history", "/profile": "profile", "/coach": "coach", "/mentor": "mentor", "/admin": "admin", "/officer": "programme", "/testing": "info", "/roles": "home", "/watch": "practice", "/tour": "judge", "/review": "check", "/cohort_chat": "chat", "/assistant": "info", "/papers": "papers", "/demo": "judge", "/two-classes": "chat",
 };  // fmt: skip
 
 function Shell() {
@@ -47,17 +48,17 @@ function Shell() {
     { to: "/check", label: tr("nav.check") },
     { to: "/cards", label: tr("nav.cards") },
     { to: "/practice", label: tr("nav.practice") },
-    { to: "/programme", label: tr("nav.programme") },
+    { to: "/cohort", label: tr("nav.programme") },
     { to: "/history", label: tr("nav.history") },
   ];
   const mine = { to: "/profile" as Route, label: tr("nav.profile") };
   const byRole: Record<Role, { to: Route; label: string }[]> = {
     teacher: [...teacherTabs, mine],
     mentor: [{ to: "/mentor", label: tr("role.mentor") }, ...teacherTabs, mine],
-    coach: [{ to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/papers", label: tr("papers.nav") }, { to: "/cohort", label: tr("cohort.nav") }, mine],
+    coach: [{ to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/papers", label: tr("papers.nav") }, { to: "/cohort_chat", label: tr("cohort.nav") }, mine],
     officer: [{ to: "/officer", label: tr("role.officer") }, { to: "/review", label: tr("queue.nav") }, mine],
     admin: [{ to: "/admin", label: tr("role.admin") }, mine],
-    judge: [{ to: "/judge", label: tr("role.judge") }, { to: "/demo", label: tr("demo.nav") }, { to: "/two-classes", label: tr("run.nav") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/cohort", label: tr("cohort.nav") }, { to: "/admin", label: tr("role.admin") }, mine],
+    judge: [{ to: "/judge", label: tr("role.judge") }, { to: "/demo", label: tr("demo.nav") }, { to: "/two-classes", label: tr("run.nav") }, ...teacherTabs, { to: "/coach", label: tr("role.coach") }, { to: "/review", label: tr("queue.nav") }, { to: "/cohort_chat", label: tr("cohort.nav") }, { to: "/admin", label: tr("role.admin") }, mine],
   };
   const tabs = route === "/roles" || route === "/tour" ? [] : byRole[role];
   // A phone fits four tabs and a More button; the rest sit in a sheet, so nothing hides off-screen.
@@ -78,7 +79,7 @@ function Shell() {
   const bar = tabs.length > 5 ? tabs.slice(0, 4) : tabs;
   const rest = tabs.length > 5 ? tabs.slice(4) : [];
   const restOn = rest.some((tab) => tab.to === route);
-  const wide = route === "/roles" || route === "/tour" || route === "/watch" || route === "/testing" || route === "/review" || route === "/cohort" || role === "coach" || role === "officer" || role === "admin";
+  const wide = route === "/roles" || route === "/tour" || route === "/watch" || route === "/testing" || route === "/review" || route === "/cohort_chat" || role === "coach" || role === "officer" || role === "admin";
   return (
     <div className={wide ? "stage stage-wide" : "stage stage-narrow"}>
       <div className={tabs.length === 0 ? "frame frame-bare" : "frame"}>
@@ -93,7 +94,7 @@ function Shell() {
           {route === "/check" ? <Check /> : null}
           {route === "/cards" ? <Cards /> : null}
           {route === "/practice" ? <Practice /> : null}
-          {route === "/programme" ? <Programme /> : null}
+          {route === "/cohort" ? <Programme /> : null}
           {route === "/history" ? <History /> : null}
           {route === "/aimap" ? <AiMap /> : null}
           {route === "/audit" ? <Audit /> : null}
@@ -107,7 +108,7 @@ function Shell() {
           {route === "/watch" ? <Watch /> : null}
           {route === "/tour" ? <Tour /> : null}
           {route === "/review" ? <Review /> : null}
-          {route === "/cohort" ? <Cohort /> : null}
+          {route === "/cohort_chat" ? <Cohort /> : null}
           {route === "/officer" ? <Officer /> : null}
           {route === "/assistant" ? <Assistant /> : null}
           {route === "/testing" ? <TestingEvidence /> : null}
@@ -130,6 +131,7 @@ function Shell() {
             </ul>
           </>
         ) : null}
+        <UsageFooter />
         <nav className="navbar" aria-label={tr("common.menu")}>
           {bar.map((tab) => (
             <a key={tab.to} href={href(tab.to)} aria-current={route === tab.to ? "page" : undefined} className={route === tab.to ? "navtab navtab-on" : "navtab"}>

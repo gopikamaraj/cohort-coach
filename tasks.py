@@ -247,6 +247,10 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
         "before a deploy: rebuild the assistant index, check its questions",
     ),
     "readme": (cmd_readme, "regenerate README 'Where AI is used' [--check]"),
+    "modules-due": (
+        script("scripts/modules_due.py"),
+        "daily job, 06:00 IST: make each improvement-track module that is due [--now ISO] [--loop]",
+    ),
     "lessons-pregen": (
         script("scripts/lessons_pregen.py"),
         "voice and cache every published demo lesson (prints the cost; --yes to spend)",

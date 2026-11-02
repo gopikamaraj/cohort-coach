@@ -29,7 +29,7 @@ export interface PackSection {
   list?: string[]; // bullet points
   strategies?: PackStrategy[];
   numbers?: { now: number; total: number; n: number }; // "how to know it is working": the class's own counts
-  here?: { children: number; total: number; example: InThisClass["example"] };
+  here?: { children: number; total: number; example: InThisClass["example"]; rolls: { confirmed: number[]; possible: number[] } | null };
   source: string;
   draft: boolean;
   fallback: boolean; // the language asked for has no text yet: English is shown
@@ -51,6 +51,7 @@ export interface PackInput {
   children: number; // how many children showed it (from the cohort's own counts)
   total: number; // children checked
   here: InThisClass | null; // this class's own example, when the answers are on this phone
+  rolls?: { confirmed: number[]; possible: number[] } | null; // the roll numbers, when the answers are on this phone
 }
 
 /** Build the pack. Anything with no text is left out of `sections` and named in `omitted`. */
@@ -78,7 +79,7 @@ export function buildPack(input: PackInput, onOmit: (id: SectionId, code: string
     return p && p.value.length > 0 ? { id, list: p.value, source: SRC_PACK, draft: draftPack, fallback: p.fallback } : null;
   };
 
-  add({ id: "seeing", here: { children: input.children, total: input.total, example: input.here?.example ?? null }, source: "Your class's check", draft: false, fallback: false }, "seeing");
+  add({ id: "seeing", here: { children: input.children, total: input.total, example: input.here?.example ?? null, rolls: input.rolls ?? null }, source: "Your class's check", draft: false, fallback: false }, "seeing");
   add(textSection("why", ex?.why, SRC_EXPLAIN, draftExplain), "why");
   add(textSection("check", pack?.two_minute_check, SRC_PACK, draftPack), "check");
 
@@ -131,10 +132,17 @@ export type Tr = (key: Key, params?: Record<string, string | number>) => string;
 /** Every line of a section, in the order it is shown. The screen and the audio both read these, so
  *  the audio is always the text on the screen. Each ends in a full stop so it is spoken as a sentence. */
 export function sectionLines(s: PackSection, tr: Tr): string[] {
-  const end = (t: string) => (/[.?!।]$/.test(t.trim()) ? t.trim() : `${t.trim()}.`);
+  // {pv:N} marks a place-value number for the spoken version; on the screen it is just the number
+  const end = (raw: string) => {
+    const t = raw.replace(/\{pv:(\d+)\}/g, "$1");
+    return /[.?!।]$/.test(t.trim()) ? t.trim() : `${t.trim()}.`;
+  };
   const out: string[] = [];
   if (s.here) {
     out.push(tr("results.explain.children_line", { n: s.here.children, total: s.here.total }));
+    const rolls = s.here.rolls;
+    if (rolls && rolls.confirmed.length > 0) out.push(tr("pack.rolls", { list: rolls.confirmed.join(", ") }));
+    if (rolls && rolls.possible.length > 0) out.push(tr("pack.rolls_possible", { list: rolls.possible.join(", ") }));
     const e = s.here.example;
     if (e) {
       out.push(tr(/^\d+$/.test(e.question) ? "results.explain.example_say" : "results.explain.example", { question: e.question, wrote: e.wrote, correct: e.correct }));

@@ -7,14 +7,21 @@ import { create, forCheck, syncPending, type ClassCohort } from "../lib/classCoh
 import { CohortError } from "../lib/cohort";
 import { href } from "../lib/router";
 import { shownClassName } from "../lib/checks";
+import { buildAnswerMap } from "../lib/results";
 import { useApp } from "../state";
 
-export function ClassCohortMaker() {
+export function ClassCohortMaker({ onlyConfirmed }: { onlyConfirmed: boolean }) {
   const { tr, lang, profile, check, klass, online, role } = useApp();
   const checkId = check?.id ?? profile?.id ?? "";
   const [made, setMade] = useState<ClassCohort | null>(() => (checkId ? forCheck(checkId) : null));
   const [open, setOpen] = useState(false);
-  const found = profile ? Object.entries(profile.counts).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]) : [];
+  // The errors to choose from: those children show (confirmed), and, unless the box above the table asks for
+  // confirmed ones only, those seen on one question so far (possible), with their own counts.
+  const map = check && profile ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null;
+  const possibleOf = (code: string) => (onlyConfirmed ? 0 : (map?.legend.find((l) => l.code === code)?.possible ?? 0));
+  const confirmed = profile ? Object.entries(profile.counts).filter(([, n]) => n > 0) : [];
+  const extra = onlyConfirmed || !map ? [] : map.legend.filter((l) => l.possible > 0 && !confirmed.some(([c]) => c === l.code)).map((l) => [l.code, 0] as [string, number]);
+  const found = [...confirmed, ...extra].sort((a, b) => b[1] - a[1] || possibleOf(b[0]) - possibleOf(a[0]));
   const [picked, setPicked] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [msg, setMsg] = useState("");
@@ -104,6 +111,7 @@ export function ClassCohortMaker() {
           <label key={code} className="check-line">
             <input type="checkbox" checked={picked.includes(code)} onChange={() => toggle(code)} data-testid={`pick-${code}`} />{" "}
             {tr("cohort.mine.pick_line", { name: tr(`err.${code}` as Key), n, total: profile.childrenChecked })}
+            {possibleOf(code) > 0 ? ` · ${tr("results.map.legend_possible", { n: possibleOf(code) })}` : ""}
           </label>
         ))}
       </fieldset>

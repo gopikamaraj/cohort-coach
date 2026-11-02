@@ -9,9 +9,10 @@ import { AnswerMap } from "./AnswerMap";
 import { CoverageMatrix } from "./CoverageMatrix";
 import { ErrorExplanations } from "./ErrorExplanations";
 
-export function ResultsDetail({ untracked }: { untracked: number }) {
+export function ResultsDetail({ untracked, activeCode, onCode, onlyConfirmed }: { untracked: number; activeCode: string | null; onCode: (c: string | null) => void; onlyConfirmed: boolean }) {
   const { tr, check, role } = useApp();
-  const [code, setCode] = useState<string | null>(null);
+  const code = activeCode;
+  const setCode = onCode;
   const [item, setItem] = useState<number | null>(null);
   const [openExplain, setOpenExplain] = useState<Set<string>>(new Set());
   const map = useMemo(() => (check ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null), [check]);
@@ -38,14 +39,14 @@ export function ResultsDetail({ untracked }: { untracked: number }) {
   return (
     <div className="stack results-detail" data-testid="results-detail">
       <h2 id="amap-title">{tr("results.map.title")}</h2>
-      <AnswerMap map={map} activeCode={code} activeItem={item} onCode={setCode} onItem={setItem} onExplain={explain} />
+      <AnswerMap map={map} onlyConfirmed={onlyConfirmed} activeCode={code} activeItem={item} onItem={setItem} onExplain={explain} />
 
       <details className="results-why" open={wide} data-testid="results-why">
         <summary>
           <h2 className="inline-h">{tr("results.why.title")}</h2>
         </summary>
         <CoverageMatrix
-          rows={rows.map((r) => ({ code: r.code, items: new Set(r.items), assessed: r.assessed, confirmed: r.confirmed, possible: r.possible }))}
+          rows={rows.map((r) => ({ code: r.code, items: new Set(r.items), assessed: r.assessed, confirmed: r.confirmed, possible: onlyConfirmed ? undefined : r.possible }))}
           items={map.items.map((i) => ({ n: i.n, extra: i.extra }))}
           caption={tr("results.why.title")}
           withClass

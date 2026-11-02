@@ -5,6 +5,7 @@ import type { Key } from "../i18n";
 import { forCoach, readAll, syncPending, type ClassCohort, type CoachRow } from "../lib/classCohort";
 import { href } from "../lib/router";
 import { useApp } from "../state";
+import { CoachModules } from "./CoachModules";
 import { InterventionPack } from "./InterventionPack";
 
 export function MyClassCohorts() {
@@ -73,6 +74,7 @@ export function ClassOnlyForCoach() {
               <span className="chip">{tr("cohort.mine.label")}</span>
             </p>
             <p className="muted">{r.errors.map((c) => `${tr(`err.${c}` as Key)}: ${r.counts[c] ?? 0}`).join(" · ")}</p>
+            <CoachModules cohortId={r.id} />
           </li>
         ))}
       </ul>

@@ -24,7 +24,7 @@ Practice is a rehearsal with five simulated children who make your own class's m
 
 ### My programme
 
-My programme shows where you are in your three-week track, step by step, and which lessons come next. Each lesson is about five minutes and arrives as a voice note. After a lesson you are asked two quick questions: whether you tried it in class, and how it went.
+My programme shows where you are in your three-week track, step by step, and which modules come next. Each module is about five minutes and arrives as a voice note. After a module you are asked two quick questions: whether you tried it in class, and how it went.
 
 ### What I entered
 
@@ -44,7 +44,7 @@ My profile holds your language, your classes, how much storage and data the app 
 
 ## Working without signal
 
-Most of the app works with no signal. Entering a check, opening saved lessons and reading your cards all work offline, and results are sent when the phone finds signal again. The Practice Class needs a connection, and when the signal is weak it falls back to typing.
+Most of the app works with no signal. Entering a check, opening saved modules and reading your cards all work offline, and results are sent when the phone finds signal again. The Practice Class needs a connection, and when the signal is weak it falls back to typing.
 
 ## Keeping the app on your phone
 

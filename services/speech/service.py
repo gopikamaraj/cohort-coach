@@ -374,10 +374,17 @@ def default_chain(*, live: bool = True) -> ProviderChain:
     pre-generation) waits up to BODHAN_PACE_MAX_WAIT_S (90 s)."""
     from services.speech.bodhan import BodhanClient, BodhanProvider, _float_env
     from services.speech.provider import SarvamProvider
+    from services.usage.meter import MeteredProvider
 
     wait = _float_env("BODHAN_LIVE_PACE_MAX_WAIT_S", 2.0) if live else None
     client = BodhanClient(pace_max_wait_s=wait)
-    return ProviderChain({"bodhan": BodhanProvider(client), "sarvam": SarvamProvider()})
+    # every provider is wrapped once, here: each speech call is metered per action (services/usage)
+    return ProviderChain(
+        {
+            "bodhan": MeteredProvider(BodhanProvider(client)),
+            "sarvam": MeteredProvider(SarvamProvider()),
+        }
+    )
 
 
 def _audio_store_or_none() -> Any:

@@ -2,7 +2,7 @@
 
 ## What should I do today
 
-Open My programme. It shows the step you are on: the check, your cards, a lesson, or the next check. Do that one step. If you have not entered a check yet, start with Enter check. If you have, open My class to see your cards, then the lesson in My programme. Plan for no more than about twenty minutes a week: the app is built around that limit.
+Open My programme. It shows the step you are on: the check, your cards, a module, or the next check. Do that one step. If you have not entered a check yet, start with Enter check. If you have, open My class to see your cards, then the module in My programme. Plan for no more than about twenty minutes a week: the app is built around that limit.
 
 ## What an error card means
 
@@ -10,11 +10,11 @@ A card names one mistake and says how many of your children make it. A child is 
 
 ## How is my class doing since the last check
 
-The app shows change in children only after the next check, not before. Until then, My programme says "awaiting next check". The number of lessons delivered tells you what was sent, not whether children improved. When the next check is entered, My programme shows the comparison.
+The app shows change in children only after the next check, not before. Until then, My programme says "awaiting next check". The number of modules delivered tells you what was sent, not whether children improved. When the next check is entered, My programme shows the comparison.
 
 ## I'm stuck, what can I try
 
-- Try the lesson for your class's focus again with only three children, using bundles of ten and loose sticks.
+- Try the module for your class's focus again with only three children, using bundles of ten and loose sticks.
 - Ask the child to explain how they got their answer before you correct it.
 - Check by adding back: if 52 minus 29 is 23, then 23 plus 29 should be 52.
 - Rehearse in Practice first, then try it in class.
@@ -22,11 +22,11 @@ The app shows change in children only after the next check, not before. Until th
 
 ## Why was this audio chosen
 
-A lesson comes from the track for your cohort's mistake, which a coach has approved. The app picks the lesson that follows the last one you finished. It does not pick lessons by how well you teach, and it never scores a teacher. Each lesson shows a badge: Checked means the app's automatic checks passed, and Reviewed means a coach also approved it.
+A module comes from the track for your cohort's mistake, which a coach has approved. The app picks the module that follows the last one you finished. It does not pick modules by how well you teach, and it never scores a teacher. Each module shows a badge: Checked means the app's automatic checks passed, and Reviewed means a coach also approved it.
 
-## If a lesson did not work
+## If a module did not work
 
-A track that does not work is a fault of the track, not of you. After a lesson, tap that it did not work, and the team reads it as feedback on the track.
+A track that does not work is a fault of the track, not of you. After a module, tap that it did not work, and the team reads it as feedback on the track.
 
 ## Practice, step by step
 
@@ -52,9 +52,9 @@ A paper is the printed set of questions; a check is one use of it in your class.
 
 A cohort forms when enough classes share the same track. Each class gets one track: writing a number as it is said (PV-HEARD) first, otherwise the mistake the most children made, and only when at least 1 child in 4 showed it with at least 10 children checked. A child shows a mistake only when it appears on at least 2 of the questions that check it. The screen gives every class's reason for each mistake: in, under 1 in 4, another track, too few children checked, or no track for that mistake yet. A class that is the first to submit waits for other classes. In production a cohort needs 15 classes (COHORT_MIN_CLASSES). The pilot and the demo allow 2, labelled "Pilot cohort, two classes". When a paper has only one question of a kind, such as borrowing across a zero (703 - 468), the 2-question rule cannot be met there. The pilot and the demo may then count that one question (COHORT_ALLOW_SINGLE_ITEM_PROBES), and the cohort says "Based on one question per child". Production leaves this off. At pilot scale there is no waitlist: both classes are trained, and the pilot compares the trained mistake with the untrained ones.
 
-## How is the next lesson chosen?
+## How is the next module chosen?
 
-Code chooses it; the AI only words it. After lesson 1 the teacher plays it or marks it heard, then answers Tried it, Partly or Not yet, with an optional note (a child's name is removed before it is saved). Then she can press Generate next lesson, and the coach can press it for her. Tried it gives the next lesson in the track. Partly gives the same approach again, as a smaller step with more practice. Not yet gives another approach for the same mistake from the strategy library, leaving out the approaches she has already had. If she has not answered by the set date (3 days in the demo), the planned next lesson is queued, and her silence is never counted as a result. Call 5 words the lesson from the approved lesson topic and strategies; if no draft comes back, code writes it from the same content. Every lesson goes to the coach's review queue before it reaches her, voiced in her language with her class's numbers filled in by code. A failed voice leaves the text, with a retry.
+Code chooses it; the AI only words it. After module 1 the teacher plays it or marks it heard, then answers Tried it, Partly or Not yet, with an optional note (a child's name is removed before it is saved). Then she can press Generate next module, and the coach can press it for her. Tried it gives the next module in the track. Partly gives the same approach again, as a smaller step with more practice. Not yet gives another approach for the same mistake from the strategy library, leaving out the approaches she has already had. If she has not answered by the set date (3 days in the demo), the planned next module is queued, and her silence is never counted as a result. Call 5 words the module from the approved module topic and strategies; if no draft comes back, code writes it from the same content. Every module goes to the coach's review queue before it reaches her, voiced in her language with her class's numbers filled in by code. A failed voice leaves the text, with a retry.
 
 ## Entering a check: roll numbers, absent children and finishing
 
@@ -62,7 +62,7 @@ Enter check works from a paper that already exists. Choose it (papers assigned t
 
 ## When the AI is not available
 
-If the AI service is down, the top of the screen says AI: off, and each part that needs it tells you so: type the answers instead of reading a photo, the lesson comes from the approved template and is shown as text, and your chat question waits for your mentor or coach. Nothing you entered is lost.
+If the AI service is down, the top of the screen says AI: off, and each part that needs it tells you so: type the answers instead of reading a photo, the module comes from the approved template and is shown as text, and your chat question waits for your mentor or coach. Nothing you entered is lost.
 
 ## Reading the results: answer map, why an error is flagged, what it means
 
@@ -70,4 +70,14 @@ Open My class after you finish a check. Under the findings, the answer map has o
 
 ## A cohort for your class and its ideas to try
 
-On My class, tap Create a cohort for my class, choose the mistakes to work on (the most common one is chosen for you) and confirm. It is just your class, with no other teachers yet, and only counts are saved. Open the cohort page to read the intervention content: what you are seeing, why children do this, a two-minute check, strategies to try, a ten-minute activity, common teaching mistakes, how to know it is working, ideas for home, and what to try if it does not improve. Everything is text first. Tap Download audio on a section, or for the whole pack, to get an MP3 file made with an AI-generated voice; it needs a connection, and nothing is made until you tap. Hindi and Tamil text is not written yet, so those pages show English with a note.
+On My class, tap Create a cohort for my class, choose the mistakes to work on (the most common one is chosen for you) and confirm. It is just your class, with no other teachers yet, and only counts are saved. Open the cohort page to read the improvement track: what you are seeing, why children do this, a two-minute check, strategies to try, a ten-minute activity, common teaching mistakes, how to know it is working, ideas for home, and what to try if it does not improve. Everything is text first. Tap Download audio on a section, or for the whole pack, to get an MP3 file made with an AI-generated voice; it needs a connection, and nothing is made until you tap. Hindi and Tamil text is not written yet, so those pages show English with a note.
+
+## Your improvement track: modules
+
+Your improvement track is a few short modules, one after another, each with a due date. Module 1 is ready as soon as you start the track. Later modules show only a title and a date until their turn.
+
+Use Module 1 in class, then tell us how it went: I tried it, It partly worked or Not yet working. Then press Get the next module. Until you answer, that button is closed and says when the next module will arrive by itself.
+
+What you answer decides the next module. I tried it moves you to the next module in the plan. It partly worked gives the same approach again as a smaller step. Not yet working gives a different approach. If you do not answer, the next module still comes on its due date, and we do not count the silence as a result. You can answer late: the answer is saved with its module and only changes modules that are not made yet.
+
+Each module has Why this module? with the reason, the text you can read or hide, and Download audio. A track has at most six modules. If the plan runs out or the limit is reached, the app tells you to talk to your mentor or coach. When the track is finished it says it is time for the next check. Making a module needs a connection; modules you already have, and audio you downloaded, work offline.

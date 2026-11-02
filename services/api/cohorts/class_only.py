@@ -112,7 +112,8 @@ def mine(
     rows = db.execute(
         select(ClassCohort).where(ClassCohort.teacher_id == teacher.teacher_id)
     ).scalars()
-    return [view(r) for r in rows]
+    # her own list: it also says which check each came from
+    return [{**view(r), "check_id": r.check_id} for r in rows]
 
 
 @router.get("/coach")

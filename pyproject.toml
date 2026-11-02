@@ -17,6 +17,7 @@ dependencies = [
   "numpy",
   "scipy",
   "pyyaml",
+  "num2words",  # spoken layer: English number words (Hindi and Tamil have their own tables)
   "python-multipart",
   "pillow",
   "google-cloud-storage",  # pilot mode: Google Cloud Storage / Firebase Storage buckets

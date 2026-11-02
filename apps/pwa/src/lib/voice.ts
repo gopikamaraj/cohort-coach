@@ -1,6 +1,7 @@
 // Voice for the Practice Class: when to use it, how a recording is sent, how a reply is played.
 // Only the recording of her own voice goes out (to be turned into text and dropped); nothing
 // is stored. Two failures in a row, or a 2g connection, switch her to typing without asking.
+import { runAction } from "./action";
 import { track } from "./tester";
 import { API_BASE } from "./api";
 import { PracticeError, type TurnResponse } from "./practice";
@@ -68,7 +69,12 @@ export interface VoiceTurn extends TurnResponse {
 
 const TIMEOUT_MS = 30_000;
 
-export async function postVoiceTurn(
+/** One practice turn by voice is one action: the cost and time of the last one show in the footer. */
+export function postVoiceTurn(sessionId: string, clip: Blob, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<VoiceTurn> {
+  return runAction("practice_turn", () => voiceTurnCall(sessionId, clip, fetchFn));
+}
+
+async function voiceTurnCall(
   sessionId: string,
   clip: Blob,
   fetchFn: typeof fetch = (...a) => fetch(...a),

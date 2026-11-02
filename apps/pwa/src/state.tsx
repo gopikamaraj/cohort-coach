@@ -1,5 +1,6 @@
 // App state: the language and role (kept in localStorage, they are tiny), and what the phone
 // holds for the active class and term (kept in IndexedDB and reloaded after every change).
+import { reconcileWithServer } from "./lib/serverTruth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { isLang, t as translate, type Key, type Lang } from "./i18n";
 import { activeClass, clearPhone, db, getSetting, setSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
@@ -78,6 +79,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Load on open, and send what is waiting whenever a signal is there.
   useEffect(() => {
+    if (online) void reconcileWithServer(); // the server is the truth: drop pointers to records it no longer has
     void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
     void reload().then(async () => {
       await flushAllowed(isOnline());

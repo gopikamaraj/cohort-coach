@@ -9,7 +9,7 @@ import { useApp } from "../state";
 import { Icon } from "./icons";
 import { AiModeBadge, StatusLine } from "./parts";
 
-const PAGES = new Set(["roles", "judge", "home", "papers", "check", "cards", "practice", "programme", "history", "profile", "privacy", "coach", "mentor", "officer", "review", "cohort", "demo", "two-classes", "assistant", "testing", "watch", "tour", "aimap", "audit", "admin", "flow"]);
+const PAGES = new Set(["roles", "judge", "home", "papers", "check", "cards", "practice", "cohort", "history", "profile", "privacy", "coach", "mentor", "officer", "review", "cohort_chat", "demo", "two-classes", "assistant", "testing", "watch", "tour", "aimap", "audit", "admin", "flow"]);
 
 export function TopBar({ assistant }: { assistant: React.ReactNode }) {
   const { tr, role, lang, setLang } = useApp();

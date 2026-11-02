@@ -46,7 +46,7 @@ CONFIGURABLE: dict[str, Setting] = {
 
 # Fixed in code. They appear here only so a test can prove they have no write route.
 FIXED: dict[str, str] = {
-    "eligibility_prevalence_pct": "25% of children checked (engine/grouping.py)",
+    "eligibility_min_children_with_error": "1 child showing the error (engine/diagnosis.py)",
     "eligibility_min_children": "10 children checked (engine/grouping.py)",
     "verdict_rules": "Working / Not working / Inconclusive (engine/evaluation.py)",
 }

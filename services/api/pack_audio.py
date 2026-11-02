@@ -31,10 +31,12 @@ from services.media.storage import BlobStore, get_audio_store
 from services.speech import lessons
 from services.speech.sarvam import SpeechError
 from services.speech.service import SpeechService
+from services.spoken import normalize
+from services.spoken.adapters.intervention import build_script
 
 router = APIRouter(prefix="/api/audio", tags=["audio"])
 log = logging.getLogger(__name__)
-NAME = re.compile(r"^[a-z0-9][a-z0-9-]{0,59}$")
+NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{0,79}$")
 MAX_REQUEST_CHARS = 8000
 EXPOSE = "Content-Disposition, X-Audio-Seconds, X-Audio-Provider, X-Audio-Chars, X-Audio-Cached"
 SPEECH = Depends(get_speech)
@@ -50,9 +52,32 @@ def chars_cap() -> int:
 
 
 class PackIn(BaseModel):
-    text: str = Field(min_length=1, max_length=MAX_REQUEST_CHARS)
+    """Either `code` (the server builds the spoken script from content and her class's counts) or
+    `text` (her own edited spoken text; it still goes through the normaliser)."""
+
+    text: str | None = Field(default=None, min_length=1, max_length=MAX_REQUEST_CHARS)
     language: Literal["en", "hi", "ta"]
-    name: str = Field(default="audio", max_length=60)
+    name: str = Field(default="audio", max_length=80)
+    code: str | None = Field(default=None, max_length=20)
+    children: int = Field(default=0, ge=0, le=200)
+    total: int = Field(default=0, ge=0, le=200)
+    rolls: dict[str, list[int]] | None = None
+    example: dict[str, str] | None = None
+
+
+def spoken_text(body: PackIn) -> tuple[str, str]:
+    """(spoken-ready text, its language). English when the content has no text in the language."""
+    if body.text:
+        return normalize(body.text, body.language), body.language
+    if not body.code or body.children > body.total:
+        raise HTTPException(422, "There is no text to voice.")
+    try:
+        script = build_script(
+            body.code, body.language, body.children, body.total, body.rolls, body.example
+        )
+    except ValueError as exc:
+        raise HTTPException(422, "There is no text to voice.") from exc
+    return script.text, script.language
 
 
 def cache_key(text: str, language: str) -> str:
@@ -101,15 +126,16 @@ def pack_audio(
 ) -> Response:
     teacher = _teacher(db, x_device_id)
     name = body.name if NAME.match(body.name) else "audio"
-    key = cache_key(body.text, body.language)
+    text, language = spoken_text(body)
+    key = cache_key(text, language)
     if store.size(key) is not None:  # a repeat press: no call, no characters used
         return _reply(store.get(key), name, 0.0, "cache", 0, True)
-    chars = int(lessons.estimate(body.text, body.language)["chars"])
+    chars = int(lessons.estimate(text, language)["chars"])
     use = _use(db, teacher.teacher_id)
     if use.chars + chars > chars_cap():
         raise HTTPException(429, {"code": "cap", "message": "The audio limit is reached."})
     try:
-        made = lessons.generate(body.text, body.language, speech, store, check=False)
+        made = lessons.generate(text, language, speech, store, check=False, max_sentences=8)
     except ValueError as exc:
         raise HTTPException(422, "There is no text to voice.") from exc
     except (lessons.LessonAudioUnavailable, SpeechError) as exc:
@@ -121,6 +147,19 @@ def pack_audio(
     db.commit()
     store.put(key, made.mp3, "audio/mpeg")
     return _reply(made.mp3, name, made.seconds, made.provider, made.chars_billed or chars, False)
+
+
+@router.post("/pack/script")
+def pack_script(body: PackIn, _: str = Depends(require("cohort.chat"))) -> dict[str, Any]:
+    """The spoken text she can read and change before it is voiced. Nothing is voiced or billed."""
+    text, language = spoken_text(body)
+    plain = re.sub(r"\[pause(?::long)?\]", " ", text)
+    return {
+        "text": text,
+        "language": language,
+        "fallback": language != body.language,
+        "words": len(plain.split()),
+    }
 
 
 @router.get("/pack/cap")

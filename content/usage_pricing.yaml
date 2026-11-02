@@ -1,0 +1,27 @@
+# Prices for the per-action cost footer. Everything is data; the code never types a price.
+#
+# LLM prices are NOT here: they come from ai/pricing.yaml (copied from Anthropic's pricing page, with its
+# source and date). Speech prices are read from content/speech_prices.yaml (INR, per provider). What this
+# file adds is how those are shown, what Cloud Run costs, and how to turn INR into USD.
+#
+# A price that is missing or `null` shows as "n/a" in the footer, with the units still counted, and a
+# warning goes to the log. It never shows as 0.
+version: 1
+as_of: "2026-11-02"
+# Costs are stored in USD. The footer shows `display_currency`: USD or INR.
+display_currency: INR
+# INR per 1 USD. TODO-HUMAN(Gopi): set today's rate; null means INR figures show as "n/a".
+inr_per_usd: 95
+cloud_run:
+  # What the service is deployed with (docs/deploy.md): 1 GiB, CPU always allocated (instance-based billing),
+  # min instances 0, max 3. The vCPU count and the concurrency are not written down there: these two are
+  # ASSUMPTIONS until someone reads them off `gcloud run services describe cohort-coach-api`.
+  billing: instance
+  vcpu: 1
+  memory_gib: 1
+  concurrency: 80
+  # TODO-HUMAN(Gopi): copy both from https://cloud.google.com/run/pricing for asia-south1 (instance-based,
+  # CPU always allocated), in USD. null shows Cloud Run cost as "n/a".
+  price_per_vcpu_second_usd: null
+  price_per_gib_second_usd: null
+  source: "https://cloud.google.com/run/pricing"

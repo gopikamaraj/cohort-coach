@@ -2,86 +2,134 @@
   "explanations": {
     "ADD-NOCARRY": {
       "first": {
-        "en": "Add with bundles. When ten loose sticks appear, tie them into a new bundle and move it to the tens."
+        "en": "Add with bundles. When ten loose sticks appear, tie them into a new bundle and move it to the tens.",
+        "hi": "गड्डियों से जोड़िए। जब दस खुली तीलियाँ हो जाएँ, तो उन्हें बाँधकर एक नई गड्डी बनाइए और दहाई की ओर रख दीजिए।",
+        "ta": "கட்டுகளால் கூட்டுங்கள். பத்துத் தனிக்குச்சிகள் சேர்ந்தால், அவற்றை ஒரு புதிய கட்டாகக் கட்டி, பத்துகள் பக்கம் நகர்த்துங்கள்."
       },
       "spot": {
-        "en": "A total that is ten too small, with the right digit in the ones place."
+        "en": "A total that is ten too small, with the right digit in the ones place.",
+        "hi": "उत्तर दस कम होता है, और इकाई का अंक सही होता है।",
+        "ta": "விடை பத்து குறைவாக இருக்கும்; ஒன்றுகளின் இலக்கம் சரியாக இருக்கும்."
       },
       "what": {
-        "en": "When the ones add up to ten or more, the child forgets to carry the ten to the tens column."
+        "en": "When the ones add up to ten or more, the child forgets to carry the ten to the tens column.",
+        "hi": "जब इकाइयों का जोड़ दस या उससे ज़्यादा होता है, तो बच्चा उस दस को दहाई के स्तंभ में हासिल के रूप में ले जाना भूल जाता है।",
+        "ta": "ஒன்றுகளின் கூட்டுத்தொகை பத்து அல்லது அதற்கு மேல் வரும்போது, குழந்தை அந்தப் பத்தைப் பத்துகள் நிரலுக்கு எடுத்துச் செல்ல மறந்துவிடுகிறது."
       },
       "why": {
-        "en": "She adds each column alone and writes down only the ones digit. The extra ten is lost."
+        "en": "She adds each column alone and writes down only the ones digit. The extra ten is lost.",
+        "hi": "वह हर स्तंभ को अलग-अलग जोड़ता है और केवल इकाई का अंक लिख देता है। अतिरिक्त दस खो जाता है।",
+        "ta": "ஒவ்வொரு நிரலையும் தனித்தனியாகக் கூட்டி, ஒன்றுகளின் இலக்கத்தை மட்டும் எழுதுகிறது. கூடுதலாக வந்த பத்து விடுபடுகிறது."
       }
     },
     "ADD-WHOLE-ONES": {
       "first": {
-        "en": "Ask her to add with bundles and loose sticks, then tie ten loose sticks into a bundle before she writes the answer."
+        "en": "Ask her to add with bundles and loose sticks, then tie ten loose sticks into a bundle before she writes the answer.",
+        "hi": "उससे गड्डियों और खुली तीलियों से जोड़वाइए, फिर उत्तर लिखने से पहले दस खुली तीलियों को एक गड्डी में बँधवाइए।",
+        "ta": "கட்டுகளையும் தனிக்குச்சிகளையும் வைத்துக் கூட்டச் சொல்லுங்கள். விடை எழுதுவதற்கு முன் பத்துத் தனிக்குச்சிகளை ஒரு கட்டாகக் கட்டச் சொல்லுங்கள்."
       },
       "spot": {
-        "en": "A long number made of two sums joined together."
+        "en": "A long number made of two sums joined together.",
+        "hi": "दो जोड़ों को साथ रखने से बनी एक लंबी संख्या।",
+        "ta": "இரண்டு கூட்டல் விடைகள் இணைந்த ஒரு நீண்ட எண் இருக்கும்."
       },
       "what": {
-        "en": "The child adds the tens and the ones separately and writes both totals side by side."
+        "en": "The child adds the tens and the ones separately and writes both totals side by side.",
+        "hi": "बच्चा दहाइयाँ और इकाइयाँ अलग-अलग जोड़कर दोनों जोड़ पास-पास लिख देता है।",
+        "ta": "குழந்தை பத்துகளையும் ஒன்றுகளையும் தனித்தனியாகக் கூட்டி, இரண்டு கூட்டுத்தொகைகளையும் அருகருகே எழுதுகிறது."
       },
       "why": {
-        "en": "She is adding correctly column by column but does not yet combine the two totals into one number."
+        "en": "She is adding correctly column by column but does not yet combine the two totals into one number.",
+        "hi": "वह स्तंभ-दर-स्तंभ सही जोड़ता है, पर अभी दोनों जोड़ों को एक संख्या में नहीं मिलाता।",
+        "ta": "நிரல் நிரலாகச் சரியாகக் கூட்டுகிறது; ஆனால் இரண்டு கூட்டுத்தொகைகளையும் ஒரே எண்ணாக இணைக்கத் தெரியவில்லை."
       }
     },
     "PV-HEARD": {
       "first": {
-        "en": "Build the number with bundles of ten and loose sticks, then write it under the bundles."
+        "en": "Build the number with bundles of ten and loose sticks, then write it under the bundles.",
+        "hi": "दस-दस की गड्डियों और खुली तीलियों से संख्या बनाइए। फिर गड्डियों के नीचे उसे लिखवाइए।",
+        "ta": "பத்துக் கட்டுகளையும் தனிக்குச்சிகளையும் வைத்து எண்ணை உருவாக்குங்கள். பிறகு கட்டுகளுக்குக் கீழே அதை எழுதச் சொல்லுங்கள்."
       },
       "spot": {
-        "en": "A number with too many digits, or a zero in the middle, for a number you dictated."
+        "en": "A number with too many digits, or a zero in the middle, for a number you dictated.",
+        "hi": "आपके बोले हुए अंक के लिए बहुत ज़्यादा अंकों वाली संख्या, या बीच में एक शून्य।",
+        "ta": "நீங்கள் சொல்லிக் கொடுத்த எண்ணுக்கு அதிக இலக்கங்கள் அல்லது நடுவில் ஒரு பூஜ்ஜியம் இருக்கும்."
       },
       "what": {
-        "en": "The child writes a number the way it sounds. She writes the tens, then the ones, as two numbers side by side."
+        "en": "The child writes a number the way it sounds. She writes the parts of the number (hundreds, tens, ones) one after another, each as a number of its own.",
+        "hi": "बच्चा संख्या को वैसे ही लिखता है जैसे वह बोली जाती है। वह संख्या के हिस्से (सैकड़ा, दहाई, इकाई) एक के बाद एक लिखता है, हर हिस्सा अपनी अलग संख्या के रूप में।",
+        "ta": "குழந்தை ஒரு எண்ணை அது ஒலிக்கும் விதத்திலேயே எழுதுகிறது. நூறு, பத்து, ஒன்று என்ற பகுதிகளை ஒன்றன்பின் ஒன்றாக, ஒவ்வொன்றையும் தனி எண்ணாக எழுதுகிறது."
       },
       "why": {
-        "en": "In speech we say \"forty\" and \"three\" separately. The child writes each part down in full instead of putting the digits in their places."
+        "en": "A number is said in parts, such as hundreds, tens and ones. The child writes each part down in full, with its zeros, instead of putting each digit in its own place.",
+        "hi": "संख्या हिस्सों में बोली जाती है, जैसे सैकड़ा, दहाई और इकाई। बच्चा हर हिस्से को शून्यों के साथ पूरा लिख देता है, हर अंक को उसके अपने स्थान पर रखने के बजाय।",
+        "ta": "ஒரு எண் நூறுகள், பத்துகள், ஒன்றுகள் என்று பகுதிகளாகச் சொல்லப்படுகிறது. குழந்தை ஒவ்வொரு பகுதியையும் பூஜ்ஜியங்களுடன் முழுமையாக எழுதுகிறது; ஒவ்வொரு இலக்கத்தையும் அதனதன் இடத்தில் வைப்பதில்லை."
       }
     },
     "PV-REVERSE": {
       "first": {
-        "en": "Ask her to build the number with bundles. Count the bundles first, then the loose sticks."
+        "en": "Ask her to build the number with bundles. Count the bundles first, then the loose sticks.",
+        "hi": "उससे गड्डियों से संख्या बनवाइए। पहले गड्डियाँ गिनवाइए, फिर खुली तीलियाँ।",
+        "ta": "கட்டுகளால் எண்ணை உருவாக்கச் சொல்லுங்கள். முதலில் கட்டுகளை எண்ணுங்கள், பிறகு தனிக்குச்சிகளை எண்ணுங்கள்."
       },
       "spot": {
-        "en": "The right digits in the wrong places, such as a number written back to front."
+        "en": "The right digits in the wrong places, such as a number written back to front.",
+        "hi": "सही अंक ग़लत स्थानों पर, जैसे संख्या उलटी लिखी हो।",
+        "ta": "சரியான இலக்கங்கள் தவறான இடங்களில் இருக்கும்; எண் பின்னாலிருந்து முன்னாக எழுதியது போலத் தெரியும்."
       },
       "what": {
-        "en": "The child writes the tens digit and the ones digit the wrong way round."
+        "en": "The child writes the tens digit and the ones digit the wrong way round.",
+        "hi": "बच्चा दहाई का अंक और इकाई का अंक उलटा लिखता है।",
+        "ta": "குழந்தை பத்தின் இலக்கத்தையும் ஒன்றின் இலக்கத்தையும் மாற்றி எழுதுகிறது."
       },
       "why": {
-        "en": "Some number words say the ones first, so the child writes the digits in the order she hears them."
+        "en": "Some number words say the ones first, so the child writes the digits in the order she hears them.",
+        "hi": "कुछ संख्या-नाम पहले इकाई बोलते हैं, इसलिए बच्चा अंकों को उसी क्रम में लिखता है जिसमें वह उन्हें सुनता है।",
+        "ta": "சில எண் பெயர்கள் ஒன்றுகளை முதலில் சொல்கின்றன. அதனால் குழந்தை கேட்கும் வரிசையிலேயே இலக்கங்களை எழுதுகிறது."
       }
     },
     "SUB-NODEC": {
       "first": {
-        "en": "Use bundles. Each time a bundle is opened, move one bundle off the tens side before subtracting."
+        "en": "Use bundles. Each time a bundle is opened, move one bundle off the tens side before subtracting.",
+        "hi": "गड्डियों का प्रयोग कीजिए। हर बार जब गड्डी खोली जाए, तो घटाने से पहले दहाई की ओर से एक गड्डी हटाइए।",
+        "ta": "கட்டுகளைப் பயன்படுத்துங்கள். ஒவ்வொரு முறை ஒரு கட்டைப் பிரிக்கும்போதும், கழிப்பதற்கு முன் பத்துகள் பக்கத்திலிருந்து ஒரு கட்டை எடுத்து விடுங்கள்."
       },
       "spot": {
-        "en": "The ones column is right, and the tens column is one too big."
+        "en": "The ones column is right, and the tens column is one too big.",
+        "hi": "इकाई का स्तंभ सही होता है, और दहाई का स्तंभ एक ज़्यादा होता है।",
+        "ta": "ஒன்றுகள் நிரல் சரியாக இருக்கும்; பத்துகள் நிரல் ஒன்று அதிகமாக இருக்கும்."
       },
       "what": {
-        "en": "The child borrows a ten for the ones column but does not take one away from the tens column."
+        "en": "The child borrows a ten for the ones column but does not take one away from the tens column.",
+        "hi": "बच्चा इकाई के स्तंभ के लिए एक दहाई उधार लेता है, पर दहाई के स्तंभ में से एक कम नहीं करता।",
+        "ta": "ஒன்றுகள் நிரலுக்காகக் குழந்தை ஒரு பத்தைக் கடன் வாங்குகிறது; ஆனால் பத்துகள் நிரலிலிருந்து ஒன்றைக் குறைப்பதில்லை."
       },
       "why": {
-        "en": "She has learned to add ten to the ones, but the step of reducing the tens digit by one is missing."
+        "en": "She has learned to add ten to the ones, but the step of reducing the tens digit by one is missing.",
+        "hi": "उसने इकाइयों में दस जोड़ना सीख लिया है, पर दहाई के अंक को एक घटाने वाला क़दम छूट जाता है।",
+        "ta": "ஒன்றுகளுடன் பத்தைச் சேர்க்கக் கற்றுக்கொண்டிருக்கிறது; ஆனால் பத்துகளின் இலக்கத்தை ஒன்று குறைக்கும் படி விடுபடுகிறது."
       }
     },
     "SUB-SFL": {
       "first": {
-        "en": "Show the sum with bundles. When there are too few loose sticks, open one bundle and count again."
+        "en": "Show the sum with bundles. When there are too few loose sticks, open one bundle and count again.",
+        "hi": "सवाल गड्डियों से दिखाइए। जब खुली तीलियाँ कम पड़ें, तो एक गड्डी खोलकर दोबारा गिनिए।",
+        "ta": "கட்டுகளால் கணக்கைக் காட்டுங்கள். தனிக்குச்சிகள் போதாதபோது ஒரு கட்டைப் பிரித்து மீண்டும் எண்ணுங்கள்."
       },
       "spot": {
-        "en": "Every column has an answer, but the answer is bigger than it should be. No column has a borrow mark."
+        "en": "Every column has an answer, but the answer is bigger than it should be. No column has a borrow mark.",
+        "hi": "हर स्तंभ में उत्तर होता है, पर उत्तर जितना होना चाहिए उससे बड़ा होता है। किसी स्तंभ में उधार का निशान नहीं होता।",
+        "ta": "ஒவ்வொரு நிரலுக்கும் விடை இருக்கும், ஆனால் விடை இருக்க வேண்டியதை விடப் பெரிதாக இருக்கும். எந்த நிரலிலும் கடன் குறி இருக்காது."
       },
       "what": {
-        "en": "In each column the child takes the smaller digit from the larger one, even when the smaller digit is on top."
+        "en": "In each column the child takes the smaller digit from the larger one, even when the smaller digit is on top.",
+        "hi": "हर स्तंभ में बच्चा बड़े अंक में से छोटा अंक घटा देता है, भले ही छोटा अंक ऊपर हो।",
+        "ta": "ஒவ்வொரு நிரலிலும், சிறிய இலக்கம் மேலே இருந்தாலும், பெரிய இலக்கத்திலிருந்து சிறிய இலக்கத்தைக் குழந்தை கழிக்கிறது."
       },
       "why": {
-        "en": "She treats each column on its own and wants a positive answer, so she turns the sum round. She does not yet see that a ten can be opened to make ten more ones."
+        "en": "She treats each column on its own and wants a positive answer, so she turns the sum round. She does not yet see that a ten can be opened to make ten more ones.",
+        "hi": "वह हर स्तंभ को अलग देखता है और सकारात्मक उत्तर चाहता है, इसलिए सवाल को पलट देता है। उसे अभी यह नहीं दिखता कि एक दहाई खोलकर दस और इकाइयाँ मिल सकती हैं।",
+        "ta": "ஒவ்வொரு நிரலையும் தனியாகப் பார்த்து, நேர்மறை விடை வர வேண்டும் என்பதற்காகக் கணக்கைத் திருப்பிவிடுகிறது. ஒரு பத்தைப் பிரித்து இன்னும் பத்து ஒன்றுகளைப் பெறலாம் என்பது இன்னும் புரியவில்லை."
       }
     }
   },
@@ -118,22 +166,42 @@
         "at_home": {
           "en": [
             "Ask a child to count 20 stones in two piles, put them together, and say how many tens and ones."
+          ],
+          "hi": [
+            "किसी बच्चे से बीस पत्थरों को दो ढेरों में गिनने, उन्हें मिलाने, और बताने को कहिए कि कितनी दहाई और कितनी इकाई हैं।"
+          ],
+          "ta": [
+            "ஒரு குழந்தையிடம் இருபது கற்களை இரண்டு குவியல்களாக எண்ணி, ஒன்றாகச் சேர்த்து, எத்தனை பத்துகள், எத்தனை ஒன்றுகள் என்று சொல்லச் சொல்லுங்கள்."
           ]
         },
         "if_not_improving": {
-          "en": "Practise \"ten ones make one ten\" with sticks alone before any written sum. Then add the written sum afterwards, with the sticks beside it."
+          "en": "Practise \"ten ones make one ten\" with sticks alone before any written sum. Then add the written sum afterwards, with the sticks beside it.",
+          "hi": "लिखे हुए जोड़ से पहले केवल तीलियों से “दस इकाई मिलकर एक दहाई” का अभ्यास कीजिए। फिर तीलियों को बगल में रखकर लिखा हुआ जोड़ जोड़िए।",
+          "ta": "எழுதிய கணக்குக்கு முன், குச்சிகளை மட்டும் வைத்துப் பத்து ஒன்றுகள் சேர்ந்தால் ஒரு பத்து என்று பயிற்சி செய்யுங்கள். பிறகு குச்சிகளை அருகில் வைத்துக்கொண்டு எழுதிய கணக்கைச் சேர்த்துக்கொள்ளுங்கள்."
         },
         "teaching_mistakes": {
           "en": [
             "Showing the carry as a small written digit without showing where the ten comes from.",
             "Only giving sums that carry, so children carry every time."
+          ],
+          "hi": [
+            "हासिल को एक छोटे लिखे अंक के रूप में दिखाना, बिना यह दिखाए कि दस कहाँ से आया।",
+            "केवल वही जोड़ देना जिनमें हासिल लगता है, जिससे बच्चे हर बार हासिल लगा देते हैं।"
+          ],
+          "ta": [
+            "பத்து எங்கிருந்து வருகிறது என்று காட்டாமல், அதை ஒரு சிறிய எண்ணாக மட்டும் எழுதிக் காட்டுவது.",
+            "பத்தை எடுத்துச் செல்ல வேண்டிய கணக்குகளை மட்டுமே கொடுப்பது; அதனால் குழந்தைகள் ஒவ்வொரு முறையும் எடுத்துச் செல்கிறார்கள்."
           ]
         },
         "ten_minute_activity": {
-          "en": "Small group with bundles and loose sticks. Build the first number, add the second number's sticks, and tie ten loose sticks into a bundle before writing the answer. Do four sums that carry and two that do not."
+          "en": "Small group with bundles and loose sticks. Build the first number, add the second number's sticks, and tie ten loose sticks into a bundle before writing the answer. Do four sums that carry and two that do not.",
+          "hi": "गड्डियों और खुली तीलियों के साथ छोटा समूह। पहली संख्या बनाइए, दूसरी संख्या की तीलियाँ जोड़िए, और उत्तर लिखने से पहले दस खुली तीलियों को गड्डी में बाँधिए। चार जोड़ जिनमें हासिल लगे और दो जिनमें न लगे, कीजिए।",
+          "ta": "கட்டுகளும் தனிக்குச்சிகளும் கொண்ட சிறு குழு. முதல் எண்ணை உருவாக்கி, இரண்டாவது எண்ணின் குச்சிகளைச் சேர்த்து, விடை எழுதுவதற்கு முன் பத்துத் தனிக்குச்சிகளை ஒரு கட்டாகக் கட்டுங்கள். பத்தை எடுத்துச் செல்ல வேண்டிய நான்கு கணக்குகளும், தேவையில்லாத இரண்டு கணக்குகளும் செய்யுங்கள்."
         },
         "two_minute_check": {
-          "en": "Give one addition where the ones add to more than ten. Ask the child to add it with bundles and sticks. Notice whether she ties ten loose sticks into a new bundle."
+          "en": "Give one addition where the ones add to more than ten. Ask the child to add it with bundles and sticks. Notice whether she ties ten loose sticks into a new bundle.",
+          "hi": "एक जोड़ दीजिए जिसमें इकाइयों का जोड़ दस से ज़्यादा हो। बच्चे से गड्डियों और तीलियों से उसे जोड़ने को कहिए। देखिए कि क्या वह दस खुली तीलियों को बाँधकर नई गड्डी बनाता है।",
+          "ta": "ஒன்றுகளின் கூட்டுத்தொகை பத்துக்கு மேல் வரும் ஒரு கூட்டல் கணக்கைக் கொடுங்கள். கட்டுகளையும் குச்சிகளையும் வைத்துக் கூட்டச் சொல்லுங்கள். பத்துத் தனிக்குச்சிகளை ஒரு புதிய கட்டாகக் கட்டுகிறதா என்று கவனியுங்கள்."
         }
       },
       "PV-HEARD": {
@@ -141,86 +209,164 @@
           "en": [
             "Ask a child to make a number from sticks or stones in bundles of ten and write it on the ground or a slate.",
             "Ask her to read a house number or a price aloud and say how many tens and ones it has."
+          ],
+          "hi": [
+            "किसी बच्चे से तीलियों या पत्थरों को दस-दस की गड्डियों में बाँधकर संख्या बनाने और उसे ज़मीन या स्लेट पर लिखने को कहिए।",
+            "उससे घर का नंबर या कोई दाम ज़ोर से पढ़वाइए और बताने को कहिए कि उसमें कितनी दहाई और कितनी इकाई है।"
+          ],
+          "ta": [
+            "ஒரு குழந்தையிடம் குச்சிகள் அல்லது கற்களைப் பத்துப் பத்தாகக் கட்டி ஒரு எண்ணை உருவாக்கி, தரையிலோ சிலேட்டிலோ எழுதச் சொல்லுங்கள்.",
+            "வீட்டு எண்ணையோ விலையையோ சத்தமாக வாசித்து, அதில் எத்தனை பத்துகள், எத்தனை ஒன்றுகள் என்று சொல்லச் சொல்லுங்கள்."
           ]
         },
         "if_not_improving": {
-          "en": "Go back to building and reading two-digit numbers only, and add place-value cards (tens card laid over the ones card) before writing."
+          "en": "Go back to building and reading two-digit numbers only, and add place-value cards (tens card laid over the ones card) before writing.",
+          "hi": "केवल दो अंकों की संख्याएँ बनाने और पढ़ने पर लौट आइए, और लिखने से पहले स्थानीय मान के कार्ड (दहाई का कार्ड इकाई के कार्ड के ऊपर रखकर) जोड़िए।",
+          "ta": "இரண்டு இலக்க எண்களை உருவாக்கி வாசிப்பதற்கு மட்டும் திரும்பிச் செல்லுங்கள்; எழுதுவதற்கு முன் இடமதிப்பு அட்டைகளையும் (பத்துகள் அட்டையை ஒன்றுகள் அட்டையின் மேல் வைத்து) சேர்த்துக்கொள்ளுங்கள்."
         },
         "teaching_mistakes": {
           "en": [
             "Dictating many numbers fast, so children copy the sound and not the place.",
             "Marking only the final answer and not asking how the child wrote it."
+          ],
+          "hi": [
+            "बहुत सारी संख्याएँ तेज़ी से बोलकर लिखवाना, जिससे बच्चे स्थान देखे बिना आवाज़ की नक़ल करते हैं।",
+            "केवल अंतिम उत्तर जाँचना और यह न पूछना कि बच्चे ने उसे कैसे लिखा।"
+          ],
+          "ta": [
+            "நிறைய எண்களை வேகமாகச் சொல்லிக் கொடுப்பது; அதனால் குழந்தைகள் இடத்தைப் பார்க்காமல் ஒலியைப் பார்த்து எழுதுகிறார்கள்.",
+            "இறுதி விடையை மட்டும் சரிபார்த்து, குழந்தை எப்படி எழுதியது என்று கேட்காமல் விடுவது."
           ]
         },
         "ten_minute_activity": {
-          "en": "Small group with bundles of ten and loose sticks. Say a number, the group builds it, one child writes it under the sticks, and the group reads the written number back aloud. Do six numbers, two of them with a zero in the ones place."
+          "en": "Small group with bundles of ten and loose sticks. Say a number, the group builds it, one child writes it under the sticks, and the group reads the written number back aloud. Do six numbers, two of them with a zero in the ones place.",
+          "hi": "दस की गड्डियों और खुली तीलियों के साथ छोटा समूह। एक संख्या बोलिए, समूह उसे बनाए, एक बच्चा तीलियों के नीचे उसे लिखे, और समूह लिखी संख्या को ज़ोर से पढ़े। छह संख्याएँ कीजिए, उनमें से दो में इकाई के स्थान पर शून्य हो।",
+          "ta": "பத்துக் கட்டுகளும் தனிக்குச்சிகளும் கொண்ட சிறு குழு. ஒரு எண்ணைச் சொல்லுங்கள்; குழு அதை உருவாக்கும்; ஒரு குழந்தை குச்சிகளுக்குக் கீழே அதை எழுதும்; குழு எழுதிய எண்ணைச் சத்தமாக வாசிக்கும். ஆறு எண்கள் செய்யுங்கள்; அவற்றில் இரண்டில் ஒன்றுகள் இடத்தில் பூஜ்ஜியம் இருக்கட்டும்."
         },
         "two_minute_check": {
-          "en": "Say \"sixty-two\" to three children, one at a time, and ask each to write it. Then ask each to build it with bundles and say how many bundles and loose sticks. Notice who writes 602."
+          "en": "Say \"sixty-two\" to three children, one at a time, and ask each to write it. Then ask each to build it with bundles and say how many bundles and loose sticks. Notice who writes {pv:602}.",
+          "hi": "तीन बच्चों से, एक-एक करके, कहिए “बासठ” और हर एक से लिखवाइए। फिर हर एक से गड्डियों से उसे बनवाइए और बताने को कहिए कि कितनी गड्डियाँ और कितनी खुली तीलियाँ हैं। देखिए कि कौन {pv:602} लिखता है।",
+          "ta": "அறுபத்து இரண்டு என்று மூன்று குழந்தைகளிடம் ஒவ்வொருவராகச் சொல்லி எழுதச் சொல்லுங்கள். பிறகு ஒவ்வொருவரையும் கட்டுகளால் அதை உருவாக்கி, எத்தனை கட்டுகள், எத்தனை தனிக்குச்சிகள் என்று சொல்லச் சொல்லுங்கள். யார் {pv:602} என்று எழுதுகிறார்கள் என்று கவனியுங்கள்."
         }
       },
       "PV-REVERSE": {
         "at_home": {
           "en": [
             "Ask a child to find two numbers made from the same two digits and say which is bigger and why."
+          ],
+          "hi": [
+            "किसी बच्चे से एक ही दो अंकों से बनी दो संख्याएँ ढूँढ़ने और बताने को कहिए कि कौन-सी बड़ी है और क्यों।"
+          ],
+          "ta": [
+            "ஒரே இரண்டு இலக்கங்களால் ஆன இரண்டு எண்களைக் கண்டுபிடித்து, எது பெரியது, ஏன் என்று சொல்லச் சொல்லுங்கள்."
           ]
         },
         "if_not_improving": {
-          "en": "Spend a week on reading numbers aloud tens first, always with bundles in front of the child, before any writing."
+          "en": "Spend a week on reading numbers aloud tens first, always with bundles in front of the child, before any writing.",
+          "hi": "लिखने से पहले एक हफ़्ता संख्याओं को दहाई से शुरू करके ज़ोर से पढ़ने पर लगाइए, हमेशा बच्चे के सामने गड्डियाँ रखकर।",
+          "ta": "எழுதுவதற்கு முன் ஒரு வாரம், குழந்தையின் முன் எப்போதும் கட்டுகளை வைத்துக்கொண்டு, எண்களைப் பத்துகளிலிருந்து தொடங்கிச் சத்தமாக வாசிப்பதில் செலவிடுங்கள்."
         },
         "teaching_mistakes": {
           "en": [
             "Reading a number ones-first while writing it tens-first, without saying so."
+          ],
+          "hi": [
+            "संख्या को इकाई से पहले बोलना और दहाई से पहले लिखना, और यह बात बताए बिना छोड़ देना।"
+          ],
+          "ta": [
+            "ஒரு எண்ணை ஒன்றுகளிலிருந்து தொடங்கிச் சொல்லிவிட்டு, பத்துகளிலிருந்து தொடங்கி எழுதுவது; இதை வெளிப்படையாகச் சொல்லாமல் விடுவது."
           ]
         },
         "ten_minute_activity": {
-          "en": "Small group with place-value cards. Build a number with bundles, lay the tens card and the ones card to match, then swap the cards to make the reversed number and compare the two with the sticks."
+          "en": "Small group with place-value cards. Build a number with bundles, lay the tens card and the ones card to match, then swap the cards to make the reversed number and compare the two with the sticks.",
+          "hi": "स्थानीय मान के कार्डों के साथ छोटा समूह। गड्डियों से एक संख्या बनाइए, उसके अनुसार दहाई का कार्ड और इकाई का कार्ड रखिए, फिर कार्ड बदलकर उलटी संख्या बनाइए और तीलियों से दोनों की तुलना कीजिए।",
+          "ta": "இடமதிப்பு அட்டைகளுடன் சிறு குழு. கட்டுகளால் ஒரு எண்ணை உருவாக்கி, அதற்கேற்ப பத்துகள் அட்டையையும் ஒன்றுகள் அட்டையையும் வையுங்கள். பிறகு அட்டைகளை இடம் மாற்றித் தலைகீழ் எண்ணை உருவாக்கி, குச்சிகளால் இரண்டையும் ஒப்பிடுங்கள்."
         },
         "two_minute_check": {
-          "en": "Show a number built from 3 bundles and 6 loose sticks. Ask three children to write it. Notice who writes the ones digit first."
+          "en": "Show a number built from 3 bundles and 6 loose sticks. Ask three children to write it. Notice who writes the ones digit first.",
+          "hi": "तीन गड्डियों और छह खुली तीलियों से बनी एक संख्या दिखाइए। तीन बच्चों से उसे लिखवाइए। देखिए कि कौन इकाई का अंक पहले लिखता है।",
+          "ta": "மூன்று கட்டுகளும் ஆறு தனிக்குச்சிகளும் கொண்டு உருவாக்கிய ஒரு எண்ணைக் காட்டுங்கள். மூன்று குழந்தைகளை எழுதச் சொல்லுங்கள். யார் ஒன்றுகளின் இலக்கத்தை முதலில் எழுதுகிறார்கள் என்று கவனியுங்கள்."
         }
       },
       "SUB-NODEC": {
         "at_home": {
           "en": [
             "Ask a child to open one bundle of ten sticks and say how many bundles and how many loose sticks she has now."
+          ],
+          "hi": [
+            "किसी बच्चे से दस तीलियों की एक गड्डी खोलने और बताने को कहिए कि अब उसके पास कितनी गड्डियाँ और कितनी खुली तीलियाँ हैं।"
+          ],
+          "ta": [
+            "ஒரு பத்துக் குச்சிக் கட்டைப் பிரித்து, இப்போது எத்தனை கட்டுகள், எத்தனை தனிக்குச்சிகள் உள்ளன என்று சொல்லச் சொல்லுங்கள்."
           ]
         },
         "if_not_improving": {
-          "en": "Add the check by adding back to every sum, so a missing step shows at once."
+          "en": "Add the check by adding back to every sum, so a missing step shows at once.",
+          "hi": "हर सवाल में जोड़कर जाँचना जोड़िए, ताकि छूटा हुआ क़दम तुरंत दिख जाए।",
+          "ta": "ஒவ்வொரு கணக்கிலும் கூட்டிச் சரிபார்ப்பதைச் சேர்த்துக்கொள்ளுங்கள்; அப்போது விடுபட்ட படி உடனே தெரியும்."
         },
         "teaching_mistakes": {
           "en": [
             "Writing the small \"1\" next to the ones digit but not crossing out the tens digit."
+          ],
+          "hi": [
+            "इकाई के अंक के पास छोटा एक लिख देना, पर दहाई के अंक को न काटना।"
+          ],
+          "ta": [
+            "ஒன்றுகள் இலக்கத்தின் அருகில் சிறிய ஒன்றை எழுதிவிட்டு, பத்துகள் இலக்கத்தை அடிக்காமல் விடுவது."
           ]
         },
         "ten_minute_activity": {
-          "en": "Small group with bundles. Every time a bundle is opened, the child moves one bundle from the tens side to the ones side and says \"one ten fewer\". Do four sums, then check each one by adding back."
+          "en": "Small group with bundles. Every time a bundle is opened, the child moves one bundle from the tens side to the ones side and says \"one ten fewer\". Do four sums, then check each one by adding back.",
+          "hi": "गड्डियों के साथ छोटा समूह। हर बार गड्डी खुलने पर बच्चा दहाई की ओर से एक गड्डी इकाई की ओर ले जाए और कहे “एक दहाई कम”। चार सवाल कीजिए, फिर हर एक को जोड़कर जाँचिए।",
+          "ta": "கட்டுகளுடன் சிறு குழு. ஒவ்வொரு முறை ஒரு கட்டைப் பிரிக்கும்போதும், குழந்தை பத்துகள் பக்கத்திலிருந்து ஒரு கட்டை ஒன்றுகள் பக்கம் நகர்த்தி ஒரு பத்து குறைவு என்று சொல்லும். நான்கு கணக்குகள் செய்து, ஒவ்வொன்றையும் கூட்டிச் சரிபாருங்கள்."
         },
         "two_minute_check": {
-          "en": "Give one subtraction that needs borrowing. Ask the child to show it with bundles and tell you what happens to the tens after she opens a bundle."
+          "en": "Give one subtraction that needs borrowing. Ask the child to show it with bundles and tell you what happens to the tens after she opens a bundle.",
+          "hi": "एक घटाव दीजिए जिसमें उधार लेना पड़े। बच्चे से उसे गड्डियों से दिखाने को कहिए और बताने को कहिए कि गड्डी खोलने के बाद दहाइयों का क्या होता है।",
+          "ta": "கடன் வாங்க வேண்டிய ஒரு கழித்தல் கணக்கைக் கொடுங்கள். கட்டுகளால் அதைக் காட்டச் சொல்லி, ஒரு கட்டைப் பிரித்த பிறகு பத்துகளுக்கு என்ன ஆகிறது என்று சொல்லச் சொல்லுங்கள்."
         }
       },
       "SUB-SFL": {
         "at_home": {
           "en": [
             "Ask a child to take 8 sticks away from a bundle and 3 loose sticks, and tell how she did it."
+          ],
+          "hi": [
+            "किसी बच्चे से एक गड्डी और तीन खुली तीलियों में से आठ तीलियाँ निकालने को कहिए और पूछिए कि उसने कैसे किया।"
+          ],
+          "ta": [
+            "ஒரு கட்டிலிருந்தும் மூன்று தனிக்குச்சிகளிலிருந்தும் எட்டு குச்சிகளை எடுக்கச் சொல்லி, எப்படிச் செய்தது என்று சொல்லச் சொல்லுங்கள்."
           ]
         },
         "if_not_improving": {
-          "en": "Try subtracting in parts or subtracting a nearby ten (see the other strategies), or practise one step at a time - open a bundle, count the ones, count the tens."
+          "en": "Try subtracting in parts or subtracting a nearby ten (see the other strategies), or practise one step at a time - open a bundle, count the ones, count the tens.",
+          "hi": "हिस्सों में घटाना या पास की दहाई घटाना आज़माइए (दूसरी युक्तियाँ देखिए), या एक-एक क़दम का अभ्यास कीजिए: गड्डी खोलिए, इकाइयाँ गिनिए, दहाइयाँ गिनिए।",
+          "ta": "பகுதிகளாகக் கழித்தல் அல்லது அருகிலுள்ள பத்தைக் கழித்தல் முயலுங்கள் (மற்ற உத்திகளைப் பாருங்கள்); அல்லது ஒரு நேரத்தில் ஒரு படி பயிற்சி செய்யுங்கள்: கட்டைப் பிரியுங்கள், ஒன்றுகளை எண்ணுங்கள், பத்துகளை எண்ணுங்கள்."
         },
         "teaching_mistakes": {
           "en": [
             "Teaching \"borrow\" as a rule to follow without showing a bundle being opened.",
             "Giving only sums that need borrowing, so children stop checking whether they need it."
+          ],
+          "hi": [
+            "उधार लेने को एक नियम की तरह सिखाना, बिना गड्डी खुलती दिखाए।",
+            "केवल वही सवाल देना जिनमें उधार लेना पड़ता है, जिससे बच्चे यह जाँचना बंद कर देते हैं कि उसकी ज़रूरत है या नहीं।"
+          ],
+          "ta": [
+            "கடன் வாங்குதலை, கட்டு பிரிக்கப்படுவதைக் காட்டாமல், பின்பற்ற வேண்டிய விதியாகக் கற்பிப்பது.",
+            "கடன் வாங்க வேண்டிய கணக்குகளை மட்டுமே கொடுப்பது; அதனால் தேவையா என்று குழந்தைகள் சரிபார்ப்பதை நிறுத்திவிடுகிறார்கள்."
           ]
         },
         "ten_minute_activity": {
-          "en": "Small group with bundles. Build the top number, say \"I need more ones\", open a bundle into ten loose sticks, then take away. The group says each step aloud. Do four sums that need an opened bundle and two that do not."
+          "en": "Small group with bundles. Build the top number, say \"I need more ones\", open a bundle into ten loose sticks, then take away. The group says each step aloud. Do four sums that need an opened bundle and two that do not.",
+          "hi": "गड्डियों के साथ छोटा समूह। ऊपर की संख्या बनाइए, कहिए “मुझे और इकाइयाँ चाहिए”, एक गड्डी खोलकर दस खुली तीलियाँ कीजिए, फिर घटाइए। समूह हर क़दम ज़ोर से बोले। चार सवाल जिनमें गड्डी खोलनी पड़े और दो जिनमें न खोलनी पड़े, कीजिए।",
+          "ta": "கட்டுகளுடன் சிறு குழு. மேல் எண்ணை உருவாக்கி, எனக்கு இன்னும் ஒன்றுகள் வேண்டும் என்று சொல்லி, ஒரு கட்டைப் பிரித்துப் பத்துத் தனிக்குச்சிகளாக்கி, பிறகு கழியுங்கள். ஒவ்வொரு படியையும் குழு சத்தமாகச் சொல்லும். கட்டைப் பிரிக்க வேண்டிய நான்கு கணக்குகளும், தேவையில்லாத இரண்டு கணக்குகளும் செய்யுங்கள்."
         },
         "two_minute_check": {
-          "en": "Write a subtraction where the ones digit on top is smaller. Ask one child \"is 2 take away 6 the same as 6 take away 2?\" and listen. Then ask her to do the whole sum with bundles."
+          "en": "Write a subtraction where the ones digit on top is smaller. Ask one child \"is 2 take away 6 the same as 6 take away 2?\" and listen. Then ask her to do the whole sum with bundles.",
+          "hi": "एक घटाव लिखिए जिसमें ऊपर का इकाई अंक छोटा हो। एक बच्चे से पूछिए “दो में से छह घटाना और छह में से दो घटाना क्या एक ही है?” और सुनिए। फिर उससे पूरा सवाल गड्डियों से करवाइए।",
+          "ta": "மேலே உள்ள ஒன்றுகள் இலக்கம் சிறியதாக இருக்கும் ஒரு கழித்தல் கணக்கை எழுதுங்கள். ஒரு குழந்தையிடம் இரண்டிலிருந்து ஆறு கழிப்பதும் ஆறிலிருந்து இரண்டு கழிப்பதும் ஒன்றா என்று கேட்டுக் கவனியுங்கள். பிறகு முழுக் கணக்கையும் கட்டுகளால் செய்யச் சொல்லுங்கள்."
         }
       }
     },
@@ -228,20 +374,36 @@
       "PV-REVERSE": [
         {
           "description": {
-            "en": "Say a number tens first, build it with bundles, then write the tens digit and then the ones digit."
+            "en": "Say a number tens first, build it with bundles, then write the tens digit and then the ones digit.",
+            "hi": "संख्या को दहाई से पहले बोलिए, गड्डियों से बनाइए, फिर दहाई का अंक और उसके बाद इकाई का अंक लिखिए।",
+            "ta": "ஒரு எண்ணைப் பத்துகளிலிருந்து தொடங்கிச் சொல்லுங்கள்; கட்டுகளால் உருவாக்குங்கள்; பிறகு பத்துகள் இலக்கத்தையும் அதன்பின் ஒன்றுகள் இலக்கத்தையும் எழுதுங்கள்."
           },
           "id": "say_build_write",
           "label": {
-            "en": "Say it, build it, write it"
+            "en": "Say it, build it, write it",
+            "hi": "बोलो, बनाओ, लिखो",
+            "ta": "சொல், உருவாக்கு, எழுது"
           },
           "materials": {
-            "en": "Bundles of ten sticks, loose sticks, place-value cards"
+            "en": "Bundles of ten sticks, loose sticks, place-value cards",
+            "hi": "दस-दस तीलियों की गड्डियाँ, खुली तीलियाँ, स्थानीय मान के कार्ड",
+            "ta": "பத்துக் குச்சிக் கட்டுகள், தனிக்குச்சிகள், இடமதிப்பு அட்டைகள்"
           },
           "steps": {
             "en": [
               "Say the number tens first (\"six tens and one\").",
               "Build it with bundles and loose sticks.",
               "Write the tens digit, then the ones digit, under the sticks."
+            ],
+            "hi": [
+              "संख्या को दहाई से पहले बोलिए (“छह दहाई और एक”)।",
+              "उसे गड्डियों और खुली तीलियों से बनाइए।",
+              "तीलियों के नीचे पहले दहाई का अंक, फिर इकाई का अंक लिखिए।"
+            ],
+            "ta": [
+              "எண்ணைப் பத்துகளிலிருந்து தொடங்கிச் சொல்லுங்கள் (ஆறு பத்துகளும் ஒன்றும்).",
+              "கட்டுகளாலும் தனிக்குச்சிகளாலும் அதை உருவாக்குங்கள்.",
+              "குச்சிகளுக்குக் கீழே பத்துகள் இலக்கத்தையும் பிறகு ஒன்றுகள் இலக்கத்தையும் எழுதுங்கள்."
             ]
           }
         }
@@ -252,83 +414,163 @@
     "strategy_details": {
       "ask_explain": {
         "materials": {
-          "en": "None"
+          "en": "None",
+          "hi": "None",
+          "ta": "None"
         },
         "steps": {
           "en": [
             "Ask \"How did you get that?\"",
             "Listen all the way through before saying whether it is right.",
             "Ask her to show the same step with sticks."
+          ],
+          "hi": [
+            "पूछिए “तुमने यह कैसे निकाला?”",
+            "सही है या नहीं कहने से पहले पूरी बात सुनिए।",
+            "उससे वही क़दम तीलियों से दिखाने को कहिए।"
+          ],
+          "ta": [
+            "இதை எப்படிப் பெற்றாய் என்று கேளுங்கள்.",
+            "சரியா என்று சொல்வதற்கு முன் முழுவதையும் கேளுங்கள்.",
+            "அதே படியைக் குச்சிகளால் காட்டச் சொல்லுங்கள்."
           ]
         }
       },
       "check_back": {
         "materials": {
-          "en": "Slate or notebook"
+          "en": "Slate or notebook",
+          "hi": "स्लेट या कॉपी",
+          "ta": "சிலேட் அல்லது குறிப்பேடு"
         },
         "steps": {
           "en": [
             "Add the answer to the number taken away.",
             "It must give the first number back.",
             "If it does not, find the step that changed it."
+          ],
+          "hi": [
+            "उत्तर को घटाई गई संख्या में जोड़िए।",
+            "इससे पहली संख्या वापस मिलनी चाहिए।",
+            "अगर नहीं मिलती, तो वह क़दम खोजिए जिसने उसे बदला।"
+          ],
+          "ta": [
+            "விடையைக் கழித்த எண்ணுடன் கூட்டுங்கள்.",
+            "அது முதல் எண்ணைத் திரும்பத் தர வேண்டும்.",
+            "தரவில்லை என்றால், மாற்றிய படியைக் கண்டுபிடியுங்கள்."
           ]
         }
       },
       "compensation": {
         "materials": {
-          "en": "A number line drawn on the ground or slate"
+          "en": "A number line drawn on the ground or slate",
+          "hi": "ज़मीन या स्लेट पर बनी संख्या-रेखा",
+          "ta": "தரையில் அல்லது சிலேட்டில் வரைந்த எண்கோடு"
         },
         "steps": {
           "en": [
             "Choose a number close to a ten.",
             "Take away the ten, then give back what you took too much."
+          ],
+          "hi": [
+            "दस के पास की कोई संख्या चुनिए।",
+            "दस घटाइए, फिर जो ज़्यादा घटा उसे वापस दीजिए।"
+          ],
+          "ta": [
+            "பத்துக்கு அருகில் உள்ள ஒரு எண்ணைத் தேர்ந்தெடுங்கள்.",
+            "பத்தைக் கழித்து, அதிகமாகக் கழித்ததைத் திருப்பிக் கொடுங்கள்."
           ]
         }
       },
       "decomposition": {
         "materials": {
-          "en": "Bundles of ten sticks, loose sticks"
+          "en": "Bundles of ten sticks, loose sticks",
+          "hi": "दस-दस तीलियों की गड्डियाँ, खुली तीलियाँ",
+          "ta": "பத்துக் குச்சிக் கட்டுகள், தனிக்குச்சிகள்"
         },
         "steps": {
           "en": [
             "Take away the tens first.",
             "Take away the ones in two steps, through the next ten.",
             "Say the whole sum aloud at the end."
+          ],
+          "hi": [
+            "पहले दहाइयाँ घटाइए।",
+            "इकाइयों को अगली दहाई से होकर दो क़दमों में घटाइए।",
+            "अंत में पूरा सवाल ज़ोर से बोलिए।"
+          ],
+          "ta": [
+            "முதலில் பத்துகளைக் கழியுங்கள்.",
+            "ஒன்றுகளை அடுத்த பத்தின் வழியாக இரண்டு படிகளில் கழியுங்கள்.",
+            "இறுதியில் முழுக் கணக்கையும் சத்தமாகச் சொல்லுங்கள்."
           ]
         }
       },
       "exchange_ten": {
         "materials": {
-          "en": "Bundles of ten sticks, loose sticks"
+          "en": "Bundles of ten sticks, loose sticks",
+          "hi": "दस-दस तीलियों की गड्डियाँ, खुली तीलियाँ",
+          "ta": "பத்துக் குச்சிக் கட்டுகள், தனிக்குச்சிகள்"
         },
         "steps": {
           "en": [
             "Build the top number.",
             "Ask \"can I take this many from the loose sticks?\"",
             "If not, open one bundle into ten loose sticks and count again."
+          ],
+          "hi": [
+            "ऊपर की संख्या बनाइए।",
+            "पूछिए “क्या मैं खुली तीलियों में से इतनी निकाल सकता हूँ?”",
+            "अगर नहीं, तो एक गड्डी खोलकर दस खुली तीलियाँ कीजिए और फिर गिनिए।"
+          ],
+          "ta": [
+            "மேல் எண்ணை உருவாக்குங்கள்.",
+            "தனிக்குச்சிகளிலிருந்து இவ்வளவு எடுக்க முடியுமா என்று கேளுங்கள்.",
+            "முடியாவிட்டால், ஒரு கட்டைப் பிரித்துப் பத்துத் தனிக்குச்சிகளாக்கி மீண்டும் எண்ணுங்கள்."
           ]
         }
       },
       "order_probe": {
         "materials": {
-          "en": "None"
+          "en": "None",
+          "hi": "None",
+          "ta": "None"
         },
         "steps": {
           "en": [
             "Ask one child \"is 2 take away 6 the same as 6 take away 2?\"",
             "Listen for why. Do not correct her yet."
+          ],
+          "hi": [
+            "एक बच्चे से पूछिए “दो में से छह घटाना और छह में से दो घटाना क्या एक ही है?”",
+            "सुनिए कि क्यों। अभी उसे सुधारिए मत।"
+          ],
+          "ta": [
+            "ஒரு குழந்தையிடம் இரண்டிலிருந்து ஆறு கழிப்பதும் ஆறிலிருந்து இரண்டு கழிப்பதும் ஒன்றா என்று கேளுங்கள்.",
+            "ஏன் என்று கவனியுங்கள். இன்னும் திருத்த வேண்டாம்."
           ]
         }
       },
       "show_bundles": {
         "materials": {
-          "en": "Bundles of ten sticks, loose sticks, a cloth or mat"
+          "en": "Bundles of ten sticks, loose sticks, a cloth or mat",
+          "hi": "दस-दस तीलियों की गड्डियाँ, खुली तीलियाँ, एक कपड़ा या चटाई",
+          "ta": "பத்துக் குச்சிக் கட்டுகள், தனிக்குச்சிகள், ஒரு துணி அல்லது பாய்"
         },
         "steps": {
           "en": [
             "Build the number with bundles and loose sticks.",
             "Ask the child to say how many tens and how many ones.",
             "Do the sum with the sticks, then write it."
+          ],
+          "hi": [
+            "गड्डियों और खुली तीलियों से संख्या बनाइए।",
+            "बच्चे से पूछिए कि कितनी दहाई और कितनी इकाई हैं।",
+            "तीलियों से सवाल कीजिए, फिर उसे लिखिए।"
+          ],
+          "ta": [
+            "கட்டுகளையும் தனிக்குச்சிகளையும் வைத்து எண்ணை உருவாக்குங்கள்.",
+            "எத்தனை பத்துகள், எத்தனை ஒன்றுகள் என்று குழந்தையைச் சொல்லச் சொல்லுங்கள்.",
+            "குச்சிகளால் கணக்கைச் செய்து, பிறகு எழுதுங்கள்."
           ]
         }
       }
@@ -338,7 +580,9 @@
   "strategies": {
     "ask_explain": {
       "description": {
-        "en": "The teacher asks \"How did you get that?\" and listens before saying whether it is right."
+        "en": "The teacher asks \"How did you get that?\" and listens before saying whether it is right.",
+        "hi": "शिक्षक पूछता है “तुमने यह कैसे निकाला?” और सही या ग़लत कहने से पहले ध्यान से सुनता है।",
+        "ta": "ஆசிரியர் இதை எப்படிப் பெற்றாய் என்று கேட்டு, சரியா தவறா என்று சொல்வதற்கு முன் கவனமாகக் கேட்கிறார்."
       },
       "fits": [
         "PV-HEARD",
@@ -358,7 +602,9 @@
     },
     "check_back": {
       "description": {
-        "en": "After a subtraction, add the answer to the smaller number. It must give the bigger number. A dropped borrow shows up at once."
+        "en": "After a subtraction, add the answer to the smaller number. It must give the bigger number. A dropped borrow shows up at once.",
+        "hi": "घटाने के बाद, उत्तर को छोटी संख्या में जोड़िए। इससे बड़ी संख्या वापस मिलनी चाहिए। छूटा हुआ उधार तुरंत दिख जाता है।",
+        "ta": "கழித்த பிறகு, விடையைச் சிறிய எண்ணுடன் கூட்டுங்கள். பெரிய எண் கிடைக்க வேண்டும். விடுபட்ட கடன் உடனே தெரிந்துவிடும்."
       },
       "fits": [
         "ADD-NOCARRY",
@@ -377,7 +623,9 @@
     },
     "compensation": {
       "description": {
-        "en": "For a number close to a ten, subtract the ten, then give back what was taken too much."
+        "en": "For a number close to a ten, subtract the ten, then give back what was taken too much.",
+        "hi": "दस के पास की संख्या के लिए, दस घटाइए, फिर जो ज़्यादा घटा उसे वापस दीजिए।",
+        "ta": "பத்துக்கு அருகில் உள்ள எண்ணுக்கு, அந்தப் பத்தைக் கழித்து, அதிகமாகக் கழித்ததைத் திருப்பிக் கொடுங்கள்."
       },
       "fits": [
         "SUB-SFL",
@@ -395,7 +643,9 @@
     },
     "decomposition": {
       "description": {
-        "en": "Subtract the tens, then the ones, bridging through a ten, shown with bundles."
+        "en": "Subtract the tens, then the ones, bridging through a ten, shown with bundles.",
+        "hi": "पहले दहाइयाँ घटाइए, फिर इकाइयाँ घटाइए, एक दहाई से होकर पुल बनाते हुए, गड्डियों से दिखाते हुए।",
+        "ta": "பத்துகளைக் கழித்து, பிறகு ஒன்றுகளை ஒரு பத்தின் வழியாகப் பாலம் அமைத்துக் கழியுங்கள்; கட்டுகளால் காட்டுங்கள்."
       },
       "fits": [
         "SUB-SFL",
@@ -413,7 +663,9 @@
     },
     "exchange_ten": {
       "description": {
-        "en": "When there are not enough loose sticks to take away, the teacher opens one bundle. One bundle fewer, ten more loose sticks."
+        "en": "When there are not enough loose sticks to take away, the teacher opens one bundle. One bundle fewer, ten more loose sticks.",
+        "hi": "जब घटाने के लिए खुली तीलियाँ कम पड़ें, तो शिक्षक एक गड्डी खोलता है। एक गड्डी कम, दस खुली तीलियाँ ज़्यादा।",
+        "ta": "கழிப்பதற்குத் தனிக்குச்சிகள் போதாதபோது, ஆசிரியர் ஒரு கட்டைப் பிரிக்கிறார். ஒரு கட்டு குறைவு, பத்துத் தனிக்குச்சிகள் கூடுதல்."
       },
       "fits": [
         "SUB-SFL",
@@ -431,7 +683,9 @@
     },
     "order_probe": {
       "description": {
-        "en": "One question that shows whether a child thinks the smaller digit can be taken from the bigger one in any order. Use it with one child, not the whole class."
+        "en": "One question that shows whether a child thinks the smaller digit can be taken from the bigger one in any order. Use it with one child, not the whole class.",
+        "hi": "एक सवाल जो दिखाता है कि क्या बच्चा सोचता है कि छोटा अंक किसी भी क्रम में बड़े अंक में से घटाया जा सकता है। इसे एक बच्चे के साथ प्रयोग कीजिए, पूरी कक्षा के साथ नहीं।",
+        "ta": "சிறிய இலக்கத்தை எந்த வரிசையிலும் பெரிய இலக்கத்திலிருந்து கழிக்கலாம் என்று குழந்தை நினைக்கிறதா என்பதைக் காட்டும் ஒரு கேள்வி. முழு வகுப்புடன் அல்ல, ஒரு குழந்தையுடன் இதைப் பயன்படுத்துங்கள்."
       },
       "fits": [
         "SUB-SFL"
@@ -448,7 +702,9 @@
     },
     "show_bundles": {
       "description": {
-        "en": "The teacher builds the number with bundles of ten sticks and loose sticks, so the child sees tens and ones as things she can hold."
+        "en": "The teacher builds the number with bundles of ten sticks and loose sticks, so the child sees tens and ones as things she can hold.",
+        "hi": "शिक्षक दस-दस की तीलियों की गड्डियों और खुली तीलियों से संख्या बनाता है, ताकि बच्चा दहाई और इकाई को हाथ में पकड़ी जा सकने वाली चीज़ों के रूप में देखे।",
+        "ta": "ஆசிரியர் பத்துக் குச்சிக் கட்டுகளாலும் தனிக்குச்சிகளாலும் எண்ணை உருவாக்குகிறார்; அதனால் பத்துகளையும் ஒன்றுகளையும் கையில் பிடிக்கக்கூடிய பொருள்களாகக் குழந்தை பார்க்கிறது."
       },
       "fits": [
         "PV-HEARD",

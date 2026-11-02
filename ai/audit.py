@@ -15,6 +15,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
 from services.api.db import AiCall, Base, make_engine
+from services.usage.meter import record_llm
 
 
 class SqlAuditSink:
@@ -26,6 +27,7 @@ class SqlAuditSink:
             row = AiCall(**fields)
             s.add(row)
             s.commit()
+            record_llm(fields)  # the per-action ledger (services/usage); a no-op outside an action
             return row.id
 
     def update(self, audit_id: int, **fields: Any) -> None:

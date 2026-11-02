@@ -48,6 +48,8 @@ from services.speech import cast
 from services.speech.sarvam import SpeechError
 from services.speech.service import SpeechService, default_service
 from services.speech.voices import voice_for
+from services.spoken.adapters.practice import prepare_utterance
+from services.usage import context as usage_context
 
 # Per connection, per minute; every one of these starts a paid call (docs/privacy.md).
 _LIMIT_SESSION = RateLimiter("practice_session", 20)
@@ -209,6 +211,8 @@ def _synth_ex(
     engine's) sets the style by code; the session's speech allowance and provider pin apply."""
     persona = session.personas.get(speaker)
     voice = voice_for(persona.id if persona else "")
+    # the spoken layer: the line is made ready for the ear here; the line on the screen is unchanged
+    text = prepare_utterance(text, session.language, "simulated_child")
     if type(speech).synthesize is not SpeechService.synthesize or not hasattr(
         speech, "synthesize_ex"
     ):
@@ -326,7 +330,7 @@ def post_voice_turn(
     pending: dict[str, Future[tuple[bytes, str]]] = {}
 
     def start_audio(candidate: str, speaker: str) -> None:
-        pending["f"] = _POOL.submit(_synth_ex, speech, candidate, session, speaker)
+        pending["f"] = usage_context.submit(_POOL, _synth_ex, speech, candidate, session, speaker)
 
     try:
         result = take_turn(session, text=heard[:1000], context=ctx, on_candidate=start_audio)
@@ -365,7 +369,7 @@ def post_voice_turn(
     first_audio_ms = int((time.monotonic() - t0) * 1000) if audio_b64 else None
     # The other children who spoke: their template lines are spoken in parallel, one clip each.
     spoken = [
-        (o, _POOL.submit(_synth_ex, speech, o["child_text"], session, o["speaker"]))
+        (o, usage_context.submit(_POOL, _synth_ex, speech, o["child_text"], session, o["speaker"]))
         for o in out.get("others", [])
         if o["child_text"] and not voice_off_now
     ]

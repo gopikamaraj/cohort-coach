@@ -10,7 +10,7 @@ The programme view shows aggregates only. You cannot see a teacher's class or a 
 
 ## What does this chart not show
 
-A chart of class counts does not show why a class changed, only that it did, compared with the comparison group. It does not show anything for groups under five classes. Small groups are read as directional and carry a confidence note such as "from 3 classes". In the demo, every chart is simulated data and is labelled as such. A chart of lessons delivered shows what was sent, not whether anyone listened or taught differently.
+A chart of class counts does not show why a class changed, only that it did, compared with the comparison group. It does not show anything for groups under five classes. Small groups are read as directional and carry a confidence note such as "from 3 classes". In the demo, every chart is simulated data and is labelled as such. A chart of modules delivered shows what was sent, not whether anyone listened or taught differently.
 
 ## How were cohorts formed
 
@@ -22,7 +22,7 @@ In the demo, no. Every chart, cohort and verdict in the demo comes from a simula
 
 ## The funnel and where its numbers come from
 
-The funnel shows four steps for each cohort and track version. Delivered counts lessons sent, from the system. Tried comes from teachers' own taps, so it is self-report. Practised counts Practice Class sessions, from the system. Changed comes only from the next check. Until then it reads "awaiting next check". Delivered and Practised show engagement, not adoption.
+The funnel shows four steps for each cohort and track version. Delivered counts modules sent, from the system. Tried comes from teachers' own taps, so it is self-report. Practised counts Practice Class sessions, from the system. Changed comes only from the next check. Until then it reads "awaiting next check". Delivered and Practised show engagement, not adoption.
 
 ## What the pilot adds
 

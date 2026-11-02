@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon, IconButton } from "../components/icons";
 import { API_BASE } from "../lib/api";
+import { useToast } from "../components/toast";
 import { useApp } from "../state";
 
 interface Item {
@@ -33,7 +34,7 @@ interface TesterView {
 interface DataView {
   scopes: Record<string, { rows: number }>;
 }
-const SCOPES = ["feedback", "observations", "testers", "demo", "all"] as const;
+const SCOPES = ["feedback", "observations", "testers", "demo", "cohorts", "cohort_chat", "intervention", "all"] as const;
 
 interface Summary {
   feedback: { new: number; reviewed: number };
@@ -46,6 +47,7 @@ const KINDS = ["", "app", "content", "simulation", "card_flag"] as const;
 
 export default function Admin() {
   const { tr } = useApp();
+  const toast = useToast();
   const [key, setKey] = useState(() => sessionStorage.getItem("cc.adminKey") ?? "");
   const [kind, setKind] = useState<string>("");
   const [status, setStatus] = useState<string>("");
@@ -57,6 +59,7 @@ export default function Admin() {
   const [data, setData] = useState<DataView | null>(null);
   const [confirmText, setConfirmText] = useState<Record<string, string>>({});
   const [deleted, setDeleted] = useState("");
+  const [scope, setScope] = useState<(typeof SCOPES)[number]>("feedback");
 
   const headers = useCallback((): HeadersInit => (key ? { "X-Admin-Key": key } : {}), [key]);
   const load = useCallback(async () => {
@@ -95,14 +98,30 @@ export default function Admin() {
   }, [load]);
 
   const wipe = async (scope: string) => {
-    const r = await fetch(`${API_BASE}/api/admin/data/${scope}`, { method: "DELETE", headers: { "Content-Type": "application/json", ...headers() }, body: JSON.stringify({ confirm: confirmText[scope] ?? "" }) });
-    if (!r.ok) {
-      setDeleted("");
-      return;
+    const name = tr(`admin.scope.${scope}` as "admin.scope.all");
+    setDeleted("");
+    try {
+      const r = await fetch(`${API_BASE}/api/admin/data/${scope}`, { method: "DELETE", headers: { "Content-Type": "application/json", ...headers() }, body: JSON.stringify({ confirm: confirmText[scope] ?? "" }) });
+      if (!r.ok) {
+        toast(tr("admin.delete_failed", { name }));
+        return;
+      }
+      const out = (await r.json()) as { deleted: Record<string, number> };
+      const n = Object.values(out.deleted).reduce((x, y) => x + y, 0);
+      // Check it: ask the server again and count what is left in this scope.
+      const check = await fetch(`${API_BASE}/api/admin/data`, { headers: headers() });
+      if (!check.ok) {
+        toast(tr("admin.delete_unchecked", { n, name }));
+      } else {
+        const now = ((await check.json()) as DataView).scopes;
+        const left = scope === "all" ? Object.values(now).reduce((x, y) => x + y.rows, 0) : (now[scope]?.rows ?? 0);
+        toast(left === 0 ? tr("admin.delete_ok", { n, name }) : tr("admin.delete_left", { n: left, name }), left === 0 ? "ok" : "info");
+      }
+      setDeleted(tr("admin.deleted", { n }));
+      setConfirmText({});
+    } catch {
+      toast(tr("admin.delete_failed", { name }));
     }
-    const out = (await r.json()) as { deleted: Record<string, number> };
-    setDeleted(tr("admin.deleted", { n: Object.values(out.deleted).reduce((a, b) => a + b, 0) }));
-    setConfirmText({});
     await load();
   };
 
@@ -264,28 +283,35 @@ export default function Admin() {
           {deleted}
         </p>
       ) : null}
-      <ul className="plain stack" data-testid="admin-data">
-        {SCOPES.map((sc) => {
-          const rows = sc === "all" ? Object.values(data?.scopes ?? {}).reduce((a, b) => a + b.rows, 0) : (data?.scopes[sc]?.rows ?? 0);
-          const ok = (confirmText[sc] ?? "") === "DELETE";
-          return (
-            <li key={sc} className="card stack" data-testid={`admin-scope-${sc}`}>
-              <p>
-                <strong>{tr(`admin.scope.${sc}` as "admin.scope.all")}</strong> · <span data-testid={`admin-rows-${sc}`}>{tr("admin.data_rows", { n: rows })}</span>
-              </p>
-              <label className="field">
-                <span>{tr("admin.delete_label")}</span>
-                <input value={confirmText[sc] ?? ""} onChange={(e) => setConfirmText({ ...confirmText, [sc]: e.target.value })} autoComplete="off" data-testid={`admin-confirm-${sc}`} />
-              </label>
-              <button type="button" className="btn btn-secondary" disabled={!ok || rows === 0} onClick={() => void wipe(sc)} data-testid={`admin-delete-${sc}`}>
-                {tr("admin.delete")}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="stack" data-testid="admin-data">
+        <label className="field">
+          <span>{tr("admin.scope.pick")}</span>
+          <select value={scope} onChange={(e) => setScope(e.target.value as (typeof SCOPES)[number])} data-testid="admin-scope-select">
+            {SCOPES.map((sc) => (
+              <option key={sc} value={sc}>
+                {tr(`admin.scope.${sc}` as "admin.scope.all")}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p data-testid={`admin-rows-${scope}`}>{tr("admin.data_rows", { n: scope === "all" ? Object.values(data?.scopes ?? {}).reduce((a, b) => a + b.rows, 0) : (data?.scopes[scope]?.rows ?? 0) })}</p>
+        <label className="field">
+          <span>{tr("admin.delete_label")}</span>
+          <input value={confirmText[scope] ?? ""} onChange={(e) => setConfirmText({ ...confirmText, [scope]: e.target.value })} autoComplete="off" data-testid="admin-confirm" />
+        </label>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          disabled={(confirmText[scope] ?? "") !== "DELETE" || (scope === "all" ? Object.values(data?.scopes ?? {}).every((x) => x.rows === 0) : (data?.scopes[scope]?.rows ?? 0) === 0)}
+          onClick={() => void wipe(scope)}
+          data-testid="admin-delete"
+        >
+          {tr("admin.delete")}
+        </button>
+      </div>
       <p className="muted">{tr("admin.kept_audit")}</p>
       <p className="muted">{tr("admin.kept_cache")}</p>
+      <p className="muted">{tr("admin.kept_pack_audio")}</p>
     </section>
   );
 }

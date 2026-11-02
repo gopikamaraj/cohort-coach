@@ -31,7 +31,7 @@ test("a made-up class is entered and approved, and the error card says where it 
   const findings = page.getByTestId("findings");
   await expect(findings.getByTestId("stage-Core")).toBeVisible();
   await expect(findings.getByTestId("stage-missed-subtraction")).toBeVisible();
-  await expect(findings.locator("[data-kind=error]").first()).toBeVisible();
+  await expect(page.getByTestId("mistakes-table").locator("[data-kind=error]").first()).toBeVisible();
   await expect(findings).toContainText("most likely");
   await expect(findings).not.toContainText("%"); // counts, never percentages
   await expect(stages).not.toContainText("%");

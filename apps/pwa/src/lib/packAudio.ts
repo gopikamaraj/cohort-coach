@@ -27,14 +27,56 @@ export function fileName(code: string, language: string, section?: string): stri
   return ["intervention", base, section, language].filter(Boolean).join("-");
 }
 
+/** The name the audio and the saved PDF share: Cohort-Coach-Improvement-Track-PV-HEARD-en-2026-11-02.
+ *  The language code stays in it. */
+export function exportStem(code: string, language: string, kind: string = "Improvement-Track", date: Date = new Date()): string {
+  return ["Cohort-Coach", kind, code, language, date.toISOString().slice(0, 10)].join("-");
+}
+
 /** "412 KB" or "1.3 MB". */
 export function sizeText(bytes: number): { key: "audio.size_kb" | "audio.size_mb"; n: string } {
   if (bytes < 1024 * 1024) return { key: "audio.size_kb", n: String(Math.max(1, Math.round(bytes / 1024))) };
   return { key: "audio.size_mb", n: (bytes / (1024 * 1024)).toFixed(1) };
 }
 
+/** What the server needs to write the spoken script itself: the error, her class's counts and, when the
+ *  answers are on this phone, the roll numbers and one example. Or her own edited spoken `text`. */
+export interface AudioRequest {
+  language: string;
+  name: string;
+  text?: string;
+  code?: string;
+  children?: number;
+  total?: number;
+  rolls?: { confirmed: number[]; possible: number[] } | null;
+  example?: { question: string; wrote: string; correct: string } | null;
+}
+
+export interface SpokenPreview {
+  text: string;
+  language: string;
+  fallback: boolean;
+  words: number;
+}
+
+/** The spoken text for this request, to read and change before it is voiced. Nothing is voiced. */
+export async function previewScript(input: AudioRequest, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<SpokenPreview> {
+  let res: Response;
+  try {
+    res = await fetchFn(`${API_BASE}/api/audio/pack/script`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Role": "teacher", "X-Device-Id": deviceId() },
+      body: JSON.stringify(input),
+    });
+  } catch {
+    throw new PackAudioError("offline");
+  }
+  if (!res.ok) throw new PackAudioError("other");
+  return (await res.json()) as SpokenPreview;
+}
+
 export async function makeAudio(
-  input: { text: string; language: string; name: string },
+  input: AudioRequest,
   fetchFn: typeof fetch = (...a) => fetch(...a),
 ): Promise<Made> {
   let res: Response;

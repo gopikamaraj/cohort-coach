@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BlockBoard, ChildrenRow, FeedbackView, LayersPanel, Materials, SpriteSpec } from "../components/practice";
 import { CuePanel, ImpactPicker, PracticeTabs, ReviewTab, type PracticeTab } from "../components/review";
 import { Icon } from "../components/icons";
-import { getConsent, setConsent, recordOnServer, type Choices } from "../lib/consent";
+import { getConsent, setConsent, recordOnServer, type Choices, countsOn } from "../lib/consent";
 import { useConsent } from "../lib/useConsent";
 import { sendFeedback } from "../lib/feedback";
 import { setImpact, type Impact } from "../lib/review";
@@ -437,7 +437,7 @@ export default function Practice() {
           onClick={() => {
             if (!consent?.practice_ai) {
               const before = getConsent();
-              const base: Choices = { core: true, counts: false, practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
+              const base: Choices = { core: true, counts: countsOn(null), practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
               void recordOnServer(before, setConsent({ ...base, core: true, practice_ai: true }));
             }
             void start();

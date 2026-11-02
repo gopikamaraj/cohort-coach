@@ -16,6 +16,8 @@ import { useApp } from "../state";
 import { PROBE_KEY, STAGE_KEY, STAGE_ORDER } from "../lib/stages";
 import { BeforeAfter } from "../components/BeforeAfter";
 import { ResultsDetail } from "../components/ResultsDetail";
+import { MistakesTable, mistakeRows } from "../components/MistakesTable";
+import { buildAnswerMap } from "../lib/results";
 import { ClassCohortMaker } from "../components/ClassCohortMaker";
 import { formatCheckLabel, shownClassName } from "../lib/checks";
 
@@ -39,6 +41,8 @@ export default function Cards() {
   const toast = useToast();
   const consent = useConsent();
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
+  const [code, setCode] = useState<string | null>(null);
+  const [onlyConfirmed, setOnlyConfirmed] = useState(false);
 
   if (!profile) {
     return (
@@ -63,24 +67,10 @@ export default function Cards() {
     void sendFeedback({ kind: "card_flag", language: lang, role, context: id }, online).then(() => toast(tr("cards.flagged"), "ok"));
   };
 
-  // 1. Mistakes: one card per error at least one child showed, most children first.
-  const errors: Finding[] = view.cards.map((c) => ({
-    id: c.code,
-    kind: "error",
-    title: tr(`err.${c.code}` as Key),
-    count: c.count,
-    total: c.total,
-    lines: [tr("cards.line", { n: c.count, total: c.total, desc: tr(`err.desc.${c.code}` as Key) })],
-    extra: (
-      <>
-        {c.example ? <p className="example">{tr("cards.example", { example: c.example })}</p> : null}
-        {c.isFocus ? <p className="focus">{tr("cards.focus")}</p> : null}
-      </>
-    ),
-    focus: c.isFocus,
-    testId: `card-${c.code}`,
-    lineTestId: `line-${c.code}`,
-  }));
+  // 1. Mistakes: one row per error in the table (confirmed, and possible when not filtered out).
+  const canMap = (role === "teacher" || role === "judge") && Boolean(check) && Boolean(profile);
+  const map = canMap && check ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null;
+  const rows = mistakeRows(view.cards, map ? map.legend : null, view.childrenChecked, onlyConfirmed);
 
   // 2. Where it most likely went wrong: one card per stage, with its one-minute check.
   const st = profile.stages;
@@ -134,7 +124,7 @@ export default function Cards() {
   }
   others.sort((a, b) => b.count - a.count);
 
-  const findings = [...errors, ...stages, ...others];
+  const findings = [...stages, ...others];
   const kindLabel = { error: tr("cards.kind.error"), stage: tr("stage.title"), other: tr("cards.kind.other") };
 
   return (
@@ -148,7 +138,8 @@ export default function Cards() {
       ) : null}
       <p className="muted">{tr("cards.checked", { n: view.childrenChecked })}</p>
       {view.tooSmall ? <p>{tr("cards.small", { min: view.minChildren })}</p> : null}
-      {findings.length > 0 ? <p data-testid="findings-intro">{tr("cards.all_here", { n: findings.length })}</p> : null}
+      {findings.length + view.cards.length > 0 ? <p data-testid="findings-intro">{tr("cards.all_here", { n: findings.length + view.cards.length })}</p> : null}
+      <MistakesTable rows={rows} activeCode={code} onCode={setCode} onlyConfirmed={onlyConfirmed} onOnlyConfirmed={(on) => { setOnlyConfirmed(on); if (on && code && !rows.some((r) => r.code === code && r.confirmed > 0)) setCode(null); }} flagged={flagged} onFlag={flag} canHighlight={canMap} />
       <ul className="cards findings" data-testid="findings">
         {findings.map((f) => (
           <li key={f.id} className={f.focus ? "card card-focus" : "card"} data-testid={f.testId} data-kind={f.kind}>
@@ -181,8 +172,8 @@ export default function Cards() {
           {tr("stage.note")}
         </p>
       ) : null}
-      <ClassCohortMaker />
-      <ResultsDetail untracked={view.untracked} />
+      <ClassCohortMaker onlyConfirmed={onlyConfirmed} />
+      <ResultsDetail untracked={view.untracked} activeCode={code} onCode={setCode} onlyConfirmed={onlyConfirmed} />
       <BeforeAfter hideWhenEmpty />
     </section>
   );

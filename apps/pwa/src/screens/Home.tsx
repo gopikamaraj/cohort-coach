@@ -43,7 +43,7 @@ export default function Home() {
             <a className="tile" href={href("/practice")} data-testid="home-practice">
               <Icon name="practice" size={28} /> <span>{tr("home.action.practice")}</span>
             </a>
-            <a className="tile" href={href("/programme")} data-testid="home-programme">
+            <a className="tile" href={href("/cohort")} data-testid="home-programme">
               <Icon name="programme" size={28} /> <span>{tr("home.action.programme")}</span>
             </a>
             <a className="tile" href={href("/history")} data-testid="home-history">
@@ -70,7 +70,7 @@ export default function Home() {
           </a>
           <p className="muted">{tr("home.demo_hint")}</p>
           <div className="tiles">
-            <a className="tile" href={href("/programme")}>
+            <a className="tile" href={href("/cohort")}>
               <Icon name="programme" size={28} /> <span>{tr("home.action.programme")}</span>
             </a>
             <a className="tile" href={href("/history")}>

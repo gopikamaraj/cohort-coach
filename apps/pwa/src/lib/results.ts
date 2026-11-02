@@ -207,3 +207,14 @@ export function inThisClass(map: AnswerMap, code: string): InThisClass {
     example: best && item ? { n: item.n, question: item.question, wrote: best.answer, correct: item.correct } : null,
   };
 }
+
+/** The roll numbers behind a mistake: those who show it (confirmed) and those who made it once only (possible). */
+export function rollsFor(map: AnswerMap, code: string): { confirmed: number[]; possible: number[] } {
+  const confirmed: number[] = [];
+  const possible: number[] = [];
+  for (const r of map.rolls) {
+    if (r.shows.includes(code)) confirmed.push(r.roll);
+    else if (r.cells.some((c) => c.codes.includes(code))) possible.push(r.roll);
+  }
+  return { confirmed, possible };
+}

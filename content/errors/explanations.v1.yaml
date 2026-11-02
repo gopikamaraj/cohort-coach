@@ -9,9 +9,9 @@ status: draft
 errors:
   PV-HEARD:
     what:
-      en: The child writes a number the way it sounds. She writes the tens, then the ones, as two numbers side by side.
+      en: The child writes a number the way it sounds. She writes the parts of the number (hundreds, tens, ones) one after another, each as a number of its own.
     why:
-      en: In speech we say "forty" and "three" separately. The child writes each part down in full instead of putting the digits in their places.
+      en: A number is said in parts, such as hundreds, tens and ones. The child writes each part down in full, with its zeros, instead of putting each digit in its own place.
     spot:
       en: A number with too many digits, or a zero in the middle, for a number you dictated.
     first:

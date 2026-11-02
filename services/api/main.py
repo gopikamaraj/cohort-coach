@@ -33,11 +33,14 @@ from services.api.stages import router as stages_router
 from services.cohort_run.api import router as cohort_run_router
 from services.demo.api import router as demo_router
 from services.media.api import router as media_router
+from services.modules.api import router as modules_router
 from services.papers_hub.api import router as paper_hub_router
 from services.pilot_demo.api import router as pilot_demo_router
 from services.sheets_keep.api import router as sheet_keep_router
 from services.speech.chain import startup_warning as speech_startup_warning
 from services.tester import tester_stats_enabled
+from services.usage.api import router as usage_router
+from services.usage.middleware import ActionMeterMiddleware
 
 load_env()
 
@@ -87,13 +90,18 @@ def create_app() -> FastAPI:
                 "X-Class-Id",
                 "X-Demo-Person",
                 "X-Demo-Session",
+                "X-Action-Id",
+                "X-Action-Name",
             ],
             allow_credentials=False,
         )
+    app.add_middleware(ActionMeterMiddleware)  # per-action cost and time (services/usage)
+    app.include_router(usage_router)
     app.include_router(judge_router)
     app.include_router(assistant_router)
     app.include_router(lessons_router)
     app.include_router(class_only_router)
+    app.include_router(modules_router)
     app.include_router(pack_audio_router)
     app.include_router(cohorts_router)
     app.include_router(officer_router)

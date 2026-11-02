@@ -23,7 +23,7 @@ Open each as the role named (the landing page's role cards, or `#/<screen>` in j
 | --- | --- | --- | --- |
 | `#/review` | Coach, then Officer | Open a draft, read its checks, return it with no reason (it will not send), approve a track version, then switch it on as Officer | Two keys: neither alone publishes; the audit shows both |
 | `#/cohort` | Teacher, then Coach | Join with your own tap, post "Meena failed again" (it is refused), post a plain reply, report it, then moderate as Coach | Posting check, held posts invisible to others, erase on identifier |
-| T4 in the bot (`/start judge`) | Teacher | "My track and lessons": lesson 1 with the badge line, the two taps, the model lesson, Rehearse | Only approved, published content; taps are labelled self-report |
+| T4 in the bot (`/start judge`) | Teacher | "My track and modules": module 1 with the badge line, the two taps, the model lesson, Rehearse | Only approved, published content; taps are labelled self-report |
 | `#/officer` | Officer | Read the funnel (each step names its source), the track results (one working, one not, one with too few classes) and the error map | Aggregates only; nothing under 5 classes; a failed track counts against the track |
 
 Run `JUDGE_MODE=1 python scripts/seed_demo_track.py --languages en --cohort` first on a fresh judge deployment so there is a published track and an open cohort to look at.

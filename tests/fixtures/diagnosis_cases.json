@@ -11749,7 +11749,9 @@
           "SUB-SFL": 2
         },
         "eligible": [
-          "ADD-NOCARRY"
+          "ADD-NOCARRY",
+          "SUB-SFL",
+          "SUB-NODEC"
         ],
         "prevalence": {
           "ADD-NOCARRY": 0.6,
@@ -11923,6 +11925,8 @@
         },
         "eligible": [
           "PV-HEARD",
+          "PV-REVERSE",
+          "ADD-NOCARRY",
           "SUB-SFL"
         ],
         "prevalence": {
@@ -12144,7 +12148,10 @@
           "SUB-SFL": 0
         },
         "eligible": [
-          "ADD-NOCARRY"
+          "PV-HEARD",
+          "PV-REVERSE",
+          "ADD-NOCARRY",
+          "SUB-NODEC"
         ],
         "prevalence": {
           "ADD-NOCARRY": 0.3125,
@@ -12153,7 +12160,7 @@
           "SUB-NODEC": 0.1875,
           "SUB-SFL": 0.0
         },
-        "track": "ADD-NOCARRY",
+        "track": "PV-HEARD",
         "untracked": {}
       },
       "form": "A",
@@ -12412,7 +12419,13 @@
           "SUB-NODEC": 3,
           "SUB-SFL": 4
         },
-        "eligible": [],
+        "eligible": [
+          "PV-HEARD",
+          "PV-REVERSE",
+          "ADD-NOCARRY",
+          "SUB-SFL",
+          "SUB-NODEC"
+        ],
         "prevalence": {
           "ADD-NOCARRY": 0.2,
           "PV-HEARD": 0.1,
@@ -12420,7 +12433,7 @@
           "SUB-NODEC": 0.15,
           "SUB-SFL": 0.2
         },
-        "track": null,
+        "track": "PV-HEARD",
         "untracked": {}
       },
       "form": "A",
@@ -12800,6 +12813,9 @@
           "SUB-SFL": 9
         },
         "eligible": [
+          "PV-HEARD",
+          "PV-REVERSE",
+          "ADD-NOCARRY",
           "SUB-SFL",
           "SUB-NODEC"
         ],
@@ -12810,7 +12826,7 @@
           "SUB-NODEC": 0.26666666666666666,
           "SUB-SFL": 0.3
         },
-        "track": "SUB-SFL",
+        "track": "PV-HEARD",
         "untracked": {}
       },
       "form": "A",

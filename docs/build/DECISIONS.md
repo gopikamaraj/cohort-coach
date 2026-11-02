@@ -843,3 +843,89 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 9. The pre-commit hook runs the whole `check`, which already failed on the base (8 Python tests, 4 e2e); commits on this branch use `--no-verify` and the targeted checks were run by hand (listed in the report).
 
 **Confirmed by.** Not confirmed: an autopilot run on Gopi's brief of 2 Nov 2026; every choice above is for a human to confirm.
+
+## 2026-11-02 · Eligibility: the 25% share rule is removed
+
+**Decision.** A class is eligible for a track on an error when at least 1 child shows it (the 2-item rule) and at least 10 children were checked. The old rule also required p ≥ 25% of children checked. Track choice is unchanged: PV-HEARD first, else the error most children show.
+
+**Why.** With the 25% bar, a class where 10% of children (for example 2 of 16) needed help got no track and nothing to do, which ignores them. The teacher can still see every child who shows the error.
+
+**Changed.** `engine/diagnosis.py` (`MIN_CHILDREN_WITH_ERROR`), `engine/export_keys.py` and `apps/pwa/src/lib/diagnosis.ts` (the keys file now has `min_children_with_error`; `min_prevalence` is gone), `services/content/configurable.py`, `CLAUDE.md` section 5.
+
+**Not changed (still 25% or other floors; decide separately).** The officer error map (`services/api/officer.py`), the stage-of-breakdown routine rule (25% of children), the mentor bars (p ≥ 25% last term), and `COHORT_MIN_CLASSES`. A cohort of several classes still needs enough classes with the same error, so a small share per class gives fewer or thinner cohorts.
+
+**Tests.** Not updated in this change (the tester asked for no test changes while they test): engine eligibility and export-keys tests, the golden keys fixtures and any test expecting no track below 25% will fail until a human agrees the new bar and they are updated. No bar was loosened silently.
+
+**Confirmed by.** Gopi, 2026-11-02 (asked in chat to remove the rule).
+
+## 2026-11-02 · A shared spoken layer for Download audio and the Practice Class
+
+**Decision.** Speech is made from a separate spoken text, not from the text on the screen. New module `services/spoken/`: a normaliser (screen text to spoken text: no titles, "Source" or "Draft" tags, labels, markdown or symbols; numbers as words; "N of M children" as a spoken ratio; math symbols as words), validators, pause tokens (`[pause]`, `[pause:long]`) and a renderer, with language packs for English (num2words), Hindi and Tamil (own tables, 0 to 9999). Speaker settings are data in `content/spoken.yaml`.
+
+1. *Intervention audio*: `POST /api/audio/pack` now takes the error code and her class's counts (or her own edited text) and the server writes the spoken script from the content files (`services/spoken/adapters/intervention.py`); `POST /api/audio/pack/script` returns it for the "Review the audio text" box. The page text is unchanged.
+2. *Practice Class*: every child line goes through the normaliser right before synthesis (`_synth_ex`); no model, no extra wait. The on-screen line is unchanged. Feedback and hints are not voiced today, so they are not covered.
+3. *Place-value numbers* are marked `{pv:N}` in content (one is marked now, in `intervention.v1.yaml`) and are said digit by digit; unmarked numbers are said as ordinary numbers. The screen shows only the number.
+4. *Pauses*: neither Bodhan nor Sarvam takes SSML, so a pause is silence added between voiced pieces (`lessons.split_sentences` reads the tokens: a short pause ends a sentence, a long one is a section break). `to_ssml` exists for an engine that takes it; nothing calls it.
+5. *No AI*: there is no model smoothing pass. Nothing was added to `AI_USAGE.md`.
+
+**Assumptions** (the brief was cut off at "A marked number is"): the digit-by-digit reading of a marked number; one audio file per error (no pilot-mode file count exists, pilot mode was removed on 31 Oct). Hindi and Tamil number words and phrases are first drafts: TODO-HUMAN(Seema, Gopi), with skipped tests for the forms the build is not sure of.
+
+**Tests.** New tests in `tests/spoken/` were written and not run (the tester asked for no test runs); the existing pack-audio and practice tests were not touched.
+
+**Confirmed by.** Not confirmed: a request in chat on 2 Nov 2026; for Gopi to confirm.
+
+## 2026-11-02 · Tamil drafts for the explanations, the intervention content and the strategy library
+
+**Decision.** The Tamil page, the printed summary and the audio were in Tamil only for their labels; the content had no Tamil, so the audio fell back to English. Tamil text for every field (explanations, the five intervention sections, the strategy descriptions and steps, the PV-REVERSE strategy) is now in `content/errors/tamil.draft.v1.yaml`, loaded as the `ta` version of each English field by `services/content/error_content.py`. The English files are unchanged. Hindi is still missing and still falls back to English.
+
+**Why this changes an earlier choice.** The autopilot run of 2 Nov kept Hindi and Tamil unwritten ("not machine-translated"). On the same day Gopi asked for Tamil audio, so Claude drafted the Tamil.
+
+**Not reviewed.** Every Tamil line is a draft by Claude: TODO-HUMAN(Gopi) wording, TODO-HUMAN(Seema) that each line still teaches the same thing. Everything stays labelled Draft in the app. The worked examples (sums with English words) are not translated, so the Tamil audio leaves them out; the Tamil page still shows the English example.
+
+**Confirmed by.** Not confirmed: for Gopi to review.
+
+## 2026-11-02 · Hindi drafts, the same way as Tamil
+
+**Decision.** Hindi text for every field the Tamil draft covers is in `content/errors/hindi.draft.v1.yaml`, loaded as the `hi` version of each English field by `services/content/error_content.py` (which now reads both draft files). The Hindi page, printed summary and audio are in Hindi; the worked examples (sums with English words) are not translated and the spoken Hindi version leaves them out.
+
+**Not reviewed.** Written by Claude at Gopi's request; every line is a draft: TODO-HUMAN(Seema, Shivani) wording and that each line teaches the same as the English. Everything stays labelled Draft. The Hindi words follow the team's own (गड्डी bundle, दहाई, इकाई, हासिल carry, उधार लेना borrow).
+
+**Confirmed by.** Not confirmed: for Seema and Shivani to review.
+
+## 2026-11-02 · Cost and time of the last action, in a footer
+
+**Decision.** Every billable call an action causes is written to a ledger under the action's id, and a footer shows the sum for the last action only (never a running total). Code: `services/usage/` (README there), `apps/pwa/src/lib/action.ts`, `components/UsageFooter.tsx`. It reads the existing records: `ai_calls` for Claude (one hook, `SqlAuditSink.write`) and a wrapper on each speech provider for text to speech and speech to text (one place, `default_chain`). Cloud Run time is the request's wall time.
+
+**Defaults and assumptions.**
+1. *Who sees it.* Everyone, teachers included (Gopi, 2 Nov: "show it for all including teachers"); this overrides the note in `services/speech/costs.py` that costs are never shown to a teacher. A person can hide it on their phone; `VITE_USAGE_FOOTER=0` removes it.
+2. *Prices.* Nothing is typed in code. The INR to USD rate and the Cloud Run vCPU and memory prices are `null` in `content/usage_pricing.yaml` until a person copies them from the providers' pages, so those lines show n/a, never 0. TODO-HUMAN(Gopi).
+3. *Cloud Run.* Billing is instance-based (CPU always allocated, `docs/deploy.md`). vCPU 1 and concurrency 80 are assumptions, not read from the service. The figure is an upper bound.
+4. *Store.* The app's own database, shared by every instance; rows are removed after 24 hours.
+5. *Metadata only.* The ledger has no column for text, audio, names or transcripts, and `record` refuses unknown keys.
+
+**Existing test now out of date (not changed).** `tests/speech/test_pack_audio.py::test_a_sum_is_never_split_inside` expects the digits "703 − 468" to reach the voice. The spoken layer (same day) sends the words instead, so the sum is still in one piece ("seven hundred and three minus four hundred and sixty-eight") but the assertion no longer matches. A human should confirm the new wording of that test.
+
+**Confirmed by.** Not confirmed: for Gopi.
+
+## 2026-11-02 · Demo defaults: sharing class counts is on; "Intervention content" is now "Improvement track"
+
+**Decision.** (1) Until a person makes a consent choice, sharing class counts is ON in the app (counts only, never a child), so a demo's results reach the server; a saved choice always wins, and `VITE_DEFAULT_SHARE_COUNTS=0` turns the default off. This is an exception to "nothing is on by default" in `lib/consent.ts` and to the DPDP consent design (`docs/privacy.md`): it is for the demo build; before real teachers use the app it must be switched off. (2) What the app called "Intervention content" is "Improvement track" on screen, in the printed pack, in the audio and PDF file names (`Cohort-Coach-Improvement-Track-<error>-<language>-<date>`), the admin page, the help page and the README. Code names (`InterventionPack`, `intervention.v1.yaml`) are unchanged.
+
+**Confirmed by.** Gopi, 2026-11-02 (asked in chat).
+
+## 2026-11-02 · Improvement tracks of several modules, due dates, feedback and a daily job
+
+**Decision.** A track for a class-only cohort is a plan of modules (`services/modules/`). Only the next module is ever made: Module 1 when the track starts, each later one after her feedback (Get the next module) or, with none, on its due date by a daily job at 06:00 Indian time. Code picks the module (`branch.next_module`, a pure function: tried, partly, not yet, none; no approach repeats except after "partly"; cap 6 modules, `MODULE_CAP`; due dates 7 days apart, `MODULE_GAP_DAYS`). Silence is recorded as `no_feedback` and is never read as success. Generation is idempotent (compare-and-set on the module's status plus a unique (track, number)). The word *lesson* became *module* in every user-facing string and the help pages (the separate *model lesson* keeps its name).
+
+**Defaults I chose (change any of them).**
+1. *Where it lives.* Only the class-only cohort ("Just my class") gets modules. The two-class demo run (`services/cohort_run/`, 6 lessons, reviewed by the coach) is a different flow and is not changed; its `next_lesson.py` rules were reused as the model for the branch table, not called.
+2. *Text.* Assembled by code from the strategy library and `content/errors/intervention.v1.yaml`, with the plan order in `content/modules/modules.v1.yaml`. No AI words it: the optional "worded by call 5, coach reviews, library wording released on the due date" path is **not built** (so `AI_USAGE.md` is unchanged and claims nothing new).
+3. *Plans.* SUB-SFL and SUB-NODEC 4 modules, ADD-NOCARRY 3, PV-HEARD 2, PV-REVERSE 1; "not yet" uses the template's alternatives, then any unused approach; running out stops with "Talk to your mentor or coach" and a `coach_notified` event. An error with no plan gets one module and a log entry.
+4. *Notifying a coach* means a recorded event that the coach's table counts (failed, overdue, not downloaded after `MODULE_NO_DOWNLOAD_DAYS`, default 5, tracks sent to a person). There is no push channel.
+5. *Audio* is taken only when she presses Download audio, through the existing endpoint; teachers on the same text share one cached file because the cache is keyed by text and voice.
+6. *Database.* The project has no migration folder, so the four tables (`tracks`, `track_modules`, `module_feedback`, `module_events`) are created by `Base.metadata.create_all` like every other table.
+7. *The coach* sees counts per module for a cohort, no teacher id; a cohort of one is one teacher's progress, so the same under-5 rule that hides class figures from officers was not applied to coaches (coach lists of class-only cohorts already show them).
+
+**Needs review.** Hindi and Tamil strings for the module screens and the smaller-step sentence are Claude drafts (TODO-HUMAN(Seema, Shivani)). The strategy text is still `status: draft` (Seema). The Tamil word *தொகுதி* and Hindi *मॉड्यूल* are the words you suggested.
+
+**Confirmed by.** Not confirmed: for Gopi to review (the defaults above).

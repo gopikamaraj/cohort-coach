@@ -1,11 +1,14 @@
 """Admin: what data exists, what the testers told us, and deleting by scope to start fresh.
 
-Four scopes can be deleted (each needs the admin key where one is set, and the typed word DELETE):
+Seven scopes can be deleted (each needs the admin key where one is set, and the typed word DELETE):
   feedback      app, content, simulation and card-flag feedback
   observations  the simulation observations from teachers
   testers       tester profiles (nickname), their usage events and their feedback
   demo          demo sessions and their AI-read scores
-and `all` deletes those four. Two things are never deleted here, and the page says so:
+  cohorts       cohorts of one class and the two-class runs
+  cohort_chat   the posts in the cohort chat
+  intervention  the per-phone "Download audio" use counts (the cached audio files stay)
+and `all` deletes those seven. Two things are never deleted here, and the page says so:
   * the AI audit log: it is the ledger the budget guard adds up, so clearing it would hide spend;
   * the demo's paid-read cache: it saves a paid AI read per sheet, so clearing it costs money.
 """
@@ -18,9 +21,10 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import delete, func, select
 
-from services.api.db import Feedback, SimObservation
+from services.api.db import AudioDownloadUse, ClassCohort, Feedback, SimObservation, ThreadPost
 from services.api.feedback import ADMIN
 from services.api.profiles import SESSION
+from services.cohort_run.models import CohortRun
 from services.demo.models import DemoAiRead, DemoSession
 from services.tester.models import TesterDevice, TesterEvent, TesterFeedback
 
@@ -31,10 +35,17 @@ SCOPES: dict[str, tuple[Any, ...]] = {
     "observations": (SimObservation,),
     "testers": (TesterFeedback, TesterEvent, TesterDevice),
     "demo": (DemoAiRead, DemoSession),
+    "cohorts": (ClassCohort, CohortRun),
+    "cohort_chat": (ThreadPost,),
+    "intervention": (AudioDownloadUse,),
 }
 KEPT = {
     "ai_audit_log": (
         "The AI audit log stays: the budget guard adds it up, so deleting it hides spend."
+    ),
+    "pack_audio_files": (
+        "The audio files already made for the intervention content stay: "
+        "making them again costs a paid speech call."
     ),
     "demo_read_cache": (
         "The demo's paid-read cache stays: clearing it would cost a paid AI read per sheet."

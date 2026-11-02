@@ -12,7 +12,7 @@ source: Written by the build from the strategy library; not yet reviewed by a pe
 errors:
   PV-HEARD:
     two_minute_check:
-      en: Say "sixty-two" to three children, one at a time, and ask each to write it. Then ask each to build it with bundles and say how many bundles and loose sticks. Notice who writes 602.
+      en: Say "sixty-two" to three children, one at a time, and ask each to write it. Then ask each to build it with bundles and say how many bundles and loose sticks. Notice who writes {pv:602}.
     ten_minute_activity:
       en: Small group with bundles of ten and loose sticks. Say a number, the group builds it, one child writes it under the sticks, and the group reads the written number back aloud. Do six numbers, two of them with a zero in the ones place.
     teaching_mistakes:

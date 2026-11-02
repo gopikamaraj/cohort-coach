@@ -19,9 +19,8 @@ from engine.bugs import (
 )
 from engine.diagnosis import (
     MIN_CHILDREN_CHECKED,
+    MIN_CHILDREN_WITH_ERROR,
     MIN_HITS,
-    MIN_PREVALENCE_DENOMINATOR,
-    MIN_PREVALENCE_NUMERATOR,
     TRACKED,
     class_profile,
     diagnose_child,
@@ -69,10 +68,7 @@ def build_answer_keys(forms: dict[str, Form] = PILOT_FORMS) -> dict[str, Any]:
         "error_order": [c.value for c in ErrorCode],
         "rules": {
             "min_hits": MIN_HITS,
-            "min_prevalence": {
-                "numerator": MIN_PREVALENCE_NUMERATOR,
-                "denominator": MIN_PREVALENCE_DENOMINATOR,
-            },
+            "min_children_with_error": MIN_CHILDREN_WITH_ERROR,
             "min_children_checked": MIN_CHILDREN_CHECKED,
             "tracked": [c.value for c in TRACKED],
             "track_priority": "PV-HEARD first, else highest count; ties by error order",

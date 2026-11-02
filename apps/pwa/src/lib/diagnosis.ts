@@ -18,7 +18,7 @@ interface AnswerKeys {
   error_order: string[];
   rules: {
     min_hits: number;
-    min_prevalence: { numerator: number; denominator: number };
+    min_children_with_error: number;
     min_children_checked: number;
     tracked: string[];
   };
@@ -149,12 +149,7 @@ export function classProfile(children: ChildDiagnosis[]): ClassProfile {
     counts[code] = children.filter((c) => c.shows.includes(code)).length;
     prevalence[code] = checked ? (counts[code] as number) / checked : 0;
   }
-  const { numerator, denominator } = keys.rules.min_prevalence;
-  const eligible = order.filter(
-    (code) =>
-      checked >= keys.rules.min_children_checked &&
-      (counts[code] as number) * denominator >= checked * numerator,
-  );
+  const eligible = order.filter((code) => checked >= keys.rules.min_children_checked && (counts[code] as number) >= keys.rules.min_children_with_error);
   const candidates = eligible.filter((code) => keys.rules.tracked.includes(code));
   let track: string | null = null;
   if (candidates.includes("PV-HEARD")) track = "PV-HEARD";

@@ -8,7 +8,7 @@ import { BLANK, enteredChildren, finishCheck, hasAnswers, UNREADABLE } from "../
 import { activeClass, db, getSetting, type CheckRow, type ProfileRow } from "../lib/db";
 import { formOf, keys } from "../lib/diagnosis";
 import { flushAllowed } from "../lib/sendnow";
-import { getConsent, hasConsent, recordOnServer, setConsent, type Choices } from "../lib/consent";
+import { getConsent, hasConsent, recordOnServer, setConsent, type Choices, countsOn } from "../lib/consent";
 import { deleteKept, fetchKept, keepSheet, keepStatus, listKept, type Kept } from "../lib/keptSheets";
 import { isOnline, useOnline } from "../lib/net";
 import { go } from "../lib/router";
@@ -452,7 +452,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
 
   const chooseKeep = (on: boolean) => {
     const before = getConsent();
-    const base: Choices = { core: true, counts: false, practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
+    const base: Choices = { core: true, counts: countsOn(null), practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
     const after = setConsent({ ...base, core: true, keep_sheets: on });
     void recordOnServer(before, after);
     setAsked(true);

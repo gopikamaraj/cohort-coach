@@ -24,8 +24,10 @@ from engine.model import (
 # A child shows an error only if it appears on at least 2 of the items probing it
 # (items 1-2: both; items 3-5: 2 of 3; items 7-10: 2 of 4).
 MIN_HITS = 2
-# A class is eligible for a track at p >= 25% (1 in 4) with at least 10 children checked.
-MIN_PREVALENCE_NUMERATOR, MIN_PREVALENCE_DENOMINATOR = 1, 4
+# A class is eligible for a track on an error when at least 1 child shows it and at least 10
+# children were checked. There is no share-of-class threshold (the 25% rule was removed
+# 2026-11-02, DECISIONS.md).
+MIN_CHILDREN_WITH_ERROR = 1
 MIN_CHILDREN_CHECKED = 10
 # PV-REVERSE is detected and counted, but no track exists for it yet.
 TRACKED: tuple[ErrorCode, ...] = (
@@ -160,8 +162,7 @@ def profile_from_counts(
     eligible = tuple(
         code
         for code in ErrorCode
-        if children_checked >= MIN_CHILDREN_CHECKED
-        and full[code] * MIN_PREVALENCE_DENOMINATOR >= children_checked * MIN_PREVALENCE_NUMERATOR
+        if children_checked >= MIN_CHILDREN_CHECKED and full[code] >= MIN_CHILDREN_WITH_ERROR
     )
     return ClassProfile(
         children_checked=children_checked,

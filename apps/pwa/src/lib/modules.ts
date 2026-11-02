@@ -1,0 +1,193 @@
+// Improvement-track modules: the calls to the server and the types of what it sends back. The server decides
+// which module comes next and holds every module and answer; this phone shows them. The last view read is kept
+// per track only so the module text and downloaded audio still open when the phone is offline; it is replaced
+// by the server's view whenever the phone is online, and it holds no child, no name and no roll number.
+import { API_BASE } from "./api";
+import { deviceId } from "./consent";
+
+export type ModuleStatus = "planned" | "ready" | "downloaded" | "feedback_given" | "completed" | "skipped" | "expired";
+export type Answer = "tried" | "partly" | "not_yet";
+export type NextCode = "ok" | "needs_feedback" | "no_more" | "track_cap" | "track_exhausted" | "track_done" | "track_end_date";
+
+export interface TextPart {
+  id: "smaller_step" | "purpose" | "materials" | "steps" | "example" | "check";
+  text?: string;
+  list?: string[];
+  fallback: boolean;
+  draft: boolean;
+}
+
+export interface ModuleView {
+  number: number;
+  status: ModuleStatus;
+  title: string;
+  due_date: string;
+  branch: string | null;
+  text?: { language: string; parts: TextPart[]; smaller: boolean };
+  language?: string;
+  reason?: { code: string; n: number; prev: number } | null;
+  reason_text?: string;
+  generated_by?: string | null;
+  audio_ref?: string | null;
+  feedback?: { answer: Answer; note: string } | null;
+  spoken?: string;
+}
+
+export interface TrackView {
+  id: string;
+  cohort_id: string;
+  error: string;
+  status: "active" | "completed" | "stopped";
+  stop_reason: string | null;
+  start_date: string;
+  end_date: string;
+  language: string;
+  note: string | null;
+  total: number;
+  current: number;
+  can_next: { enabled: boolean; code: NextCode; number?: number; next?: number; due_date?: string };
+  modules: ModuleView[];
+}
+
+export class ModuleError extends Error {
+  constructor(
+    public status: number,
+    public code = "",
+  ) {
+    super(`modules ${status} ${code}`);
+  }
+}
+
+async function call<T>(path: string, init: { method?: string; body?: unknown; role?: "teacher" | "coach" } = {}, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<T> {
+  const role = init.role ?? "teacher";
+  const headers: Record<string, string> = { "Content-Type": "application/json", "X-Role": role };
+  if (role === "teacher") headers["X-Device-Id"] = deviceId();
+  let res: Response;
+  try {
+    res = await fetchFn(`${API_BASE}/api/modules${path}`, { method: init.method ?? "GET", headers, body: init.body === undefined ? undefined : JSON.stringify(init.body) });
+  } catch {
+    throw new ModuleError(0);
+  }
+  if (!res.ok) {
+    let code = "";
+    try {
+      code = ((await res.json()) as { detail?: { code?: string } }).detail?.code ?? "";
+    } catch {
+      /* no body */
+    }
+    throw new ModuleError(res.status, code);
+  }
+  return (await res.json()) as T;
+}
+
+const cacheKey = (cohortId: string, error: string) => `cc.track.${cohortId}.${error}`;
+
+function readCache(cohortId: string, error: string): TrackView | null {
+  try {
+    const raw = localStorage.getItem(cacheKey(cohortId, error));
+    return raw ? (JSON.parse(raw) as TrackView) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(view: TrackView): void {
+  try {
+    localStorage.setItem(cacheKey(view.cohort_id, view.error), JSON.stringify(view));
+  } catch {
+    /* private window: nothing is kept */
+  }
+}
+
+function dropCache(cohortId: string, error: string): void {
+  try {
+    localStorage.removeItem(cacheKey(cohortId, error));
+  } catch {
+    /* nothing to drop */
+  }
+}
+
+/** Her track for this error: from the server when online (and the phone's copy is replaced); the last copy
+ *  only when the server cannot be reached. `null` means she has not started one. */
+export async function loadTrack(cohortId: string, error: string, lang: string, fetchFn?: typeof fetch): Promise<{ track: TrackView | null; offline: boolean }> {
+  try {
+    const all = await call<TrackView[]>(`/tracks?cohort_id=${encodeURIComponent(cohortId)}&lang=${lang}`, {}, fetchFn);
+    const mine = all.find((t) => t.error === error) ?? null;
+    if (mine) writeCache(mine);
+    else dropCache(cohortId, error);
+    return { track: mine, offline: false };
+  } catch (e) {
+    if (e instanceof ModuleError && e.status > 0) throw e;
+    return { track: readCache(cohortId, error), offline: true };
+  }
+}
+
+async function remember(view: TrackView): Promise<TrackView> {
+  writeCache(view);
+  return view;
+}
+
+export async function startTrack(cohortId: string, error: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
+  return remember(await call<TrackView>("/tracks", { method: "POST", body: { cohort_id: cohortId, error, language: lang } }, fetchFn));
+}
+
+export async function getNext(trackId: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
+  return remember(await call<TrackView>(`/tracks/${trackId}/next?lang=${lang}`, { method: "POST" }, fetchFn));
+}
+
+export async function sendFeedback(trackId: string, number: number, answer: Answer, note: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
+  return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/feedback?lang=${lang}`, { method: "POST", body: { answer, note } }, fetchFn));
+}
+
+export async function markDownloaded(trackId: string, number: number, audioRef: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
+  return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/downloaded?lang=${lang}`, { method: "POST", body: { audio_ref: audioRef } }, fetchFn));
+}
+
+// ---- the coach: counts only ------------------------------------------------------------------------------
+
+export interface CoachModule {
+  number: number;
+  at: number;
+  generated: number;
+  downloaded: number;
+  feedback: Record<Answer, number>;
+  overdue: number;
+  failed: number;
+  not_downloaded_flag: number;
+}
+
+export interface CoachModules {
+  cohort_id: string;
+  tracks: number;
+  modules: CoachModule[];
+  stopped: { cap: number; exhausted: number };
+  moved?: number;
+  generated?: number;
+}
+
+export async function coachModules(cohortId: string, fetchFn?: typeof fetch): Promise<CoachModules> {
+  return call<CoachModules>(`/coach/cohorts/${encodeURIComponent(cohortId)}`, { role: "coach" }, fetchFn);
+}
+
+export async function coachShift(cohortId: string, days: number, reason: string, fetchFn?: typeof fetch): Promise<CoachModules> {
+  return call<CoachModules>(`/coach/cohorts/${encodeURIComponent(cohortId)}/shift`, { method: "POST", role: "coach", body: { days, reason } }, fetchFn);
+}
+
+export async function coachGenerate(cohortId: string, fetchFn?: typeof fetch): Promise<CoachModules> {
+  return call<CoachModules>(`/coach/cohorts/${encodeURIComponent(cohortId)}/generate`, { method: "POST", role: "coach" }, fetchFn);
+}
+
+/** The reason a "Get the next module" button is closed, as a string key and its slots. */
+export function nextBlocked(t: TrackView): { key: "module.next_blocked"; slots: { n: number; next: number; date: string } } | null {
+  const c = t.can_next;
+  if (c.enabled || c.code !== "needs_feedback") return null;
+  return { key: "module.next_blocked", slots: { n: c.number ?? t.current, next: c.next ?? t.current + 1, date: c.due_date ?? "" } };
+}
+
+/** The banner at the end of a track, or null while it is running. */
+export function endBanner(t: TrackView): "module.cap_banner" | "module.exhausted_banner" | "module.end_banner" | null {
+  if (t.status === "active") return null;
+  if (t.stop_reason === "cap") return "module.cap_banner";
+  if (t.stop_reason === "exhausted") return "module.exhausted_banner";
+  return "module.end_banner";
+}

@@ -40,6 +40,7 @@ import yaml
 from services.speech import audio, costs, textnorm
 from services.speech.sarvam import SpeechError
 from services.speech.voices import Voice
+from services.usage import context as usage_context
 
 log = logging.getLogger(__name__)
 
@@ -91,6 +92,7 @@ class Sentence:
     index: int
     text: str
     section: int
+    hard_break: bool = False  # a short pause follows: a chunk never runs on past it
 
 
 @dataclass(frozen=True)
@@ -107,13 +109,18 @@ _END = re.compile(r"(?<=[.?!।])\s+")
 def split_sentences(script: str) -> list[Sentence]:
     """Sentences in order, with their section (a blank line starts a new one)."""
     out: list[Sentence] = []
+    # spoken-layer pause tokens: a long pause is a section break, a short one ends the sentence
+    script = re.sub(r"\s*\[pause:long\]\s*", "\n\n", script)
+    script = re.sub(r"[ \t]*\[pause\][ \t]*", "\x1f\n", script)
     sections = [s for s in re.split(r"\n\s*\n", script.strip()) if s.strip()]
     for sec, block in enumerate(sections):
         for line in block.splitlines():
-            for part in _END.split(line.strip()):
+            hard = line.endswith("\x1f")
+            parts = [p for p in _END.split(line.strip().rstrip("\x1f")) if p.strip()]
+            for k, part in enumerate(parts):
                 text = re.sub(r"\s+", " ", part).strip()
                 if text:
-                    out.append(Sentence(len(out), text, sec))
+                    out.append(Sentence(len(out), text, sec, hard and k == len(parts) - 1))
     return out
 
 
@@ -134,7 +141,9 @@ def _pieces(text: str, maximum: int) -> list[str]:
     return out
 
 
-def make_chunks(sentences: list[Sentence], target: int = 220, maximum: int = 300) -> list[Chunk]:
+def make_chunks(
+    sentences: list[Sentence], target: int = 220, maximum: int = 300, max_sentences: int = 2
+) -> list[Chunk]:
     """One or two sentences of one section per chunk, up to `target` characters (never over
     `maximum`; a longer sentence is cut into pieces)."""
     out: list[Chunk] = []
@@ -159,7 +168,12 @@ def make_chunks(sentences: list[Sentence], target: int = 220, maximum: int = 300
                 out.append(Chunk(len(out), piece, s.section, (s.index,)))
             continue
         joined = len(" ".join(x.text for x in cur)) + 1 + len(s.text)
-        if cur and (len(cur) >= 2 or cur[0].section != s.section or joined > target):
+        if cur and (
+            len(cur) >= max_sentences
+            or cur[0].section != s.section
+            or joined > target
+            or cur[-1].hard_break
+        ):
             flush()
         cur.append(s)
     flush()
@@ -351,7 +365,8 @@ def _voice_all(
         results = [(first_i, first)]
         limit = min(concurrency, v.parallel_limit() or concurrency)
         with ThreadPoolExecutor(max_workers=max(1, limit)) as pool:
-            results += list(pool.map(run, todo[1:]))
+            futures = [usage_context.submit(pool, run, i) for i in todo[1:]]
+            results += [f.result() for f in futures]
         for i, raw in results:
             store.put(chunk_key(v, language, chunks[i].text), raw, "application/octet-stream")
             raws[i] = raw
@@ -447,6 +462,7 @@ def generate(
     fresh: Collection[int] = (),
     only_provider: str | None = None,
     check: bool = True,
+    max_sentences: int = 2,
 ) -> LessonAudio:
     """Voice one lesson. `fresh` = chunk indices to make again even if cached (regenerate a
     sentence); `only_provider` keeps a lesson on the provider it already uses."""
@@ -454,7 +470,7 @@ def generate(
     sentences = split_sentences(script)
     if not sentences:
         raise ValueError("the lesson has no text to voice")
-    chunks = make_chunks(sentences, cfg["target_chars"], cfg["max_chars"])
+    chunks = make_chunks(sentences, cfg["target_chars"], cfg["max_chars"], max_sentences)
     voicers = voicers_for(speech, language)
     if only_provider:
         voicers = [v for v in voicers if v.name == only_provider] or voicers
