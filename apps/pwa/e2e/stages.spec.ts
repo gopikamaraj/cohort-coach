@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { enterJudgeSample, finishEntering } from "./sample";
 
 const CONSENT = '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}';
 
@@ -10,13 +11,13 @@ test.beforeEach(async ({ page }) => {
   }, CONSENT);
 });
 
-test("sample sheets run a check, mark the unsure boxes, and the error card says where it most likely went wrong", async ({ page }) => {
-  await page.goto("/#/check");
-  await page.getByTestId("use-sample").click();
-  await expect(page.getByTestId("photo-note")).toContainText("recorded reads of made-up sheets");
-  await expect(page.locator("[data-check='true']").first()).toBeVisible();
+test("a made-up class is entered and approved, and the error card says where it most likely went wrong", async ({ page }) => {
+  await enterJudgeSample(page);
+  await page.getByTestId("child-select").selectOption("0");
   await page.getByTestId("missed-subtraction").check();
-  await page.getByTestId("finish").click();
+  page.once("dialog", (d) => void d.accept());
+  await page.getByTestId("approve").click(); // the tag changed the roll: it is approved again
+  await finishEntering(page);
   await expect(page).toHaveURL(/#\/cards/);
   const stages = page.getByTestId("stage-lines");
   await expect(stages).toBeVisible();
@@ -26,7 +27,14 @@ test("sample sheets run a check, mark the unsure boxes, and the error card says 
   await expect(page.getByTestId("stage-Output")).toBeVisible();
   await expect(page.getByTestId("stage-Input (test)")).toBeVisible();
   await expect(page.getByTestId("stage-missed-subtraction")).toContainText("1 children missed the teaching on subtraction with borrowing");
-  await expect(stages).not.toContainText("%"); // counts, never percentages
+  // every finding is in the one list: mistakes, the stages and what else was seen
+  const findings = page.getByTestId("findings");
+  await expect(findings.getByTestId("stage-Core")).toBeVisible();
+  await expect(findings.getByTestId("stage-missed-subtraction")).toBeVisible();
+  await expect(page.getByTestId("mistakes-table").locator("[data-kind=error]").first()).toBeVisible();
+  await expect(findings).toContainText("most likely");
+  await expect(findings).not.toContainText("%"); // counts, never percentages
+  await expect(stages).not.toContainText("%");
 });
 
 test("the sheets never leave the phone: no request carries the answers and the stage lines still show", async ({ page }) => {
@@ -34,21 +42,20 @@ test("the sheets never leave the phone: no request carries the answers and the s
   page.on("request", (r) => {
     if (r.method() === "POST") posts.push(r.url());
   });
-  await page.goto("/#/check");
-  await page.getByTestId("use-sample").click();
-  await page.getByTestId("finish").click();
+  await enterJudgeSample(page);
+  await finishEntering(page);
   await expect(page).toHaveURL(/#\/cards/);
   await expect(page.getByTestId("stage-lines")).toBeVisible();
   expect(posts.filter((u) => u.includes("/api/stages"))).toHaveLength(0);
-  expect(posts.every((u) => /\/api\/classes\/c-[0-9a-f]+\/profile$/.test(u))).toBe(true); // counts only
+  // counts only; making the test paper asks the server for that paper, with no child data and the sheet read adds none
+  expect(posts.filter((u) => !u.includes("/api/papers/")).every((u) => /\/api\/classes\/c-[0-9a-f]+\/profile$/.test(u))).toBe(true);
 });
 
 test("the stage lines are in her language", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem("cc.lang", "hi"));
-  await page.goto("/#/check");
   await page.reload();
-  await page.getByTestId("use-sample").click();
-  await page.getByTestId("finish").click();
+  await enterJudgeSample(page);
+  await finishEntering(page);
   await expect(page.getByTestId("stage-lines")).toContainText("सबसे संभावित");
   await expect(page.getByTestId("probe-Core")).toContainText("एक मिनट की जाँच");
 });

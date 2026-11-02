@@ -150,6 +150,171 @@
     "hi": "इसमें कितना समय लगना चाहिए?",
     "ta": "இதற்கு எவ்வளவு நேரம் ஆக வேண்டும்?"
    }
+  },
+  {
+   "criteria": [],
+   "id": "cp01",
+   "query": "what is a paper and a check papers page",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is a paper, and how is it different from a check?",
+    "hi": "पेपर क्या है, और जाँच से यह कैसे अलग है?",
+    "ta": "தாள் என்றால் என்ன, சோதனையிலிருந்து அது எப்படி வேறுபடுகிறது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp02",
+   "query": "anchor and adaptive items papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is the difference between anchor and adaptive items?",
+    "hi": "एंकर और अनुकूली सवालों में क्या अंतर है?",
+    "ta": "நங்கூரம் மற்றும் தகவமைப்புக் கேள்விகளுக்கு என்ன வேறுபாடு?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp03",
+   "query": "which form post-test twin pre-test papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Which form should I use for the post-test?",
+    "hi": "पश्च-परीक्षा के लिए कौन सा फ़ॉर्म इस्तेमाल करूँ?",
+    "ta": "பின்-தேர்வுக்கு எந்தப் படிவத்தைப் பயன்படுத்த வேண்டும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp04",
+   "query": "what happens to my pdf upload deleted handwriting names ignored papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What happens to my PDF?",
+    "hi": "मेरे PDF का क्या होता है?",
+    "ta": "என் PDF க்கு என்ன ஆகும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp05",
+   "query": "item not supported yet word problem dictation papers import",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why is this item not supported?",
+    "hi": "यह सवाल समर्थित क्यों नहीं है?",
+    "ta": "இந்தக் கேள்வி ஏன் ஆதரிக்கப்படவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp06",
+   "query": "frozen paper cannot change new version papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why can't I edit this paper?",
+    "hi": "मैं यह पेपर क्यों नहीं बदल सकता?",
+    "ta": "இந்தத் தாளை ஏன் திருத்த முடியவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp07",
+   "query": "why are no cohorts formed yet papers cohort status reason",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why are no cohorts formed yet?",
+    "hi": "अभी तक कोई समूह क्यों नहीं बना?",
+    "ta": "இன்னும் ஏன் குழுக்கள் உருவாகவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp08",
+   "query": "imported awaiting review reviewer confirms papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does Imported, awaiting review mean?",
+    "hi": "आयात किया गया, समीक्षा बाकी का क्या मतलब है?",
+    "ta": "இறக்குமதி செய்யப்பட்டது, மதிப்பாய்வு நிலுவை என்றால் என்ன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp09",
+   "query": "pre-test cannot go to a cohort assign papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why can't I assign a pre-test to a cohort?",
+    "hi": "मैं पूर्व-परीक्षा किसी समूह को क्यों नहीं सौंप सकता?",
+    "ta": "முன்-தேர்வைக் குழுவுக்கு ஏன் ஒதுக்க முடியாது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp10",
+   "query": "why did no cohort form minimum classes two item rule one question per child waiting for other classes",
+   "rubric_rows": [],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why did no cohort form?",
+    "hi": "कोई समूह क्यों नहीं बना?",
+    "ta": "ஏன் எந்தக் குழுவும் உருவாகவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "cp11",
+   "query": "how is the next lesson chosen generate next lesson tried partly not yet silence",
+   "rubric_rows": [],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How is the next lesson chosen?",
+    "hi": "अगला पाठ कैसे चुना जाता है?",
+    "ta": "அடுத்த பாடம் எப்படித் தேர்ந்தெடுக்கப்படுகிறது?"
+   }
   }
  ],
  "judge": [
@@ -310,7 +475,8 @@
    "id": "j08",
    "query": "feedback user testing you said we changed",
    "rubric_rows": [
-    "E4.2"
+    "E4.2",
+    "E4.4"
    ],
    "screens": [
     "any"
@@ -977,6 +1143,158 @@
    "text": {
     "en": "How does this guide cite its answers and say how to check them?"
    }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j43",
+   "query": "paper studio check papers made by code no AI independent verifier",
+   "rubric_rows": [
+    "A2.6"
+   ],
+   "screens": [
+    "check",
+    "any"
+   ],
+   "steps": [
+    1
+   ],
+   "text": {
+    "en": "Who makes the check papers, and is AI used to write them?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j44",
+   "query": "paper rules version two people approve publish spot check auto-approved",
+   "rubric_rows": [
+    "A2.7"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [
+    1
+   ],
+   "text": {
+    "en": "How are the paper rules changed and approved?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy",
+    "ai"
+   ],
+   "id": "j45",
+   "query": "demo flow steps simulated synthetic sheets reset judge",
+   "rubric_rows": [
+    "E2.6",
+    "A2.8"
+   ],
+   "screens": [
+    "any",
+    "landing"
+   ],
+   "steps": [
+    1
+   ],
+   "text": {
+    "en": "How do I run the whole demo, and what in it is simulated?"
+   }
+  },
+  {
+   "criteria": [
+    "innovation"
+   ],
+   "id": "j46",
+   "query": "papers page create assign cohort status scope enter check chooses a paper",
+   "rubric_rows": [
+    "A2.10"
+   ],
+   "screens": [
+    "papers"
+   ],
+   "steps": [
+    2
+   ],
+   "text": {
+    "en": "How does the Papers page create, assign and track a paper?"
+   }
+  },
+  {
+   "criteria": [
+    "ai"
+   ],
+   "id": "j47",
+   "query": "import paper from pdf call 16 reads printed questions code computes the key person confirms",
+   "rubric_rows": [
+    "A2.11"
+   ],
+   "screens": [
+    "papers"
+   ],
+   "steps": [
+    2
+   ],
+   "text": {
+    "en": "How is a paper imported from a PDF without the AI giving the answers?"
+   }
+  },
+  {
+   "criteria": [
+    "efficacy"
+   ],
+   "id": "j48",
+   "query": "why did no cohort form two classes minimum classes single question probes pilot cohort two classes waiting for other classes",
+   "rubric_rows": [
+    "E1.6"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why did no cohort form, and what forms one from two classes?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "efficacy"
+   ],
+   "id": "j49",
+   "query": "how is the next lesson chosen generate next lesson tried partly not yet silence planned code chooses call 5 words",
+   "rubric_rows": [
+    "E1.6"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How is the next lesson chosen after a teacher's feedback?"
+   }
+  },
+  {
+   "criteria": [
+    "ai",
+    "efficacy"
+   ],
+   "id": "j50",
+   "query": "AI off unavailable recorded answers label header badge AI mode non-AI path auto-fill type answers template person",
+   "rubric_rows": [
+    "A3.5"
+   ],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What happens when the AI is unavailable, and how are recorded answers labelled?"
+   }
   }
  ],
  "judge_path": {
@@ -1242,6 +1560,141 @@
     "en": "When does my card reach teachers?",
     "hi": "मेरा कार्ड शिक्षकों तक कब पहुँचता है?",
     "ta": "என் அட்டை ஆசிரியர்களை எப்போது அடையும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp01",
+   "query": "what is a paper and a check papers page",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is a paper, and how is it different from a check?",
+    "hi": "पेपर क्या है, और जाँच से यह कैसे अलग है?",
+    "ta": "தாள் என்றால் என்ன, சோதனையிலிருந்து அது எப்படி வேறுபடுகிறது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp02",
+   "query": "anchor and adaptive items papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is the difference between anchor and adaptive items?",
+    "hi": "एंकर और अनुकूली सवालों में क्या अंतर है?",
+    "ta": "நங்கூரம் மற்றும் தகவமைப்புக் கேள்விகளுக்கு என்ன வேறுபாடு?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp03",
+   "query": "which form post-test twin pre-test papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Which form should I use for the post-test?",
+    "hi": "पश्च-परीक्षा के लिए कौन सा फ़ॉर्म इस्तेमाल करूँ?",
+    "ta": "பின்-தேர்வுக்கு எந்தப் படிவத்தைப் பயன்படுத்த வேண்டும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp04",
+   "query": "what happens to my pdf upload deleted handwriting names ignored papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What happens to my PDF?",
+    "hi": "मेरे PDF का क्या होता है?",
+    "ta": "என் PDF க்கு என்ன ஆகும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp05",
+   "query": "item not supported yet word problem dictation papers import",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why is this item not supported?",
+    "hi": "यह सवाल समर्थित क्यों नहीं है?",
+    "ta": "இந்தக் கேள்வி ஏன் ஆதரிக்கப்படவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp06",
+   "query": "frozen paper cannot change new version papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why can't I edit this paper?",
+    "hi": "मैं यह पेपर क्यों नहीं बदल सकता?",
+    "ta": "இந்தத் தாளை ஏன் திருத்த முடியவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp07",
+   "query": "why are no cohorts formed yet papers cohort status reason",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why are no cohorts formed yet?",
+    "hi": "अभी तक कोई समूह क्यों नहीं बना?",
+    "ta": "இன்னும் ஏன் குழுக்கள் உருவாகவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp08",
+   "query": "imported awaiting review reviewer confirms papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does Imported, awaiting review mean?",
+    "hi": "आयात किया गया, समीक्षा बाकी का क्या मतलब है?",
+    "ta": "இறக்குமதி செய்யப்பட்டது, மதிப்பாய்வு நிலுவை என்றால் என்ன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "mp09",
+   "query": "assign a paper who when kind pre-test cohort papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Who can I assign a paper to, and by when?",
+    "hi": "मैं पेपर किसे और कब तक सौंप सकता हूँ?",
+    "ta": "தாளை யாருக்கு, எப்போதுக்குள் ஒதுக்கலாம்?"
    }
   }
  ],
@@ -1565,6 +2018,156 @@
     "en": "Does the app score me?",
     "hi": "क्या ऐप मुझे अंक देता है?",
     "ta": "இந்தச் செயலி எனக்கு மதிப்பெண் தருமா?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp01",
+   "query": "what is a paper and a check papers page",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is a paper, and how is it different from a check?",
+    "hi": "पेपर क्या है, और जाँच से यह कैसे अलग है?",
+    "ta": "தாள் என்றால் என்ன, சோதனையிலிருந்து அது எப்படி வேறுபடுகிறது?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp02",
+   "query": "anchor and adaptive items papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What is the difference between anchor and adaptive items?",
+    "hi": "एंकर और अनुकूली सवालों में क्या अंतर है?",
+    "ta": "நங்கூரம் மற்றும் தகவமைப்புக் கேள்விகளுக்கு என்ன வேறுபாடு?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp03",
+   "query": "which form post-test twin pre-test papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Which form should I use for the post-test?",
+    "hi": "पश्च-परीक्षा के लिए कौन सा फ़ॉर्म इस्तेमाल करूँ?",
+    "ta": "பின்-தேர்வுக்கு எந்தப் படிவத்தைப் பயன்படுத்த வேண்டும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp04",
+   "query": "what happens to my pdf upload deleted handwriting names ignored papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What happens to my PDF?",
+    "hi": "मेरे PDF का क्या होता है?",
+    "ta": "என் PDF க்கு என்ன ஆகும்?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp05",
+   "query": "item not supported yet word problem dictation papers import",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why is this item not supported?",
+    "hi": "यह सवाल समर्थित क्यों नहीं है?",
+    "ta": "இந்தக் கேள்வி ஏன் ஆதரிக்கப்படவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp06",
+   "query": "frozen paper cannot change new version papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why can't I edit this paper?",
+    "hi": "मैं यह पेपर क्यों नहीं बदल सकता?",
+    "ta": "இந்தத் தாளை ஏன் திருத்த முடியவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp07",
+   "query": "why are no cohorts formed yet papers cohort status reason",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why are no cohorts formed yet?",
+    "hi": "अभी तक कोई समूह क्यों नहीं बना?",
+    "ta": "இன்னும் ஏன் குழுக்கள் உருவாகவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp08",
+   "query": "imported awaiting review reviewer confirms papers",
+   "rubric_rows": [],
+   "screens": [
+    "papers"
+   ],
+   "steps": [],
+   "text": {
+    "en": "What does Imported, awaiting review mean?",
+    "hi": "आयात किया गया, समीक्षा बाकी का क्या मतलब है?",
+    "ta": "இறக்குமதி செய்யப்பட்டது, மதிப்பாய்வு நிலுவை என்றால் என்ன?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp09",
+   "query": "why did no cohort form waiting for other classes one in four two questions",
+   "rubric_rows": [],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "Why did no cohort form?",
+    "hi": "कोई समूह क्यों नहीं बना?",
+    "ta": "ஏன் எந்தக் குழுவும் உருவாகவில்லை?"
+   }
+  },
+  {
+   "criteria": [],
+   "id": "tp10",
+   "query": "how is the next lesson chosen generate next lesson tried partly not yet",
+   "rubric_rows": [],
+   "screens": [
+    "any"
+   ],
+   "steps": [],
+   "text": {
+    "en": "How is my next lesson chosen?",
+    "hi": "मेरा अगला पाठ कैसे चुना जाता है?",
+    "ta": "என் அடுத்த பாடம் எப்படித் தேர்ந்தெடுக்கப்படுகிறது?"
    }
   }
  ]

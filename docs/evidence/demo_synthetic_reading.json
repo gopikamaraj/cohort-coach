@@ -1,0 +1,205 @@
+{
+ "rows": [
+  {
+   "sheet": "3A-roll01.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll02.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 8,
+   "auto_right": 8,
+   "flagged": 2,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll03.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll04.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll05.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll06.png",
+   "hard": "smudge",
+   "right": 5,
+   "boxes": 10,
+   "auto": 5,
+   "auto_right": 5,
+   "flagged": 5,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll07.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll08.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll09.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll10.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll11.png",
+   "hard": "crossed",
+   "right": 9,
+   "boxes": 10,
+   "auto": 9,
+   "auto_right": 9,
+   "flagged": 1,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll12.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll13.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll14.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 8,
+   "auto_right": 8,
+   "flagged": 2,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll15.png",
+   "hard": "blank",
+   "right": 10,
+   "boxes": 10,
+   "auto": 9,
+   "auto_right": 9,
+   "flagged": 1,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll16.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll17.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 9,
+   "auto_right": 9,
+   "flagged": 1,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll18.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll19.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  },
+  {
+   "sheet": "3A-roll20.png",
+   "hard": "",
+   "right": 10,
+   "boxes": 10,
+   "auto": 10,
+   "auto_right": 10,
+   "flagged": 0,
+   "read": true
+  }
+ ],
+ "cost": 0.0052
+}

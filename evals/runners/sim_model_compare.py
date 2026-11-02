@@ -1,0 +1,177 @@
+"""Compare the two Practice Class child models (legacy and bayesian) on one drill, move by move.
+
+The protocol of docs/build/reports/BAYESIAN-CHECK.md section 2.10: the SUB-SFL class with no class
+counts (one correct child; three SUB-SFL and one SUB-NODEC child; stages core, input-test, output,
+core; the last is shy). Each round is `pose_problem` to child X, then the chosen move to child X,
+going round the four children with an error, until the session finishes (every child with the
+error right twice in a row) or reaches 40 turns. 200 seeds per move, per model.
+
+Printed and written per move: mean turns to finish, the share ending by two-right-in-a-row and by
+the 40-turn cap, and for the Bayesian model the mean rise in belief and the spread of starting
+beliefs. Offline: no AI call, no network, no cost. Does not touch sim_fidelity or results.md.
+
+Usage: python -m evals.runners.sim_model_compare [--seeds N] [--no-write]
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import statistics
+import sys
+from pathlib import Path
+from typing import Any
+
+from engine.child_model import LEGACY, BayesianModel, ChildModel
+from engine.simulator import SessionState, fill_seats, new_session, plan_turn
+from services.practice.content import load_scenario
+
+OUT = Path(__file__).resolve().parents[1] / "results"
+MOVES = (
+    "decomposition", "exchange_ten", "show_bundles", "compensation", "ask_explain", "check_back",
+    "order_probe", "tell_rule", "repeat_rule_louder",
+)  # fmt: skip
+# The legacy baseline printed in BAYESIAN-CHECK.md 2.10 (mean turns to finish, 200 seeds).
+CHECK_BASELINE = {
+    "decomposition": 13.6, "exchange_ten": 13.6, "show_bundles": 13.6, "compensation": 14.6,
+    "ask_explain": 22.2, "check_back": 22.2, "order_probe": 22.2, "tell_rule": 39.8,
+    "repeat_rule_louder": 40.0,
+}  # fmt: skip
+
+
+def drill(move: str, seed: int, model: ChildModel) -> SessionState:
+    loaded = load_scenario("SUB-SFL")
+    cfg = loaded.config
+    seats = fill_seats(
+        {}, 0, cfg.error, loaded.scenario.seat_mix, stage_mix=loaded.scenario.stage_mix
+    )
+    state = new_session(cfg, seats, seed, model)
+    erring = [i for i, c in enumerate(state.children) if c.error]
+    k = 0
+    while not state.finished:
+        name = state.children[erring[k % len(erring)]].name
+        for m in ("pose_problem", move):
+            if state.finished:
+                break
+            _, state = plan_turn(state, cfg, m, addressed=name, posed=None)
+        k += 1
+    return state
+
+
+def summarise(move: str, model: ChildModel, seeds: int) -> dict[str, Any]:
+    turns, capped, gains, starts = [], 0, [], []
+    for seed in range(1, seeds + 1):
+        first = new_session(
+            load_scenario("SUB-SFL").config,
+            fill_seats({}, 0, load_scenario("SUB-SFL").config.error,
+                       load_scenario("SUB-SFL").scenario.seat_mix,
+                       stage_mix=load_scenario("SUB-SFL").scenario.stage_mix),
+            seed, model,
+        )  # fmt: skip
+        end = drill(move, seed, model)
+        turns.append(end.turn)
+        capped += end.finished_reason == "turn_cap"
+        for c0, c1 in zip(first.children, end.children, strict=True):
+            if c0.belief is not None and c1.belief is not None:
+                starts.append(c0.belief)
+                gains.append(c1.belief - c0.belief)
+    row: dict[str, Any] = {
+        "move": move,
+        "effect": load_scenario("SUB-SFL").config.moves[move].strength,
+        "mean_turns": round(statistics.fmean(turns), 1),
+        "two_right_share": round(1 - capped / seeds, 3),
+        "turn_cap_share": round(capped / seeds, 3),
+    }
+    if isinstance(model, BayesianModel):
+        cfg = load_scenario("SUB-SFL").config
+        row["learn_probability"] = model.learn_probability(row["effect"], cfg)
+        row["mean_belief_gain"] = round(statistics.fmean(gains), 3)
+        row["start_belief"] = {
+            "mean": round(statistics.fmean(starts), 3),
+            "sd": round(statistics.pstdev(starts), 3),
+            "min": round(min(starts), 3),
+            "max": round(max(starts), 3),
+        }
+    return row
+
+
+def run(seeds: int = 200) -> dict[str, Any]:
+    bayes = BayesianModel()
+    return {
+        "eval": "sim_model_compare",
+        "source": "evals/runners/sim_model_compare.py",
+        "date": datetime.date.today().isoformat(),
+        "protocol": "docs/build/reports/BAYESIAN-CHECK.md section 2.10 (SUB-SFL, round = "
+        "pose_problem then the move, round the four children with an error, cap 40 turns)",
+        "seeds": seeds,
+        "bayesian_params": bayes.to_dict()["params"],
+        "legacy": [summarise(m, LEGACY, seeds) for m in MOVES],
+        "bayesian": [summarise(m, bayes, seeds) for m in MOVES],
+        "check_baseline_mean_turns": CHECK_BASELINE,
+    }
+
+
+def markdown(r: dict[str, Any]) -> str:
+    lines = [
+        "# Child model comparison: legacy and bayesian",
+        "",
+        f"Generated by `{r['source']}` on {r['date']}. Offline, simulated children, no AI call."
+        f" {r['seeds']} seeds per move per model. Protocol: {r['protocol']}.",
+        "",
+        "These are runs of the simulator, not evidence about real children. The Bayesian "
+        "parameters "
+        "are chosen defaults, not fitted to data; the move effects are a first draft awaiting "
+        "Seema's review.",
+        "",
+        "## Legacy (rule-based, the default)",
+        "",
+        "| Move | Effect | Mean turns | Check's baseline | Two right in a row | 40-turn cap |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in r["legacy"]:
+        lines.append(
+            f"| {row['move']} | {row['effect']} | {row['mean_turns']} | "
+            f"{r['check_baseline_mean_turns'][row['move']]} | {row['two_right_share']:.1%} | "
+            f"{row['turn_cap_share']:.1%} |"
+        )
+    lines += [
+        "",
+        "## Bayesian (SIMULATOR_MODEL=bayesian)",
+        "",
+        f"Parameters: `{json.dumps(r['bayesian_params'])}`.",
+        "",
+        "| Move | Effect | T | Mean turns | Two right in a row | 40-turn cap | Mean belief gain "
+        "| Starting belief mean (sd, min to max) |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in r["bayesian"]:
+        s = row["start_belief"]
+        lines.append(
+            f"| {row['move']} | {row['effect']} | {row['learn_probability']} | "
+            f"{row['mean_turns']} | {row['two_right_share']:.1%} | {row['turn_cap_share']:.1%} | "
+            f"{row['mean_belief_gain']} | {s['mean']} ({s['sd']}, {s['min']} to {s['max']}) |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seeds", type=int, default=200)
+    ap.add_argument("--no-write", action="store_true")
+    args = ap.parse_args(argv)
+    result = run(args.seeds)
+    text = markdown(result)
+    print(text)
+    if not args.no_write:
+        OUT.mkdir(parents=True, exist_ok=True)
+        (OUT / "sim_model_compare.json").write_text(
+            json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n"
+        )
+        (OUT / "sim_model_compare.md").write_text(text, encoding="utf-8", newline="\n")
+        print("wrote sim_model_compare.json and sim_model_compare.md in evals/results/")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

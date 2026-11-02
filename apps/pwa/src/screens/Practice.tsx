@@ -1,15 +1,16 @@
 // T5: the Practice Class. Five pretend children make her own class's mistakes; she teaches in
 // text; a private feedback card follows. The transcript is kept on this phone only. Judges can
 // turn on a panel that shows the five AI layers of each turn.
+import { track } from "../lib/tester";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChildrenRow, FeedbackView, LayersPanel, Materials, SectionTabs, SpriteSpec, type Section } from "../components/practice";
+import { BlockBoard, ChildrenRow, FeedbackView, LayersPanel, Materials, SpriteSpec } from "../components/practice";
 import { CuePanel, ImpactPicker, PracticeTabs, ReviewTab, type PracticeTab } from "../components/review";
 import { Icon } from "../components/icons";
-import { getConsent, setConsent, recordOnServer, type Choices } from "../lib/consent";
+import { getConsent, setConsent, recordOnServer, type Choices, countsOn } from "../lib/consent";
 import { useConsent } from "../lib/useConsent";
 import { sendFeedback } from "../lib/feedback";
 import { setImpact, type Impact } from "../lib/review";
-import { SimulatedBanner } from "../components/parts";
+import { AiOffNote, RecordedChip, SimulatedBanner } from "../components/parts";
 import { db, getSetting, setSetting } from "../lib/db";
 import {
   appendTurn,
@@ -62,6 +63,10 @@ interface TurnView {
   written: number | null;
   move: { label: string; strategy: boolean; quality: string } | null;
   meters: ChildMeter[];
+  /** Other children who spoke in the same turn. */
+  others: { speaker: string; child: string; textEn: string; written: number | null }[];
+  /** When the reply arrived (this phone's clock). */
+  at: number;
 }
 
 interface Sample {
@@ -76,7 +81,7 @@ export default function Practice() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [session, setSession] = useState<CreatedSession | null>(null);
   const [turns, setTurns] = useState<TurnView[]>([]);
-  const [speaker, setSpeaker] = useState<string | null>(null);
+  const [speakers, setSpeakers] = useState<string[]>([]);
   const [faces, setFaces] = useState<Record<string, string>>({});
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -91,16 +96,19 @@ export default function Practice() {
   const consent = useConsent();
   const [tab, setTab] = useState<PracticeTab>("practise");
   const [cueOpen, setCueOpen] = useState(false);
-  const [section, setSection] = useState<Section>("class");
+  const says = useRef<HTMLDivElement>(null);
+  const [side, setSide] = useState<"turn" | "coach" | "judge">("turn");
   const [impact, setImpactState] = useState<Impact | undefined>(undefined);
   const [voiceOn, setVoiceOn] = useState(false);
   const [hintsOn, setHintsOn] = useState(false);
   const [hintList, setHintList] = useState<{ move: string; line: string }[]>([]);
   const [voiceFails, setVoiceFails] = useState(0);
   const [vstate, setVstate] = useState<VoiceState>("idle");
+  const [recMs, setRecMs] = useState(0); // how long she has been speaking (the visible timer)
+  const [capNote, setCapNote] = useState(""); // said when the 25 s limit stopped the recording
   const rowId = useRef<number | null>(null);
   const holding = useRef(false);
-  const rec = useRef<{ mr: MediaRecorder; at: number; timer: number } | null>(null);
+  const rec = useRef<{ mr: MediaRecorder; at: number; timer: number; tick: number } | null>(null);
   const log = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -113,6 +121,7 @@ export default function Practice() {
       const r = rec.current;
       if (r) {
         clearTimeout(r.timer);
+        clearInterval(r.tick);
         r.mr.stream.getTracks().forEach((x) => x.stop());
         if (r.mr.state === "recording") r.mr.stop();
       }
@@ -120,13 +129,14 @@ export default function Practice() {
     [],
   );
   useEffect(() => {
-    // the newest reply sits just above the box she types in: scroll the screen, not the log
-    const main = log.current?.closest("main");
-    main?.scrollTo({ top: main.scrollHeight });
-  }, [turns, busy]);
+    // Keep the newest reply in view without moving the page when it already is: "nearest" scrolls
+    // only if the card is off screen (a phone), never to the end of the page.
+    if (turns.length > 0) says.current?.scrollIntoView({ block: "nearest" });
+  }, [turns.length]);
 
   const fail = useCallback((e: unknown) => {
     const kind = e instanceof PracticeError ? e.kind : "other";
+    track("error_shown", { value: { code: `practice_${kind}` } });
     setPhase(kind === "paused" ? "paused" : kind === "offline" ? "offline" : "error");
     setNotice(kind === "expired" ? "practice.expired" : "practice.error");
   }, []);
@@ -138,14 +148,13 @@ export default function Practice() {
     }
     setPhase("starting");
     setTurns([]);
-    setSpeaker(null);
+    setSpeakers([]);
     setCard(null);
     setOver(null);
     setRating({});
     setFlagged(false);
     setImpactState(undefined);
     setCueOpen(false);
-    setSection("class");
     const urlSeed = query.get("seed");
     try {
       const created = await createSession({
@@ -171,8 +180,8 @@ export default function Practice() {
 
   const applyTurn = async (r: TurnResponse, shown: string) => {
     const why = simpleReplyReason(r.layers.guardrails.fallback_used, r.layers.output.source);
-    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, why, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [] }]);
-    setSpeaker(r.speaker);
+    setTurns((prev) => [...prev, { n: r.turn, teacher: shown, child: r.child_text, speaker: r.speaker, badge: r.badge, why, layers: r.layers, textEn: r.child_text_en ?? "", written: r.written ?? null, move: r.move ?? null, meters: r.children ?? [], others: (r.others ?? []).map((o) => ({ speaker: o.speaker, child: o.child_text, textEn: o.child_text_en, written: o.written })), at: Date.now() }]);
+    setSpeakers([...(r.speaker ? [r.speaker] : []), ...(r.others ?? []).map((o) => o.speaker)]);
     setFaces(Object.fromEntries((r.children ?? []).map((c) => [c.name, c.expression])));
     const moveId = r.layers.processing.label.move_id;
     const move = session?.moves.find((m) => m.id === moveId)?.label;
@@ -189,16 +198,24 @@ export default function Practice() {
       const r: VoiceTurn = await postVoiceTurn(session.session_id, clip);
       setVoiceFails(0);
       await applyTurn(r, r.heard);
+      if (r.voice_off) {
+        setNotice("practice.voice_off");
+        setVoiceOn(false); // the allowance is used: typing from here, the text continues
+      }
       if (r.audio && r.audio_mime) {
         setVstate("speaking");
         await playReply(r.audio, r.audio_mime);
       }
+      for (const o of r.others ?? []) if (o.audio && o.audio_mime) await playReply(o.audio, o.audio_mime); // the others, one after another
     } catch (e) {
       if (e instanceof PracticeError && e.kind === "voice") {
         const n = voiceFails + 1;
         setVoiceFails(n);
         setNotice(n >= MAX_VOICE_FAILURES ? "practice.voice_fallback" : "practice.error");
         if (n >= MAX_VOICE_FAILURES) setVoiceOn(false); // typing takes over by itself
+      } else if (e instanceof PracticeError && e.kind === "voice_off") {
+        setNotice("practice.voice_off");
+        setVoiceOn(false);
       } else if (e instanceof PracticeError && e.kind === "unheard") setNotice("practice.unheard");
       else if (e instanceof PracticeError && (e.kind === "finished" || e.kind === "invalid")) setNotice("practice.error");
       else fail(e);
@@ -213,6 +230,7 @@ export default function Practice() {
     const r = rec.current;
     if (!r) return;
     clearTimeout(r.timer);
+    clearInterval(r.tick);
     if (r.mr.state === "recording") {
       setVstate("thinking");
       r.mr.stop();
@@ -222,6 +240,8 @@ export default function Practice() {
   const startRec = async () => {
     if (!session || busy || over !== null || holding.current) return;
     holding.current = true;
+    setCapNote("");
+    setRecMs(0);
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -266,17 +286,29 @@ export default function Practice() {
       }
       void doVoice(new Blob(chunks, { type: mr.mimeType }));
     };
-    rec.current = { mr, at: Date.now(), timer: window.setTimeout(stopRec, MAX_RECORD_MS) };
+    const at = Date.now();
+    rec.current = {
+      mr,
+      at,
+      // at 25 s the recording stops by itself and she is told why (the service takes 30 s at once)
+      timer: window.setTimeout(() => {
+        setCapNote("practice.rec_limit");
+        stopRec();
+      }, MAX_RECORD_MS),
+      tick: window.setInterval(() => setRecMs(Date.now() - at), 250),
+    };
     mr.start();
     setVstate("listening");
   };
 
   const useText = () => {
     localStorage.setItem(VOICE_PREF_KEY, "0");
+    track("feature_used", { feature_id: "voice_toggle", value: { on: false } });
     setVoiceOn(false);
   };
   const useVoice = () => {
     localStorage.setItem(VOICE_PREF_KEY, "1");
+    track("feature_used", { feature_id: "voice_toggle", value: { on: true } });
     setVoiceFails(0);
     setNotice("");
     setVoiceOn(true);
@@ -288,6 +320,7 @@ export default function Practice() {
     setNotice("");
     try {
       await applyTurn(await postTurn(session.session_id, body), shown);
+      track("feature_used", { feature_id: "practice_turn" });
       setText("");
     } catch (e) {
       if (e instanceof PracticeError && (e.kind === "finished" || e.kind === "invalid")) setNotice("practice.error");
@@ -316,7 +349,6 @@ export default function Practice() {
   };
   const tap = (m: string) => {
     const names: Record<string, string> = { bundles: tr("practice.bundles"), sticks: tr("practice.sticks"), chart: tr("practice.chart") };
-    setSection("class"); // she sees the child answer
     void doTurn({ material: m }, tr("practice.tapped", { material: names[m] ?? m }));
   };
 
@@ -384,6 +416,11 @@ export default function Practice() {
         <h1 id="pr-title">{tr("practice.title")}</h1>
         {tabs}
         {banner}
+        {query.get("next") ? (
+          <p className="card" role="status" data-testid="practice-next">
+            {tr("practice.next_from_lesson")}
+          </p>
+        ) : null}
         <p>{tr("practice.intro")}</p>
         <p data-testid="goal-intro">{tr("practice.goal_line", { error: tr(`err.desc.${scenarioFor(profile?.track ?? null)}` as "err.desc.SUB-SFL") })}</p>
         {consent?.practice_ai ? null : (
@@ -400,7 +437,7 @@ export default function Practice() {
           onClick={() => {
             if (!consent?.practice_ai) {
               const before = getConsent();
-              const base: Choices = { core: true, counts: false, practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
+              const base: Choices = { core: true, counts: countsOn(null), practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
               void recordOnServer(before, setConsent({ ...base, core: true, practice_ai: true }));
             }
             void start();
@@ -491,52 +528,77 @@ export default function Practice() {
     );
   }
 
+  const last = turns[turns.length - 1];
+  const lastSaid = [...turns].reverse().find((t) => t.child);
+  const posed = [...turns].reverse().map((t) => t.layers.processing.posed_problem).find((p) => p !== null && p !== undefined);
+  const meters = last?.meters ?? [];
+  const following = meters.filter((c) => !c.has_error || c.band === "low").length;
+
   return (
-    <section aria-labelledby="pr-title">
+    <section aria-labelledby="pr-title" className="pcx">
       <h1 id="pr-title">{tr("practice.title")}</h1>
       {tabs}
       {banner}
       {session ? (
-        <div className="pc-top" data-testid="pc-top">
-          <ChildrenRow children={session.children} speaker={speaker} faces={faces} />
-          <p className="muted pc-count" data-testid="turn-counter">
-            {tr("practice.turn", { n: turns.length, cap })}
-          </p>
-          <SectionTabs section={section} onSection={setSection} judge={judgeMode} />
-        </div>
-      ) : null}
-      <div role="tabpanel" id="panel-class" aria-labelledby="sec-class" hidden={section !== "class"}>
-        {/* ideas first, so the newest reply sits right above the box she answers in */}
-        {session ? (
-          <>
-            <button type="button" className="btn btn-secondary btn-with-icon" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
-              <Icon name="bulb" /> <span>{cueOpen ? tr("cue.hide") : tr("cue.button")}</span>
-            </button>
-            {cueOpen ? (
-              <CuePanel
-                moves={session.moves}
-                onUse={(line) => {
-                  setVoiceOn(false); // she will type or edit the line
-                  setText(line);
-                  setCueOpen(false);
-                }}
-              />
-            ) : null}
-          </>
-        ) : null}
+        <div className="pcx-cols">
+          <div className="pcx-col">
+            <section className="pcx-card pcx-scenario" aria-labelledby="pcx-goal" data-testid="goal">
+              <Icon name="bulb" />
+              <div>
+                <h2 id="pcx-goal" className="pcx-meta">{tr("practice.goal_title")}</h2>
+                <p>{tr("practice.goal_line", { error: tr(`err.desc.${session.goal.error}` as "err.desc.SUB-SFL") })}</p>
+                <ul className="plain pcx-tips">
+                  {session.goal.tips.map((tip) => (
+                    <li key={tip}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            <section className="pcx-card" aria-labelledby="pcx-class">
+              <h2 id="pcx-class">{tr("practice.class_title")}</h2>
+              <p className="pcx-hint">{tr("practice.class_hint")}</p>
+              <AiOffNote text={tr("ai.off.practice")} testId="practice-ai-off" />
+              <div data-testid="pc-top">
+                <ChildrenRow children={session.children} speakers={speakers} faces={faces} />
+                <p className="muted pc-count" data-testid="turn-counter">
+                  {tr("practice.turn", { n: turns.length, cap })}
+                </p>
+              </div>
+              {lastSaid ? (
+                <div className="pcx-says" role="status" data-testid="says" ref={says}>
+                  <Icon name="chat" />
+                  <div>
+                    <b>{tr("practice.says", { name: lastSaid.speaker ?? "" })}</b>
+                    <span>{lastSaid.child}</span>
+                  </div>
+                </div>
+              ) : null}
         <div className="log" ref={log} aria-live="polite" data-testid="log">
-          {turns.map((t) => (
+          {busy ? <p className="muted" role="status">{tr("practice.sending")}</p> : null}
+          {/* newest first, so the latest reply is at the top without scrolling */}
+          {[...turns].reverse().map((t) => (
             <div key={t.n} className="exchange" data-testid={`turn-${t.n}`}>
+              <time className="turn-time" dateTime={new Date(t.at).toISOString()} data-testid={`turn-time-${t.n}`}>
+                {new Date(t.at).toLocaleTimeString(lang, { hour: "numeric", minute: "2-digit", second: "2-digit" })}
+              </time>
               <p className="said">{t.teacher}</p>
               <p className="reply" data-testid={`reply-${t.n}`}>
                 {t.child ? (
                   <>
                     <strong>{t.speaker}</strong>: {t.child} {t.badge !== "none" ? <span className="tick" aria-label={tr("practice.checked")}>✓</span> : null}
+                    {t.layers.output.source === "ai" ? <> <RecordedChip testId={`recorded-${t.n}`} /></> : null}
                   </>
                 ) : (
                   <em>{tr("practice.silent")}</em>
                 )}
               </p>
+              {t.others.map((o, i) => (
+                <p className="reply" key={`${t.n}-${i}`} data-testid={`other-${t.n}-${i}`}>
+                  <strong>{o.speaker}</strong>: {o.child}
+                  {judgeMode && o.textEn && lang !== "en" ? <span className="muted"> ({o.textEn})</span> : null}
+                </p>
+              ))}
               {t.why ? <p className="muted" role="status">{tr(t.why)}</p> : null}
               {t.child && t.written !== null ? (
                 <p className="slate" data-testid={`slate-${t.n}`}>
@@ -555,22 +617,30 @@ export default function Practice() {
                   {t.move.quality === "common_mistake" ? `, ${tr("watch.mistake")}` : ""}
                 </p>
               ) : null}
-              {judgeMode && t.meters.length > 0 ? <Meters children={t.meters} /> : null}
-              {judgeMode && showLayers ? (
-                <>
-                  <LayersPanel layers={t.layers} />
-                  <SpriteSpec child={t.meters.find((c) => c.speaking)} />
-                </>
-              ) : null}
             </div>
           ))}
-          {busy ? <p className="muted" role="status">{tr("practice.sending")}</p> : null}
         </div>
-        {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
-        {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
+            </section>
+
+            {posed && (posed.kind === "sub" || posed.kind === "add") ? <BlockBoard a={posed.a} b={posed.b} kind={posed.kind} /> : null}
+          </div>
+
+          <div className="pcx-col">
+            <section className="pcx-card pcx-side">
+              <div className="pcx-tabs" role="tablist" aria-label={tr("practice.side_tabs")}>
+                {(judgeMode ? (["turn", "coach", "judge"] as const) : (["turn", "coach"] as const)).map((k) => (
+                  <button key={k} type="button" role="tab" id={`side-${k}`} aria-selected={side === k} aria-controls={`side-panel-${k}`} className={side === k ? "pcx-tab pcx-tab-on" : "pcx-tab"} onClick={() => setSide(k)} data-testid={`side-${k}`}>
+                    {tr(k === "turn" ? "practice.your_turn" : k === "coach" ? "practice.coaching" : "practice.judge_title")}
+                  </button>
+                ))}
+              </div>
+            <div role="tabpanel" id="side-panel-turn" aria-labelledby="side-turn" hidden={side !== "turn"}>
+              <h2 id="pcx-turn">{tr("practice.your_turn")}</h2>
+              <p className="pcx-hint">{tr("practice.your_turn_hint")}</p>
         {voiceOn ? (
           <>
-            <div className="compose compose-dock">
+            <div className="compose compose-dock pcx-mic" data-state={vstate}>
+              <span className="pcx-bars" aria-hidden="true"><i /><i /><i /><i /></span>
               <button
                 type="button"
                 className="btn btn-primary btn-talk"
@@ -595,6 +665,7 @@ export default function Practice() {
               >
                 {vstate === "listening" ? tr("practice.talk_release") : vstate === "thinking" ? tr("practice.sending") : vstate === "speaking" ? tr("practice.speaking") : tr("practice.talk")}
               </button>
+              <span className="pcx-bars" aria-hidden="true"><i /><i /><i /><i /></span>
               {session?.voice.mode === "stub" ? (
                 <p className="muted" data-testid="voice-stub">
                   {tr("practice.voice_stub")}
@@ -603,10 +674,23 @@ export default function Practice() {
               <p className="muted" role="status" data-testid="voice-state">
                 {vstate === "listening" ? tr("practice.listening") : ""}
               </p>
+              {vstate === "listening" ? (
+                <p className="rec-timer" data-testid="rec-timer" aria-live="off">
+                  {tr("practice.rec_timer", { s: Math.min(Math.floor(recMs / 1000), MAX_RECORD_MS / 1000), max: MAX_RECORD_MS / 1000 })}
+                </p>
+              ) : null}
+              {capNote ? (
+                <p className="muted" role="status" data-testid="rec-limit">
+                  {tr(capNote as "practice.rec_limit")}
+                </p>
+              ) : null}
             </div>
             <button type="button" className="btn btn-secondary" onClick={useText} data-testid="use-text">
               {tr("practice.use_text")}
             </button>
+            <p className="muted" data-testid="ai-voices">
+              {tr("practice.ai_voices")}
+            </p>
           </>
         ) : (
           <>
@@ -642,38 +726,104 @@ export default function Practice() {
             ) : null}
           </>
         )}
+              {notice ? <p role="alert">{tr(notice as "practice.error")}</p> : null}
+              {over ? <p role="status" data-testid="over">{tr(over as "practice.over_all")}</p> : null}
+              <div className="pcx-cue">
+        <>
+            <button type="button" className="btn btn-secondary btn-with-icon" onClick={() => setCueOpen(!cueOpen)} aria-expanded={cueOpen} data-testid="cue-toggle">
+              <Icon name="bulb" /> <span>{cueOpen ? tr("cue.hide") : tr("cue.button")}</span>
+            </button>
+            {cueOpen ? (
+              <CuePanel
+                moves={session.moves}
+                onUse={(line) => {
+                  setVoiceOn(false); // she will type or edit the line
+                  setText(line);
+                  setCueOpen(false);
+                }}
+              />
+            ) : null}
+        </>
+              </div>
+              <div className="pcx-moves">
+                <p className="pcx-label">{tr("practice.quick_moves")}</p>
+                <Materials items={session.materials} itemFor={session.material_items} disabled={busy || over !== null} onTap={tap} />
+              </div>
         <button type="button" className="btn btn-secondary pc-end" onClick={() => void end()} disabled={busy || turns.length === 0 || phase === "ending"} data-testid="end">
           {tr("practice.end")}
         </button>
-      </div>
-      <div role="tabpanel" id="panel-materials" aria-labelledby="sec-materials" hidden={section !== "materials"}>
-        {session ? <Materials items={session.materials} itemFor={session.material_items} disabled={busy || over !== null} onTap={tap} /> : null}
-      </div>
-      <div role="tabpanel" id="panel-goal" aria-labelledby="sec-goal" hidden={section !== "goal"}>
-        {session ? (
-          <div className="card" data-testid="goal">
-            <h2>{tr("practice.goal_title")}</h2>
-            <p>{tr("practice.goal_line", { error: tr(`err.desc.${session.goal.error}` as "err.desc.SUB-SFL") })}</p>
-            <p className="muted">{tr("practice.goal_tips")}</p>
-            <ul className="plain">
-              {session.goal.tips.map((tip) => (
-                <li key={tip}>{tip}</li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-      </div>
-      {judgeMode ? (
-        <div role="tabpanel" id="panel-judge" aria-labelledby="sec-judge" hidden={section !== "judge"}>
-          <button type="button" className="btn btn-secondary" onClick={toggleLayers} aria-pressed={showLayers} data-testid="layers-toggle">
-            {showLayers ? tr("layers.hide") : tr("layers.show")}
-          </button>
+            </div>
+
+            <div role="tabpanel" id="side-panel-coach" aria-labelledby="side-coach" hidden={side !== "coach"} data-testid="coaching">
+              <h2 id="pcx-coach">{tr("practice.coaching")}</h2>
+              <p className="pcx-hint">{tr("practice.coaching_hint")}</p>
+              {last?.why ? (
+                <div className="pcx-fb pcx-fb-watch">
+                  <Icon name="info" />
+                  <div>{tr(last.why)}</div>
+                </div>
+              ) : null}
+              {judgeMode && last?.move ? (
+                <div className="pcx-fb pcx-fb-good">
+                  <Icon name="ok" />
+                  <div>{tr("watch.move", { move: last.move.label })}</div>
+                </div>
+              ) : null}
+              {!last?.why && !(judgeMode && last?.move) ? <p className="muted">{tr("practice.coach_none")}</p> : null}
+              {meters.length > 0 ? (
+                <>
+                  <div className="pcx-meterhead">
+                    <span>{tr("practice.following")}</span>
+                    <span>{tr("practice.following_n", { n: following, total: meters.length })}</span>
+                  </div>
+                  <div className="pcx-meter" role="progressbar" aria-valuemin={0} aria-valuemax={meters.length} aria-valuenow={following} aria-label={tr("practice.following")}>
+                    <i style={{ width: `${(following / meters.length) * 100}%` }} />
+                  </div>
+                </>
+              ) : null}
+              <p className="pcx-privacy">
+                <Icon name="shield" size={20} /> <span>{tr("practice.private_line")}</span>
+              </p>
+            </div>
+
+            {judgeMode ? (
+              <div role="tabpanel" id="side-panel-judge" aria-labelledby="side-judge" hidden={side !== "judge"} data-testid="judge-panel">
+                <div className="pcx-judgehead">
+                  <h2 id="pcx-judge">{tr("practice.judge_title")}</h2>
+                  <label className="check">
+                    <input type="checkbox" checked={showLayers} onChange={toggleLayers} data-testid="layers-toggle" />
+                    <span>{tr("layers.show")}</span>
+                  </label>
+                </div>
           <label className="check">
             <input type="checkbox" checked={hintsOn} onChange={(e) => setHintsOn(e.target.checked)} data-testid="hints-toggle" />
             <span>{tr("hints.toggle")}</span>
           </label>
           <p className="muted">{tr("layers.judge_only")}</p>
+          {turns.length > 0 ? (
+            <details className="pcx-trace" open data-testid="judge-trace">
+              <summary>{tr("practice.trace", { n: turns.length })}</summary>
+              <div className="pcx-trace-body">
+                {turns.map((t) => (
+                  <div key={t.n} data-testid={`trace-${t.n}`}>
+                    <h3>{tr("practice.turn_n", { n: t.n })}</h3>
+                    {t.meters.length > 0 ? <Meters children={t.meters} /> : null}
+                    {showLayers ? (
+                      <>
+                        <LayersPanel layers={t.layers} />
+                        <SpriteSpec child={t.meters.find((c) => c.speaking)} />
+                      </>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </details>
+          ) : null}
           <BreakIt />
+              </div>
+            ) : null}
+            </section>
+          </div>
         </div>
       ) : null}
     </section>

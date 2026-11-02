@@ -1,0 +1,83 @@
+// Read an answer-sheet photo (call 8, on the server) into one child's boxes. The photo is shrunk on
+// the phone, sent, and dropped: it is never saved here or on the server. The reads come back as
+// suggestions: boxes the model was unsure of are marked, and the teacher checks every box anyway.
+import { API_BASE } from "./api";
+import { BLANK } from "./check";
+
+export type CellStatus = "ok" | "check" | "blank";
+
+export interface SheetCell {
+  text: string;
+  status: CellStatus;
+}
+
+export type SheetFail = "offline" | "typing" | "bad_photo" | "other";
+
+export class SheetError extends Error {
+  constructor(public kind: SheetFail) {
+    super(kind);
+  }
+}
+
+const MAX_EDGE = 1200;
+const JPEG_QUALITY = 0.7;
+const TIMEOUT_MS = 30_000;
+
+/** The reads as a row of typed cells, and which boxes the teacher should look at first. */
+export function applyReads(cells: SheetCell[], items: number): { row: string[]; flagged: number[] } {
+  const row: string[] = [];
+  const flagged: number[] = [];
+  for (let i = 0; i < items; i += 1) {
+    const cell = cells[i];
+    if (!cell) {
+      row.push("");
+      flagged.push(i);
+    } else if (cell.status === "blank") {
+      row.push(BLANK);
+    } else {
+      row.push(cell.text);
+      if (cell.status === "check") flagged.push(i);
+    }
+  }
+  return { row, flagged };
+}
+
+/** Shrink to about 1200 px on the long edge as a JPEG (about 80 KB), so it uploads on a weak signal. */
+export async function downscale(file: Blob): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("no canvas");
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", JPEG_QUALITY));
+    if (!blob) throw new Error("no blob");
+    return blob;
+  } catch {
+    throw new SheetError("bad_photo");
+  }
+}
+
+export async function readSheet(photo: Blob, form: string, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<SheetCell[]> {
+  const body = new FormData();
+  body.append("image", photo, "sheet.jpg");
+  body.append("form", form);
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetchFn(`${API_BASE}/api/sheets/read`, { method: "POST", body, signal: ctrl.signal });
+  } catch {
+    throw new SheetError("offline");
+  } finally {
+    clearTimeout(timer);
+  }
+  if (res.ok) return ((await res.json()) as { cells: SheetCell[] }).cells;
+  if (res.status === 503) throw new SheetError("typing");
+  if (res.status === 413 || res.status === 422) throw new SheetError("bad_photo");
+  throw new SheetError("other");
+}

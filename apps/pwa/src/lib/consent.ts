@@ -1,4 +1,6 @@
-// Consent (India's DPDP Act): free, specific and withdrawable. Nothing is on by default. What she agreed to is
+// Consent (India's DPDP Act): free, specific and withdrawable. Nothing is on by default, with one exception
+// for the demo build: until she makes a choice, sharing class counts is ON (counts only, never a child), so a
+// demo's results reach the server. VITE_DEFAULT_SHARE_COUNTS=0 turns that off; any saved choice wins. What she agreed to is
 // kept on the phone with a version and a time, and each change is also sent to the server as a record under a
 // random device id (no name). Using the check, the cards and the history on this phone needs no consent
 // beyond reading the notice ("core"); sending class counts, using the AI Practice Class, and sharing
@@ -12,9 +14,10 @@ export interface KV {
 }
 
 export const CONSENT_VERSION = 1;
-export const SCOPES = ["core", "counts", "practice_ai", "share_rehearsal", "feedback"] as const;
+export const SCOPES = ["core", "counts", "practice_ai", "share_rehearsal", "feedback", "keep_sheets"] as const;
 export type Scope = (typeof SCOPES)[number];
-export type Choices = Record<Scope, boolean>;
+// keep_sheets (keep my approved answer sheets for 60 days) is optional, so choices saved before it existed still fit
+export type Choices = Record<Exclude<Scope, "keep_sheets">, boolean> & { keep_sheets?: boolean };
 export interface Consent extends Choices {
   v: number;
   at: number;
@@ -39,8 +42,16 @@ export function getConsent(kv: KV | null = local()): Consent | null {
   }
 }
 
+const demoShareCounts = (): boolean => (import.meta.env as Record<string, string | undefined>)["VITE_DEFAULT_SHARE_COUNTS"] !== "0";
+
+/** Is sharing class counts on? Her saved choice if she has made one, else the demo default. */
+export function countsOn(consent: Consent | null): boolean {
+  return consent ? consent.counts === true : demoShareCounts();
+}
+
 export function hasConsent(scope: Scope, kv: KV | null = local()): boolean {
-  return getConsent(kv)?.[scope] === true;
+  const c = getConsent(kv);
+  return scope === "counts" ? countsOn(c) : c?.[scope] === true;
 }
 
 export function setConsent(choices: Choices, kv: KV | null = local()): Consent {

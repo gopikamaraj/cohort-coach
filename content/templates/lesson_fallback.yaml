@@ -1,0 +1,30 @@
+# The lesson written by code when call 5's draft is not available (no key, a held draft, or a recorded
+# run with no recording). It still goes to the coach's review queue like any draft. Class numbers are
+# slots, filled by code per teacher (services/content/slots.py). {topic} and {approach} come from the
+# approved track and the strategy library, in the teacher's language.
+# TODO-HUMAN(Seema): review the Hindi; Tamil needs a native reader.
+smaller_step:
+  en: "Go slower this time: one small step, then let the children practise it twice."
+  hi: "इस बार धीरे चलें: एक छोटा कदम, फिर बच्चों से उसका दो बार अभ्यास करवाएँ।"
+  ta: "இந்த முறை மெதுவாகச் செல்லுங்கள்: ஒரு சிறிய படி, பிறகு குழந்தைகள் அதை இரண்டு முறை பயிற்சி செய்யட்டும்."
+body:
+  en: >-
+    {topic}. In your class, {{class.count_showing}} of {{class.children_checked}} children showed
+    this mistake: {{track.error_name}}. Today's approach: {approach}. Write {{class.example_a}} minus
+    {{class.example_b}} on the board. A child with this mistake writes {{class.example_wrong_answer}}.
+    Ask: how did you get that? Listen before you correct. The answer is
+    {{class.example_correct_answer}}. {extra}Try it with three children this week. This is lesson
+    {{track.day}} of {{track.total_days}}.
+  hi: >-
+    {topic}। आपकी कक्षा में {{class.children_checked}} में से {{class.count_showing}} बच्चों ने यह
+    गलती की: {{track.error_name}}। आज का तरीका: {approach}। बोर्ड पर {{class.example_a}} में से
+    {{class.example_b}} घटाना लिखें। इस गलती वाला बच्चा {{class.example_wrong_answer}} लिखता है। पूछें:
+    यह कैसे आया? सुधारने से पहले सुनें। सही उत्तर {{class.example_correct_answer}} है। {extra}इस हफ़्ते
+    तीन बच्चों के साथ आज़माएँ। यह {{track.total_days}} में से पाठ {{track.day}} है।
+  ta: >-
+    {topic}. உங்கள் வகுப்பில் {{class.children_checked}} குழந்தைகளில் {{class.count_showing}} பேர்
+    இந்தத் தவறைச் செய்தனர்: {{track.error_name}}. இன்றைய வழி: {approach}. பலகையில்
+    {{class.example_a}} கழித்தல் {{class.example_b}} என்று எழுதுங்கள். இந்தத் தவறு உள்ள குழந்தை
+    {{class.example_wrong_answer}} என்று எழுதும். கேளுங்கள்: இது எப்படி வந்தது? திருத்தும் முன்
+    கேளுங்கள். சரியான விடை {{class.example_correct_answer}}. {extra}இந்த வாரம் மூன்று குழந்தைகளுடன்
+    முயற்சி செய்யுங்கள். இது {{track.total_days}} பாடங்களில் பாடம் {{track.day}}.

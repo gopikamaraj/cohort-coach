@@ -1,4 +1,4 @@
-"""Word-based retrieval inside one scope. No embeddings, no vector store, no network.
+"""Retrieval inside one scope: words first, and meaning too when RETRIEVAL=vector (vector.py).
 
 `search` takes a Scope and a query, and reads only the namespaces that scope lists. There is no
 namespace argument anywhere, so a question can never widen what is searched: that is the scope
@@ -113,7 +113,51 @@ def get_chunk(scope: Scope, chunk_id: str, index_dir: Path = INDEX_DIR) -> Chunk
     return next((c for c in chunks_in(scope, index_dir) if c.id == chunk_id), None)
 
 
+RRF_K = (
+    60  # reciprocal-rank fusion: a hit's weight is 1 / (RRF_K + rank) in each list it appears in
+)
+
+
 def search(scope: Scope, query: str, k: int = 5, index_dir: Path = INDEX_DIR) -> list[Hit]:
+    """Word hits, merged with meaning hits when the vector flag is on. Both lists are drawn from the
+    chunks this scope may read and no others; if the vector side fails, the word hits stand alone."""
+    words = _word_search(scope, query, k=max(k, 8), index_dir=index_dir)
+    from services.assistant import vector
+
+    if not vector.enabled():
+        return _spread(words, k)
+    docs = chunks_in(scope, index_dir)
+    by_id = {c.id: c for c in docs}
+    sem = vector.hits(query, docs, k=max(k, 8), index_dir=index_dir)
+    if not sem:
+        return _spread(words, k)
+    fused: dict[str, float] = {}
+    matched: dict[str, int] = {}
+    for rank, h in enumerate(words):
+        fused[h.chunk.id] = fused.get(h.chunk.id, 0.0) + 1 / (RRF_K + rank)
+        matched[h.chunk.id] = h.matched
+    for rank, (cid, _) in enumerate(sem):
+        fused[cid] = fused.get(cid, 0.0) + 1 / (RRF_K + rank)
+    ranked = sorted(fused, key=lambda cid: (-fused[cid], cid))
+    return _spread(
+        [Hit(by_id[cid], round(fused[cid], 4), matched.get(cid, 0)) for cid in ranked], k
+    )
+
+
+def _spread(hits: list[Hit], k: int) -> list[Hit]:
+    out: list[Hit] = []
+    per_path: Counter[str] = Counter()
+    for h in hits:
+        if per_path[h.chunk.path] >= MAX_FILE_CHUNKS_PER_PATH:
+            continue
+        per_path[h.chunk.path] += 1
+        out.append(h)
+        if len(out) == k:
+            break
+    return out
+
+
+def _word_search(scope: Scope, query: str, k: int, index_dir: Path) -> list[Hit]:
     docs = chunks_in(scope, index_dir)
     q = list(dict.fromkeys(tokens(query)))
     if not docs or not q:
@@ -141,13 +185,4 @@ def search(scope: Scope, query: str, k: int = 5, index_dir: Path = INDEX_DIR) ->
             s += idf[t] * (f * (K1 + 1)) / (f + K1 * (1 - B + B * ln / avg))
         hits.append(Hit(c, round(s, 4), len(matched)))
     hits.sort(key=lambda h: (-h.score, h.chunk.id))
-    out: list[Hit] = []
-    per_path: Counter[str] = Counter()
-    for h in hits:
-        if per_path[h.chunk.path] >= MAX_FILE_CHUNKS_PER_PATH:
-            continue
-        per_path[h.chunk.path] += 1
-        out.append(h)
-        if len(out) == k:
-            break
-    return out
+    return hits[:k]

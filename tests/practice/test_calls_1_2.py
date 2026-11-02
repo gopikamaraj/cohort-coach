@@ -249,6 +249,18 @@ def test_a_failed_call_labels_other_and_changes_nothing(sink: SqlAuditSink) -> N
     assert len(fake.messages.calls) == 2
 
 
+def test_a_failed_call_still_finds_the_one_child_she_named_by_code(sink: SqlAuditSink) -> None:
+    # The move stays "other" (changes nothing), but the child she named answers, not someone else.
+    res, _ = lab(sink, TimeoutError("slow"), "Meena, what is 52 minus 29?")
+    assert (res.move_id, res.addressed, res.scope) == ("other", "Meena", "child")
+    res, _ = lab(sink, TimeoutError("slow"), "meena?")
+    assert res.addressed == "Meena"
+    # two names, or none, or a name inside another word: nobody is picked
+    for text in ("Meena and Ravi, look", "Everyone, look", "Anumita, look"):
+        res, _ = lab(sink, TimeoutError("slow"), text)
+        assert res.addressed is None and res.scope == "none", text
+
+
 def test_long_teacher_text_is_cut(sink: SqlAuditSink) -> None:
     ok = MoveLabel(move_id="praise", addressed_child="none", confidence=0.9)
     _, fake = lab(sink, ok, "word " * 500)

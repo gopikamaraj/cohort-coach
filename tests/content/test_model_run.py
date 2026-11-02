@@ -18,7 +18,7 @@ from ai.schemas import TrackPart
 from services.api.db import ContentAudit, ReviewItem
 from services.content import drafting, model_run, publish, review, versions
 from services.content.track import load_track
-from services.pilot.storage import LocalBlobStore
+from services.media.storage import LocalBlobStore
 from services.practice.stub_client import StubClient
 from services.speech import audio as speech_audio
 from tests.ai.test_c05_track_draft import PASS
@@ -219,7 +219,7 @@ def test_the_track_manifest_lists_the_voiced_run_labelled_simulated(
     from tests.content.test_publish import approve_all, switched_on
 
     monkeypatch.setattr(model_run, "join_to_file", fake_join)
-    monkeypatch.setattr(publish, "join_to_file", fake_join)
+    monkeypatch.setattr(publish.lessons, "encode_mp3", lambda wav, kbps: b"ID3" + wav[:64])
     v = switched_on(db)
     track = load_track("sub-sfl.v1")
     manifest = publish.publish_version(

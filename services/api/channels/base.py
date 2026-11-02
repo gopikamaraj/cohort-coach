@@ -28,6 +28,7 @@ class Message:
     url: str | None = None
     url_label: str | None = None
     audio: str | None = None
+    audio_info: dict[str, object] | None = None  # the web player's size, sentences and timing
     scene: dict[str, object] | None = None  # a SceneRef: the web app draws it, the bot sends a PNG
     alt: str | None = None  # what the picture shows, in her language
 
@@ -42,6 +43,7 @@ def render_step(step: Step, lang: str) -> Message:
         url=link.url if link else None,
         url_label=strings.text(lang, link.label_copy) if link else None,
         audio=step.audio,
+        audio_info=step.audio_info,
         scene=step.scene.model_dump() if step.scene else None,
         alt=strings.text(lang, f"sprite.scene.{step.scene.layout}") if step.scene else None,
     )

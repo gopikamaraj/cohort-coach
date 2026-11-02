@@ -315,113 +315,6 @@ class FlowState(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
-class PilotSheet(Base):
-    """One stored pre-test answer-sheet photo (pilot mode). The image sits in the private sheets
-    bucket; this row holds where, who sent it and under which school consent. No child name or
-    free-text name field exists here: sheets carry roll numbers only, and the roll number is in the
-    image, not in this table."""
-
-    __tablename__ = "pilot_sheet"
-    __table_args__ = (UniqueConstraint("school_code", "sha256"),)
-
-    id: Mapped[str] = mapped_column(String(32), primary_key=True)
-    school_code: Mapped[str] = mapped_column(String(24), index=True)
-    class_code: Mapped[str] = mapped_column(String(24))
-    teacher_ref: Mapped[str] = mapped_column(String(24))
-    test_phase: Mapped[str] = mapped_column(String(8), default="pre")
-    object_key: Mapped[str] = mapped_column(String(120), unique=True)
-    sha256: Mapped[str] = mapped_column(String(64))
-    bytes: Mapped[int] = mapped_column(Integer)
-    mime: Mapped[str] = mapped_column(String(40))
-    consent_ref: Mapped[str] = mapped_column(String(60))
-    uploaded_by: Mapped[str] = mapped_column(String(40))
-    uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
-    # pending (URL issued) | stored | read | needs_look | failed
-    status: Mapped[str] = mapped_column(String(12), default="pending", index=True)
-    note: Mapped[str | None] = mapped_column(String(20))  # why a sheet needs a second look
-
-
-class PilotClassCount(Base):
-    """What the read sheets of one pilot class add up to: counts only, never a child's answers."""
-
-    __tablename__ = "pilot_class_count"
-    __table_args__ = (UniqueConstraint("school_code", "class_code"),)
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    school_code: Mapped[str] = mapped_column(String(24), index=True)
-    class_code: Mapped[str] = mapped_column(String(24))
-    teacher_ref: Mapped[str] = mapped_column(String(24))
-    children_checked: Mapped[int] = mapped_column(Integer, default=0)
-    counts: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
-    anchor_wrong_count: Mapped[int] = mapped_column(Integer, default=0)
-    untracked: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
-
-
-class PilotConfig(Base):
-    """Settings the coordinator edits in the app (audio_count, retention_days)."""
-
-    __tablename__ = "pilot_config"
-
-    key: Mapped[str] = mapped_column(String(30), primary_key=True)
-    value: Mapped[Any] = mapped_column(JSON)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
-    updated_by: Mapped[str] = mapped_column(String(40), default="system")
-
-
-class PilotAudio(Base):
-    """One intervention audio card: a slot in one language, one version of it. Older versions
-    stay; a card past a lowered audio count is shown inactive and never deleted."""
-
-    __tablename__ = "pilot_audio"
-    __table_args__ = (UniqueConstraint("slot", "language", "version"),)
-
-    id: Mapped[str] = mapped_column(String(32), primary_key=True)
-    slot: Mapped[int] = mapped_column(Integer, index=True)
-    language: Mapped[str] = mapped_column(String(4))
-    version: Mapped[int] = mapped_column(Integer, default=1)
-    title: Mapped[str] = mapped_column(String(120))
-    script: Mapped[str] = mapped_column(Text)
-    track: Mapped[str | None] = mapped_column(String(16))
-    voice: Mapped[str] = mapped_column(String(20))
-    # draft | needs_review | approved | audio_ready | failed
-    status: Mapped[str] = mapped_column(String(14), default="draft", index=True)
-    note: Mapped[str | None] = mapped_column(String(60))  # why it failed, or the checker was down
-    review_item_id: Mapped[str | None] = mapped_column(ForeignKey("review_items.item_id"))
-    object_key: Mapped[str | None] = mapped_column(String(120))
-    bytes: Mapped[int] = mapped_column(Integer, default=0)
-    duration_s: Mapped[float] = mapped_column(Float, default=0.0)
-    counts_hash: Mapped[str] = mapped_column(String(16), default="")
-    created_by: Mapped[str] = mapped_column(String(40), default="system")
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
-    approved_by: Mapped[str | None] = mapped_column(String(40))
-    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-
-
-class PilotShare(Base):
-    """A manual record: the coordinator says she sent this file to this teacher. Not delivery."""
-
-    __tablename__ = "pilot_share"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    audio_id: Mapped[str] = mapped_column(ForeignKey("pilot_audio.id"), index=True)
-    teacher_ref: Mapped[str] = mapped_column(String(24))
-    shared_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
-    shared_by: Mapped[str] = mapped_column(String(40))
-
-
-class PilotAudit(Base):
-    """Who did what in pilot mode. Ids and counts only; never a child, a name or a script."""
-
-    __tablename__ = "pilot_audit"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
-    actor: Mapped[str] = mapped_column(String(40))
-    action: Mapped[str] = mapped_column(String(40), index=True)
-    target: Mapped[str] = mapped_column(String(60), default="")
-    detail: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
-
-
 class ContentVersion(Base):
     """One version of an item of content (a track, a strategy, a scenario, a setting).
 
@@ -519,6 +412,36 @@ class CohortSpace(Base):
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     simulated: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class ClassCohort(Base):
+    """A cohort of one class: "Just my class, no other teachers yet". Counts only (the errors she
+    chose and how many children showed each); no child, no answer, no roll number. A separate,
+    labelled path: COHORT_MIN_CLASSES is not touched and cohort formation never reads this table."""
+
+    __tablename__ = "class_cohorts"
+    __table_args__ = (UniqueConstraint("teacher_id", "check_id"),)
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(18), index=True)
+    check_id: Mapped[str] = mapped_column(String(80))  # the check it was made from (class:term)
+    name: Mapped[str] = mapped_column(String(80))
+    scope: Mapped[str] = mapped_column(String(16), default="class_only")
+    errors: Mapped[list[str]] = mapped_column(JSON, default=list)
+    counts: Mapped[dict[str, int]] = mapped_column(JSON, default=dict)
+    children_checked: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(10), default="active")
+    simulated: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class AudioDownloadUse(Base):
+    """How many characters of "Download audio" a phone has used: a count and nothing else."""
+
+    __tablename__ = "audio_download_use"
+
+    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)
+    chars: Mapped[int] = mapped_column(Integer, default=0)
 
 
 class CohortMember(Base):
@@ -675,3 +598,13 @@ class ChatConfig(Base):
     ai_auto_send_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     set_by: Mapped[str] = mapped_column(String(40))
     set_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+# Paper Studio and Demo Studio tables share this Base (imported last, so create_all builds them).
+# The demo tables hold judge-demo data only: simulated, keyed by the demo session.
+from services.content import lesson_audio as _lesson_audio  # noqa: E402, F401
+from services.demo import models as _demo_models  # noqa: E402, F401
+from services.modules import models as _module_models  # noqa: E402, F401
+from services.papers import models as _paper_models  # noqa: E402, F401
+from services.papers_hub import models as _hub_models  # noqa: E402, F401
+from services.sheets_keep import models as _keep_models  # noqa: E402, F401

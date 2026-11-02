@@ -36,6 +36,7 @@ export interface Answer {
   label: string | null;
   commit: string | null;
   provisional: boolean;
+  follow_ups?: { text: string; id: string | null }[];
 }
 export interface PathStep {
   n: number;

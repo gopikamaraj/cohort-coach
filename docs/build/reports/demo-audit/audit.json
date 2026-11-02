@@ -1,0 +1,601 @@
+{
+ "1": {
+  "title": "Start as a teacher with a made-up class",
+  "checks": [
+   {
+    "name": "panel says step 1 of 11",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "label says made-up class 3A",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "no raw string keys visible",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "begin goes to the check screen",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [],
+  "seconds": 3,
+  "loader": null,
+  "axe": [],
+  "consoleErrors": [
+   "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "badResponses": [
+   "404 GET /api/tester/config"
+  ]
+ },
+ "2": {
+  "title": "Generate a paper",
+  "checks": [
+   {
+    "name": "panel says step 2",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "paper details open",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "make paper shows a loader",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "paper code is A · PRE · 3A · T1",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [],
+  "seconds": 13,
+  "loader": [
+   {
+    "text": "Making the paper: choosing numbers by the rules, working out every answer and wrong answer, checking them all, and drawing the PDF. This takes a few seconds.",
+    "ms": 10554
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "3": {
+  "title": "Generate 20 demo sheets",
+  "checks": [
+   {
+    "name": "next reaches step 3",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "make sheets shows a loader and 20 sheets appear",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "sheet 7 named 3A-roll07.png",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "'Not real children's work' label",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "zip downloads as 3A-demo-sheets.zip",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "loader text: Writing 20 children's answers on the paper and photographing each sheet. This takes about a minute."
+  ],
+  "seconds": 5,
+  "loader": [
+   {
+    "text": "Writing 20 children's answers on the paper and photographing each sheet. This takes about a minute.",
+    "ms": 1345
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "4": {
+  "title": "Enter the check (AI reads sheet 1, rest from answer file)",
+  "checks": [
+   {
+    "name": "next reaches step 4",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "use sheet 1: AI read, needs review",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "auto-fill 19 sheets, no AI call",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "roll 6 says 'Read from demo answer file'",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "roll 20 needs review",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "loader text: The AI is reading sheet 1 (it is not told the right answers)…",
+   "loader text: Matching each sheet to its roll number and loading it from the demo answer file…"
+  ],
+  "seconds": 3,
+  "loader": [
+   {
+    "text": "The AI is reading sheet 1 (it is not told the right answers)…",
+    "ms": 177
+   },
+   {
+    "text": "Matching each sheet to its roll number and loading it from the demo answer file…",
+    "ms": 853
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "5": {
+  "title": "Review with the drawer",
+  "checks": [
+   {
+    "name": "next reaches step 5",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "drawer opens on sheet 6 with the image",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "drawer is ~40% of phone height",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "one unsure cell on smudged sheet",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "focus moves into drawer",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "Escape closes drawer",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "approve all 20 sheets",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "drawer height 40%"
+  ],
+  "seconds": 7,
+  "loader": null,
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "6": {
+  "title": "Submit the check, then simulate other classes",
+  "checks": [
+   {
+    "name": "finish shows a loader and goes to step 6",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "class counts show SUB-SFL",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "reading summary says Synthetic sheets",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "simulate other classes shows a loader, goes to step 7",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "loader text: null",
+   "class counts: Your class, 20 children checked (simulated): PV-HEARD 2 of 20 · ADD-NOCARRY 7 of 20 · SUB-SFL 9 of 20",
+   "reading summary: Demo reading summary Synthetic sheets The AI read 10 of 10 boxes correctly on 1 synthetic sheets. AI reads of synthetic demo sheets only, compared with what the code drew. Sheets loaded from the demo answer file are left out. Not evidence of accuracy on real children's handwriting.",
+   "loader text: Simulating 24 other classes and forming cohorts with the real grouping rules…"
+  ],
+  "seconds": 2,
+  "loader": [
+   {
+    "text": null,
+    "ms": 54
+   },
+   {
+    "text": "Simulating 24 other classes and forming cohorts with the real grouping rules…",
+    "ms": 172
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "7": {
+  "title": "Three cohorts",
+  "checks": [
+   {
+    "name": "three cohorts",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "her class is in the SUB-SFL cohort",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ADD-NOCARRY: eligible next term",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "every cohort labelled Simulated",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "cohorts text: Cohort: ADD-NOCARRY Simulated 6 classes · small pilot-size cohort Your class also qualifies for ADD-NOCARRY: one track a term, so this one is next term. Grouped because each class showed ADD-NOCARRY in at least a quarter of its children (PV-HEARD first, else the error most children showed). No mentor yet: no simulated class meets the mentor rule for this error. Cohort: PV-HEARD Simulated 2 classes · small pilot-size cohort Your class is not in this cohort. Grouped because each class showed PV-HEARD in at least a quarter of its children (PV-HEARD first, else the error most children showed). No mentor yet: no simulated class meets the mentor rule for this error. Cohort: SUB-SFL Simulated 6 cla"
+  ],
+  "seconds": 2,
+  "loader": null,
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "8": {
+  "title": "First audio lesson",
+  "checks": [
+   {
+    "name": "next reaches step 8",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "lesson badge 'Demo: pre-approved' with a loader",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "script text is shown",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "loader text: The AI is drafting lesson 1, code is filling in your class's numbers and checking it, and the voice is reading it. This can take up to a minute.",
+   "script: Hello, and welcome. This is lesson 1 of 6. Today is about one thing. We listen before we correct. The mistake is taking the smaller digit from the larger. In the classes of your cohort, 9 of 20 children made this mistake. So you are not alone with it. Let me tell you how it sounds. Think of the sum 52 minus 29. A child writes 37. The right answer is 23. Ask her how she did it. She says something like this. \"In the ones, I can't take the big one from the small one. So I turned it around. I took t",
+   "<audio> elements: 1 (SPEECH_MODE=stub, so no real voice)"
+  ],
+  "seconds": 4,
+  "loader": [
+   {
+    "text": "The AI is drafting lesson 1, code is filling in your class's numbers and checking it, and the voice is reading it. This can take up to a minute.",
+    "ms": 866
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "9": {
+  "title": "Practice Class with the lesson's next step",
+  "checks": [
+   {
+    "name": "next reaches step 9 and /practice",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "'practice-next' note visible",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "note: From your lesson: ask a child to explain how they got the answer before you correct it. Try that move here first."
+  ],
+  "seconds": 2,
+  "loader": null,
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "10": {
+  "title": "Cohort chat",
+  "checks": [
+   {
+    "name": "next reaches step 10",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ask a question: loader, answer in thread",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "wait/skip control present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "skip button works",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "loader text: Sending your question: checking it for names and safety, and asking the AI to draft from approved material…",
+   "thread: You: How do I help children who take the smaller digit from the bigger one? Waiting for a mentor or coach to answer."
+  ],
+  "seconds": 5,
+  "loader": [
+   {
+    "text": "Sending your question: checking it for names and safety, and asking the AI to draft from approved material…",
+    "ms": 244
+   },
+   {
+    "text": null,
+    "ms": 3030
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "11": {
+  "title": "Coach queue and officer dashboard",
+  "checks": [
+   {
+    "name": "next reaches step 11",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "coach queue shows with a loader",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "simulated mentor card shown",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "question waits for a person (no draft)",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "coach writes own answer",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "approve mentor card",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "officer dashboard: simulated, hidden cells, no teacher names",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "dashboard: Simulated data: this class and these children are made up for the demo. 25 classes in the demo block (simulated). Aggregates only: no teacher or child. Any figure covering fewer than 5 classes is hidden. Classes per cohort Error Classes ADD-NOCARRY 6 PV-HEARD Hidden (under 5) SUB-SFL 6 Classes by track error Error Classes Share of classes ADD-NOCARRY 10 40% PV-HEARD Hidden (under 5) Hidden (under 5) SUB-SFL 12 48% Tracks started this term: 14. Waiting for next term: 10. Approvals waiting for the coach: 1."
+  ],
+  "seconds": 5,
+  "loader": [
+   {
+    "text": null,
+    "ms": 1549
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "12": {
+  "title": "Optional post-test",
+  "checks": [
+   {
+    "name": "next reaches step 12",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "post-test shows loader and before/after",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "before/after labelled demo",
+    "ok": true,
+    "detail": ""
+   }
+  ],
+  "notes": [
+   "loader text: null",
+   "before/after: Before and after Demo data Pre-test Form A (30 Oct 2026) to Post-test Form B (20 Nov 2026) Skill Flagged before No longer flagged Still flagged Newly flagged Place value 2 0 2 1 Adding with carrying 7 2 5 0 Taking away with borrowing 9 6 3 1 Place value: 0 of 2 no longer flagged Adding with carrying: 2 of 7 no longer flagged Taking away with borrowing: 6 of 9 no longer flagged 20 children paired by roll order. 0 left out: away, nothing entered, or no partner in the other check. Counts of childre"
+  ],
+  "seconds": 2,
+  "loader": [
+   {
+    "text": null,
+    "ms": 73
+   }
+  ],
+  "axe": [],
+  "consoleErrors": [],
+  "badResponses": []
+ },
+ "X1": {
+  "title": "Extras: reload, deep links, languages, reset",
+  "checks": [
+   {
+    "name": "reload on step 12 keeps session and step",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "deep link to step 7 after reload still shows cohorts",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 1: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 3: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 4: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 6: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 7: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 8: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 10: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "hi step 11: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 1: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 3: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 4: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 6: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 7: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 8: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 10: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "ta step 11: no raw keys, native text present",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "desktop 1280 layout: step 7 has no horizontal scroll",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "phone 360 layout: step 4 has no horizontal scroll",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "reset returns to step 1 and clears the server session",
+    "ok": false,
+    "detail": "returned false"
+   }
+  ],
+  "notes": [
+   "session after reset: {\"session\":\"demo-135d6faede74a162\",\"simulated\":true,\"label\":\"Demo: simulated class\",\"scenario\":\"class_3a\",\"seed\":2026,\"class_code\":\"3A\",\"strength\":20,\"form\":\"A\",\"paper_id\":\"P-46d04a4af3d8\",\"ai_reads\":"
+  ],
+  "seconds": 21,
+  "loader": null,
+  "axe": null,
+  "consoleErrors": [
+   "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "badResponses": [
+   "404 GET /api/tester/config"
+  ]
+ },
+ "totalSeconds": 72
+}

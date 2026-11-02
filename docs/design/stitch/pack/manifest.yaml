@@ -1,0 +1,375 @@
+# The Stitch pack manifest: one entry per screen, expanded into one capture per
+# screen x variant (role, language, viewport) x state. Generated from apps/pwa/src/lib/router.ts and
+# docs/design/stitch/INVENTORY.md, then completed by hand. tools/stitch_pack/validate.py checks that
+# every route in the router is either here or in `excluded`.
+#
+# Scope: "core screens" (decided 31 Oct 2026): every route, the teacher, coach, officer, mentor and
+# judge views, the 12 Demo Studio steps, Hindi on the main screens, desktop for the desktop-first roles.
+# Not captured: dark theme (the app has none), pilot mode, Tamil, every Practice Class turn.
+#
+# Step vocabulary (used by `states`): click: <testid or "css:selector">; clickText: "visible text";
+# fill: [<testid>, "text"]; select: [<testid>, "value"]; goto: "#/route"; wait: <testid>; press: "Key";
+# offline: true|false; reload: true.
+
+viewports:
+  phone: { w: 390, h: 844, dpr: 2, mobile: true }
+  desktop: { w: 1280, h: 800, dpr: 1, mobile: false }
+
+# Routes that are not given a folder, with the reason.
+excluded:
+  /flow: "needs a flow id from the bot-style step API; its step renderer is shown inside check (photo batch) and papers"
+  /demo: "covered by the demo-start and demo-flow folders"
+
+screens:
+  - id: landing
+    name: "Landing page and role picker"
+    route: /roles
+    inventory: "X1"
+    data: false
+    when: "The first screen a judge or teacher opens. No role is chosen yet and there is no bottom bar."
+    goal: "Choose a role (Teacher, Mentor, Coach, Programme officer), read what that role can and cannot do, or start the guided tour."
+    behaviour: "Each role card opens a dialog that says what the role can do, cannot do, which data it sees and which other roles exist. \"Enter\" goes to that role's home. The tour card starts the 5-minute guided tour. Language and mode are chosen above the cards."
+    keep: "the four role cards, the tour card, the scope dialog with its Back and Enter buttons, the language choice"
+    source: "apps/pwa/src/screens/Landing.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: phone, states: [default, scope-dialog] }
+      - { role: judge, lang: hi, viewport: phone, states: [default] }
+      - { role: judge, lang: en, viewport: desktop, states: [default] }
+    states:
+      scope-dialog: [{ click: "css:[data-testid=role-cards] button" }, { wait: role-dialog }]
+
+  - id: home
+    name: "Home"
+    route: /home
+    inventory: "T1"
+    data: true
+    when: "A teacher opens the app. It is her landing screen with a class loaded."
+    goal: "See where the term stands and take the one next action."
+    behaviour: "Shows the term status and one main action button (the next step: start a check, see her track, practise). Links below go to history, profile, programme, the practice class and the sample rehearsal watch. A privacy prompt appears until she has chosen her consents."
+    keep: "the status line, the one main action, the links to programme, history, practice and profile"
+    source: "apps/pwa/src/screens/Home.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+      - { role: teacher, lang: hi, viewport: phone, states: [default] }
+
+  - id: check
+    name: "Check entry (start a check and print a paper)"
+    route: /check
+    inventory: "T2, X35"
+    data: true
+    when: "A teacher starts the termly 10-item check for her class."
+    goal: "Choose which paper to print (the pilot paper or a new one for this class), then enter the children's answers from sheet photos or by hand."
+    behaviour: "\"Start a check\" shows the paper choice; the details panel explains the paper. \"A new paper\" opens a short form about the class (what it finds hard, what was taught, how many children). Printing opens the paper's PDF in Paper Studio. After the check starts the screen shows one child at a time with a number grid, a sheet photo picker, absent and missed-teaching controls."
+    keep: "the paper choice, the details panel, the paper code, the answer entry for one child, next child and finish"
+    source: "apps/pwa/src/screens/Check.tsx, apps/pwa/src/components/StartCheck.tsx, apps/pwa/src/components/PaperMaker.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default, paper-details, paper-new] }
+      - { role: teacher, lang: hi, viewport: phone, states: [default] }
+    states:
+      paper-details: [{ click: check-change }, { click: "css:[data-testid=paper-details] summary" }]
+      paper-new: [{ click: check-change }, { click: "css:[data-testid=paper-details] summary" }, { clickText: "A new paper for this class" }]
+
+  - id: cards
+    name: "What my class gets wrong"
+    route: /cards
+    inventory: "T3"
+    data: true
+    when: "After a check is entered."
+    goal: "See the errors her class made, as counts of children, with an example and a focus tag."
+    behaviour: "One card per error with how many children showed it, a worked example, a \"simulated\" label on demo data and a play button that reads the card aloud. Counts are shown as \"11 of 28 children\", never as percentages."
+    keep: "the error cards with their counts, the example, the play button, the simulated label"
+    source: "apps/pwa/src/screens/Cards.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+      - { role: teacher, lang: hi, viewport: phone, states: [default] }
+
+  - id: practice
+    name: "Practice Class"
+    route: /practice
+    inventory: "T5"
+    data: true
+    when: "A teacher rehearses privately before using a technique on real children."
+    goal: "Practise one teaching move with five simulated children who make her own class's mistakes, and get private feedback."
+    behaviour: "A scenario card states the error and the goal. Five children appear with their state. She speaks or types what she would say to the class; the simulated children answer. A turn counter runs to 40 turns. At the end she gets two strengths and one thing to try, quoting her own words, and no score."
+    keep: "the scenario card, the five children, the speak/type box, the turn counter, the end button"
+    source: "apps/pwa/src/screens/Practice.tsx, apps/pwa/src/components/practice.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default, started] }
+      - { role: teacher, lang: hi, viewport: phone, states: [default] }
+    states:
+      started: [{ click: start-practice }]
+
+  - id: programme
+    name: "My programme"
+    route: /programme
+    inventory: "X14"
+    data: true
+    when: "A teacher wants to know what happens next in her term."
+    goal: "See her five placement steps (check, track, cohort, mentor, lessons) and where she will hear them."
+    behaviour: "A list of five steps with their status, the lessons list, an offline note and a link to the cohort chat."
+    keep: "the five steps, the lessons list, the offline note"
+    source: "apps/pwa/src/screens/Programme.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+
+  - id: history
+    name: "What I entered"
+    route: /history
+    inventory: "X15"
+    data: true
+    when: "A teacher checks what she has already entered."
+    goal: "Review past checks, rehearsals and observations, and whether each was sent to the server."
+    behaviour: "A table of checks with kind (photo or typed) and sent state. A toggle shows the answers. Counts of rehearsals and observations sit below."
+    keep: "the checks table, the toggle, the counts"
+    source: "apps/pwa/src/screens/History.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default, answers-shown] }
+    states:
+      answers-shown: [{ click: history-toggle }]
+
+  - id: profile
+    name: "My profile and data"
+    route: /profile
+    inventory: "X16"
+    data: true
+    when: "A teacher manages her classes, language, consents and backup."
+    goal: "Change language, add a class, back up her data, see how much data the app used, give feedback and withdraw consent."
+    behaviour: "Sections for language, classes, storage protection, backup and restore with a password, data used (sent, received, total, cost), three optional consents and a feedback form."
+    keep: "the language choice, the classes list, the backup section, the data used, the consents, the feedback form"
+    source: "apps/pwa/src/screens/Profile.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+      - { role: teacher, lang: hi, viewport: phone, states: [default] }
+
+  - id: papers
+    name: "Papers"
+    route: /papers
+    inventory: "X34"
+    data: true
+    when: "A teacher looks at the papers of her class, or a coach reviews papers."
+    goal: "Teacher - open and print a paper or its answer key. Coach - review papers waiting for approval and read the paper rules."
+    behaviour: "The teacher sees a card per paper with check code, languages and status. The coach sees the review queue (approve or reject with a reason) and the published rules with their history."
+    keep: "the paper cards with status and Print, the review queue with approve and reject, the rules table"
+    source: "apps/pwa/src/screens/Papers.tsx, apps/pwa/src/components/PaperView.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+      - { role: coach, lang: en, viewport: desktop, states: [default] }
+
+  - id: assistant
+    name: "Assistant"
+    route: /assistant
+    inventory: "X29"
+    data: true
+    when: "Anyone asks how to do something in the app."
+    goal: "Ask a question and get an answer drawn from approved help text, scoped to the user's role."
+    behaviour: "A role title and scope note, five suggested questions, a question box and send button. Answers show sources and follow-up questions. Judges see a view-as switch and the test path."
+    keep: "the scope note, the suggested questions, the question box, the answer with sources"
+    source: "apps/pwa/src/screens/Assistant.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+
+  - id: cohort
+    name: "Cohort chat"
+    route: /cohort
+    inventory: "X13"
+    data: true
+    when: "A teacher in a cohort talks with other teachers, her mentor and her coach."
+    goal: "Read the weekly prompt and the posts, and post without names or numbers about a child."
+    behaviour: "Joining needs a separate consent. The thread shows pseudonymous posts, a compose box with a privacy notice, a Report button on each post and a read-only note when the cohort is closed."
+    keep: "the weekly prompt, the posts, the compose box with its notice, the report button"
+    source: "apps/pwa/src/screens/Cohort.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+
+  - id: privacy
+    name: "Privacy notice"
+    route: /privacy
+    inventory: "X17"
+    data: false
+    when: "A teacher opens the privacy link from the welcome or profile."
+    goal: "Read in plain words what is kept where, who sees what, how long, and her rights."
+    behaviour: "A long page of headings and short paragraphs. No actions other than the back link."
+    keep: "the headings and their order, the plain wording"
+    source: "apps/pwa/src/screens/PrivacyNotice.tsx"
+    variants:
+      - { role: teacher, lang: en, viewport: phone, states: [default] }
+
+  - id: coach
+    name: "Coach home"
+    route: /coach
+    inventory: "X21"
+    data: true
+    when: "A coach opens the app."
+    goal: "See cohorts with their status, mentor status, items awaiting approval and the oldest age, and flagged posts."
+    behaviour: "A cohort table with status chips, a count of items awaiting approval and links to the review queue and cohort pages. Desktop first; it collapses to one column on a phone."
+    keep: "the cohort table, the awaiting-approval counts, the flagged posts, the links to review"
+    source: "apps/pwa/src/screens/RoleScreens.tsx"
+    variants:
+      - { role: coach, lang: en, viewport: desktop, states: [default] }
+      - { role: coach, lang: en, viewport: phone, states: [default] }
+
+  - id: review
+    name: "Review queue"
+    route: /review
+    inventory: "P3, X23"
+    data: true
+    when: "A coach or officer approves AI-drafted content."
+    goal: "Read a draft with its check results, then approve, edit or reject it with a reason. Two keys: the coach, then the mentor."
+    behaviour: "A queue list with the age of each item, a panel for the chosen item with its automatic checks, an editable script, approve and reject buttons (reject needs a structured reason), versions and the audit trail."
+    keep: "the queue with ages, the item panel with checks, approve and reject with the reason, versions and audit"
+    source: "apps/pwa/src/screens/Review.tsx"
+    variants:
+      - { role: coach, lang: en, viewport: desktop, states: [default] }
+
+  - id: officer
+    name: "Programme officer home"
+    route: /officer
+    inventory: "P1, P2, P4"
+    data: true
+    when: "A programme officer opens the app."
+    goal: "See the error map, cohorts (this term and next), the funnel and the track results as aggregates. Cells under 5 classes are hidden."
+    behaviour: "Charts and tables with their text versions, a cohort form, the funnel with a source label on each line (system or self-report). No teacher or child is shown."
+    keep: "the error map, the cohorts, the funnel with source labels, the results with their hidden-cell note"
+    source: "apps/pwa/src/screens/OfficerHome.tsx"
+    variants:
+      - { role: officer, lang: en, viewport: desktop, states: [default] }
+      - { role: officer, lang: en, viewport: phone, states: [default] }
+
+  - id: mentor
+    name: "Mentor dashboard"
+    route: /mentor
+    inventory: "X20"
+    data: true
+    when: "A mentor opens the app."
+    goal: "See the cohort, the week of the track, her recordings and their approval status."
+    behaviour: "A cohort dropdown with a status chip, the current week, a list of her recordings with status (draft, awaiting coach, approved, in use) and the weekly digest."
+    keep: "the cohort choice, the week, the recordings with status"
+    source: "apps/pwa/src/screens/RoleScreens.tsx"
+    variants:
+      - { role: mentor, lang: en, viewport: phone, states: [default] }
+      - { role: mentor, lang: en, viewport: desktop, states: [default] }
+
+  - id: judge
+    name: "Judge mode"
+    route: /judge
+    inventory: "J1"
+    data: false
+    when: "A judge opens the demo."
+    goal: "Load the simulated class, switch roles, advance to term 2, simulate offline, and reach the demo flow, the AI map and the audit trail."
+    behaviour: "Buttons load the demo class, advance the term, toggle offline and reset. Links open the 12-step demo flow, the testing evidence and the AI map."
+    keep: "load the demo class, advance, offline toggle, reset, the links"
+    source: "apps/pwa/src/screens/Judge.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: desktop, states: [default, demo-loaded] }
+      - { role: judge, lang: en, viewport: phone, states: [default] }
+    states:
+      demo-loaded: [{ click: load-demo }, { wait: demo-loaded }]
+
+  - id: tour
+    name: "Guided tour"
+    route: /tour
+    inventory: "X2"
+    data: false
+    when: "A judge starts the 5-minute tour."
+    goal: "Follow six steps, each showing what to notice, with a banner when the role switches."
+    behaviour: "A progress bar, the step's text and what to notice, Back, Next and Leave. A banner says when the tour has switched the role."
+    keep: "the progress, the step text, back and next, the role-switch banner"
+    source: "apps/pwa/src/screens/Tour.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: desktop, states: [default, step-2] }
+    states:
+      step-2: [{ goto: "#/tour/2" }]
+
+  - id: aimap
+    name: "AI map"
+    route: /aimap
+    inventory: "X5"
+    data: false
+    when: "A judge looks for where AI is used."
+    goal: "See every AI call arranged by the five layers: input, processing, guardrails, evaluation, output."
+    behaviour: "A table of calls with the layer, the model, what it does and its guardrail. Read only."
+    keep: "the five layers and the call table"
+    source: "apps/pwa/src/screens/AiMap.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: desktop, states: [default] }
+
+  - id: audit
+    name: "Audit trail"
+    route: /audit
+    inventory: "X5"
+    data: false
+    when: "A judge checks what the AI calls did."
+    goal: "Read one audit row per AI call: prompt version, model, tokens, checker verdict."
+    behaviour: "A table of audit rows. Read only."
+    keep: "the audit table"
+    source: "apps/pwa/src/screens/Audit.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: desktop, states: [default] }
+
+  - id: watch
+    name: "Watch two rehearsals"
+    route: /watch
+    inventory: "X3"
+    data: true
+    when: "A judge watches the Practice Class run by an AI playing the teacher."
+    goal: "Compare an experienced and a struggling teacher style, with playback, subtitles and a labelled \"AI playing the teacher (demo only)\"."
+    behaviour: "A run-type choice, play and step controls, a speed button, subtitles and a meter. Labelled as a demo."
+    keep: "the run choice, the controls, the subtitles, the demo label"
+    source: "apps/pwa/src/screens/Watch.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: desktop, states: [default] }
+
+  - id: testing
+    name: "Testing evidence"
+    route: /testing
+    inventory: "X33"
+    data: false
+    when: "A judge looks at how user feedback was collected."
+    goal: "See tester counts, charts with text versions, testers, anonymous feedback and \"You said, we changed\"."
+    behaviour: "Read-only charts and tables; each chart has a text version."
+    keep: "the counts, the charts with their text versions, the you-said-we-changed list"
+    source: "apps/pwa/src/screens/TestingEvidence.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: desktop, states: [default] }
+
+  - id: admin
+    name: "Admin"
+    route: /admin
+    inventory: "X19"
+    data: false
+    when: "The team reads feedback and simulation reports."
+    goal: "Read feedback, simulation reports and card flags, set a status and a note."
+    behaviour: "Lists with status and note controls. Opens without a key only on the demo server."
+    keep: "the lists and the status and note controls"
+    source: "apps/pwa/src/screens/Admin.tsx"
+    variants:
+      - { role: admin, lang: en, viewport: desktop, states: [default] }
+
+  - id: demo-start
+    name: "Demo flow, step 1 (start)"
+    route: /demo?step=1
+    inventory: "X36"
+    data: true
+    when: "A judge starts the 12-step demo flow."
+    goal: "Begin as a teacher with the made-up class 3A."
+    behaviour: "The orange demo bar (Demo step n of 11, Back, Next, judge guide, Reset demo) is on every screen. Step 1 explains the demo and has one button, \"Start as a teacher\"."
+    keep: "the demo label, the demo bar, the start button"
+    source: "apps/pwa/src/screens/DemoStudio.tsx, apps/pwa/src/components/DemoPanel.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: phone, states: [default] }
+      - { role: judge, lang: hi, viewport: phone, states: [default] }
+      - { role: judge, lang: en, viewport: desktop, states: [default] }
+
+  - id: demo-flow
+    name: "Demo flow, steps 2 to 12"
+    route: /demo
+    inventory: "X36, X37"
+    data: true
+    sequence: demo
+    when: "A judge walks the demo from paper to post-test. Captured in one session, step by step."
+    goal: "Make a paper, make 20 demo sheets, enter the check (one sheet read by AI, the rest auto-filled), review in the drawer, submit, simulate other classes and see the cohorts, hear lesson 1, practise, ask the cohort chat, act as the coach and the officer, and run the post-test."
+    behaviour: "Each step is a real product screen with the demo bar on top. Sheets are synthetic and labelled \"Not real children's work\". The review drawer shows the sheet beside what was read. The officer dashboard hides cells under 5."
+    keep: "the demo bar, the labels saying demo or simulated, the review drawer, the cohort cards, the coach queue, the dashboard"
+    source: "apps/pwa/src/screens/DemoStudio.tsx, apps/pwa/src/components/DemoEntry.tsx"
+    variants:
+      - { role: judge, lang: en, viewport: phone, states: [s2-paper, s3-sheets, s4-entry, s5-drawer, s5-approved, s6-counts, s7-cohorts, s8-lesson, s9-practice, s10-chat, s11-coach, s11-officer, s12-post] }

@@ -16,12 +16,9 @@ from typing import Any
 import yaml
 from fastapi import APIRouter, Depends, Header, HTTPException
 
-from ai.config import judge_mode, pilot_mode
+from ai.config import judge_mode
 
 ROLES = ("teacher", "mentor", "coach", "officer")
-# Pilot mode (PILOT_MODE=1) has its own sign-in: a signed token names the account and its roles.
-# The landing page never lists the coordinator; ROLES stays the four the landing page shows.
-PILOT_ROLES = ("coordinator", "coach", "officer")
 CONFIG = Path(__file__).with_name("permissions.yaml")
 
 router = APIRouter(prefix="/api", tags=["roles"])
@@ -48,15 +45,8 @@ def role_of(x_role: str | None = Header(default=None)) -> str:
     return role
 
 
-def held_roles(
-    x_role: str | None = Header(default=None), authorization: str | None = Header(default=None)
-) -> tuple[str, ...]:
-    """The roles of this request. In pilot mode they come only from the signed sign-in token (the
-    X-Role header is ignored); otherwise from role_of, as before."""
-    if pilot_mode():
-        from services.pilot.auth import principal_from_header
-
-        return principal_from_header(authorization).roles
+def held_roles(x_role: str | None = Header(default=None)) -> tuple[str, ...]:
+    """The roles of this request, from role_of."""
     return (role_of(x_role),)
 
 

@@ -1,5 +1,5 @@
 {
-  "content_hash": "fc2a2e030545c7b8b49bf4279f8a4aeb0584e7524369785d1a0f8e33c5ab068f",
+  "content_hash": "52413fbd6b4cac0101c3ede357169e5d7e7d1ad125af85992cc432e1cf0b61f7",
   "error_order": [
     "PV-HEARD",
     "PV-REVERSE",
@@ -861,11 +861,8 @@
   },
   "rules": {
     "min_children_checked": 10,
+    "min_children_with_error": 1,
     "min_hits": 2,
-    "min_prevalence": {
-      "denominator": 4,
-      "numerator": 1
-    },
     "stages": {
       "add_items": [
         3,

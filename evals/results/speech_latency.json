@@ -1,0 +1,1042 @@
+{
+ "source": "scripts/speech_latency.py",
+ "date": "2026-11-01",
+ "calls_per_function_and_provider": 30,
+ "language": "en",
+ "summary": {
+  "tts / bodhan / short": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 2750,
+   "p95_ms": 3217
+  },
+  "tts / bodhan / medium": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 7538,
+   "p95_ms": 9140
+  },
+  "tts / bodhan / long": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 13780,
+   "p95_ms": 14811
+  },
+  "tts / sarvam / short": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 625,
+   "p95_ms": 907
+  },
+  "tts / sarvam / medium": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 1164,
+   "p95_ms": 1531
+  },
+  "tts / sarvam / long": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 2242,
+   "p95_ms": 2390
+  },
+  "stt / bodhan / short": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 516,
+   "p95_ms": 796
+  },
+  "stt / bodhan / medium": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 640,
+   "p95_ms": 937
+  },
+  "stt / bodhan / long": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 821,
+   "p95_ms": 875
+  },
+  "stt / sarvam / short": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 218,
+   "p95_ms": 530
+  },
+  "stt / sarvam / medium": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 296,
+   "p95_ms": 967
+  },
+  "stt / sarvam / long": {
+   "calls": 10,
+   "failed": 0,
+   "median_ms": 359,
+   "p95_ms": 437
+  }
+ },
+ "rows": [
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2734,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 7515,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 14811,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2954,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 6875,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 12687,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2202,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 9140,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 12312,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2797,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 7562,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 13954,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 3217,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 7438,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 14280,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2484,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 6937,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 12686,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2516,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 8296,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 13172,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2265,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 7952,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 14000,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2782,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 8844,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 13608,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 2766,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 7500,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 13952,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 907,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1125,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2281,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 625,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1108,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2202,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 641,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1125,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2155,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 609,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1092,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2329,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 609,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1155,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2265,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 672,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1531,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2186,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 609,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1203,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2171,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 594,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1217,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2219,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 655,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1172,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2390,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 625,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 1187,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "tts",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 2327,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 547,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 641,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 875,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 515,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 594,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 796,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 484,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 608,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 829,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 484,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 734,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 875,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 562,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 577,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 765,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 500,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 655,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 829,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 796,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 640,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 875,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 531,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 937,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 750,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 516,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 937,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 797,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "short",
+   "ms": 500,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "medium",
+   "ms": 640,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "bodhan",
+   "size": "long",
+   "ms": 813,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 530,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 359,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 359,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 218,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 297,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 390,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 187,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 967,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 391,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 187,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 280,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 359,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 219,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 296,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 328,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 155,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 234,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 327,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 202,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 297,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 375,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 297,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 265,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 297,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 250,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 327,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 437,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "short",
+   "ms": 265,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "medium",
+   "ms": 266,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "fn": "stt",
+   "provider": "sarvam",
+   "size": "long",
+   "ms": 343,
+   "ok": true,
+   "why": ""
+  }
+ ]
+}

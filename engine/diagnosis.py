@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Mapping, Sequence
+from dataclasses import replace
 
 from engine.bugs import classify, probes
 from engine.model import (
@@ -14,6 +15,7 @@ from engine.model import (
     ClassProfile,
     ErrorCode,
     Form,
+    Item,
     ItemType,
     Mark,
     Reading,
@@ -22,8 +24,10 @@ from engine.model import (
 # A child shows an error only if it appears on at least 2 of the items probing it
 # (items 1-2: both; items 3-5: 2 of 3; items 7-10: 2 of 4).
 MIN_HITS = 2
-# A class is eligible for a track at p >= 25% (1 in 4) with at least 10 children checked.
-MIN_PREVALENCE_NUMERATOR, MIN_PREVALENCE_DENOMINATOR = 1, 4
+# A class is eligible for a track on an error when at least 1 child shows it and at least 10
+# children were checked. There is no share-of-class threshold (the 25% rule was removed
+# 2026-11-02, DECISIONS.md).
+MIN_CHILDREN_WITH_ERROR = 1
 MIN_CHILDREN_CHECKED = 10
 # PV-REVERSE is detected and counted, but no track exists for it yet.
 TRACKED: tuple[ErrorCode, ...] = (
@@ -39,6 +43,55 @@ def probe_items(form: Form, code: ErrorCode) -> tuple[int, ...]:
     return tuple(item.n for item in form.items if code in probes(item))
 
 
+def _carries(a: int, b: int) -> int:
+    n, carry, total = 0, 0, 0
+    while a or b:
+        carry = 1 if a % 10 + b % 10 + carry >= 10 else 0
+        total += carry
+        a, b, n = a // 10, b // 10, n + 1
+    return total
+
+
+def _borrows(a: int, b: int) -> int:
+    borrow, total = 0, 0
+    while a or b:
+        borrow = 1 if a % 10 - borrow < b % 10 else 0
+        total += borrow
+        a, b = a // 10, b // 10
+    return total
+
+
+def skill_family(item: Item) -> str:
+    """The skill an item tests, worked out from its numbers: two items of one family test the same
+    thing (38 + 47 and 46 + 28), while 246 + 178 (three digits, two carries) is a different one."""
+    a, b = item.a, item.b
+    width = len(str(max(a, b)))
+    match item.type:
+        case ItemType.DICTATION:
+            return "dictate-zero" if "0" in str(a) else f"dictate-{width}d"
+        case ItemType.ADD_CARRY:
+            return f"add-{width}d-{_carries(a, b)}c"
+        case ItemType.SUB_ANCHOR:
+            return f"sub-{width}d-0b"
+        case ItemType.SUB_BORROW:
+            if width == 3 and (a // 10) % 10 == 0 and a % 10 < b % 10:
+                return "sub-across-zero"
+            return f"sub-{width}d-{_borrows(a, b)}b"
+
+
+def single_probe_items(form: Form) -> dict[ErrorCode, frozenset[int]]:
+    """Per error: the items that are the only item of their skill on this paper. The 2-item rule
+    cannot be met on one of these skills, so a mistake there is "possible", never "shows"."""
+    out: dict[ErrorCode, frozenset[int]] = {}
+    for code in ErrorCode:
+        fams: dict[str, list[int]] = {}
+        for item in form.items:
+            if code in probes(item):
+                fams.setdefault(skill_family(item), []).append(item.n)
+        out[code] = frozenset(ns[0] for ns in fams.values() if len(ns) == 1)
+    return out
+
+
 def diagnose_child(form: Form, readings: Sequence[Reading]) -> ChildDiagnosis:
     """Apply the 2-item rule to one child's ten readings (in item order)."""
     if len(readings) != len(form.items):
@@ -49,6 +102,14 @@ def diagnose_child(form: Form, readings: Sequence[Reading]) -> ChildDiagnosis:
         if mark.kind is Mark.ERROR:
             hits.update(mark.codes)
     shows = frozenset(code for code, n in hits.items() if n >= MIN_HITS)
+    single = single_probe_items(form)
+    possible = frozenset(
+        code
+        for item, mark in zip(form.items, marks, strict=True)
+        if mark.kind is Mark.ERROR
+        for code in mark.codes
+        if code not in shows and item.n in single.get(code, frozenset())
+    )
     anchor_wrong = any(
         item.type is ItemType.SUB_ANCHOR and mark.kind in (Mark.OTHER, Mark.ERROR)
         for item, mark in zip(form.items, marks, strict=True)
@@ -62,6 +123,7 @@ def diagnose_child(form: Form, readings: Sequence[Reading]) -> ChildDiagnosis:
         blank_count=sum(m.kind is Mark.BLANK for m in marks),
         unreadable_count=sum(m.kind is Mark.UNREADABLE for m in marks),
         untracked=dict(untracked),
+        possible=possible,
     )
 
 
@@ -74,12 +136,14 @@ def class_profile(children: Sequence[ChildDiagnosis]) -> ClassProfile:
     untracked: Counter[str] = Counter()
     for c in children:
         untracked.update(c.untracked)
-    return profile_from_counts(
+    profile = profile_from_counts(
         len(children),
         counts,
         anchor_wrong_count=sum(c.anchor_wrong for c in children),
         untracked=dict(untracked),
     )
+    possible = {code: sum(code in c.possible for c in children) for code in ErrorCode}
+    return replace(profile, possible_counts=possible)
 
 
 def profile_from_counts(
@@ -98,8 +162,7 @@ def profile_from_counts(
     eligible = tuple(
         code
         for code in ErrorCode
-        if children_checked >= MIN_CHILDREN_CHECKED
-        and full[code] * MIN_PREVALENCE_DENOMINATOR >= children_checked * MIN_PREVALENCE_NUMERATOR
+        if children_checked >= MIN_CHILDREN_CHECKED and full[code] >= MIN_CHILDREN_WITH_ERROR
     )
     return ClassProfile(
         children_checked=children_checked,

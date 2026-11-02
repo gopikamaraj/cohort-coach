@@ -1,5 +1,6 @@
 // The Practice Class client. Each turn goes to the API (the one live feature); the transcript is
 // kept in IndexedDB on this phone and is sent nowhere else.
+import { runAction } from "./action";
 import { API_BASE } from "./api";
 import { db, type CohortDb } from "./db";
 
@@ -67,6 +68,17 @@ export interface Layers {
   output: { child_line: string; source: string; badge: string };
 }
 
+export interface OtherChild {
+  speaker: string;
+  child_text: string;
+  child_text_en: string;
+  intent: string;
+  answer: number | null;
+  written: number | null;
+  audio?: string | null;
+  audio_mime?: string | null;
+}
+
 export interface TurnResponse {
   turn: number;
   speaker: string | null;
@@ -83,6 +95,8 @@ export interface TurnResponse {
   child_text_en?: string;
   written?: number | null;
   answer?: number | null;
+  /** The other children who spoke in the same turn (the engine's template lines). */
+  others?: OtherChild[];
   move?: { id: string; label: string; quality: string; strategy: boolean };
   children?: {
     name: string;
@@ -110,7 +124,7 @@ export interface EndResponse {
   explanation: string;
 }
 
-export type FailKind = "paused" | "expired" | "finished" | "offline" | "invalid" | "voice" | "unheard" | "other";
+export type FailKind = "paused" | "expired" | "finished" | "offline" | "invalid" | "voice" | "voice_off" | "unheard" | "other";
 
 export class PracticeError extends Error {
   constructor(
@@ -162,7 +176,7 @@ export function postTurn(
   body: { text?: string; material?: string },
   fetchFn: typeof fetch = (...a) => fetch(...a),
 ): Promise<TurnResponse> {
-  return call(`/api/practice/sessions/${sessionId}/turns`, body, fetchFn);
+  return runAction("practice_turn", () => call<TurnResponse>(`/api/practice/sessions/${sessionId}/turns`, body, fetchFn));
 }
 
 export function endSession(sessionId: string, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<EndResponse> {

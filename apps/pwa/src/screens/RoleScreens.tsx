@@ -64,6 +64,7 @@ export function Mentor() {
       <h1 id="me-title">
         <Icon name="mentor" /> {tr("mentor.title")}
       </h1>
+      <SimulatedBanner />
       <p>{tr("mentor.intro")}</p>
       <ol className="steps prog">
         {(["1", "2", "3", "4"] as const).map((n) => (

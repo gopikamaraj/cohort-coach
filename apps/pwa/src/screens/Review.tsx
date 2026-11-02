@@ -21,6 +21,8 @@ import {
   type Version,
 } from "../lib/queue";
 import { useApp } from "../state";
+import { SimulatedBanner } from "../components/parts";
+import { LessonAudioReview } from "../components/LessonAudioReview";
 
 const FILTERS = ["pending", "awaiting_mentor", "approved", "rejected", "all"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -94,6 +96,7 @@ export default function Review() {
       <h1 id="q-title">
         <Icon name="check" /> {tr("queue.title")}
       </h1>
+      <SimulatedBanner />
       <p>{tr("queue.intro")}</p>
       <p className="note" data-testid="queue-rule">
         <Icon name="lock" size={18} /> {tr("queue.rule")}
@@ -167,6 +170,8 @@ export default function Review() {
         onApprove={(v) => act(() => qcall(`/versions/${v.id}/approve`, "coach", { method: "POST" }))}
         onActivate={(v) => act(() => qcall(`/versions/${v.id}/activate`, "officer", { method: "POST" }))}
       />
+
+      <LessonAudioReview reader={reader} asCoach={asCoach} />
 
       <div className="panel" data-testid="audit">
         <h2>{tr("queue.audit")}</h2>

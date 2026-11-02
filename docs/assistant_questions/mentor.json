@@ -148,5 +148,140 @@
   "rubric_rows": [],
   "steps": [],
   "query": "when does my card reach teachers coach approves in use"
+ },
+ {
+  "id": "mp01",
+  "text": {
+   "en": "What is a paper, and how is it different from a check?",
+   "hi": "पेपर क्या है, और जाँच से यह कैसे अलग है?",
+   "ta": "தாள் என்றால் என்ன, சோதனையிலிருந்து அது எப்படி வேறுபடுகிறது?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what is a paper and a check papers page"
+ },
+ {
+  "id": "mp02",
+  "text": {
+   "en": "What is the difference between anchor and adaptive items?",
+   "hi": "एंकर और अनुकूली सवालों में क्या अंतर है?",
+   "ta": "நங்கூரம் மற்றும் தகவமைப்புக் கேள்விகளுக்கு என்ன வேறுபாடு?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "anchor and adaptive items papers"
+ },
+ {
+  "id": "mp03",
+  "text": {
+   "en": "Which form should I use for the post-test?",
+   "hi": "पश्च-परीक्षा के लिए कौन सा फ़ॉर्म इस्तेमाल करूँ?",
+   "ta": "பின்-தேர்வுக்கு எந்தப் படிவத்தைப் பயன்படுத்த வேண்டும்?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "which form post-test twin pre-test papers"
+ },
+ {
+  "id": "mp04",
+  "text": {
+   "en": "What happens to my PDF?",
+   "hi": "मेरे PDF का क्या होता है?",
+   "ta": "என் PDF க்கு என்ன ஆகும்?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "what happens to my pdf upload deleted handwriting names ignored papers"
+ },
+ {
+  "id": "mp05",
+  "text": {
+   "en": "Why is this item not supported?",
+   "hi": "यह सवाल समर्थित क्यों नहीं है?",
+   "ta": "இந்தக் கேள்வி ஏன் ஆதரிக்கப்படவில்லை?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "item not supported yet word problem dictation papers import"
+ },
+ {
+  "id": "mp06",
+  "text": {
+   "en": "Why can't I edit this paper?",
+   "hi": "मैं यह पेपर क्यों नहीं बदल सकता?",
+   "ta": "இந்தத் தாளை ஏன் திருத்த முடியவில்லை?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "frozen paper cannot change new version papers"
+ },
+ {
+  "id": "mp07",
+  "text": {
+   "en": "Why are no cohorts formed yet?",
+   "hi": "अभी तक कोई समूह क्यों नहीं बना?",
+   "ta": "இன்னும் ஏன் குழுக்கள் உருவாகவில்லை?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "why are no cohorts formed yet papers cohort status reason"
+ },
+ {
+  "id": "mp08",
+  "text": {
+   "en": "What does Imported, awaiting review mean?",
+   "hi": "आयात किया गया, समीक्षा बाकी का क्या मतलब है?",
+   "ta": "இறக்குமதி செய்யப்பட்டது, மதிப்பாய்வு நிலுவை என்றால் என்ன?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "imported awaiting review reviewer confirms papers"
+ },
+ {
+  "id": "mp09",
+  "text": {
+   "en": "Who can I assign a paper to, and by when?",
+   "hi": "मैं पेपर किसे और कब तक सौंप सकता हूँ?",
+   "ta": "தாளை யாருக்கு, எப்போதுக்குள் ஒதுக்கலாம்?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [],
+  "rubric_rows": [],
+  "steps": [],
+  "query": "assign a paper who when kind pre-test cohort papers"
  }
 ]

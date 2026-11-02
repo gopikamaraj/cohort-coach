@@ -47,6 +47,7 @@ AUDIENCE = {
     ContentType.CHAT_REPLY: "teacher",
 }
 CHILD_LINE_MAX_WORDS = 30
+CHILD_LINE_MAX_CHARS = 120  # a sentence or two: far below 30 s of speech (Prompt 3)
 
 # violation code -> explanation key, in priority order
 _CODE_TO_REASON: tuple[tuple[str, str], ...] = (
@@ -123,7 +124,14 @@ def gate1(inp: GateInput) -> list[ValidatorResult]:
             ValidatorResult("number_words", tuple(check_digits_only(inp.text, inp.language)))
         )
         results.append(
-            ValidatorResult("length", tuple(check_length(inp.text, max_words=CHILD_LINE_MAX_WORDS)))
+            ValidatorResult(
+                "length",
+                tuple(
+                    check_length(
+                        inp.text, max_words=CHILD_LINE_MAX_WORDS, max_chars=CHILD_LINE_MAX_CHARS
+                    )
+                ),
+            )
         )
     elif inp.allowed_numbers is not None:
         results.append(

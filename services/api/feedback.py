@@ -28,7 +28,7 @@ router = APIRouter(prefix="/api", tags=["feedback"])
 
 Kind = Literal["app", "simulation", "content", "card_flag"]
 Role = Literal["teacher", "coach", "mentor", "admin", "judge"]
-SCOPES = ("core", "counts", "practice_ai", "share_rehearsal", "feedback")
+SCOPES = ("core", "counts", "practice_ai", "share_rehearsal", "feedback", "keep_sheets")
 DEVICE_ID = re.compile(r"^[0-9a-f]{16}$")
 
 
@@ -70,7 +70,7 @@ class ConsentIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     device_id: str
-    scope: Literal["core", "counts", "practice_ai", "share_rehearsal", "feedback"]
+    scope: Literal["core", "counts", "practice_ai", "share_rehearsal", "feedback", "keep_sheets"]
     granted: bool
     version: int = Field(ge=1, le=99)
 

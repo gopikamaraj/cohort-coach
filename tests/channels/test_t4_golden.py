@@ -16,7 +16,7 @@ from services.api.channels.telegram.webhook import requests_for
 from services.api.db import Base, LessonTap, make_engine
 from services.api.main import create_app
 from services.api.profiles import get_session
-from services.pilot.storage import LocalBlobStore, get_audio_store
+from services.media.storage import LocalBlobStore, get_audio_store
 from tests.channels.test_golden import DEVICE, Fake, _msg, shape
 from tests.flows.test_t4 import publish_fake
 
@@ -52,7 +52,7 @@ def world(
         with factory() as s:
             yield s
 
-    app = create_app(pilot=False)
+    app = create_app()
     app.dependency_overrides[get_session] = override
     app.dependency_overrides[get_audio_store] = lambda: store
     with factory() as db:

@@ -29,13 +29,13 @@ for (const width of [320, 390, 768, 1280]) {
 test("the bottom bar holds four tabs and More, and More opens the rest", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await page.goto("/#/home");
-  const tabs = page.locator(".navbar > *");
+  const tabs = page.locator(".navbar > :visible");
   await expect(tabs).toHaveCount(5);
   expect(await page.evaluate(() => { const n = document.querySelector(".navbar") as HTMLElement; return n.scrollWidth - n.clientWidth; })).toBe(0);
   await page.getByTestId("nav-more").click();
   const sheet = page.getByTestId("more-sheet");
-  await expect(sheet.getByRole("link")).toHaveCount(3); // programme, history, profile
-  await sheet.getByRole("link").nth(1).click();
+  await expect(sheet.getByRole("link")).toHaveCount(4); // practice, programme, history, profile (Papers now sits in the bar)
+  await sheet.getByRole("link").nth(2).click();
   await expect(page).toHaveURL(/#\/history/);
   await expect(sheet).toHaveCount(0);
   await expect(page.getByTestId("nav-more")).toHaveAttribute("aria-expanded", "false");

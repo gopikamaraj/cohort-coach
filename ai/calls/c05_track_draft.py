@@ -54,7 +54,12 @@ def build_payload(
     language: str,
     *,
     method_cards: Sequence[str] = (),
+    variant: str | None = None,
+    practice_level: int | None = None,
 ) -> CallInput:
+    """`variant` and `practice_level` are set by code for a next lesson ("smaller_step": the same
+    approach as a smaller step with more practice); they are added only when set, so every other
+    request is unchanged."""
     if kind not in KINDS:
         raise ValueError(f"kind must be one of {KINDS}")
     library = load_strategies()
@@ -92,6 +97,10 @@ def build_payload(
         "slots": dict(SLOT_SOURCES),
         "structure": load_template(template),
     }
+    if practice_level is not None:
+        trusted["practice_level"] = practice_level
+    if variant is not None:
+        trusted["variant"] = variant
     cards = list(method_cards)[:MAX_METHOD_CARDS]
     untrusted = {"mentor_text": "\n\n".join(cards)} if cards else {}
     return CallInput(trusted=trusted, untrusted=untrusted)
@@ -116,8 +125,18 @@ def draft_part(
     *,
     context: CallContext | None = None,
     method_cards: Sequence[str] = (),
+    variant: str | None = None,
+    practice_level: int | None = None,
 ) -> PartDraft:
-    payload = build_payload(track, kind, day, language, method_cards=method_cards)
+    payload = build_payload(
+        track,
+        kind,
+        day,
+        language,
+        method_cards=method_cards,
+        variant=variant,
+        practice_level=practice_level,
+    )
     base = context or CallContext()
 
     def validate(out: object) -> list[ValidatorResult]:

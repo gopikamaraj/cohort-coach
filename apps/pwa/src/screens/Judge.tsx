@@ -22,6 +22,9 @@ export default function Judge() {
     <section aria-labelledby="judge-title">
       <h1 id="judge-title">{tr("judge.title")}</h1>
       <p>{tr("judge.intro")}</p>
+      <a className="btn btn-primary" href="#/demo?step=1" data-testid="judge-demo-flow">
+        {tr("demo.start_link")}
+      </a>
       {klass?.simulated ? <SimulatedBanner /> : null}
 
       <h2>{tr("judge.steps")}</h2>
@@ -66,6 +69,9 @@ export default function Judge() {
         </li>
         <li>
           <a href={href("/audit")}>{tr("judge.audit")}</a>
+        </li>
+        <li>
+          <a href={href("/testing")} data-testid="judge-testing">{tr("judge.testing")}</a>
         </li>
       </ul>
     </section>

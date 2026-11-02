@@ -39,6 +39,7 @@ class CallSpec:
     metadata_only: bool = False  # Practice Class calls log metadata only
     live_turn: bool = False
     extra: dict[str, str] = field(default_factory=dict)
+    built: bool = True  # False: specified (a prompt and a schema) but no code calls it yet
 
     @property
     def model(self) -> str:
@@ -120,6 +121,7 @@ CALLS: tuple[CallSpec, ...] = (
     ),
     CallSpec(
         id=4,
+        built=False,
         key="c04_method_capture",
         name="Mentor method capture",
         purpose="Turn a mentor's spoken answers into a method card, citing her sentences.",
@@ -158,6 +160,7 @@ CALLS: tuple[CallSpec, ...] = (
     ),
     CallSpec(
         id=6,
+        built=False,
         key="c06_digest",
         name="Reflection digest",
         purpose="Group a week of teacher reflections into themes; code counts them.",
@@ -358,6 +361,57 @@ CALLS: tuple[CallSpec, ...] = (
         guardrails="The scope comes from the server, never the prompt; retrieval cannot reach another role's namespace; code checks every quote word for word, the rubric rows, length, personal data, scores, claims of action and pressure words; the status labels, how to check and limits come from the rubric map, not the model; any failure falls back to an extract from the passages or to no answer.",
         evaluation="evals/assistant_eval.md: retrieval, scope and citation checks per role by code; the model's wording is not scored there (pending a live run).",
         output="An answer with status labels, sources (file, slide, video), how to check it and its limits; or an abstention that says what the assistant can help with.",
+    ),
+    CallSpec(
+        id=15,
+        key="c15_pilot_sheet_scan",
+        name="Pilot sheet scan",
+        purpose="On a local machine only, read the class and roll number printed on a pilot sheet and say whether a person's name is written on it and where, so the region is blacked out before anything else sees the photo.",
+        model_env="MODEL_SCAN",
+        when="offline, in the pilot-ingest script on the demo machine (never in the hosted demo)",
+        output_model=schemas.PilotSheetScan,
+        input_fields=("image",),
+        validators=(
+            "class code is letters and digits",
+            "roll is a whole number in range",
+            "boxes lie inside the image",
+        ),
+        gates=("code validators", "a human reviews every sheet where a name was found"),
+        eval_id="eval_pilot_ingest",
+        eval_bar="pending: checked by a person on the local report; no live eval set",
+        input="One normalised pilot sheet photo (roll numbers only, no names), on the demo machine.",
+        processing="A small vision model returns the printed class code and roll number if it can see them, whether any person's name is written, and the rectangles to hide.",
+        guardrails="The script never guesses: an uncertain class or roll goes to the review list; code validates the shape and blacks the rectangles out of the normalised copy; only a yes or no and a count of regions are written to the report; a human reviews every sheet where a name was found.",
+        evaluation="The ingest report lists the counts (sheets scanned, names found, sheets for review). No accuracy claim is made for this call.",
+        output="A normalised copy with name regions blacked out, a class and roll for the file name, and a review list. Nothing reaches a teacher.",
+    ),
+    CallSpec(
+        id=16,
+        key="c16_paper_read",
+        name="Paper reading",
+        purpose="Read the printed questions of a paper from a blank paper, an answer key or a child's answered sheet, so a teacher can bring in a paper she already used. Code computes every key.",
+        model_env="MODEL_PAPER_READ",
+        when="when a teacher or coach uploads a PDF or photos on the Papers page (cached by file hash, cost-capped)",
+        output_model=schemas.PaperRead,
+        input_fields=("image",),
+        validators=(
+            "item numbers are whole and in range",
+            "operands are whole numbers up to 999 or empty",
+            "box rectangles lie inside the page",
+            "no printed answer is kept from a sheet with handwriting",
+        ),
+        gates=(
+            "code validators",
+            "code computes the key and probes",
+            "a person confirms every item",
+        ),
+        eval_id="eval_paper_read",
+        eval_bar="pending: no live eval set; the code-side checks are tested with recorded reads",
+        input="Up to three page images of one paper (rendered from a PDF, or photos). Only the printed questions matter; handwriting and any name are to be ignored and are not kept.",
+        processing="A small vision model lists each item with its operation and operands as printed, the prompt text, where its answer box is, a printed answer if a key is shown, and a flag when the page has handwriting.",
+        guardrails="The model is never asked for an answer key: code computes the correct answer, the competency and the error probes with the engine and re-checks them with independent arithmetic; a printed key that differs is flagged, never trusted; every item is confirmed by a person; the upload is deleted when the paper is confirmed or after 24 hours.",
+        evaluation="No accuracy claim yet. The importer's code-side checks are tested on recorded reads (tests/papers_hub); a live run on real papers is pending.",
+        output="A draft paper for a person to review item by item, with a coverage grid and open questions. Nothing is used until it is confirmed.",
     ),
 )
 

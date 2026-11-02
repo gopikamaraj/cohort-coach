@@ -57,6 +57,20 @@ Status: ⬜ not started · 🔄 in progress · ✅ done · 🟡 done with non-bl
 | Generated in Stitch, exported, reviewed | ⬜ not started (Gopi, designer) | tracking table in `docs/design/stitch/README.md` |
 | UI rebuilt from the exports | ⬜ not started | CLAUDE.md rule 18 |
 
+## Tester stats and Testing evidence (30 Oct, `docs/build/reports/TESTER-STATS.md`)
+
+Built in `apps/pwa` (v1): on-device hashed tester profiles, first-run sheet, Feedback button, tracked events, `services/tester/`, judge Testing evidence screen and tour step 7, `scripts/export_testing_stats.py`. Switch: `TESTER_STATS=1`. **Before the tester links go out:** deploy with `TESTER_STATS=1` and `TESTER_TEAM_TOKEN` set, try the first-run sheet on a real phone, and fill `docs/YOU_SAID_WE_CHANGED.md` as real feedback arrives. The v2 front-end (`apps/pwa-v2`) is parked; v1 only.
+
+## Front-end re-skin (29 Oct, `docs/build/reports/UI-RESKIN.md`)
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| New front-end folder `apps/pwa-v2/` (original untouched) | 🟡 built; most screens re-skinned through shared classes, not all rebuilt on components | report "What is not done" |
+| Tokens, dark mode, 22 components, style guide `#/dev/styleguide` | ✅ built | `docs/design/STYLEGUIDE.md` |
+| Practice Class to `practice-class-v3.html` | 🟡 layout matched; board, waveform, quick-move pills, feedback cards not rebuilt | report |
+| Gates: axe, Lighthouse, bundle, browser tests | ✅ axe 16 to 0; Lighthouse 94/100/100 both; bundle +3.1%; 12 new tests pass; 2 older tests fail on both apps | `docs/design/audit/` |
+| Deploy v2 in place of `apps/pwa/` | ⬜ open decision (Gopi) | DECISIONS 2026-10-30 |
+
 ## Gates
 
 | Gate | Due | Status | Evidence |

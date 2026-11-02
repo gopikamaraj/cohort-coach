@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from services.content.lessons_view import MAX_LESSON_SECONDS  # noqa: E402
+from services.content.model_run import KBPS as MODEL_RUN_KBPS  # noqa: E402
 from services.content.publish import KBPS  # noqa: E402
 
 TARGET_MB = 10.0
@@ -50,7 +51,9 @@ def budget() -> dict[str, Any]:
         f"{LESSONS} voice lessons at the {MAX_LESSON_SECONDS // 60}-minute cap, {KBPS} kbps": round(
             LESSONS * lesson_mb, 3
         ),
-        "model run (about 3 minutes)": round(MODEL_RUN_SECONDS * KBPS * 1000 / 8 / MB, 3),
+        f"model run (about 3 minutes, {MODEL_RUN_KBPS} kbps)": round(
+            MODEL_RUN_SECONDS * MODEL_RUN_KBPS * 1000 / 8 / MB, 3
+        ),
         f"{PRACTICE_SESSIONS} Practice Class sessions in text mode": round(
             PRACTICE_SESSIONS * PRACTICE_TEXT_KB * 1000 / MB, 3
         ),

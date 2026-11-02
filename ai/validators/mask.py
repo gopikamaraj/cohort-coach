@@ -14,11 +14,12 @@ still (or newly) in the text.
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from ai.validators import Violation
 from ai.validators.pii import _DIGIT_RUN, _EMAIL
-from ai.validators.thread import _RELATIVE, _ROLL, _hit, _names, check_personal
+from ai.validators.thread import _RELATIVE, _ROLL, _TAMIL_ENDINGS, _hit, _names, check_personal
 
 CHILD = "[child]"
 RELATIVE = "[a child's relative]"
@@ -43,8 +44,16 @@ def _is_phone_or_id(run: str) -> bool:
     return len(digits) in (10, 12)
 
 
-def mask_personal(text: str) -> Masked:
+def _kept(token: str, keep: tuple[str, ...]) -> bool:
+    return any(
+        token == k or (token.startswith(k) and token[len(k) :] in _TAMIL_ENDINGS) for k in keep
+    )
+
+
+def mask_personal(text: str, keep: Sequence[str] = ()) -> Masked:
+    """`keep`: names that are not real children's and stay (the Practice Class children)."""
     kinds: list[str] = []
+    kept = tuple(k.casefold() for k in keep if k)
     out = text
 
     def note(kind: str) -> None:
@@ -73,6 +82,8 @@ def mask_personal(text: str) -> Masked:
     last = 0
     for m in _TOKEN.finditer(out):
         token = m.group().casefold()
+        if _kept(token, kept):
+            continue
         if any(_hit(token, n, script) for n, script in names):
             note("child_name")
             pieces.append(out[last : m.start()])

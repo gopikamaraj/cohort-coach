@@ -93,9 +93,11 @@ def child_line(
     target_error: str | None = None,
     context: CallContext | None = None,
     on_candidate: Callable[[str, str], None] | None = None,
+    skip_checker: bool = False,
 ) -> ChildLineResult:
     """`on_candidate(text, speaker)` is told the validated line just before call 7 runs, so
-    speech synthesis can start in parallel; the caller releases the audio only if the line is."""
+    speech synthesis can start in parallel; the caller releases the audio only if the line is.
+    `skip_checker` leaves call 7 out: the line is released after the code checks alone."""
     if plan.speaker is None:
         return ChildLineResult("", "silent", None, None)
     base = context or CallContext()
@@ -118,6 +120,14 @@ def child_line(
     assert isinstance(line, ChildLine)
     if run.fallback_used:
         return ChildLineResult(template, "template", None, run, template_en)
+    if skip_checker:
+        # The validators (numbers, length, script, subtitle) and the pre-filter passed above,
+        # inside run_call. Call 7 is left out by the deployment's choice (PRACTICE_SKIP_CHECKER).
+        if on_candidate is not None:
+            on_candidate(line.text, name)  # nothing left to wait for: speech can start now
+        return ChildLineResult(
+            line.text, "ai", None, run, line.text if language == "en" else line.english
+        )
     if on_candidate is not None:
         on_candidate(line.text, name)
     gate = run_gates(

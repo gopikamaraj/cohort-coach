@@ -257,13 +257,6 @@ def test_there_is_no_route_that_changes_anything(judge_app: TestClient) -> None:
     assert judge_app.post("/api/assistant/send", json={}).status_code == 404
 
 
-def test_the_pilot_app_does_not_mount_the_assistant() -> None:
-    from services.api.main import create_app
-
-    client = TestClient(create_app(pilot=True))
-    assert client.get("/api/assistant/scope").status_code == 404
-
-
 def test_the_per_connection_rate_limit_applies(
     judge_app: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:

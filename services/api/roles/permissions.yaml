@@ -8,7 +8,6 @@ weekly_minutes:
   mentor: 30
   coach: 30
   officer: null   # OD-25: no cap set yet
-  coordinator: null   # pilot mode only; no cap set
 permissions:
   practice.rehearse: {key: roles.can.practice_rehearse}
   check.read_sheets: {key: roles.can.check_sheets}
@@ -32,13 +31,12 @@ permissions:
   content.officer_activate: {key: roles.can.content_officer_activate}
   content.mentor_approve: {key: roles.can.content_mentor_approve}
   content.propose: {key: roles.can.content_propose}
-  # Pilot mode (PILOT_MODE=1). The only permissions that exist on the server in that mode.
-  pilot.upload_sheets: {key: roles.can.pilot_upload}
-  pilot.sheets_admin: {key: roles.can.pilot_sheets_admin}
-  pilot.generate_audio: {key: roles.can.pilot_generate}
-  pilot.audio_view: {key: roles.can.pilot_audio_view}
-  pilot.approve_audio: {key: roles.can.pilot_approve}
-  pilot.share_audio: {key: roles.can.pilot_share}
+  # Paper Studio: papers made by code from approved rules. The rule editor and the paper review
+  # queue are the coach's (the coach is the reviewer); a teacher generates and prints papers.
+  papers.generate: {key: roles.can.papers_generate}
+  papers.review: {key: roles.can.papers_review}
+  papers.rules: {key: roles.can.papers_rules}
+  papers.rules_view: {key: roles.can.papers_rules_view}
 boundaries:
   role.no_client_elevation:
     key: roles.cannot.no_elevation
@@ -67,48 +65,32 @@ boundaries:
   officer.no_approval:
     key: roles.cannot.officer_no_approval
     enforced_by: tests/content/test_review_api.py::test_only_the_coach_approves_and_the_officer_cannot
-  pilot.sheets_private:
-    key: roles.cannot.pilot_sheets_private
-    enforced_by: tests/pilot/test_uploads.py::test_no_public_url_exists_for_any_sheet
-  pilot.no_publish_unapproved:
-    key: roles.cannot.pilot_no_publish
-    enforced_by: tests/pilot/test_audio.py::test_nothing_reaches_the_published_bucket_before_approval
 roles:
   teacher:
     card: roles.card.teacher
     holders: roles.holders.teacher
     data: roles.data.teacher
     also_on: [telegram]
-    can: [assistant.ask, practice.rehearse, check.read_sheets, profile.sync, programme.view_own, cohort.chat, judge.inspect]
+    can: [assistant.ask, practice.rehearse, check.read_sheets, profile.sync, programme.view_own, cohort.chat, judge.inspect, papers.generate, papers.rules_view]
     cannot: [teacher.own_class_only, teacher.never_scored, role.no_client_elevation]
   mentor:
     card: roles.card.mentor
     holders: roles.holders.mentor
     data: roles.data.mentor
     also_on: [telegram]
-    can: [assistant.ask, mentor.record, mentor.items_view, cohort.chat, content.mentor_approve]
+    can: [assistant.ask, mentor.record, mentor.items_view, cohort.chat, content.mentor_approve, papers.generate, papers.rules_view]
     cannot: [mentor.own_cohorts_only, mentor.no_class_numbers, role.no_client_elevation]
   coach:
     card: roles.card.coach
     holders: roles.holders.coach
     data: roles.data.coach
     also_on: []
-    can: [assistant.ask, coach.approve_items, coach.moderate, library.view, pilot.audio_view, pilot.approve_audio, content.review_view, content.coach_approve, content.propose]
+    can: [assistant.ask, coach.approve_items, coach.moderate, library.view, content.review_view, content.coach_approve, content.propose, papers.generate, papers.review, papers.rules, papers.rules_view]
     cannot: [coach.assigned_only, coach.no_teacher_numbers, role.no_client_elevation]
   officer:
     card: roles.card.officer
     holders: roles.holders.officer
     data: roles.data.officer
     also_on: []
-    can: [assistant.ask, officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, pilot.audio_view, content.review_view, content.officer_activate, content.propose]
+    can: [assistant.ask, officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, content.review_view, content.officer_activate, content.propose]
     cannot: [officer.aggregates_only, officer.no_approval, role.no_client_elevation]
-  # The pilot coordinator: receives answer-sheet photos from teachers and uploads them, then
-  # generates and shares the intervention audio. Signs in with an account key (pilot mode only).
-  # Approval is the coach's: one person may hold both roles, and the sign-in then carries both.
-  coordinator:
-    card: roles.card.coordinator
-    holders: roles.holders.coordinator
-    data: roles.data.coordinator
-    also_on: []
-    can: [pilot.upload_sheets, pilot.sheets_admin, pilot.generate_audio, pilot.audio_view, pilot.share_audio]
-    cannot: [pilot.sheets_private, pilot.no_publish_unapproved, role.no_client_elevation]

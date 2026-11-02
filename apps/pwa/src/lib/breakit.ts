@@ -15,10 +15,19 @@ export async function tryBreak(
   language: string,
   fetchFn: typeof fetch = (...a) => fetch(...a),
 ): Promise<BreakResult> {
+  return postBreak({ kind, language }, fetchFn);
+}
+
+/** The visitor's own line, checked by the same rules. Not stored, not logged, not sent to a model. */
+export function tryBreakText(text: string, language: string, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<BreakResult> {
+  return postBreak({ text, language }, fetchFn);
+}
+
+async function postBreak(body: Record<string, string>, fetchFn: typeof fetch): Promise<BreakResult> {
   const res = await fetchFn(`${API_BASE}/api/judge/try-break`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ kind, language }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`break ${res.status}`);
   return (await res.json()) as BreakResult;

@@ -2,6 +2,7 @@
 // no gender, religion or caste markers), the materials tray, the judge-only layers panel and the
 // feedback card.
 import type { ReactNode } from "react";
+import type { Key } from "../i18n";
 import type { FeedbackCard, Layers, PracticeChild } from "../lib/practice";
 import { useApp } from "../state";
 import { avatarSvg, personaLook, seatRow } from "../sprites";
@@ -15,18 +16,68 @@ function Face({ persona, expression, speaking }: { persona: string | null; expre
   return <div className={speaking ? "sprite figure sprite-speaking" : "sprite figure"} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 
-export function ChildrenRow({ children, speaker, faces }: { children: PracticeChild[]; speaker: string | null; faces: Record<string, string> }) {
+export const EXPRESSIONS = ["confused", "distracted", "got_it", "neutral", "shy", "thinking", "wrong_answer"] as const;
+
+/** How a child looks right now, in words, under her name. The face comes from the server's table.
+ * Every child who spoke this turn is highlighted; the first speaker is the current one. */
+export function ChildrenRow({ children, speakers, faces }: { children: PracticeChild[]; speakers: string[]; faces: Record<string, string> }) {
   const { tr } = useApp();
   return (
     <ul className="kids" aria-label={tr("practice.children")}>
-      {children.map((c, i) => (
-        <li key={c.name} className={speaker === c.name ? "kid kid-on" : "kid"} data-testid={`kid-${i}`} aria-current={speaker === c.name ? "true" : undefined}>
-          <Face persona={c.persona} expression={faces[c.name] ?? c.expression} speaking={speaker === c.name} />
-          <span className="kid-name">{c.name}</span>
-          {c.shy ? <span className="kid-shy" title={tr("practice.shy")}>{tr("practice.shy")}</span> : null}
-        </li>
-      ))}
+      {children.map((c, i) => {
+        const expression = faces[c.name] ?? c.expression;
+        const label = (EXPRESSIONS as readonly string[]).includes(expression) ? tr(`practice.expr.${expression}` as Key) : "";
+        const on = speakers.includes(c.name);
+        return (
+          <li key={c.name} className={on ? "kid kid-on" : "kid"} data-testid={`kid-${i}`} data-speaking={on ? "true" : undefined} aria-current={speakers[0] === c.name ? "true" : undefined}>
+            <Face persona={c.persona} expression={expression} speaking={on} />
+            <span className="kid-name">{c.name}</span>
+            {label ? (
+              <span className={on ? "kid-mood kid-mood-on" : "kid-mood"} data-testid={`kid-mood-${i}`} data-expression={expression}>
+                {label}
+              </span>
+            ) : null}
+            {c.shy ? <span className="kid-shy" title={tr("practice.shy")}>{tr("practice.shy")}</span> : null}
+          </li>
+        );
+      })}
     </ul>
+  );
+}
+
+/** The board: the problem the engine posed, with the first number drawn as tens and ones. Counts come
+ * from this function, never from a model. */
+export function BlockBoard({ a, b, kind }: { a: number; b: number; kind: string }) {
+  const { tr } = useApp();
+  const tens = Math.floor(a / 10);
+  const ones = a % 10;
+  const sign = kind.startsWith("add") ? "+" : "−";
+  return (
+    <section className="pcx-card" aria-labelledby="pcx-board" data-testid="board">
+      <div className="pcx-boardhead">
+        <h2 id="pcx-board">{tr("practice.board")}</h2>
+        <span className="pcx-pill">{tr("practice.blocks")}</span>
+      </div>
+      <p className="pcx-sum" data-testid="board-sum">{`${a} ${sign} ${b} = ?`}</p>
+      <div className="pcx-mat">
+        <div className="pcx-place">
+          <h3>{tr("practice.tens_n", { n: tens })}</h3>
+          <div className="pcx-pieces" role="img" aria-label={tr("practice.tens_n", { n: tens })}>
+            {Array.from({ length: tens }, (_, i) => (
+              <i key={i} className="pcx-rod" />
+            ))}
+          </div>
+        </div>
+        <div className="pcx-place">
+          <h3>{tr("practice.ones_n", { n: ones })}</h3>
+          <div className="pcx-pieces" role="img" aria-label={tr("practice.ones_n", { n: ones })}>
+            {Array.from({ length: ones }, (_, i) => (
+              <i key={i} className="pcx-unit" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -133,7 +184,6 @@ export function LayersPanel({ layers }: { layers: Layers }) {
   const failed = g.validators.filter((v) => !v.ok);
   return (
     <div className="layers" data-testid="layers-panel">
-      <p className="muted">{tr("layers.judge_only")}</p>
       <dl>
         <Row label={tr("layers.input")}>
           <span data-testid="layer-input">{input.teacher_text ?? `[${input.material}]`}</span>

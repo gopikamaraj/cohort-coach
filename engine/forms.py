@@ -47,3 +47,15 @@ FORM_B = Form(
 )
 
 PILOT_FORMS: dict[str, Form] = {"A": FORM_A, "B": FORM_B}
+
+
+def twin_of(n: int) -> int:
+    """The Form A item that item `n` of Form B repeats with new numbers (same skill and difficulty).
+
+    The two printed forms are parallel item by item: the same type in the same place, the same ones
+    total on every carry item and the same ones gap on every borrow item. So a pre-test and a
+    post-test can only be compared on twin items: item n of one is the twin of item n of the other.
+    """
+    if not 1 <= n <= len(FORM_A.items):
+        raise ValueError(f"no item {n}")
+    return n

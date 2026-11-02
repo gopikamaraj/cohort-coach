@@ -2,7 +2,7 @@
 
 Reading the queue is for the coach and the officer; approving or returning a draft is the coach's
 key; switching approved content on is the officer's. The role comes from the server's session
-(see services/api/roles), never from the request body. This router is not mounted in pilot mode.
+(see services/api/roles), never from the request body.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ from services.api.profiles import SESSION
 from services.api.roles import require
 from services.content import configurable, model_run, publish, rejections, review, versions
 from services.content.track import load_track
-from services.pilot.storage import BlobStore, get_audio_store
+from services.media.storage import BlobStore, get_audio_store
 
 router = APIRouter(prefix="/api/review", tags=["review"])
 

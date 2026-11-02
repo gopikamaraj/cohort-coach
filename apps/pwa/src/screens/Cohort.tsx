@@ -7,9 +7,11 @@ import { Icon } from "../components/icons";
 import type { Key } from "../i18n";
 import { ccall, CohortError, ordered, showsText, type CohortSummary, type Post, type Who } from "../lib/cohort";
 import { useApp } from "../state";
+import { SimulatedBanner } from "../components/parts";
+import { ClassOnlyForCoach } from "../components/MyClassCohorts";
 
 export default function Cohort() {
-  const { tr, role, lang } = useApp();
+  const { tr, role, lang, klass } = useApp();
   const [view, setView] = useState<Who>(role === "coach" ? "coach" : "teacher");
   const who: Who = role === "coach" ? "coach" : role === "judge" ? view : "teacher";
   return (
@@ -17,6 +19,7 @@ export default function Cohort() {
       <h1 id="co-title">
         <Icon name="chat" /> {tr("cohort.title")}
       </h1>
+      {klass?.simulated || role !== "teacher" ? <SimulatedBanner /> : null}
       <p>{tr("cohort.intro")}</p>
       {role === "judge" ? (
         <div className="subtabs" role="group" aria-label={tr("cohort.view_as")}>
@@ -27,7 +30,16 @@ export default function Cohort() {
           ))}
         </div>
       ) : null}
-      {who === "coach" ? <CoachView tr={tr} lang={lang} /> : <TeacherView tr={tr} lang={lang} />}
+      {who === "coach" ? (
+        <>
+          <ClassOnlyForCoach />
+          <CoachView tr={tr} lang={lang} />
+        </>
+      ) : (
+        <>
+          <TeacherView tr={tr} lang={lang} />
+        </>
+      )}
     </section>
   );
 }
@@ -149,7 +161,7 @@ function TeacherView({ tr, lang }: { tr: Tr; lang: string }) {
           {msg.text}
         </p>
       ) : null}
-      {!current ? (
+      {!current && cohorts.length === 0 ? null : !current ? (
         <div className="panel">
           <h2>{tr("cohort.list")}</h2>
           {cohorts.length === 0 ? <p className="muted">{tr("cohort.none")}</p> : null}
@@ -276,7 +288,7 @@ function CoachView({ tr, lang }: { tr: Tr; lang: string }) {
               {c.error} · {tr(`cohort.st.${c.status}` as Key)} · {c.members === null ? tr("cohort.members_hidden") : tr("cohort.members", { n: c.members })}
             </span>
             <button type="button" className="btn btn-secondary" onClick={() => setCurrent(c.id)} data-testid="coach-open">
-              {tr("cohort.title")}
+              {tr("cohort.chat")}
             </button>
           </li>
         ))}

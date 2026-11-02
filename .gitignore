@@ -20,12 +20,14 @@ apps/pwa/test-results/
 apps/pwa/playwright-report/
 apps/pwa/lh.json
 e2e-api.log
+e2e-api-off.log
 
 # synthetic handwritten-sheet test set: generated, large, not committed
 data/synthetic_sheets/
 
 # pilot mode: local dev store for sheets and audio (never commit)
 .pilot-local/
+.media-local/
 
 # service-account keys (never commit)
 gcp/*.json
@@ -33,3 +35,24 @@ gcp/*.json
 
 # runtime rejection examples waiting for the coach (never commit)
 content/rejections/pending/
+
+# Demo Studio: the cache of synthetic demo sheets and the first demo lesson (made on demand)
+data/demo_cache/
+
+# Stitch pack: pictures and raw element data are rebuilt by `python tasks.py stitch-pack` (about 80 MB);
+# the manifest, specs, prompts, index and README stay tracked.
+docs/design/stitch/pack/*/*.png
+docs/design/stitch/pack/*/*.json
+docs/design/stitch/pack/capture-index.json
+tools/stitch_pack/.work/
+
+# Papers page: uploads kept for review at most 24 hours (never commit)
+data/paper_import/
+e2e-imports/
+apps/pwa/e2e-imports/
+e2e-imports-off/
+data/autopilot-screens/
+audition/
+evals/speech-eval/
+data/speech-eval/
+.env.local

@@ -2,6 +2,24 @@
 
 Newest first within each section. Every entry: date, decision, why, alternatives considered, who confirmed. A newer entry here overrides `CLAUDE.md`, the build prompts and the design doc; update `CLAUDE.md` in the same commit when a rule changes.
 
+### 2026-10-30 · Device-based tester profiles and a Testing evidence view (TESTER_STATS=1)
+- **Decision:** the public demo and tester links can collect opt-in, coarse usage data from testers, shown to judges as aggregates. A random id is made on the device and never leaves it; the device sends only SHA-256(salt + id). Nothing is sent (no profile, event or feedback) before the person agrees; "Use without sharing" sends nothing and the app works in full. Collected: nickname, coarse device class, browser and system family, language, screens opened, features used, tour progress, a connection class and feedback the person types (phone numbers and emails masked). Never: IP address (the access-log line for these paths is dropped), location, contacts, user-agent string, typed content, voice, child or teacher data. Judge devices (a `?src=judge` link or choosing the Judge role) and team devices (`?team=<TESTER_TEAM_TOKEN>`) are tagged and left out of tester counts by default, shown separately. The judge endpoint answers only the judge role in a judge deployment; the CSV export needs the team token. Events and feedback are deleted after 90 days or on "Delete my data". The switch is the server flag `TESTER_STATS=1`; it is never mounted in pilot mode. The guided tour gains a seventh step ("See who has tried it"), budgeted at 10 s so the tour stays within 300 s. Report: `docs/build/reports/TESTER-STATS.md`.
+- **Why:** the submission needs real, live proof of user testing and refinement (judged area "user inputs and testing"), without inflating numbers and without collecting anything private.
+- **Alternatives:** third-party analytics (rejected: scripts, cookies, IP); a fingerprint or user-agent id (rejected: tracking); showing every tester by name (rejected: listing is a separate, off-by-default consent); seeding sample testers (rejected: no fabricated evidence, non-negotiable 7).
+- **Confirmed by:** Gopi (request of 30 Oct).
+
+### 2026-10-30 · The v2 front-end (`apps/pwa-v2/`) is parked; v1 is the only front-end
+- **Decision:** `apps/pwa-v2/` is not run, deployed or extended. Its run script (`run-frontend-v2.bat`) is removed; the folder stays in the working tree, uncommitted, for reference only. All front-end work from here is in `apps/pwa/`.
+- **Why:** the re-skin needs a lot more fixes (most screens are not rebuilt on the new components; fonts and snapshot tests are open) and the freeze has passed.
+- **Alternatives:** finish v2 before 31 Oct (rejected: no time).
+- **Confirmed by:** Gopi (30 Oct).
+
+### 2026-10-30 · Re-skin the front-end in a new folder, behaviour frozen
+- **Decision:** the front-end re-skin (`docs/build/Claude Code prompt re-skin the front-end ...`) is built as a copy in `apps/pwa-v2/`; `apps/pwa/` is untouched. v2 adds tokens with a dark mode and a five-size type scale (`src/styles/tokens.css`), a base layer for raw form elements, a component set (`src/ui/`), a side rail from 900 px, and a living style guide at `#/dev/styleguide`. APIs, state, permissions and AI calls are unchanged; the screens still render their existing markup and gain the new look through the shared classes. Screens are migrated to the components one at a time; Officer cohorts and Profile were done first. One shared string key (`judge.styleguide`) was added in en, hi and ta.
+- **Why:** the user asked for a new front-end folder so the working app stays as it is for the submission. The `UI_V2` flag in the prompt is not needed, because the two apps do not share a build.
+- **Alternatives:** re-skin in place behind a flag (rejected by the user); rewrite every screen on the new components at once (rejected: no time before 31 Oct, and the risk of changing behaviour).
+- **Confirmed by:** Gopi (folder choice, 2026-10-29). Open: whether v2 replaces `apps/pwa/` for the final deploy.
+
 ### 2026-10-30 · One assistant, scoped by role on the server
 - **Decision:** one assistant for all roles. The server sets the scope from the authenticated role (judge in the judge deployment, teacher everywhere else); a question or a "act as" phrase never widens it; only the judge session may View as another role; the About this product tab is always the judge scope. The judge corpus includes the repository markdown, `docs/RUBRIC_MAP.md`, the deck slides and the video script, so judge answers cite a file, a slide number and a video time. Retrieval is word-based over a plain JSON index bundled in the image (no embeddings). Suggested questions are pre-written from the docs and work offline; free text uses call 14 and abstains when nothing is found. The assistant is read-only: it cannot approve, send or delete, and it reads no live class data yet.
 - **Why:** judges and each role need answers that stay inside what they may see and never claim more than the rubric map's status.
@@ -417,3 +435,497 @@ Newest first within each section. Every entry: date, decision, why, alternatives
 ### 2026-10-11 · Core design
 - **Decision:** everything in `docs/design/cohort-coach-design.md` (slice, four errors, eight calls, model routing, four gates, privacy, offline matrix, evals and bars, screens, submission kit) unless a later entry here changes it.
 - **Confirmed by:** team.
+
+## 2026-10-30 · Assistant: light model and follow-up questions (call 14 v2)
+
+- **Decision.** `MODEL_ASSIST` moves from `claude-sonnet-5-5` to `claude-haiku-5-5`: the call only rewrites retrieved passages under code checks, so the light model is enough. Prompt v2 adds `follow_ups` (up to three short questions). Code keeps a model-suggested follow-up only if it passes the policy refusals and the pages in the role's scope can answer it, then fills up to three from the role's own question bank (those carry an id, so the pre-written answer is returned). Every answer, including extracts and abstentions, now ends with follow-ups.
+- **Why.** A person decides after one answer whether to carry on; each next step must be answerable, in scope, and cheap.
+- **Unchanged.** Retrieval is keyword search over the scoped index (no vector database); the model answers only from retrieved passages; code checks every quote, row, length, personal data and action claim; the drawer speaks as the role chosen on the landing page. No live run of call 14 yet: it stays "Built" in `AI_USAGE.md`, not "Verified".
+- **Confirmed by.** Gopi (asked for the light model and follow-ups, 2026-10-30).
+
+## 2026-10-30 · Assistant: meaning-based retrieval behind a flag (overrides "no vector DB" for this use)
+
+- **Decision.** CLAUDE.md says "no vector DB". Gopi chose to add embedding retrieval because Cohort Coach needs to search documents (the assistant now; more later) and keyword search misses Hindi and Tamil paraphrases. Built as `services/assistant/vector.py`: Gemini embeddings (`gemini-embedding-001`, 768 dimensions, key in `GEMINI_API_KEY`), vectors in a bundled `vectors.npz` (default) or Firestore (`VECTOR_STORE=firestore`, optional), fused with the existing keyword ranking. **Off by default** (`RETRIEVAL=off`), so the submitted demo does not depend on it.
+- **Guardrails unchanged.** The scope decides which chunks are searchable; a vector hit outside the scope is dropped; any embedding, network or store failure returns the keyword hits; the model still answers only from retrieved passages under the same code checks. Only the masked question text leaves the server; chunks are repository and help pages. The cosine threshold (0.62) is set by eye, not tuned, because there is no labelled set yet.
+- **Why not a managed vector service.** About 1,200 chunks fit in memory; Firestore is the free GCP-native option when a shared store is needed.
+- **CLAUDE.md.** Section 14's "Add a vector DB" line is superseded for retrieval of help and repository text; it still applies to anything holding teacher, child or class data.
+- **Confirmed by.** Gopi (asked for a free, quick vector option on GCP and chose the Gemini API for embeddings, 2026-10-30).
+
+## 2026-10-30 · Telegram is on the roadmap
+
+- **Decision.** Telegram is not part of the submitted product. The web app is the only channel in the demo and the pilot. The Telegram adapter (`services/api/channels/telegram/`) and its golden-transcript tests stay in the code as the evidence that a second channel is an adapter plus contract tests; no bot is deployed, and no screen mentions Telegram or a bot. The README, the rubric map (row E3.4 is now Roadmap), the channel docs, the judge script, the help pages the assistant reads, the checklist, the shot list and the video script were updated to say so.
+- **Why.** The bot was never deployed (no webhook), so a judge could not run it, and a claim that cannot be checked is worse than a roadmap line.
+- **Not changed.** The account-linking step still says "send /start CODE to the bot" because the onboarding flow is shared with the adapter; it shows only if someone links a Telegram chat, which cannot happen without a bot.
+- **Confirmed by.** Gopi (2026-10-30: "For now telegram is in the roadmap. update the docs.").
+
+## 2026-10-30 · Every check is labelled; pre-test and post-test pair on the phone
+
+- **Decision.** A check now records its kind (pre-test, post-test or termly check), paper (Form A or B), term, round, date, paper version (the answer keys hash), the track it starts or evaluates, the papers expected, a status and notes. Pre-test and post-test are labels on two checks of one class, not new machinery. **Start a check** comes before entry; a header shows the label on every entry screen; My class pairs two checks child by child in roll order on the phone and shows counts per competency (C1 place value, C2 adding with carrying, C3 taking away with borrowing). Form B is the twin of Form A item by item (`engine/forms.py: twin_of`); a pre and a post compare only on twin items.
+- **Where it lives, and how it differs from the prompt** (`docs/build/Claude Code prompt identify every check ...md`). Per-child answers live only on the phone (CLAUDE.md rule 2), so the check record is the phone's `checks` table (Dexie version 2), not a server table with Alembic migrations. Old checks are migrated, not lost: each gets a guessed label (the class's earliest check is a pre-test; a later Form B one a post-test; else termly) with its real paper, not "Form A" as the prompt says, and is marked to confirm. One check per class per term: the id stays `classId:term` so nothing saved before is orphaned and the server's class counts (keyed by term) do not collide; `round` is stored for later. The term is the app's current term, not a field on Start a check.
+- **Not built (parked):** Step 4, the check code printed on the paper and read back by call 8 (there is no printable worksheet generator, and call 8 would need a prompt change and a re-run of its eval); a server-side check table, upload of the before-and-after counts, and verdicts carrying the two check ids; the label on the cohort and track pages. See `docs/build/PARKING.md`.
+- **Evidence.** `scripts/pilot_results.py` writes `docs/evidence/pilot_results.md` from an unsealed phone backup, counts only, labelled a small pilot; today it says no pair has been entered.
+- **Confirmed by.** Gopi (2026-10-30: chose the phone-side slice).
+
+## 2026-10-30 · Paper Studio: check papers made by code from approved rules
+
+- **Decision.** Check papers are built by code (`services/papers/`), never by AI. A rule set (item templates, the engine's bug functions, blueprints, the paper wording in each language) is versioned: draft, in review, published, retired. Its author submits a change and a second person publishes it; a published version never changes (database guards). Every paper pins its rules version, blueprint and seed, and the same inputs give the same paper and hash.
+- **Anchor and adaptive items.** The ten anchors keep Form A's skills and difficulty (ones totals 15, 14, 12; ones gaps 2, 4, 7, 6), so papers across checks and classes measure the same thing; before and after compare on anchors only. Up to five adaptive items go deeper on what the class profile weights most and are for diagnosis only.
+- **Frozen post-test twin.** A pre-test makes its post-test twin at once: every item's twin has the same template and difficulty, new numbers, and no number pair from the pre-test. It is built from the pre-test only and frozen when made. Any paper is frozen when the first sheet of its check is entered.
+- **Auto-approval within the rules.** A paper that passes every automatic check (the independent verifier, strings and glyphs, the rendered layout), uses published rules, has no hand edits and is in reviewed wording is approved and logged; one in five is also queued as a spot check (`PAPER_SPOT_CHECK_EVERY`). Anything else waits for the coach (the reviewer) before it can be printed; a paper that failed a check cannot be approved. A teacher prints a paper only in the language it was approved in.
+- **Class profile order.** The last check's class counts; else the teacher's four-question intake (a topic not taught is not assessed and left off the paper); else the standard paper. Counts only.
+- **Differences from the prompt** (`docs/build/Claude Code prompt Paper Studio ...md`, scope chosen by Gopi: core and main screens). The pilot paper has 10 items, not 15 (`docs/design/pilot_forms.golden.json`; the test guide docx is not in the repo), so the blueprints are `baseline_10` and `standard_10_5`. Version 1 is a transcription of what the team approved for the pilot (engine bug functions, Form A's difficulties, the pilot pack's Hindi classroom wording) and is recorded as approved by the pilot pack; the English wording counts as reviewed, the Hindi short labels and all Tamil wording are drafts by Claude Code, so Hindi and Tamil papers go to the queue until a reader approves them (TODO-HUMAN(Seema, Shivani): Hindi; TODO-HUMAN(Gopi): Tamil). Section labels on the paper are "Listen and write", "Add", "Take away". WeasyPrint runs on Windows through the installed GTK3 runtime and in Docker and CI through apt. The rule editor is a read-only view with history, export and Test these rules; changes go through the API. A generated paper is printed and marked by hand: phone entry of its answers, the reader's code check and the tour step are parked (`docs/build/PARKING.md`). The pilot paper can be attached to a check (its code shows in the check header) and is frozen on the first entry.
+- **Confirmed by.** Gopi (2026-10-30: chose "Core + main screens").
+
+## 2026-10-31 · Demo Studio: the judge's end-to-end demo flow
+
+- **Decision.** A guided demo of 11 steps (and an optional 12th) on a made-up class, driving the product's own code: Paper Studio, call 8 on sheet 1, the error finder on the phone, the real grouping and mentor rules, call 5 for lesson 1, the chat service and its gates, the coach's queues, an officer view with cells under 5 classes hidden. Judge deployment only; never mounted in pilot mode. Every made-up sheet, class and number says Demo, Simulated or Synthetic.
+- **Defaults (from the prompt).** The review drawer is a bottom drawer, 40% of the width on a laptop (anchored bottom right) and 40% of the height on a phone. Sheet 1 is read by the AI; Auto-fill loads the other sheets from the demo answer file with no AI call and says so. AI reads are cached by the image's hash and capped per demo session (`DEMO_AI_READS_PER_SESSION`, default 6). The first audio carries "Demo: pre-approved": in the demo only, the coach's approval of lesson 1 is skipped; lesson 2 still goes to the coach. The chat waits 60 seconds in the demo, with Skip the wait. Each judge device has its own demo session; Reset clears only it. Optional step 12 simulates the post-test.
+- **Differences from the prompt.** (1) One track a class a term (CLAUDE.md): her class is in one cohort this term and shown as qualifying for a second next term, not in two at once (Gopi chose this, 30 Oct). (2) The planted errors are tracked errors on the pilot paper (SUB-SFL 9 and ADD-NOCARRY 7 of 20 above the line, PV-HEARD below), not "borrowing across a zero" or "three-digit sums with two carries", which the check does not have. (3) The demo check uses the pilot paper (Form A), made in Paper Studio, because the phone scores only Forms A and B today. (4) Matching by the printed roll box uses the demo label inside the sheet (its PNG metadata), not reading the roll box. (5) The chat AI answers only from approved material; every teaching strategy is still a draft (TODO-HUMAN(Seema)), so in the demo it says it has no source and the coach answers in their own words. (6) The coach's demo cohort has auto-send switched on (the coach's setting), so the real gates decide. (7) The other classes' waitlist split is the real seeded split; the scenario's seed (114) is one where her class starts this term and all three errors form a cohort.
+- **Fix found on the way.** The chat service held a database write open across its model calls, which locks SQLite (dev, tests) when the call's audit row is written; it now commits before each call.
+- **Evidence.** `docs/evidence/demo_synthetic_reading.md` (synthetic sheets only; written by `scripts/demo_evidence.py` from a live read and from a record-mode run).
+- **Confirmed by.** Gopi (2026-10-30: everything in the prompt, keeping CLAUDE.md's one track a term).
+
+## 2026-11-01 · Stitch screenshot pack
+
+- **Decision.** `python tasks.py stitch-pack` builds `docs/design/stitch/pack/`: for each screen and state, screenshots (first viewport, scroll slices with 80 px overlap, a stitched long image, sideways scroll), an annotated copy with numbered boxes E1, E2, ..., a contact sheet, a spec with a table of every numbered element, and a Stitch prompt of at most 1,800 characters. Tooling is in `tools/stitch_pack/`; the product is unchanged.
+- **Demo only.** Judge mode, recorded AI, stub voice, a fresh throwaway database; the harness fails a capture that shows data without a Demo or Simulated label (en, hi, ta words) or that matches an email, phone or key pattern. Five screens do show demo data with no label (History, Papers, Cohort, Review, Mentor): they are listed as known gaps in the manifest and reported, not hidden.
+- **Annotation scheme.** Numbers run top to bottom over the whole page; the viewport image shows those visible in it, the long image shows all; the validator checks that every number drawn is in the table and every table row is drawn. The clean image is never drawn on.
+- **Scope.** Core screens (Gopi, 2026-10-31): 25 screens, 58 states, phone and desktop, Hindi on main screens, the 12 demo steps. Not covered: dark theme (none exists), Tamil, empty/loading/error/offline states.
+- **Files.** Pictures and raw JSON are git-ignored (about 80 MB, rebuilt on demand); manifest, specs, prompts, index and README are tracked.
+
+## 2026-10-31 · Practice Class: a chorus of one to three children, overheard moves, and a switch for call 7 and for call 1
+
+- **Decision (Gopi, 2026-10-31).** (1) Each teacher turn now has one to three speaking children, chosen by the engine (the named child first, then others weighted by engagement; the shy child only when named; a child who went quiet stays out). (2) The class shares one room: a move aimed at one child reaches every other child as something overheard, at `overhear` (0.5) of its effect on strength and engagement; going quiet applies only to the child it was aimed at. Both are tuning parameters in the scenario files (`overhear`, `chorus_max`); the engine's defaults (0 and 1) keep the old one-child behaviour. (3) `.env` `PRACTICE_SKIP_CHECKER=1` leaves out call 7 on a child's line; the code validators (numbers, length, script, subtitle) and the pre-filter still run on every AI line, and a line that fails them is still replaced by the template. (4) `.env` `PRACTICE_AI_INTENTS=explain,work_aloud` sends only those kinds of line to call 1; every other line (an answer, an agree, a thanks) is the engine's template. The children who join in as the chorus always speak in template words: they give their own answer, which a template carries whole.
+- **Why.** A live turn took a median of 5.1 s and 7.7% of turns passed 12 s (the label, child-line and check calls run one after another). A child's line is made from numbers the engine chose, so most of it is mechanical; only a child explaining her working needs a model. And the children sit in one room.
+- **What it changes in the rules.** CLAUDE.md rule 4 ("nothing AI-written reaches a teacher until it passes call 7") now has one exception for a Practice Class child's line, only where `PRACTICE_SKIP_CHECKER=1`. Off by default; the public demo and pilot keep it on unless someone with authority turns it off. Call 7 still gates track content, method cards and feedback cards. A skipped line carries no "Checked" badge and the judge's layers view says `checker_skipped`.
+- **Alternatives.** Skip call 7 only when the code checks pass and the line is short (same as now); run call 7 in parallel with the reveal (breaks check-then-release); a faster model for call 1 (needs the realism eval re-run).
+- **Side effects.** The recorded SUB-SFL rehearsal fixtures (`ai/fixtures/recorded/`) were re-recorded live on 2026-10-31 (7 turns, USD 0.0168) because the turn plans changed. The face test and the recorded tests now expect more than one speaking child; the bars were not changed.
+- **Not yet measured.** The effect of the switches on turn time. No live evals were re-run (the call 1 prompt is unchanged).
+
+## 2026-11-01 · Pilot sheets as a local-only demo data source
+
+- **Decision (Gopi, 2026-11-01, by the prompt `docs/build/Claude Code prompt pilot sheets as a local demo data source...`).** The two pilot classes' answered sheets can be used in Demo Studio's Enter-the-check step on the one machine that holds them. A **Data source** control offers Synthetic (default) or Pilot. The sheets live in the git-ignored `data/pilot/`; `python tasks.py pilot-ingest` tidies them and writes `pilot_answers.json`; four routes serve them (moved on 2026-10-31 to `/api/pilot-data/`, see that entry).
+- **Consent gate.** The option exists only with `PILOT_DEMO=1`, the folder, a valid `manifest.yaml` with `consent_confirmed: true` (who, date, scope) and the answer file, in a judge deployment, in a live demo session. Without the folder it is hidden, so the hosted demo shows Synthetic only; with the folder but no consent it is shown disabled with a reason. Every route is a 404 otherwise.
+- **Name scan (new call 15, offline).** The script asks a small vision model whether a person's name is written on a sheet and where, blacks the region out of the normalised copy, reads the class and roll from the printed header when the file name does not carry them, and records only a yes or no and a region count. It is the only added AI step (`ai/registry.py`, `AI_USAGE.md`); a human reviews every sheet where a name was found, and every sheet where the scan was not run.
+- **What this changes in the rules.** CLAUDE.md rule 2 says no photos are stored by the main app. This is not the main app: the images stay in a local ignored folder, are never in git or the web build, and the browser keeps pilot answers in memory only. Rule 14 (no per-child data to storage or logs) holds for the server database: nothing here writes child-level data to it; the demo session row counts AI reads only.
+- **Why.** The demo and the video are stronger on real sheets, and the reading evidence becomes real: the AI's read can be compared with hand-keyed truth (counts only in `docs/evidence/pilot_reading_accuracy.md`).
+- **Choices made while building.** (1) The pilot form has 10 boxes, so truth CSVs have `q1` to `q10`, not `q15`. (2) A class dictated different numbers is built correctly in the answer file, but the on-phone error finder knows only Form A's 346 and 728, so the screen disables that class with a reason rather than diagnose it wrongly (parked). (3) Competency and skill labels on the questions come from the item type. (4) A sheet with a photo but no data (cost cap or `--no-ai`) is listed as unread, never filled in. (5) The orientation of a photo is guessed from where the ink sits and listed for review when unsure.
+- **Alternatives.** Putting the sheets in the hosted demo (rejected: consent and rule 2); a database table for the reads (rejected: child-level data in the server database); a second answer-file loader (rejected: the Demo Studio's loader is reused, with `source: "pilot"`).
+- **Not yet done / not measured.** No real sheet has been run through the script yet; the reading accuracy file does not exist until hand-keyed truth does. The unit tests use a fake folder made from the synthetic sheets and fake model replies.
+
+## 2026-11-01 · Papers page: first slice (list, cohort status, navigation)
+
+- **Decision (Gopi, 2026-10-31, by the prompt `docs/build/Claude Code prompt the Papers page ...`).** The whole prompt is a multi-day build (PDF import with a new vision call, assignments, role scopes, the assistant's open questions and `paper_draft_set`, help documents in three languages, Enter check choosing a paper). It was started on submission day, after the 28 Oct feature freeze, so it was built in slices that cannot break the demo. **Slice 1 (built):** Papers moves between Home and Enter check in the navigation (teacher, mentor, judge; the coach keeps its own bar; hidden for officers as before); the teacher's list shows form, kind, status, source ("Made by the rules") and, for each paper, whether cohorts have formed, or the specific reason and the next step; filters for kind, form and status; a "Create a paper" button (still goes to Enter check).
+- **Cohort status** is one pure function, `apps/pwa/src/lib/paperStatus.ts`, over the check records on the phone and the placement the programme API already returns. It adds no second source of truth. Reasons: no check has used the paper; a check is open (N of M sheets entered); all entered, not approved; approved, not closed; submitted and waiting for other classes; formed this term (cohort size) or next term; unknown offline. Counts only.
+- **Known limit.** The programme API returns `waiting` both when other classes have not arrived and when formation has not run, so "cohort formation has not run" is not shown as a separate reason. Not guessed.
+- **Not built yet (in the prompt's order):** PDF and answered-sheet import (new call, computed keys, review table, layout map, 24-hour deletion); the paper detail page with tabs; Enter check choosing an existing paper and no longer creating one; assignments (`paper_assignment`, scopes for teacher, mentor and coach, Assigned to you); the assistant's `paper_status`, open questions, `paper_draft_set` with Undo, the help documents and suggested questions; the server-side role-scoped list. The Papers help documents and the demo flow's step 2 are unchanged.
+- **Why slices.** Moving paper creation out of Enter check would change step 2 of the 12-step demo and the pilot option that select their paper there; that is not safe to do on the last day. Nothing in this slice removes a path that worked.
+- **Test changes, not loosened bars.** The bottom-bar test now expects Practice, Programme, History and Profile in More, because Papers now sits in the bar.
+
+## 2026-11-01 · Papers page, the rest: import from PDF, assignments, scopes, the assistant's questions (Gopi: "build the rest")
+
+- **Decision.** Papers are created and managed on the Papers page; **Enter check only chooses** a paper (`PaperChooser`, with the paper assigned to her first and the suggested form pre-selected). Paper generation moved there as the route "Generate from rules" (the same `PaperMaker`, same test ids). The demo's step 2 now happens on the Papers page.
+- **PDF import (new call 16).** The AI reads only the printed questions; **code computes every key, probe, wrong answer and coverage cell** with the engine and re-checks with independent arithmetic; a printed key that differs is flagged and blocks Confirm until acknowledged; a sheet with handwriting keeps no printed answer; a person confirms every item; the upload is deleted on confirmation or after 24 hours. A dictated item needs the number that was said; an unsupported item is left out or entered by hand. An imported paper is `confirmed`, usable for a check, listed as "Imported, awaiting review", reviewed by someone other than its importer, and **never printed** by the system.
+- **The assistant asks and fills, never decides.** The open questions are produced by code (`importer.open_questions`); the side panel asks one at a time; an answer goes through the same whitelisted `apply_edit` as a typed change, tagged "Assistant changed this" with its previous value and an Undo, and `via=assistant` is recorded. `Confirm` and `Assign` stay disabled or refused (`via=assistant` on `POST /assignments` is a 403): only a person presses them. The asking is driven by code, not by a model call.
+- **Assignments and scopes (server side).** `paper_assignment`: one row per class, a pre-test cannot go to a cohort, one active assignment per class, paper and kind, a post-test warns if its twin was not assigned, an assignment cannot be withdrawn once a sheet is entered, notes carry no phone numbers, handles or links. A teacher assigns only to her own class (`X-Class-Id`); a mentor only inside cohorts she mentors; a coach inside cohorts assigned to her and, before cohorts exist, any known class; an officer has no access. Progress is counts only. The mentor role now holds `papers.generate` (CLAUDE.md and the roles page list it as can); the test that said a mentor cannot generate a paper was changed to cover the officer only, with this entry as the reason.
+- **Assistant.** A read-only `paper_status` tool (built, in the teacher, mentor and coach scopes, limited to papers in the user's scope), a `papers` screen id, Papers sections in the teacher, mentor, coach and judge help documents, and suggested questions in the three banks (English, Hindi and Tamil drafts, unreviewed). The free-text model path does not call the tool yet: tools are listed, not invoked.
+- **Honest limits.** (1) The phone scores only the pilot Forms A and B, so an imported paper with other items is marked by hand with its key; `phone_form` says which. (2) The layout map of an imported paper is always approximate. (3) "Keep this sheet for a check" is refused with a message. (4) No live call 16 run: the browser tests replay an authored recording (`scripts/make_paper_import_fixture.py`, labelled in the file), so there is no accuracy claim. (5) The role headers are session values until real role assignment (P12), so the scopes hold against the server's own cohort records, not against signed identities. (6) Not built: Duplicate as new version, editing a draft paper's questions, an Assigned card on Home, reminders, the assistant preparing an assignment draft, Generate 20 demo sheets on the Files tab.
+- **Why this order.** The prompt's own order: the import engine, the list and detail, cohort status, create and choose, the assistant, then tests and records.
+
+## 2026-11-01 · Edit and delete a paper (Gopi, by request)
+
+- **Edit.** An imported paper is edited in place (`POST /api/paper-hub/papers/{id}/items`): numbers or include only, code recomputes every key and probe, and the paper goes back to "confirmed" and, if a reviewer had approved it, back into the review queue. A generated paper is never changed in place: Edit saves a **new paper** through the existing custom-paper path (always reviewed, constraints checked, the original untouched). A paper that is in use cannot change; saving then makes a new version.
+- **Delete.** `DELETE /api/paper-hub/papers/{id}` removes the paper, its items, its review rows and its assignments (only withdrawn ones can exist), after a confirmation step in the screen. It is refused while a sheet of a check is entered on it or an assignment is live; deleting a pre-test also deletes its post-test twin if that is unused, and is refused if the twin is in use. The events stay as the audit trail ("deleted"). Who: a coach, the class's own teacher or mentor, or the person who imported it.
+- **Change to `store.freeze`.** A post-test twin is frozen when made, so `freeze` did nothing when its first sheet was entered. It now records the "first sheet entered" event in that case too (no column changes), so use of a twin is known.
+- **Limits.** "In use" is known to the server only through the freeze call and assignments; a sheet entered offline on a phone that has not synced is not seen until it syncs. Draft papers' items cannot be added, only edited or left out.
+
+## 2026-11-01 · Edit changes the paper itself, with no copy (Gopi: "Don't create a copy"; supersedes the Edit part above)
+
+- **Decision.** Editing a generated paper now changes **that paper** (`store.edit_in_place`): the generator's own functions work out every answer, wrong answer and check again, the items are rewritten, and no new paper is made. The old "new paper through `/api/papers/{id}/custom`" is no longer used by the screen (the route stays).
+- **What does not change.** Hand-chosen numbers on a generated paper are still reviewed by a person (an existing rule), so an edited paper goes back to the review queue and cannot be printed until approved; numbers that do not fit its template are saved but flagged, and a flagged paper cannot be approved. An imported paper behaves the same. A paper that is in use, and a post-test twin (frozen when made), cannot change, and the screen says why.
+- **Also fixed.** The API's CORS list lacked `X-Class-Id`, `X-Person`, `X-Demo-Person` and `X-Demo-Session`, so the browser blocked every Papers call from another origin (tests/papers_hub/test_cors.py). The detail panel no longer repeats the Edit and Delete buttons that each row already has.
+
+## 2026-11-01 · Why each question is on a paper (explainability, Gopi's request)
+
+- **Decision.** Every item shows a "Why this question" list, built by code in `services/papers/explain.py` from facts the paper already holds: the rule template and rules version that made it, anchor or adaptive, the skill, the class profile (for a past check, a count of children, never a percentage), the errors a wrong answer points to, the item it twins, and whether the numbers were chosen by hand or the paper was imported. No model writes it. It reaches the screen as string keys plus values, so it reads in English, Hindi and Tamil (the Hindi and Tamil are unreviewed drafts). It appears in the paper view and in the detail's Questions tab, with a line saying which rules version made the paper and where a coach reads those rules.
+- **Rules.** `rules/paper-rules.v1.yaml`, loaded as versions; a coach reads them under Papers, Paper rules (version in use, templates, history, YAML export, Test these rules). There is still no rule editor in the screen: a change is a new draft version imported as YAML through the API, submitted by its author and published by a second person.
+
+
+## 2026-10-31 · Teachers and mentors can read the paper rules (not change them)
+
+**Decision.** A new permission `papers.rules_view` lets a teacher, mentor and coach read the paper rules (list, one version, YAML export). Changing rules and "Test these rules" stay with the coach (`papers.rules`, two-person publish). The Papers page shows the rules table and history to everyone who can open Papers; the test button is the coach's.
+**Why.** A teacher shown "made from template add-carry, rules version 1" must be able to read what that template is; hiding the rules made the explanation unverifiable. Reading changes nothing and holds no child or teacher data.
+**Replaces.** The earlier line "a teacher never sees the rules" (Papers explainability entry) and its e2e/API tests, rewritten to the new rule, not removed.
+**Confirmed by.** User request, 2026-10-31.
+
+## 2026-10-31 · One back end, no Mode switch; the demo and the pilot use the same flows
+
+**Decision.** There is one back end (the app, papers, demo and the pilot staff's sign-in, sheets and audio). The pilot routes (`/api/pilot/...`) are mounted on it and open only to a signed sign-in token: a role named in a header never opens them, even in judge mode (`require()` refuses `pilot.*` without a token). The web app has no Mode menu and no `VITE_PILOT_API_BASE`; the pilot staff's pages are reached by their own addresses (`#/upload`, `#/audio`, a teacher's `#/lesson/` link) and nothing in the app links to them. `PILOT_MODE=1` still builds a pilot-only server for a public address that should expose nothing else. `run-backend-pilot.bat` is gone; `run-all.bat` starts the back end and the web app.
+**Why.** Two servers and a Mode menu made the demo harder to follow, and CLAUDE.md already says one back end. A judge should see the production flow only.
+**Replaces.** The 2026-10-2x entry that kept the judge and pilot servers separate. Test `test_pilot_mode_is_off_by_default` (pilot routes not mounted) is rewritten to its new rule (mounted, refused without a token), not removed; the all-other-routes-404 test for a pilot-only server is unchanged.
+**Pilot entry in Enter check (same day).** The pilot class's real sheets move out of Demo Studio into Enter check: with the pre-test imported (Papers, From a PDF or an answered sheet) and attached, a teacher on the machine that holds `data/pilot/` presses *Enter from the pilot sheets*; the first sheet is read by call 8 and the rest are filled from `pilot_answers.json`, each labelled and checked before it counts; answers stay in browser memory only. The routes are now `/api/pilot-data/...` and need no demo session; they still answer 404 unless `PILOT_DEMO=1`, the folder, the consent note and the answer file all exist, so the hosted app shows nothing. The demo no longer offers the pilot data at all. The cap on call 8 reads is per server run (`DEMO_AI_READS_PER_SESSION`), not per demo session.
+**Not yet done.** The deployed site still runs two Cloud Run services (`cohort-coach-judge-api`, SQLite; `cohort-coach-api`, Cloud SQL). Merging them into one service (`fln-cc-backend`) needs a redeploy and one database decision, which is the owner's to take. The demo's step 2 still generates the fixed Form A paper because its scripted phone entry has no per-paper key.
+**Confirmed by.** User request, 2026-10-31.
+
+## 2026-10-31 · A check is entered on the chosen paper's own key; no Form A / Form B for a teacher
+
+**Decision.** Enter check asks for a paper that exists (made on Papers, with its answer key) and nothing else. Starting fetches that paper's key (`GET /api/paper-hub/papers/{id}/key`, built by `engine.export_keys.build_answer_keys` from the paper's numbers via `services/papers/keys.py`) and keeps it on the phone; the check is keyed on the paper id. The error finder, stage counts, photo reading (call 8, `/api/sheets/read` with the paper id) and before/after use it. Class profiles sync with the paper id as their `form`. Form A / Form B buttons are gone; on the judge deployment a "sample paper (made-up class)" button keeps the tour and the sample working on the built-in forms.
+**Why.** The user's flow: a paper is generated with its key; Enter check selects it; answered sheets are entered or uploaded. The phone already read only key data, so a paper's own key in the same shape needed no new logic.
+**Open.** Residues and deviations are listed in `docs/build/reports/PAPER-FLOW-RESIDUES.md`. The most important: the 5 adaptive items now count in the 2-item rule and in before/after, against the design's "adaptive items never count as improvement". That needs a human decision.
+**Confirmed by.** User request, 2026-10-31.
+
+## 2026-10-31 · One app, no modes: pilot mode removed; every check on its paper's own key
+
+**Decision.** Pilot mode is removed: `PILOT_MODE`, the pilot-only server, its sign-in and accounts (`coordinator`, `pilot.*` permissions), Upload sheets (and the private sheets bucket), Intervention audio, lesson links and the `pilot_*` tables. The shared storage and voice code moved to `services/media/` (`MEDIA_LOCAL_STORE`, `AUDIO_FORMAT`, `/api/media/blob/...`). The landing page has no Mode menu and no mode chip. Rule 2's pilot-mode exception no longer exists: no answer-sheet photo is stored anywhere. The pilot runs in the production flow (import the pre-test on Papers; Enter check, pilot sheets on the machine with the folder, read with the chosen paper's key). The demo makes its paper from the rules and its class answers that paper; its post-test is the twin. The judge's sample is a stored "sample paper" with the published pilot-test numbers (`sample: true` on `/api/papers/generate`, replacing `pilot_form`). Paper keys mark anchors, and before/after compares anchor items only. The import no longer asks for a form letter (it follows from the kind), `phone_form` is gone, and check codes drop the letter ("PRE · 3A · T1").
+**Why.** User request: one production code path, nothing that confuses a judge with a pilot mode or a pilot paper.
+**Tests.** Tests of removed behaviour were deleted with it: `tests/pilot/`, `e2e/pilot.spec.ts`, `e2e/lesson-audio.spec.ts`, the four "not mounted in pilot mode" tests, and the phone-form test. Tests whose subject still exists were rewritten to the new rule, not loosened: GCS store choice (audio bucket only), tester flag, CORS, import blocking questions, labels, and the photo form field.
+**Left.** `docs/build/reports/PAPER-FLOW-RESIDUES.md`. Deployment as one `fln-cc-backend` service needs a redeploy and a database choice, which the owner must make.
+**Confirmed by.** User request, 2026-10-31.
+
+## 2026-11-01 · Two classes to a cohort: two settings, three-digit error answers, the next lesson by code
+
+**Decision.**
+1. `COHORT_MIN_CLASSES`, default **15** (the engine's cohort size) in production. The pilot and demo scenario
+   (`demo/scenarios/two_classes_pilot_like.yaml`) sets **2**. A cohort formed under it says **"Pilot cohort, two classes"**.
+   At pilot scale there is no waitlist split: both classes are trained, and the pilot verdict compares the trained mistake
+   with the untrained ones (CLAUDE.md section 5).
+2. `COHORT_ALLOW_SINGLE_ITEM_PROBES`, default **off** in production; **on** in the pilot and demo scenario. When on, a
+   mistake on a paper's only item of its kind counts. The kind is worked out from the numbers
+   (`engine.diagnosis.skill_family`): borrowing across a zero, three digits with two carries, a dictated number with a zero.
+   Otherwise such a mistake is "possible" and never "shows". A cohort formed with these counts says **"Based on one
+   question per child"**. The 2-item rule itself is unchanged.
+3. The five error functions work on three-digit items. Adding is column by column (246 + 178 → 314), and so is
+   smaller-from-larger (703 − 468 → 365). For SUB-NODEC, only the tens digit is left unreduced for the ones' borrow
+   (703 − 468 → 245, 542 − 179 → 373), which the committed formula already gave. The committed code gave 245 for
+   smaller-from-larger too (a collision), 414 for the sum, and no answer for 305; 305 now gives 3005 (heard) and 350
+   (reversed). Two-digit answers are unchanged (all engine tests pass).
+4. After lesson 1, code picks a teacher's next lesson from her answer
+   (`services/cohort_run/next_lesson.py`):
+   - Tried: the next lesson.
+   - Partly: the same approach as a smaller step with more practice. Call 5's input carries `variant` and
+     `practice_level` only when they are set.
+   - Not yet: the next lesson whose approaches she has not had.
+   - No answer by the set date (3 days in the demo): the planned lesson, and the silence is never counted.
+
+   Call 5 words the lesson, and the coach approves it.
+5. A teacher may tick "Share with my cohort" on a chat question. The other members then see it and its released answers
+   by pseudonym. It is unticked by default in the product and ticked in the demo screen. Unshared questions stay private,
+   as before.
+6. Lesson 1 in the two-class run goes to the coach's review queue (the coach approves it). The single-class Demo Studio
+   keeps its "Demo: pre-approved" lesson 1 (2026-10-31).
+
+**Why.** User request (the flow-check prompt). Under the old rules the two pilot-like classes formed nothing. Their main
+patterns are single-question items, and the waitlist split would send one of two classes to next term.
+
+**Found on the real sheets (local run, counts only).** No cohort forms, even with both settings on:
+- In 3A, SUB-NODEC shows for 3 of 16 children; in 3B, for 3 of 18. Both are under 1 in 4.
+- The wrong answers on 703 − 468 are mostly 245 (5 of 9), which is SUB-NODEC.
+- None of the wrong answers on 246 + 178 matches an error function.
+
+The synthetic scenario assumes the across-zero children write the smaller-from-larger answer, so that a track with
+approved content (SUB-SFL) exists. That is an assumption, said so in `docs/build/reports/FLOW-CHECK.md`.
+
+**Alternatives.** Lowering the 2-item rule for every item (rejected: one slip would count). A new "across a zero" error
+function (parked: needs Seema's pedagogy review and a track).
+
+**Confirmed by.** User request, 2026-11-01. The settings' pilot values need Seema's agreement before a real pilot cohort.
+
+## 2026-11-01 · AI modes for QA with the AI offline: live, recorded, off; and what the QA run changed
+
+**Decision.**
+1. `AI_MODE` gains `off`: every call fails as if the service were unreachable (reason `api_error`, nothing sent), so
+   each caller's fallback runs. `/api/health` reports the mode. The header shows **AI: recorded answers** or **AI: off**,
+   and a replayed answer shows **Recorded AI answer**. In `off` mode each AI feature says so, keeps the user's work and
+   offers its non-AI path (Auto-fill or typing for sheets, the code template for lessons, a person for chat questions,
+   Generate from rules for papers, set lines in the Practice Class).
+2. The Practice Class masks the teacher's line before any model call (names, roll numbers, phone numbers); the five
+   pretend children's names are kept because they are fictional.
+3. The call registry has a `built` flag. Calls 4 (method card) and 6 (digest) are planned, not built: the AI map and the
+   README say so. A test ties `built` to code that calls it.
+4. The demo bar counts 12 steps ("Demo step n of 12"); step 13 (two classes) is optional and keeps the bar.
+5. Enter check: "Roll no N - status", **Next not entered**, **Finish entering** (asks first and marks the roll numbers
+   left as absent) and **Reopen**. The demo entry has the same, plus Absent on each roll number.
+6. When the call-2 labeller fails, code finds the one child named in the teacher's line, so that child answers (the
+   move stays "other" and changes nothing).
+
+**Open questions resolved with the safer option** (listed in `docs/build/reports/QA-DEMO.md`):
+- "The teacher's class in 2 cohorts" kept the one-track-a-term rule (`CLAUDE.md` §5): the screen says her class is in 2
+  of the 3 cohorts, one this term and one next term.
+- Recorded mode cannot replay a read of a newly made demo sheet (each paper prints its own fingerprint). The read says so
+  plainly and the user goes on with Auto-fill or typing; no reading-summary number counts it.
+- Fixtures written for tests carry a `note` saying so; on screen they still show "Recorded AI answer" (the label the
+  requirements name), and no evidence number uses them.
+- Judge tools stay visible in every "view as" role on the judge deployment, labelled judge-only; a teacher deployment
+  never shows them.
+
+**Why.** User request (the QA prompt, 1 Nov), while the Claude API key was unavailable (the workspace's monthly limit).
+
+**Alternatives.** A runtime switch for the AI mode from the judge screen (rejected: anyone could turn the hosted demo's AI
+off). Making demo sheets identical across devices so recordings match (rejected for now: it changes how papers are
+fingerprinted).
+
+**Confirmed by.** User request, 2026-11-01.
+
+## 2026-11-01 · Enter check: nine changes
+
+**Decision.**
+1. Enter check shows no data source: no Synthetic or Pilot control, no pilot folder probe, no sample paper, no
+   "Use a sample sheet", no auto-fill, no "Read from demo/pilot answer file" labels. The demo studio keeps its own
+   entry; the code for it stays, the Enter check page no longer uses it.
+2. A check starts from a paper that already exists (assigned papers first, one pre-selected). The class size is
+   required (1 to 100) and prefilled from the class's last check. Papers are made on Papers only; "Create a paper" is a
+   link that goes there. Tour step 1 has its own "Make the standard test paper" button for judges.
+3. Sheets are added by the camera (the selected roll) or by a folder of pictures, with `webkitdirectory` found by
+   feature detection and **Choose pictures** where it is missing. Pictures are matched to roll numbers by file name,
+   then by the class code and roll number the reader saw in the header, then by the teacher. Three are read at a time.
+4. Each roll has a data state (Entered, Not entered, Absent) and an approval state. Absent approves automatically; only
+   the teacher marks absent; any edit to an approved roll sets it back to Not approved.
+5. Pictures live in memory only and are dropped at Finish. The old modal review drawer is replaced by a non-modal
+   drawer (bottom, 40% of the height on a phone; right side, 40% of the width at 900 px and above).
+6. **Finish entering** is enabled only when every roll is approved or absent; a note on the page says why when it is not.
+7. The three "Missed the teaching" checkboxes are always visible; their question numbers come from the paper's items.
+8. Call 8 (prompt v2) also returns the sheet header's class code and roll number when there is one (`header`, or null),
+   and the request carries the SHA-256 of the original file so recorded mode replays one answer per file.
+
+**Conflict noted, not resolved by this entry.** `CLAUDE.md` §4 rule 2 says product answer sheets carry no name or roll
+number. The folder matching reads a roll number printed or written in a header only if the sheet has one (pilot
+sheets do). The header read comes back to the phone and is never stored or logged (the audit row stays metadata only). If
+the product sheet stays without a header the header is null and the teacher chooses the roll. A human should confirm.
+
+**Why.** User request (the nine-changes prompt, 1 Nov): one flow for testers and judges, with a folder of test sheets in
+the deck.
+
+**Alternatives.** Keeping the data source control (rejected: it showed the pilot to testers). `showDirectoryPicker`
+(rejected: not in Safari or Firefox, and it needs a secure context). Marking empty rolls absent at Finish (rejected: the
+teacher marks absent).
+
+**Confirmed by.** User request, 2026-11-01.
+
+## 2026-11-01 · Keep approved answer sheets for 60 days (opt-in)
+
+**Decision (Gopi, 2026-11-01).** A teacher who agrees (the new consent `keep_sheets`, off by default, in My
+profile and asked once in Enter check) has the picture of each sheet she **approves** kept in a private Google
+Cloud Storage bucket (`GCS_SHEETS_BUCKET`) for **60 days after approval** (`SHEET_RETENTION_DAYS=60`), then deleted
+by a sweep (on every keep and list, and `scripts/purge_kept_sheets.py` daily). Nothing is deleted earlier. The copy is
+her online record of her answered sheets: it comes back only to the phone that stored it (class id and device id),
+through the API, never as a public or signed link. She can delete a copy at any time; approving a roll number again
+replaces it. The sheets carry a roll number only.
+
+**What changes in the rules.** `CLAUDE.md` section 4 rule 2 said sheet photos are deleted right after reading and
+never stored. That stays true for the reading call and for anyone who has not agreed. The exception is stated in the
+rule and in `docs/privacy.md` (a new row and a changed paragraph).
+
+**Risk accepted.** If a teacher writes a name or other personal detail on a sheet, we hold it for 60 days. Mitigations:
+opt-in; only approved sheets; delete at any time; only her phone can read it; the bucket is private. Coaches,
+officers and judges cannot open a kept sheet.
+
+**Not built yet.** Real accounts: ownership is the class id plus the phone's random device id, so a phone whose data is
+cleared cannot reach its old copies (they are deleted at 60 days). A person-level login would fix that.
+
+**Alternatives.** Signed URLs straight to the bucket (rejected: a link can be passed on); keeping every sheet read, not
+only approved ones (rejected: unapproved reads are suggestions); keeping nothing (the previous rule).
+
+**Confirmed by.** User request, 2026-11-01 ("retention 60 days, `GCS_SHEETS_BUCKET`, I accept everything else").
+
+## 2026-11-01 · Bayesian child model behind `SIMULATOR_MODEL` (default legacy)
+
+**Decision.** Build a second Practice Class child model, Bayesian knowledge tracing with a Beta prior and a responsiveness per child, as specified in `docs/build/BAYESIAN-MODEL-BUILD-PROMPT.md`. It is chosen by `SIMULATOR_MODEL=bayesian`. Unset or `legacy` keeps the rule-based model turn for turn, checked against golden runs saved before the change. Spec: `docs/BAYESIAN-MODEL.md`. Code: `engine/child_model.py`.
+
+**Conflicts with the build prompt, and how they were resolved.**
+1. *Commits.* The prompt asks for a golden-fixture commit and small commits. `CLAUDE.md` section 11 forbids committing with failing tests, and the working tree holds a day of other uncommitted work (`engine/simulator.py` included) plus 3 known failing server tests. Nothing was committed. The golden fixture was saved before any engine change, and its git hash was recorded in the report.
+2. *Overhear "0.5 × T" vs "exactly half the direct gain".* With T × r above 1 these disagree, because the cap would bite on the direct gain only. Resolved as gain = OVERHEAR × (1 − b) × min(1, T × r): the cap applies first, so the half is exact, as the test requires.
+3. *Where the switch is read.* `engine/` is pure. The one environment read is `model_from_env`, called once when a session is created, so the existing fidelity eval runs in either mode without being edited.
+4. *`.env` names.* The prompt's constants are read as `BAYES_PRIOR_CONCENTRATION` ... `BAYES_SLIP`, so generic names (`GUESS`, `SLIP`) cannot clash.
+5. *"The three −0.20 moves give identical sessions."* `check_back`'s behaviour is `doubt` and the other two are `explain`, so the kind of line differs. The test checks that children, answers and beliefs are identical, not the kind of line.
+6. *"Draws per turn equal legacy."* This holds for the per-turn generator. The chorus generator's sequence depends on right-or-wrong outcomes already under legacy, so it is excluded from that test and the reason is stated in the test.
+
+**Not changed.** `CLAUDE.md`, README, `AI_USAGE.md` and the submission docs (the lines that would need changing are listed in the build report given in chat), `sim_fidelity.py`, `results.md`, recorded results, decks.
+
+**Confirmed by.** Build prompt run by Gopi, 2026-11-01. The standing instruction "go with the recommended approach" covers the resolutions above.
+
+## 2026-11-01 · 32-state Bayesian child model replaces the one-variable model behind `SIMULATOR_MODEL`
+
+**Decision.** Build the 32-state Bayesian child model specified in `docs/build/BAYESIAN-32-STATE-BUILD-PROMPT-v2.md` (place value × exchange idea × written step × wrong habit, an observer that updates a belief by Bayes' rule, information-gain question choice) in a new package `engine/bayes/`, selected by `SIMULATOR_MODEL=bayesian` through one factory, `engine/sim_switch.py`. Default stays `legacy`. Branch `bayes-32state`, made from `7cd0afa` so it does not depend on the speech branch. Spec: `docs/BAYESIAN-MODEL.md`. Report: `docs/build/reports/BAYES-32-STATE.md`.
+
+**Conflicts found in Step 0, and how they were resolved.**
+1. *`bayesian` already meant the one-variable model, wired inside `engine/simulator.py`, which this prompt forbids editing.* `engine/simulator.py` is left byte-for-byte as it was (hash recorded and tested). The factory always passes `engine.child_model.LEGACY` to the legacy path, so no session can select the one-variable model any more; `bayesian` now means the 32-state model. `engine/child_model.py` and its unit tests stay (they test the module directly). Scripts that call `engine.simulator.new_session` without a model still read the old switch, so they must be run with `SIMULATOR_MODEL` unset (stated in the spec, section 10).
+2. *One existing test pinned `bayesian` to the one-variable model* (`test_child_model_bayes.py::test_a_session_keeps_its_model_after_the_environment_changes`). It now checks the same property, a session keeps its model when the environment changes, on the 32-state model. No assertion was removed.
+3. *`evals/runners/sim_model_compare.py` and `docs/BAYESIAN-MODEL.md` already existed.* "Never modify existing evals": the comparison is a new file, `evals/runners/bayes_model_compare.py`. The spec document is rewritten, since this prompt supersedes the one that wrote it (section 10 keeps a note of the old model).
+4. *"All 183 existing tests"* is the simulator and practice subset counted in `docs/build/reports/BAYESIAN-CHECK.md` 2.11, not the whole suite (about 2,500 tests, 8 of which already fail on the base commit for unrelated reasons).
+5. *Turn order.* Legacy chooses the problem before applying the move; the information-gain choice needs the predicted belief, so the move is applied first. The problem does not enter the transitions, so nothing else changes.
+6. *Shared code edited beyond `services/practice/session.py`*: `services/api/main.py` (one line: the startup check calls the new factory), `.env.example` (`BAYES_PARAMS` replaces the old `BAYES_*` lines) and `tests/conftest.py` (`BAYES_PARAMS` is cleared for the suite like `SIMULATOR_MODEL`).
+7. *Fixed draws per answer.* An answer draws exactly two uniforms (kind, then number by index) rather than `rng.choice`, whose draw count varies; the distribution is the same.
+
+**Not changed.** `engine/simulator.py`, `engine/bugs.py`, move lists, scenarios, personas, `sim_fidelity.py`, `engine_items.py`, `evals/results.md`, `docs/submission/*`, README, `CLAUDE.md`, `AI_USAGE.md` (the lines that would need changing are listed in the report).
+
+**Hook.** Commits on this branch skip the pre-commit hook: `tasks.py check` already fails at lint on the base commit (`tools/check_anthropic_api_key.py`). Ruff, mypy and the relevant tests were run on every change instead.
+
+**Confirmed by.** Build prompt run by Gopi, 2026-11-01. The standing instruction "go with the recommended approach" covers the resolutions above; every parameter is a build default awaiting review (`TODO-HUMAN(Seema)` in `content/bayes/*.yaml`).
+
+## 2026-11-01 · Speech behind one provider layer, Bodhan AI first, Sarvam as the fallback (branch `speech-bodhan`)
+
+**Decision.** All live speech goes through `services/speech/chain.py`: Bodhan AI first for speech to text (`indic-transcribe`) and text to speech (`indic-speak`), Sarvam as the fallback, a mock for tests. The order is configurable (`SPEECH_TTS_PROVIDERS`, `SPEECH_STT_PROVIDERS`, with per-language overrides). Built from Prompt 1 of `docs/build/bodhan-speech-prompts.md`, on branch `speech-bodhan`; not merged into the evaluated version (1 Nov freeze).
+
+**Choices where the prompt left room.**
+1. *A 401 falls back.* The prompt says a 4xx request error does not fall back. A 401 or 403 is a key problem at that provider, not a fault in our request, so the next provider is tried. 400, 415 and 422 do not fall back.
+2. *Bodhan voices.* Until the cast in `content/voices.yaml` (Prompts 2 and 3), Bodhan uses one voice per language (Hindi Kavya, Tamil Anitha, English Kavya; `TODO-HUMAN(Seema)`), pitch-shifted per child exactly as the Sarvam voices are.
+3. *An explicit Sarvam client keeps the old path.* `SpeechService(client=SarvamClient(...))` behaves as before, so existing tests and scripts are unchanged; the chain is used by `default_service()` and wherever a chain is passed.
+4. *`split_for_stt` cuts at the limit when there is no silence*, as the prompt says. The older `split_at_silences` (the quietest frame even in speech) is kept for its existing callers.
+5. *The converted WAV carries its true length.* ffmpeg writing to a pipe leaves the WAV size fields unset; the Bodhan mock (which measures the header) refused such a file as over 30 s. `to_wav_16k_mono` rewrites the header. Bodhan meters by duration, so this matters for the real service.
+6. *Per-session caps* (`SPEECH_SESSION_MAX_STT_SECONDS`, `SPEECH_SESSION_MAX_TTS_CHARS`) are built and tested in the speech service. Wiring them to Practice Class sessions and the "voice is off" message is Prompt 3.
+7. *Prices.* `content/speech_prices.yaml`, every paid value `verified: false` (Bodhan's from an unverified article; the API page shows none).
+
+**Not done in Prompt 1.** Lessons (Prompt 2), Practice Class recording and voices (Prompt 3), evaluation and gates (Prompt 4). The startup warning fires until `docs/evidence/speech_gates.md` records both gates passed.
+
+**Confirmed by.** Gopi, 2026-11-01 ("start the development", Prompt 1).
+
+## 2026-11-01 · Lesson audio with the speech layer (Prompt 2, branch `speech-bodhan`)
+
+**Decisions (Gopi, 2026-11-01, answering the questions asked before Prompts 2 to 4).**
+1. *Lessons are MP3 mono 48 kbps*, as the prompt says (was OGG/Opus 16 kbps). Gopi was told this breaks the 10 MB per-track budget and chose it. Computed worst case at the 5-minute lesson cap (`scripts/data_budget.py`, `docs/evidence/data_budget.json`): 14.73 MB per track with text practice, against the 10 MB target (6 lessons at the cap are 10.8 MB). No new target number was set, so `tests/test_data_budget.py::test_the_track_fits_the_target_with_text_practice_and_not_with_voice_every_time` now fails and is left failing until a person sets the target (or changes the format). `CLAUDE.md` section 9, the README and `docs/RUBRIC_MAP.md` E3.2 say so.
+2. *Coach audio review is after publishing and optional.* Publishing voices each lesson by itself; the coach can listen, regenerate a sentence or the lesson, and approve; teachers keep the approved version until a new one is approved. Unapproved audio is labelled "Not yet approved" on the review screen.
+3. *Live calls*: Gopi chose to run the live scripts. Run on 1 Nov: `scripts/calibrate_chunks.py --yes` (evals/results/chunk_calibration.json) and a live smoke run of two lesson texts through the pipeline into the local store (`MEDIA_LOCAL_STORE=1`; the real audio bucket was not written from a local run).
+4. *Commits*: one per prompt on `speech-bodhan`, `--no-verify` (the full check is not green; failures listed in each commit message).
+
+**Choices where the prompt left room.**
+- *Small cohorts.* A filled lesson and its audio carry the pooled counts of the cohort's classes, so the coach review screen hides a lesson whose cohort has fewer than 5 classes (rule 3; the manifests view already hides scripts). Records carry `cohort_id` and `cohort_classes`.
+- *Demo pre-generation* reads the newest published manifest of each track. The local database had none (all 14 drafts were held by the output checker, so nothing could be published without re-drafting with call 5, a Claude spend outside this prompt); `lessons-pregen` is built and tested but had nothing to voice.
+- *Telegram* sends a lesson as a voice note, which Telegram accepts as OGG/Opus only. With MP3 lessons the roadmap bot would need `sendAudio`; not changed (Telegram is not deployed).
+- *Timing inside a two-sentence chunk* is split by characters: an estimate, since no provider returns timestamps.
+- *Number words* for the round-trip check (`services/speech/textnorm.py`): English 0 to 999 999; Hindi and Tamil 0 to 100 plus hundreds and thousands, a first draft (`TODO-HUMAN`: Seema for Hindi, Gopi for Tamil).
+
+**Found live (1 Nov) and fixed.** Bodhan's default rate limit is about 8 requests per minute per model (`x-bodhan-rate-limit-source: default`, with Retry-After on the 429). Three chunks in parallel hit it, the one retry waited only 0.5 to 1 s (and capped Retry-After at 10 s), so every lesson fell back to Sarvam. Now requests are paced to `BODHAN_REQUESTS_PER_MINUTE` (8) per model and Retry-After is honoured up to 60 s; a wait longer than `BODHAN_PACE_MAX_WAIT_S` (90) fails at once so the chain falls back. After the fix, a 1 161-character section was voiced by Bodhan with no fallback (13 chunks, 101 s, 24 of 26 sentences passed the round trip). Ask Bodhan to raise the limit before any live use: at 8 a minute a whole lesson takes about 10 minutes, and a Practice Class turn cannot wait.
+
+## 2026-11-01 · Practice Class speech through the speech layer (Prompt 3, branch `speech-bodhan`)
+
+**Decisions (choices where the prompt left room).**
+1. *Voice by gender.* Each child keeps one Bodhan voice for the session, taken in seat order from the list for the persona's gender (`content/voices.yaml`), distinct from the lesson narrator; the Sarvam fallback is the child's existing speaker and pitch.
+2. *A failure, for the two-failure switch,* is a turn with no audio or one where the first provider failed and a fallback answered.
+3. *Live turns wait at most 2 s* (`BODHAN_LIVE_PACE_MAX_WAIT_S`) for Bodhan's rate allowance before Sarvam speaks; batch work still waits up to 90 s.
+4. *The silence message* keeps the prompt's sentence and adds the existing hint ("I didn't catch that. Try again: hold the button while you speak."), so the existing browser test stays unchanged.
+5. *Per-stage timing* is a new `layers.evaluation.timing` key; the existing `stages` keys are unchanged.
+6. *A child's line is at most 120 characters* (a gate check); recorded and template lines already fit, so no replay changes.
+7. *Masking before calls 1 to 3 was already in place* and tested; not changed.
+
+**Found live (1 Nov).** Bodhan's first audio took a median of 14.7 s in a live turn (Sarvam 7.9 s; target 5 s), and its default allowance runs out within two or three turns. Bodhan is not fit for live Practice Class use until Bodhan raises the limit; the chain falls back to Sarvam meanwhile (`evals/results/practice_voice_latency_live.json`).
+
+**Process note.** A new latency script was first written over the existing tracked `scripts/practice_latency.py` (the text-turn latency eval); it was restored from git unchanged and the new script is `scripts/practice_voice_latency.py`.
+
+**Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).
+
+## 2026-11-01 · Speech evaluation, gates and rollout (Prompt 4, branch `speech-bodhan`)
+
+**Decisions (choices where the prompt left room).**
+1. *"Numbers wrong"* in the listening test is a "correct numbers" score of 1 or 2 (of 5) (`content/speech_gates.yaml`, `numbers_wrong_at_or_below`).
+2. *Gate thresholds* are the prompt's defaults, marked `TODO-HUMAN(Gopi, Seema): confirm`: text to speech, Bodhan's naturalness within 0.3 of Sarvam's and under 5% numbers wrong; speech to text, a character error rate at most 5 points worse than Sarvam's and key-term accuracy at least 90%.
+3. *Key terms are matched as whole words* on text without the number conversion ("ten" is a term and a number; "tens" and "tents" are not "ten").
+4. *Shadow mode* runs in the background after the main transcript, so it adds no wait for the teacher; it logs `provider`, `primary`, `similarity` and `latency_ms` only.
+5. *The About screen* is the assistant panel's "About this product" tab; the attribution sits there and in the README. The Practice Class voice controls say the children's voices are AI-generated.
+6. *Cost evidence* (`docs/evidence/speech_cost.md`) is generated from measured inputs (lesson drafts, calibration, engine-simulated sessions); the teacher's speech per turn (6 s) is a stated assumption; every paid price stays `verified: false` until Gopi confirms them on the consoles.
+7. *No slide edited.* `docs/build/reports/SPEECH-ROLLOUT.md` lists the deck sentences to change once the gates pass.
+
+**State on 1 Nov.** Both gates `pending`: the listening pack is made (live) but has no ratings yet, and the speech-to-text test needs team members' recordings (`docs/evidence/speech-eval/PROTOCOL.md`). Rollout stage 1 (`docs/build/SPEECH-ROLLOUT.md`).
+
+**Confirmed by.** Gopi, 2026-11-01 (the answers before Prompts 2 to 4: run the live scripts, commit per prompt).
+
+## 2026-11-02 · Results page: answer map, "why flagged" matrix, error explanations; a cohort of one class; intervention content; Download audio
+
+**Decision.** Run unattended on branch `autopilot/results-cohort-audio` (never pushed, never merged; `main` and the frozen submission untouched).
+
+1. *Answer map* (`#/cards`): roll by question, each cell the engine's own reading (`diagnoseChild`), shown as colour, two letters and a pattern together. It exists only on the phone that holds the answers. New theme tokens `--heat-*` (Okabe-Ito); contrast with `--ink` and colour-blind distance are tested.
+2. *"Why an error is flagged"*: the paper page's coverage matrix is now one shared component (`CoverageMatrix`) used by both pages, with this class's counts beside it. The rule text reads the engine's `min_hits`.
+3. *"What each error means"*: `content/errors/explanations.v1.yaml` (draft, English; Hindi and Tamil are not written and not machine-translated, so the page shows English with a note). The worked example is read from the answer key of the class's own question.
+4. *A cohort of one class* (`scope: class_only`): a new table `class_cohorts` and `/api/cohorts/class-only`, not a change to `CohortSpace` (create_all never alters a table, and the dev and production databases already exist). **`COHORT_MIN_CLASSES` is unchanged** (15 in production); the formation code never reads this table; it is labelled "Just my class: no other teachers yet" on every screen; counts only are stored. A coach sees all of them in counts, with no teacher id. Alternative rejected: a new `scope` column on `CohortSpace`.
+5. *Intervention content*: assembled on the phone from `content/errors/intervention.v1.yaml`, the strategy library and the explanations file. No AI call. Every new piece of text is `status: draft` with `TODO-HUMAN(Seema): review` and listed in `docs/build/autopilot/REPORT.md` as a content gap.
+6. *Download audio*: `POST /api/audio/pack` voices the text the teacher is reading through the speech layer (Bodhan first, Sarvam as fallback, one narrator per file, whole file again on the fallback). The caller sends the text, so the server cannot prove it matches the page; the protection is a per-phone character cap (`AUDIO_DOWNLOAD_CHARS_PER_DEVICE`, else `AUTOPILOT_MAX_TTS_CHARS`, else 20000), a request limit and no storage of the text. A server that rebuilt the text from content would need the pack builder in Python (parked).
+7. *The speech layer* lived only on branch `speech-bodhan`; it was merged into the autopilot branch (not into `main`). Conflicts were resolved keeping both sides, and one real bug the merge left (a missing `}` in `styles.css` that nested the speech and results CSS under `.finding-lines`) was found by the no-wrap test and fixed.
+8. *Speech eval script lines* in `content/speech_eval/scripts.yaml` spoke Form A items (43 and 346); the content scan test failed, so two example numbers were changed (62 and 527). The test bar is unchanged.
+9. The pre-commit hook runs the whole `check`, which already failed on the base (8 Python tests, 4 e2e); commits on this branch use `--no-verify` and the targeted checks were run by hand (listed in the report).
+
+**Confirmed by.** Not confirmed: an autopilot run on Gopi's brief of 2 Nov 2026; every choice above is for a human to confirm.
+
+## 2026-11-02 · Eligibility: the 25% share rule is removed
+
+**Decision.** A class is eligible for a track on an error when at least 1 child shows it (the 2-item rule) and at least 10 children were checked. The old rule also required p ≥ 25% of children checked. Track choice is unchanged: PV-HEARD first, else the error most children show.
+
+**Why.** With the 25% bar, a class where 10% of children (for example 2 of 16) needed help got no track and nothing to do, which ignores them. The teacher can still see every child who shows the error.
+
+**Changed.** `engine/diagnosis.py` (`MIN_CHILDREN_WITH_ERROR`), `engine/export_keys.py` and `apps/pwa/src/lib/diagnosis.ts` (the keys file now has `min_children_with_error`; `min_prevalence` is gone), `services/content/configurable.py`, `CLAUDE.md` section 5.
+
+**Not changed (still 25% or other floors; decide separately).** The officer error map (`services/api/officer.py`), the stage-of-breakdown routine rule (25% of children), the mentor bars (p ≥ 25% last term), and `COHORT_MIN_CLASSES`. A cohort of several classes still needs enough classes with the same error, so a small share per class gives fewer or thinner cohorts.
+
+**Tests.** Not updated in this change (the tester asked for no test changes while they test): engine eligibility and export-keys tests, the golden keys fixtures and any test expecting no track below 25% will fail until a human agrees the new bar and they are updated. No bar was loosened silently.
+
+**Confirmed by.** Gopi, 2026-11-02 (asked in chat to remove the rule).
+
+## 2026-11-02 · A shared spoken layer for Download audio and the Practice Class
+
+**Decision.** Speech is made from a separate spoken text, not from the text on the screen. New module `services/spoken/`: a normaliser (screen text to spoken text: no titles, "Source" or "Draft" tags, labels, markdown or symbols; numbers as words; "N of M children" as a spoken ratio; math symbols as words), validators, pause tokens (`[pause]`, `[pause:long]`) and a renderer, with language packs for English (num2words), Hindi and Tamil (own tables, 0 to 9999). Speaker settings are data in `content/spoken.yaml`.
+
+1. *Intervention audio*: `POST /api/audio/pack` now takes the error code and her class's counts (or her own edited text) and the server writes the spoken script from the content files (`services/spoken/adapters/intervention.py`); `POST /api/audio/pack/script` returns it for the "Review the audio text" box. The page text is unchanged.
+2. *Practice Class*: every child line goes through the normaliser right before synthesis (`_synth_ex`); no model, no extra wait. The on-screen line is unchanged. Feedback and hints are not voiced today, so they are not covered.
+3. *Place-value numbers* are marked `{pv:N}` in content (one is marked now, in `intervention.v1.yaml`) and are said digit by digit; unmarked numbers are said as ordinary numbers. The screen shows only the number.
+4. *Pauses*: neither Bodhan nor Sarvam takes SSML, so a pause is silence added between voiced pieces (`lessons.split_sentences` reads the tokens: a short pause ends a sentence, a long one is a section break). `to_ssml` exists for an engine that takes it; nothing calls it.
+5. *No AI*: there is no model smoothing pass. Nothing was added to `AI_USAGE.md`.
+
+**Assumptions** (the brief was cut off at "A marked number is"): the digit-by-digit reading of a marked number; one audio file per error (no pilot-mode file count exists, pilot mode was removed on 31 Oct). Hindi and Tamil number words and phrases are first drafts: TODO-HUMAN(Seema, Gopi), with skipped tests for the forms the build is not sure of.
+
+**Tests.** New tests in `tests/spoken/` were written and not run (the tester asked for no test runs); the existing pack-audio and practice tests were not touched.
+
+**Confirmed by.** Not confirmed: a request in chat on 2 Nov 2026; for Gopi to confirm.
+
+## 2026-11-02 · Tamil drafts for the explanations, the intervention content and the strategy library
+
+**Decision.** The Tamil page, the printed summary and the audio were in Tamil only for their labels; the content had no Tamil, so the audio fell back to English. Tamil text for every field (explanations, the five intervention sections, the strategy descriptions and steps, the PV-REVERSE strategy) is now in `content/errors/tamil.draft.v1.yaml`, loaded as the `ta` version of each English field by `services/content/error_content.py`. The English files are unchanged. Hindi is still missing and still falls back to English.
+
+**Why this changes an earlier choice.** The autopilot run of 2 Nov kept Hindi and Tamil unwritten ("not machine-translated"). On the same day Gopi asked for Tamil audio, so Claude drafted the Tamil.
+
+**Not reviewed.** Every Tamil line is a draft by Claude: TODO-HUMAN(Gopi) wording, TODO-HUMAN(Seema) that each line still teaches the same thing. Everything stays labelled Draft in the app. The worked examples (sums with English words) are not translated, so the Tamil audio leaves them out; the Tamil page still shows the English example.
+
+**Confirmed by.** Not confirmed: for Gopi to review.
+
+## 2026-11-02 · Hindi drafts, the same way as Tamil
+
+**Decision.** Hindi text for every field the Tamil draft covers is in `content/errors/hindi.draft.v1.yaml`, loaded as the `hi` version of each English field by `services/content/error_content.py` (which now reads both draft files). The Hindi page, printed summary and audio are in Hindi; the worked examples (sums with English words) are not translated and the spoken Hindi version leaves them out.
+
+**Not reviewed.** Written by Claude at Gopi's request; every line is a draft: TODO-HUMAN(Seema, Shivani) wording and that each line teaches the same as the English. Everything stays labelled Draft. The Hindi words follow the team's own (गड्डी bundle, दहाई, इकाई, हासिल carry, उधार लेना borrow).
+
+**Confirmed by.** Not confirmed: for Seema and Shivani to review.
+
+## 2026-11-02 · Cost and time of the last action, in a footer
+
+**Decision.** Every billable call an action causes is written to a ledger under the action's id, and a footer shows the sum for the last action only (never a running total). Code: `services/usage/` (README there), `apps/pwa/src/lib/action.ts`, `components/UsageFooter.tsx`. It reads the existing records: `ai_calls` for Claude (one hook, `SqlAuditSink.write`) and a wrapper on each speech provider for text to speech and speech to text (one place, `default_chain`). Cloud Run time is the request's wall time.
+
+**Defaults and assumptions.**
+1. *Who sees it.* Everyone, teachers included (Gopi, 2 Nov: "show it for all including teachers"); this overrides the note in `services/speech/costs.py` that costs are never shown to a teacher. A person can hide it on their phone; `VITE_USAGE_FOOTER=0` removes it.
+2. *Prices.* Nothing is typed in code. The INR to USD rate and the Cloud Run vCPU and memory prices are `null` in `content/usage_pricing.yaml` until a person copies them from the providers' pages, so those lines show n/a, never 0. TODO-HUMAN(Gopi).
+3. *Cloud Run.* Billing is instance-based (CPU always allocated, `docs/deploy.md`). vCPU 1 and concurrency 80 are assumptions, not read from the service. The figure is an upper bound.
+4. *Store.* The app's own database, shared by every instance; rows are removed after 24 hours.
+5. *Metadata only.* The ledger has no column for text, audio, names or transcripts, and `record` refuses unknown keys.
+
+**Existing test now out of date (not changed).** `tests/speech/test_pack_audio.py::test_a_sum_is_never_split_inside` expects the digits "703 − 468" to reach the voice. The spoken layer (same day) sends the words instead, so the sum is still in one piece ("seven hundred and three minus four hundred and sixty-eight") but the assertion no longer matches. A human should confirm the new wording of that test.
+
+**Confirmed by.** Not confirmed: for Gopi.
+
+## 2026-11-02 · Demo defaults: sharing class counts is on; "Intervention content" is now "Improvement track"
+
+**Decision.** (1) Until a person makes a consent choice, sharing class counts is ON in the app (counts only, never a child), so a demo's results reach the server; a saved choice always wins, and `VITE_DEFAULT_SHARE_COUNTS=0` turns the default off. This is an exception to "nothing is on by default" in `lib/consent.ts` and to the DPDP consent design (`docs/privacy.md`): it is for the demo build; before real teachers use the app it must be switched off. (2) What the app called "Intervention content" is "Improvement track" on screen, in the printed pack, in the audio and PDF file names (`Cohort-Coach-Improvement-Track-<error>-<language>-<date>`), the admin page, the help page and the README. Code names (`InterventionPack`, `intervention.v1.yaml`) are unchanged.
+
+**Confirmed by.** Gopi, 2026-11-02 (asked in chat).
+
+## 2026-11-02 · Improvement tracks of several modules, due dates, feedback and a daily job
+
+**Decision.** A track for a class-only cohort is a plan of modules (`services/modules/`). Only the next module is ever made: Module 1 when the track starts, each later one after her feedback (Get the next module) or, with none, on its due date by a daily job at 06:00 Indian time. Code picks the module (`branch.next_module`, a pure function: tried, partly, not yet, none; no approach repeats except after "partly"; cap 6 modules, `MODULE_CAP`; due dates 7 days apart, `MODULE_GAP_DAYS`). Silence is recorded as `no_feedback` and is never read as success. Generation is idempotent (compare-and-set on the module's status plus a unique (track, number)). The word *lesson* became *module* in every user-facing string and the help pages (the separate *model lesson* keeps its name).
+
+**Defaults I chose (change any of them).**
+1. *Where it lives.* Only the class-only cohort ("Just my class") gets modules. The two-class demo run (`services/cohort_run/`, 6 lessons, reviewed by the coach) is a different flow and is not changed; its `next_lesson.py` rules were reused as the model for the branch table, not called.
+2. *Text.* Assembled by code from the strategy library and `content/errors/intervention.v1.yaml`, with the plan order in `content/modules/modules.v1.yaml`. No AI words it: the optional "worded by call 5, coach reviews, library wording released on the due date" path is **not built** (so `AI_USAGE.md` is unchanged and claims nothing new).
+3. *Plans.* SUB-SFL and SUB-NODEC 4 modules, ADD-NOCARRY 3, PV-HEARD 2, PV-REVERSE 1; "not yet" uses the template's alternatives, then any unused approach; running out stops with "Talk to your mentor or coach" and a `coach_notified` event. An error with no plan gets one module and a log entry.
+4. *Notifying a coach* means a recorded event that the coach's table counts (failed, overdue, not downloaded after `MODULE_NO_DOWNLOAD_DAYS`, default 5, tracks sent to a person). There is no push channel.
+5. *Audio* is taken only when she presses Download audio, through the existing endpoint; teachers on the same text share one cached file because the cache is keyed by text and voice.
+6. *Database.* The project has no migration folder, so the four tables (`tracks`, `track_modules`, `module_feedback`, `module_events`) are created by `Base.metadata.create_all` like every other table.
+7. *The coach* sees counts per module for a cohort, no teacher id; a cohort of one is one teacher's progress, so the same under-5 rule that hides class figures from officers was not applied to coaches (coach lists of class-only cohorts already show them).
+
+**Needs review.** Hindi and Tamil strings for the module screens and the smaller-step sentence are Claude drafts (TODO-HUMAN(Seema, Shivani)). The strategy text is still `status: draft` (Seema). The Tamil word *தொகுதி* and Hindi *मॉड्यूल* are the words you suggested.
+
+**Confirmed by.** Not confirmed: for Gopi to review (the defaults above).

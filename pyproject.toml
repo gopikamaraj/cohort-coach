@@ -17,15 +17,20 @@ dependencies = [
   "numpy",
   "scipy",
   "pyyaml",
+  "num2words",  # spoken layer: English number words (Hindi and Tamil have their own tables)
   "python-multipart",
   "pillow",
   "google-cloud-storage",  # pilot mode: Google Cloud Storage / Firebase Storage buckets
   "boto3",  # pilot mode: private sheets bucket and published-audio bucket (S3-compatible)
   "resvg-py>=0.5",  # sprites: SVG to PNG for the bot (imported at startup by the API)
+  "weasyprint>=70",  # Paper Studio: check papers as PDF (needs Pango: apt, or the GTK3 runtime)
+  "fonttools",  # Paper Studio: the verifier checks every glyph is in the embedded fonts
+  "pypdfium2",  # Demo Studio draws the demo sheets on the printed paper (and tests read PDFs back)
 ]
 
 [project.optional-dependencies]
 prod = ["psycopg[binary]"]  # managed Postgres in production
+vector = ["google-cloud-firestore"]  # only for VECTOR_STORE=firestore
 dev = [
   "pytest",
   "pytest-asyncio",
@@ -62,11 +67,24 @@ select = ["E", "F", "I", "UP", "B"]
 "services/assistant/*" = ["E501"]  # help text, status words and docstrings read best on one line
 "services/api/assistant.py" = ["E501"]
 "tests/assistant/*" = ["E501"]
+"tools/stitch_pack/*" = ["E501"]  # generated prose and tables read best on one line
+"services/papers_hub/*" = ["E501", "B008"]  # section rules and error messages read best on one line
+"tests/papers_hub/*" = ["E501"]
 "evals/runners/assistant_eval.py" = ["E501"]  # report table rows
 "scripts/extract_deck.py" = ["E501"]
 "tests/test_dockerfile.py" = ["E501"]
+"services/tester/*" = ["E501"]
+"scripts/export_testing_stats.py" = ["E501"]  # table rows read best on one line  # SQL view text and field lists read best on one line
+"tests/api/test_tester.py" = ["E501"]  # sample payloads
+"scripts/speech_*.py" = ["E501"]  # printed report lines and the rating page read best on one line
 
 [tool.mypy]
 python_version = "3.12"
-files = ["engine", "ai/validators"]
+files = [
+  "engine",
+  "ai/validators",
+  "services/papers/generator.py",
+  "services/papers/verifier.py",
+  "services/papers/rules.py",
+]
 strict = true

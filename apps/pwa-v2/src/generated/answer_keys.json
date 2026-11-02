@@ -1,0 +1,929 @@
+{
+  "content_hash": "fc2a2e030545c7b8b49bf4279f8a4aeb0584e7524369785d1a0f8e33c5ab068f",
+  "error_order": [
+    "PV-HEARD",
+    "PV-REVERSE",
+    "ADD-NOCARRY",
+    "SUB-SFL",
+    "SUB-NODEC"
+  ],
+  "forms": {
+    "A": {
+      "items": [
+        {
+          "a": 346,
+          "b": 0,
+          "correct": 346,
+          "n": 1,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "signatures": {
+            "IN-NEAR": [
+              246,
+              336,
+              345,
+              347,
+              356,
+              446
+            ],
+            "PV-HEARD": [
+              3046,
+              3064,
+              30046,
+              30064,
+              300406,
+              300604
+            ],
+            "PV-REVERSE": [
+              364,
+              3064,
+              30064,
+              300604
+            ]
+          },
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "300406": [
+              "PV-HEARD"
+            ],
+            "30046": [
+              "PV-HEARD"
+            ],
+            "300604": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "30064": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "3046": [
+              "PV-HEARD"
+            ],
+            "3064": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "364": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "a": 728,
+          "b": 0,
+          "correct": 728,
+          "n": 2,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "signatures": {
+            "IN-NEAR": [
+              628,
+              718,
+              727,
+              729,
+              738,
+              828
+            ],
+            "PV-HEARD": [
+              7028,
+              7082,
+              70028,
+              70082,
+              700208,
+              700802
+            ],
+            "PV-REVERSE": [
+              782,
+              7082,
+              70082,
+              700802
+            ]
+          },
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "700208": [
+              "PV-HEARD"
+            ],
+            "70028": [
+              "PV-HEARD"
+            ],
+            "700802": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "70082": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "7028": [
+              "PV-HEARD"
+            ],
+            "7082": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "782": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "a": 38,
+          "b": 47,
+          "correct": 85,
+          "n": 3,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "signatures": {
+            "ADD-NOCARRY": [
+              75
+            ],
+            "ADD-WHOLE-ONES": [
+              715
+            ],
+            "CORE-OFF1": [
+              84,
+              86
+            ],
+            "IN-OP": [
+              9
+            ],
+            "IN-OPND": [
+              112,
+              130,
+              157
+            ],
+            "OUT-REV": [
+              58
+            ]
+          },
+          "type": "add_carry",
+          "untracked": {
+            "715": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "75": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "a": 46,
+          "b": 28,
+          "correct": 74,
+          "n": 4,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "signatures": {
+            "ADD-NOCARRY": [
+              64
+            ],
+            "ADD-WHOLE-ONES": [
+              614
+            ],
+            "CORE-OFF1": [
+              73,
+              75
+            ],
+            "IN-OP": [
+              18
+            ],
+            "IN-OPND": [
+              92,
+              128,
+              146
+            ],
+            "OUT-REV": [
+              47
+            ]
+          },
+          "type": "add_carry",
+          "untracked": {
+            "614": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "64": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "a": 59,
+          "b": 23,
+          "correct": 82,
+          "n": 5,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "signatures": {
+            "ADD-NOCARRY": [
+              72
+            ],
+            "ADD-WHOLE-ONES": [
+              712
+            ],
+            "CORE-OFF1": [
+              81,
+              83
+            ],
+            "IN-OP": [
+              36
+            ],
+            "IN-OPND": [
+              91,
+              118,
+              127
+            ],
+            "OUT-REV": [
+              28
+            ]
+          },
+          "type": "add_carry",
+          "untracked": {
+            "712": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "72": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "a": 87,
+          "b": 52,
+          "correct": 35,
+          "n": 6,
+          "probes": [],
+          "signatures": {},
+          "type": "sub_anchor",
+          "untracked": {},
+          "wrong": {}
+        },
+        {
+          "a": 74,
+          "b": 36,
+          "correct": 38,
+          "n": 7,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              37,
+              39
+            ],
+            "IN-OP": [
+              110
+            ],
+            "IN-OPND": [
+              11
+            ],
+            "OUT-REV": [
+              83
+            ],
+            "SUB-NODEC": [
+              48
+            ],
+            "SUB-SFL": [
+              42
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "42": [
+              "SUB-SFL"
+            ],
+            "48": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "a": 45,
+          "b": 19,
+          "correct": 26,
+          "n": 8,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              25,
+              27
+            ],
+            "IN-OP": [
+              64
+            ],
+            "IN-OPND": [
+              35
+            ],
+            "OUT-REV": [
+              62
+            ],
+            "SUB-NODEC": [
+              36
+            ],
+            "SUB-SFL": [
+              34
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "34": [
+              "SUB-SFL"
+            ],
+            "36": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "a": 82,
+          "b": 39,
+          "correct": 43,
+          "n": 9,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              42,
+              44
+            ],
+            "IN-OP": [
+              121
+            ],
+            "OUT-REV": [
+              34
+            ],
+            "SUB-NODEC": [
+              53
+            ],
+            "SUB-SFL": [
+              57
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "53": [
+              "SUB-NODEC"
+            ],
+            "57": [
+              "SUB-SFL"
+            ]
+          }
+        },
+        {
+          "a": 81,
+          "b": 27,
+          "correct": 54,
+          "n": 10,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              53,
+              55
+            ],
+            "IN-OP": [
+              108
+            ],
+            "IN-OPND": [
+              9
+            ],
+            "OUT-REV": [
+              45
+            ],
+            "SUB-NODEC": [
+              64
+            ],
+            "SUB-SFL": [
+              66
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "64": [
+              "SUB-NODEC"
+            ],
+            "66": [
+              "SUB-SFL"
+            ]
+          }
+        }
+      ],
+      "label": "Pre-test · Form A"
+    },
+    "B": {
+      "items": [
+        {
+          "a": 264,
+          "b": 0,
+          "correct": 264,
+          "n": 1,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "signatures": {
+            "IN-NEAR": [
+              164,
+              254,
+              263,
+              265,
+              274,
+              364
+            ],
+            "PV-HEARD": [
+              2046,
+              2064,
+              20046,
+              20064,
+              200406,
+              200604
+            ],
+            "PV-REVERSE": [
+              246,
+              2046,
+              20046,
+              200406
+            ]
+          },
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "200406": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "20046": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "200604": [
+              "PV-HEARD"
+            ],
+            "20064": [
+              "PV-HEARD"
+            ],
+            "2046": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "2064": [
+              "PV-HEARD"
+            ],
+            "246": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "a": 853,
+          "b": 0,
+          "correct": 853,
+          "n": 2,
+          "probes": [
+            "PV-HEARD",
+            "PV-REVERSE"
+          ],
+          "signatures": {
+            "IN-NEAR": [
+              753,
+              843,
+              852,
+              854,
+              863,
+              953
+            ],
+            "PV-HEARD": [
+              8035,
+              8053,
+              80035,
+              80053,
+              800305,
+              800503
+            ],
+            "PV-REVERSE": [
+              835,
+              8035,
+              80035,
+              800305
+            ]
+          },
+          "type": "dictation",
+          "untracked": {},
+          "wrong": {
+            "800305": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "80035": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "800503": [
+              "PV-HEARD"
+            ],
+            "80053": [
+              "PV-HEARD"
+            ],
+            "8035": [
+              "PV-HEARD",
+              "PV-REVERSE"
+            ],
+            "8053": [
+              "PV-HEARD"
+            ],
+            "835": [
+              "PV-REVERSE"
+            ]
+          }
+        },
+        {
+          "a": 29,
+          "b": 46,
+          "correct": 75,
+          "n": 3,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "signatures": {
+            "ADD-NOCARRY": [
+              65
+            ],
+            "ADD-WHOLE-ONES": [
+              615
+            ],
+            "CORE-OFF1": [
+              74,
+              76
+            ],
+            "IN-OP": [
+              17
+            ],
+            "IN-OPND": [
+              93,
+              138,
+              156
+            ],
+            "OUT-REV": [
+              57
+            ]
+          },
+          "type": "add_carry",
+          "untracked": {
+            "615": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "65": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "a": 35,
+          "b": 49,
+          "correct": 84,
+          "n": 4,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "signatures": {
+            "ADD-NOCARRY": [
+              74
+            ],
+            "ADD-WHOLE-ONES": [
+              714
+            ],
+            "CORE-OFF1": [
+              83,
+              85
+            ],
+            "IN-OP": [
+              14
+            ],
+            "IN-OPND": [
+              102,
+              129,
+              147
+            ],
+            "OUT-REV": [
+              48
+            ]
+          },
+          "type": "add_carry",
+          "untracked": {
+            "714": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "74": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "a": 18,
+          "b": 54,
+          "correct": 72,
+          "n": 5,
+          "probes": [
+            "ADD-NOCARRY"
+          ],
+          "signatures": {
+            "ADD-NOCARRY": [
+              62
+            ],
+            "ADD-WHOLE-ONES": [
+              612
+            ],
+            "CORE-OFF1": [
+              71,
+              73
+            ],
+            "IN-OP": [
+              36
+            ],
+            "IN-OPND": [
+              63,
+              126,
+              135
+            ],
+            "OUT-REV": [
+              27
+            ]
+          },
+          "type": "add_carry",
+          "untracked": {
+            "612": "ADD-WHOLE-ONES"
+          },
+          "wrong": {
+            "62": [
+              "ADD-NOCARRY"
+            ]
+          }
+        },
+        {
+          "a": 86,
+          "b": 41,
+          "correct": 45,
+          "n": 6,
+          "probes": [],
+          "signatures": {},
+          "type": "sub_anchor",
+          "untracked": {},
+          "wrong": {}
+        },
+        {
+          "a": 83,
+          "b": 35,
+          "correct": 48,
+          "n": 7,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              47,
+              49
+            ],
+            "IN-OP": [
+              118
+            ],
+            "IN-OPND": [
+              3,
+              30
+            ],
+            "OUT-REV": [
+              84
+            ],
+            "SUB-NODEC": [
+              58
+            ],
+            "SUB-SFL": [
+              52
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "52": [
+              "SUB-SFL"
+            ],
+            "58": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "a": 64,
+          "b": 28,
+          "correct": 36,
+          "n": 8,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              35,
+              37
+            ],
+            "IN-OP": [
+              92
+            ],
+            "IN-OPND": [
+              18
+            ],
+            "OUT-REV": [
+              63
+            ],
+            "SUB-NODEC": [
+              46
+            ],
+            "SUB-SFL": [
+              44
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "44": [
+              "SUB-SFL"
+            ],
+            "46": [
+              "SUB-NODEC"
+            ]
+          }
+        },
+        {
+          "a": 71,
+          "b": 18,
+          "correct": 53,
+          "n": 9,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              52,
+              54
+            ],
+            "IN-OP": [
+              89
+            ],
+            "OUT-REV": [
+              35
+            ],
+            "SUB-NODEC": [
+              63
+            ],
+            "SUB-SFL": [
+              67
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "63": [
+              "SUB-NODEC"
+            ],
+            "67": [
+              "SUB-SFL"
+            ]
+          }
+        },
+        {
+          "a": 93,
+          "b": 29,
+          "correct": 64,
+          "n": 10,
+          "probes": [
+            "SUB-SFL",
+            "SUB-NODEC"
+          ],
+          "signatures": {
+            "CORE-OFF1": [
+              63,
+              65
+            ],
+            "IN-OP": [
+              122
+            ],
+            "IN-OPND": [
+              1,
+              10
+            ],
+            "OUT-REV": [
+              46
+            ],
+            "SUB-NODEC": [
+              74
+            ],
+            "SUB-SFL": [
+              76
+            ]
+          },
+          "type": "sub_borrow",
+          "untracked": {},
+          "wrong": {
+            "74": [
+              "SUB-NODEC"
+            ],
+            "76": [
+              "SUB-SFL"
+            ]
+          }
+        }
+      ],
+      "label": "Post-test · Form B"
+    }
+  },
+  "rules": {
+    "min_children_checked": 10,
+    "min_hits": 2,
+    "min_prevalence": {
+      "denominator": 4,
+      "numerator": 1
+    },
+    "stages": {
+      "add_items": [
+        3,
+        4,
+        5
+      ],
+      "anchor": 6,
+      "concepts": {
+        "addition": [
+          3,
+          4,
+          5
+        ],
+        "place_value": [
+          1,
+          2
+        ],
+        "subtraction": [
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "min_hits": 2,
+      "no_method_items_7_10": 3,
+      "pv_reverse": {
+        "otherwise": "Input (test)",
+        "with_out_rev": "Output"
+      },
+      "stage_of": {
+        "ADD-NOCARRY": "Core",
+        "ADD-WHOLE-ONES": "Core",
+        "CORE-OFF1": "Core",
+        "IN-NEAR": "Input (test)",
+        "IN-OP": "Input (test)",
+        "IN-OPND": "Input (test)",
+        "NO-METHOD": "Input (teaching)",
+        "OUT-REC": "Output",
+        "OUT-REV": "Output",
+        "PV-HEARD": "Core",
+        "SUB-NODEC": "Core",
+        "SUB-SFL": "Core"
+      },
+      "sub_items": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "track_priority": "PV-HEARD first, else highest count; ties by error order",
+    "tracked": [
+      "PV-HEARD",
+      "ADD-NOCARRY",
+      "SUB-SFL",
+      "SUB-NODEC"
+    ]
+  },
+  "version": 1
+}

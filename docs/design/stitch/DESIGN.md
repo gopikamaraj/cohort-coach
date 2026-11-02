@@ -92,3 +92,8 @@ Font loading note for engineers: Stitch's export packs three fonts into one malf
 4. Every text card for teachers has a play button.
 5. Meaning is never by colour alone.
 6. A track attempt with no reply reads as "no response", never "failed".
+
+
+## Answer map palette (added 2 Nov 2026, autopilot)
+
+The results page's answer map uses five mistake colours from the Okabe-Ito set (`--heat-ph`, `--heat-pr`, `--heat-ac`, `--heat-sf`, `--heat-sn` in `theme.css`), each with ink text at 4.5:1 or better and told apart under protan, deutan and tritan simulation. Colour is never the only signal: every mistake also has two letters and its own pattern. Contrast figures: `docs/design-system.md` and `tests/test_design_tokens.py`.

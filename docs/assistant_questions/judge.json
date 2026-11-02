@@ -161,7 +161,8 @@
    "efficacy"
   ],
   "rubric_rows": [
-   "E4.2"
+   "E4.2",
+   "E4.4"
   ],
   "steps": [],
   "query": "feedback user testing you said we changed"
@@ -823,5 +824,157 @@
    9
   ],
   "query": "guide cites answers status slide video how to check"
+ },
+ {
+  "id": "j43",
+  "text": {
+   "en": "Who makes the check papers, and is AI used to write them?"
+  },
+  "screens": [
+   "check",
+   "any"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A2.6"
+  ],
+  "steps": [
+   1
+  ],
+  "query": "paper studio check papers made by code no AI independent verifier"
+ },
+ {
+  "id": "j44",
+  "text": {
+   "en": "How are the paper rules changed and approved?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A2.7"
+  ],
+  "steps": [
+   1
+  ],
+  "query": "paper rules version two people approve publish spot check auto-approved"
+ },
+ {
+  "id": "j45",
+  "text": {
+   "en": "How do I run the whole demo, and what in it is simulated?"
+  },
+  "screens": [
+   "any",
+   "landing"
+  ],
+  "criteria": [
+   "efficacy",
+   "ai"
+  ],
+  "rubric_rows": [
+   "E2.6",
+   "A2.8"
+  ],
+  "steps": [
+   1
+  ],
+  "query": "demo flow steps simulated synthetic sheets reset judge"
+ },
+ {
+  "id": "j46",
+  "text": {
+   "en": "How does the Papers page create, assign and track a paper?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [
+   "innovation"
+  ],
+  "rubric_rows": [
+   "A2.10"
+  ],
+  "steps": [
+   2
+  ],
+  "query": "papers page create assign cohort status scope enter check chooses a paper"
+ },
+ {
+  "id": "j47",
+  "text": {
+   "en": "How is a paper imported from a PDF without the AI giving the answers?"
+  },
+  "screens": [
+   "papers"
+  ],
+  "criteria": [
+   "ai"
+  ],
+  "rubric_rows": [
+   "A2.11"
+  ],
+  "steps": [
+   2
+  ],
+  "query": "import paper from pdf call 16 reads printed questions code computes the key person confirms"
+ },
+ {
+  "id": "j48",
+  "text": {
+   "en": "Why did no cohort form, and what forms one from two classes?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E1.6"
+  ],
+  "steps": [],
+  "query": "why did no cohort form two classes minimum classes single question probes pilot cohort two classes waiting for other classes"
+ },
+ {
+  "id": "j49",
+  "text": {
+   "en": "How is the next lesson chosen after a teacher's feedback?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai",
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "E1.6"
+  ],
+  "steps": [],
+  "query": "how is the next lesson chosen generate next lesson tried partly not yet silence planned code chooses call 5 words"
+ },
+ {
+  "id": "j50",
+  "text": {
+   "en": "What happens when the AI is unavailable, and how are recorded answers labelled?"
+  },
+  "screens": [
+   "any"
+  ],
+  "criteria": [
+   "ai",
+   "efficacy"
+  ],
+  "rubric_rows": [
+   "A3.5"
+  ],
+  "steps": [],
+  "query": "AI off unavailable recorded answers label header badge AI mode non-AI path auto-fill type answers template person"
  }
 ]

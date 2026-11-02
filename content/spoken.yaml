@@ -1,0 +1,22 @@
+# How each speaker sounds, as data (owned by Seema; the code never hardcodes these).
+# Which voice a speaker uses stays in content/voices.yaml. This file sets the speaking rate (words a
+# second, used for the length estimate and, where a provider takes it, the pace), the register the
+# text is written in, how long each pause is, and how long one sentence may be.
+# TODO-HUMAN(Seema): check the register notes and the limits by listening to a sample.
+version: 1
+pauses_ms:
+  short: 350
+  long: 900
+speakers:
+  narrator:
+    register: plain spoken, to a teacher, one idea per sentence
+    words_per_second: 2.3
+    max_sentence_words: 24
+  coach:
+    register: warm, plain, to one teacher, two strengths and one thing to try
+    words_per_second: 2.4
+    max_sentence_words: 24
+  simulated_child:
+    register: a Grade 3 child, short, hesitant where unsure
+    words_per_second: 2.6
+    max_sentence_words: 30

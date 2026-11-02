@@ -1,6 +1,7 @@
 // On-device diagnosis. Lookups and counting only: every wrong answer, rule and threshold comes
 // from generated/answer_keys.json, which the Python engine writes. No bug arithmetic lives here.
 import rawKeys from "../generated/answer_keys.json";
+import { registeredForm } from "./paperKeys";
 
 export interface ItemKey {
   n: number;
@@ -11,12 +12,13 @@ export interface ItemKey {
   probes: string[];
   wrong: Record<string, string[]>;
   untracked: Record<string, string>;
+  anchor?: boolean; // a paper's key: false on an adaptive item, which never counts in before and after
 }
 interface AnswerKeys {
   error_order: string[];
   rules: {
     min_hits: number;
-    min_prevalence: { numerator: number; denominator: number };
+    min_children_with_error: number;
     min_children_checked: number;
     tracked: string[];
   };
@@ -25,6 +27,11 @@ interface AnswerKeys {
 }
 
 export const keys = rawKeys as unknown as AnswerKeys;
+
+/** The key of a form: a built-in one, or the key of a paper kept on this phone. */
+export function formOf(formKey: string): { label: string; items: ItemKey[] } | undefined {
+  return keys.forms[formKey] ?? (registeredForm(formKey) as { label: string; items: ItemKey[] } | undefined);
+}
 
 export type Reading = number | "blank" | "unreadable";
 export type MarkKind = "correct" | "error" | "other" | "blank" | "unreadable";
@@ -91,8 +98,20 @@ function sortedTally(tally: Record<string, number>): Record<string, number> {
 
 /** Apply the 2-item rule to one child's readings (in item order). */
 export function diagnoseChild(formKey: string, readings: Reading[]): ChildDiagnosis {
-  const form = keys.forms[formKey];
+  const form = formOf(formKey);
   if (!form) throw new Error(`unknown form ${formKey}`);
+  return diagnoseOn(form, readings);
+}
+
+/** The same rule on the items marked `keep` only (before and after use the anchor items). */
+export function diagnoseAnchors(formKey: string, readings: Reading[], keep: boolean[]): ChildDiagnosis {
+  const form = formOf(formKey);
+  if (!form) throw new Error(`unknown form ${formKey}`);
+  if (readings.length !== form.items.length) throw new Error(`expected ${form.items.length} answers, got ${readings.length}`);
+  return diagnoseOn({ ...form, items: form.items.filter((_, i) => keep[i]) }, readings.filter((_, i) => keep[i]));
+}
+
+function diagnoseOn(form: { items: ItemKey[] }, readings: Reading[]): ChildDiagnosis {
   if (readings.length !== form.items.length) {
     throw new Error(`expected ${form.items.length} answers, got ${readings.length}`);
   }
@@ -130,12 +149,7 @@ export function classProfile(children: ChildDiagnosis[]): ClassProfile {
     counts[code] = children.filter((c) => c.shows.includes(code)).length;
     prevalence[code] = checked ? (counts[code] as number) / checked : 0;
   }
-  const { numerator, denominator } = keys.rules.min_prevalence;
-  const eligible = order.filter(
-    (code) =>
-      checked >= keys.rules.min_children_checked &&
-      (counts[code] as number) * denominator >= checked * numerator,
-  );
+  const eligible = order.filter((code) => checked >= keys.rules.min_children_checked && (counts[code] as number) >= keys.rules.min_children_with_error);
   const candidates = eligible.filter((code) => keys.rules.tracked.includes(code));
   let track: string | null = null;
   if (candidates.includes("PV-HEARD")) track = "PV-HEARD";

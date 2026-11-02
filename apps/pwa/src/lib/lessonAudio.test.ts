@@ -45,3 +45,28 @@ describe("lesson audio on the phone", () => {
     expect(await savedBlob("/l/1", none)).toBeNull();
   });
 });
+
+describe("following the lesson text as it plays", () => {
+  const timing = [
+    { i: 0, start: 0, end: 2.5 },
+    { i: 1, start: 2.75, end: 5 },
+    { i: 2, start: 5.5, end: 8 },
+  ];
+
+  it("finds the sentence being said, and none in a pause or after the end", async () => {
+    const { sentenceAt } = await import("./lessonAudio");
+    expect(sentenceAt(timing, 0)).toBe(0);
+    expect(sentenceAt(timing, 2.6)).toBeNull(); // the 250 ms pause between sentences
+    expect(sentenceAt(timing, 3)).toBe(1);
+    expect(sentenceAt(timing, 5.2)).toBeNull(); // the 500 ms pause between sections
+    expect(sentenceAt(timing, 7.99)).toBe(2);
+    expect(sentenceAt(timing, 8)).toBeNull();
+  });
+
+  it("shows a file size as a count", async () => {
+    const { sizeLabel } = await import("./lessonAudio");
+    expect(sizeLabel(1_234_567)).toBe("1.2 MB");
+    expect(sizeLabel(350_400)).toBe("350 KB");
+    expect(sizeLabel(10)).toBe("1 KB");
+  });
+});

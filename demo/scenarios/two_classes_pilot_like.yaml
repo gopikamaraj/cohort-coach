@@ -1,0 +1,96 @@
+# Two made-up Grade 3 classes that copy the pilot's class-level patterns (counts only). SIMULATED:
+# no real child, school or teacher; no answer here comes from a real sheet. services/cohort_run/
+# scenario.py turns each class into children's answers by code (the engine's own error functions),
+# and the same file always gives the same answers (tests/cohort_run/test_scenario.py).
+id: two_classes_pilot_like
+label: Two classes, pilot-like (simulated)
+grade: 3
+medium: hindi
+block: B1
+# The pilot's 15-item pre-test: the ten check items, then five more. Items 1 and 2 are dictated,
+# and the two classes were dictated different numbers.
+paper:
+  name: Grade 3 maths pre-test, pilot-like (15 items)
+  items:
+    - {n: 3, op: add, a: 38, b: 47}
+    - {n: 4, op: add, a: 46, b: 28}
+    - {n: 5, op: add, a: 59, b: 23}
+    - {n: 6, op: subtract, a: 87, b: 52}
+    - {n: 7, op: subtract, a: 74, b: 36}
+    - {n: 8, op: subtract, a: 45, b: 19}
+    - {n: 9, op: subtract, a: 82, b: 39}
+    - {n: 10, op: subtract, a: 81, b: 27}
+    - {n: 11, op: add, a: 246, b: 178}
+    - {n: 12, op: subtract, a: 786, b: 452}
+    - {n: 13, op: subtract, a: 895, b: 324}
+    - {n: 14, op: subtract, a: 703, b: 468}
+    - {n: 15, op: subtract, a: 542, b: 179}
+# What each pattern writes, by code: the error function named, on the items named.
+patterns:
+  across_zero: {label: Wrong on borrowing across a zero (703 - 468), error: SUB-SFL, items: [14]}
+  two_carries: {label: Wrong on the three-digit sum with two carries (246 + 178), error: ADD-NOCARRY, items: [11]}
+  zero_number: {label: Writes a number with a zero wrongly (305), error: PV-HEARD, items: [1]}
+  after_borrow: {label: Subtracts wrongly after borrowing, error: SUB-NODEC, items: [7, 8, 9, 10]}
+  signs: {label: Confuses the signs (adds when it says take away), error: IN-OP, items: [6, 12]}
+teachers:
+  T1: {class: 3A, language: en}
+  T2: {class: 3B, language: hi}
+coach: C1
+mentor: M1
+classes:
+  - code: 3A
+    teacher: T1
+    strength: 21
+    no_sheet: [1, 2, 9, 14, 19]   # 16 sheets
+    dictation: {1: 305, 2: 496}
+    # one line per child with a sheet, in roll order: the patterns that child shows ([] = all right)
+    # across_zero 4, two_carries 3, zero_number 3, after_borrow 1, signs 2; 5 fully correct
+    children:
+      - []
+      - []
+      - []
+      - []
+      - []
+      - [across_zero, two_carries]
+      - [across_zero, zero_number]
+      - [across_zero]
+      - [across_zero]
+      - [two_carries]
+      - [two_carries]
+      - [zero_number]
+      - [zero_number]
+      - [after_borrow]
+      - [signs]
+      - [signs]
+  - code: 3B
+    teacher: T2
+    strength: 19
+    absent: [13]                  # 18 sheets
+    dictation: {1: 346, 2: 728}
+    # across_zero 5, two_carries 4, after_borrow 2, signs 1; 11 fully correct
+    children:
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - [across_zero, two_carries]
+      - [across_zero, two_carries]
+      - [across_zero, two_carries]
+      - [across_zero, two_carries]
+      - [across_zero, after_borrow]
+      - [after_borrow]
+      - [signs]
+# The settings this scenario runs with (pilot and demo only; DECISIONS 2026-11-01). Production uses
+# COHORT_MIN_CLASSES (default 15) and COHORT_ALLOW_SINGLE_ITEM_PROBES (default off).
+settings:
+  cohort_min_classes: 2
+  allow_single_item_probes: true
+# Days between a lesson's release and the date the next planned lesson goes out without feedback.
+feedback_days: 3

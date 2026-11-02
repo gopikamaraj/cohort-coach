@@ -1,18 +1,20 @@
 // My profile: who I am here (role, language), my classes, my data (storage, backup, data used) and my
 // privacy choices. Everything here is about this phone; nothing is sent unless a button says so.
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { IconButton, Icon } from "../components/icons";
 import { useToast } from "../components/toast";
 import { buildBackup, openBackup, restoreBackup, sealBackup } from "../lib/backup";
 import { addClass, deleteClass, listClasses, renameClass, setActive, type ClassItem } from "../lib/classes";
-import { setConsent, getConsent, withdrawAll, recordOnServer, type Choices, type Scope } from "../lib/consent";
+import { setConsent, getConsent, withdrawAll, recordOnServer, type Choices, type Scope, countsOn } from "../lib/consent";
 import { clearPhone, db } from "../lib/db";
+import { footerAllowed, footerOn, setFooterOn, subscribe } from "../lib/action";
 import { costOf, getPrice, getUsage, resetUsage, setPrice, type Usage } from "../lib/meter";
 import { persistenceStatus, requestPersistence, type PersistenceStatus } from "../lib/storage";
 import { href } from "../lib/router";
 import { sendFeedback, type FeedbackKind } from "../lib/feedback";
 import { LANG_NAMES, LANGS, isLang } from "../i18n";
 import { InstallEntry } from "../components/install";
+import { TesterSettings } from "../components/TesterUI";
 import { useApp } from "../state";
 import { useConsent } from "../lib/useConsent";
 
@@ -156,6 +158,8 @@ function Storage() {
           type="file"
           accept="application/json,.json"
           className="sr"
+          aria-label={tr("profile.restore")}
+          tabIndex={-1}
           data-testid="backup-file"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -165,6 +169,18 @@ function Storage() {
         />
       </div>
     </Section>
+  );
+}
+
+function UsageSetting() {
+  const { tr } = useApp();
+  const on = useSyncExternalStore(subscribe, footerOn);
+  if (!footerAllowed()) return null;
+  return (
+    <label className="check-line">
+      <input type="checkbox" checked={on} onChange={(e) => setFooterOn(e.target.checked)} data-testid="usage-setting" />
+      <span>{tr("usage.setting")}</span>
+    </label>
   );
 }
 
@@ -180,6 +196,7 @@ function DataUsed() {
   const cost = costOf(u, Number(price) || undefined);
   return (
     <Section icon="wifi" title={tr("profile.data_used")} id="pf-data">
+      <UsageSetting />
       <dl className="stats">
         <div>
           <dt>{tr("profile.sent")}</dt>
@@ -225,11 +242,12 @@ function DataUsed() {
   );
 }
 
-const CHOICES: { scope: Scope; key: "counts" | "practice" | "share" | "feedback" }[] = [
+const CHOICES: { scope: Scope; key: "counts" | "practice" | "share" | "feedback" | "keep" }[] = [
   { scope: "counts", key: "counts" },
   { scope: "practice_ai", key: "practice" },
   { scope: "share_rehearsal", key: "share" },
   { scope: "feedback", key: "feedback" },
+  { scope: "keep_sheets", key: "keep" },
 ];
 
 function Privacy() {
@@ -238,7 +256,7 @@ function Privacy() {
   const consent = useConsent();
   const change = (scope: Scope, on: boolean) => {
     const before = getConsent();
-    const base: Choices = { core: true, counts: false, practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
+    const base: Choices = { core: true, counts: countsOn(null), practice_ai: false, share_rehearsal: false, feedback: false, ...(before ?? {}) };
     const after = setConsent({ ...base, core: true, [scope]: on });
     void recordOnServer(before, after);
   };
@@ -249,7 +267,7 @@ function Privacy() {
         {CHOICES.map((c) => (
           <li key={c.scope}>
             <label className="switch">
-              <input type="checkbox" checked={consent?.[c.scope] === true} onChange={(e) => change(c.scope, e.target.checked)} data-testid={`consent-${c.scope}`} />
+              <input type="checkbox" checked={c.scope === "counts" ? countsOn(consent) : consent?.[c.scope] === true} onChange={(e) => change(c.scope, e.target.checked)} data-testid={`consent-${c.scope}`} />
               <span>
                 <strong>{tr(`consent.${c.key}` as "consent.counts")}</strong>
                 <span className="muted">{tr(`consent.${c.key}_why` as "consent.counts_why")}</span>
@@ -378,6 +396,7 @@ export default function Profile() {
         </select>
       </label>
       <InstallEntry variant="row" />
+      <TesterSettings />
       <Classes />
       <Storage />
       <DataUsed />

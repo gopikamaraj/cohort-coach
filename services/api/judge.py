@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from ai.audit import SqlAuditSink, default_sink
 from ai.prompt_loader import load_prompt
@@ -45,6 +45,7 @@ def ai_map() -> dict[str, Any]:
                 "gates": list(c.gates),
                 "eval": {"id": c.eval_id, "bar": c.eval_bar},
                 "metadata_only": c.metadata_only,
+                "built": c.built,
                 "layers": c.layers,
             }
             for c in CALLS
@@ -126,7 +127,8 @@ BREAK_LINES = {
 
 
 class BreakIn(BaseModel):
-    kind: Literal["injection", "harsh", "phone", "child_name"]
+    kind: Literal["injection", "harsh", "phone", "child_name"] | None = None
+    text: str | None = Field(None, max_length=200)  # the visitor's own line; checked, never stored
     language: str = "en"
 
 
@@ -144,16 +146,34 @@ def try_break(body: BreakIn) -> dict[str, Any]:
     if body.language not in LANGS:
         raise HTTPException(422, f"language must be one of {', '.join(LANGS)}")
     names = [k.names["en"] for k in load_personas().children]
-    line = BREAK_LINES[body.kind].format(name=names[0])
-    codes = [v.code for v in check_prefilter(line, "en", roster_names=names)]
+    typed = (body.text or "").strip()
+    if typed:
+        # The visitor's own line goes through the same rule-based checks. It is not sent to a model,
+        # not stored and not logged: the answer is built from the check codes alone.
+        line = typed
+    elif body.kind:
+        line = BREAK_LINES[body.kind].format(name=names[0])
+    else:
+        raise HTTPException(422, "Send a prepared kind or a line of your own.")
+    codes = [
+        v.code for v in check_prefilter(line, body.language if typed else "en", roster_names=names)
+    ]
     # one explanation, for the most telling check (an injection line may also hold a rude word)
-    order = ["injection_marker", "pii_roster_name", "pii_phone", "profanity"]
+    order = [
+        "injection_marker",
+        "pii_roster_name",
+        "pii_phone",
+        "demeaning",
+        "profanity",
+        "off_topic",
+        "malformed",
+    ]
     first = next((c for c in order if c in codes), codes[0] if codes else "")
     return {
-        "kind": body.kind,
+        "kind": body.kind or "typed",
         "line": line,
         "blocked": bool(codes),
         "codes": codes,
-        "explanation": text(body.language, f"break.{first}") if codes else "",
+        "explanation": text(body.language, f"break.{first}" if codes else "break.passed"),
         "layer": "guardrails: rule-based pre-filter (gate 1b)",
     }

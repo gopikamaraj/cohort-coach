@@ -32,8 +32,20 @@ def _digits(n: int) -> tuple[int, ...] | None:
     return None if 0 in ds else ds
 
 
+def _tens_zero(n: int) -> tuple[int, int] | None:
+    """(hundreds, ones) of a 3-digit number whose only zero is the tens digit (305), else None."""
+    if not (100 <= n <= 999):
+        return None
+    h, t, o = (int(c) for c in str(n))
+    return (h, o) if t == 0 and o != 0 else None
+
+
 def pv_heard(n: int) -> frozenset[int]:
-    """Writes the number the way it is said: forty-three -> 403; 346 -> 30046, 3046, 300406."""
+    """Writes the number the way it is said: forty-three -> 403; 346 -> 30046, 3046, 300406;
+    three hundred and five -> 3005."""
+    hz = _tens_zero(n)
+    if hz is not None:
+        return frozenset({int(f"{hz[0]}00{hz[1]}")})
     ds = _digits(n)
     if ds is None:
         return _NONE
@@ -45,7 +57,10 @@ def pv_heard(n: int) -> frozenset[int]:
 
 
 def pv_reverse(n: int) -> frozenset[int]:
-    """Swaps tens and ones: 43 -> 34; 346 -> 364."""
+    """Swaps tens and ones: 43 -> 34; 346 -> 364; 305 -> 350."""
+    hz = _tens_zero(n)
+    if hz is not None:
+        return frozenset({100 * hz[0] + 10 * hz[1]})
     ds = _digits(n)
     if ds is None:
         return _NONE
@@ -64,9 +79,27 @@ def heard_and_reversed(n: int) -> frozenset[int]:
     return frozenset(out)
 
 
+def _columns(a: int, b: int) -> tuple[list[int], list[int]]:
+    """The digits of a and b by column, ones first, padded to the same length."""
+    n = max(len(str(a)), len(str(b)))
+    da = [int(c) for c in str(a).zfill(n)][::-1]
+    db = [int(c) for c in str(b).zfill(n)][::-1]
+    return da, db
+
+
+def _from_columns(cols: list[int]) -> int:
+    """Column results (ones first) written side by side; the leftmost may be two digits."""
+    return int("".join(str(c) for c in reversed(cols)))
+
+
 def add_nocarry(a: int, b: int) -> frozenset[int]:
-    """Drops the carried ten: 47 + 25 -> 62."""
-    return frozenset({10 * (a // 10 + b // 10) + (a % 10 + b % 10) % 10})
+    """Drops every carried ten: 47 + 25 -> 62; 246 + 178 -> 314. Each column's ones digit is
+    written; the leftmost column is written whole (59 + 73 -> 122)."""
+    if a < 100 and b < 100:
+        return frozenset({10 * (a // 10 + b // 10) + (a % 10 + b % 10) % 10})
+    da, db = _columns(a, b)
+    cols = [(x + y) % 10 for x, y in zip(da[:-1], db[:-1], strict=True)] + [da[-1] + db[-1]]
+    return frozenset({_from_columns(cols)})
 
 
 def add_whole_ones(a: int, b: int) -> frozenset[int]:
@@ -78,12 +111,20 @@ def add_whole_ones(a: int, b: int) -> frozenset[int]:
 
 
 def sub_sfl(a: int, b: int) -> frozenset[int]:
-    """Smaller-from-larger in each column: 52 - 29 -> 37."""
-    return frozenset({10 * abs(a // 10 - b // 10) + abs(a % 10 - b % 10)})
+    """Smaller-from-larger in each column: 52 - 29 -> 37; 703 - 468 -> 365."""
+    if a < 100 and b < 100:
+        return frozenset({10 * abs(a // 10 - b // 10) + abs(a % 10 - b % 10)})
+    da, db = _columns(a, b)
+    return frozenset({_from_columns([abs(x - y) for x, y in zip(da, db, strict=True)])})
 
 
 def sub_nodec(a: int, b: int) -> frozenset[int]:
-    """Borrows a ten but does not reduce the tens digit: 52 - 29 -> 33."""
+    """Borrows a ten for the ones but does not reduce the tens digit: 52 - 29 -> 33.
+
+    With three digits every other borrow is done right: 703 - 468 -> 245 (the zero becomes ten,
+    taking one from the hundreds, but is not reduced for the ones) and 542 - 179 -> 373. On the
+    pilot's real sheets this is the answer most children who went wrong on 703 - 468 wrote.
+    """
     at, ao, bt, bo = a // 10, a % 10, b // 10, b % 10
     if ao < bo:
         return frozenset({10 * (at - bt) + (ao + 10 - bo)})

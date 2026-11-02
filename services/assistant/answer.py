@@ -34,6 +34,7 @@ log = logging.getLogger("assistant")
 
 MAX_QUESTION_CHARS = 500
 EXTRACT_WORDS = 90
+MAX_FOLLOW_UPS = 3
 OFFLINE_LABEL = {
     "en": "pre-written from the docs",
     "hi": "दस्तावेज़ों से पहले से लिखा गया",
@@ -48,6 +49,11 @@ ENGLISH_PAGES = {
     "en": "",
     "hi": "ये सहायता पन्ने अभी अंग्रेज़ी में हैं; हिंदी की समीक्षा बाकी है।",
     "ta": "இந்த உதவிப் பக்கங்கள் இப்போது ஆங்கிலத்தில் உள்ளன; தமிழ் மதிப்பாய்வு நிலுவையில் உள்ளது.",
+}
+CAN_PREFIX = {
+    "en": "I can help with:",
+    "hi": "मैं इनमें मदद कर सकता हूँ:",
+    "ta": "நான் இவற்றில் உதவ முடியும்:",
 }
 CANNOT = {
     "en": "I can't answer that from the pages I can read.",
@@ -96,6 +102,9 @@ class Answer:
     commit: str | None = None
     provisional: bool = False  # slide numbers and video times are not final yet
     capped: str | None = None
+    follow_ups: list[dict[str, Any]] = field(
+        default_factory=list
+    )  # {text, id|None}: what to ask next
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -269,7 +278,7 @@ def abstain(
     lg = _lang(scope, lang)
     where = WHERE[scope.role].get(lg) or WHERE[scope.role]["en"]
     a = _base(scope, lib, lg, question_id)
-    a.answer = f"{CANNOT[lg]} {scope.line('can', lg)} {where}"
+    a.answer = f"{CANNOT[lg]} {CAN_PREFIX[lg]} {scope.line('can', lg)} {where}"
     a.abstained, a.mode, a.capped = True, "abstain", capped
     a.limits = scope.line("cannot", lg)
     return a
@@ -354,6 +363,49 @@ def _model_available(ctx: CallContext | None) -> bool:
     return config.ai_mode() == "live" and bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 
+def follow_ups_for(
+    scope: Scope,
+    lib: Library,
+    lang: str,
+    asked: str,
+    asked_id: str | None,
+    answer_text: str,
+    suggested: list[str],
+) -> list[dict[str, Any]]:
+    """Up to three next questions, every one of them answerable. The model's own suggestions are kept
+    only if they pass the policy refusals and the pages in this scope can answer them; the rest are
+    filled from the role's own question bank, ranked by words shared with this exchange. A bank
+    question has an id, so its answer is the pre-written one."""
+    lg = _lang(scope, lang)
+    out: list[dict[str, Any]] = []
+    seen = {asked.strip().lower()}
+    for s in suggested:
+        t = mask_personal(s[:MAX_QUESTION_CHARS]).text.strip()
+        if not t or t.lower() in seen or guard.refusal(t):
+            continue
+        if not retrieve.search(scope, t, k=1, index_dir=lib.index_dir):
+            continue
+        seen.add(t.lower())
+        out.append({"text": t, "id": None})
+    bank = [q for q in lib.banks.get(scope.role, []) if q.id != asked_id]
+    have = set(retrieve.tokens(f"{asked} {answer_text}"))
+    ranked = sorted(
+        enumerate(bank),
+        key=lambda iq: (
+            -len(have & set(retrieve.tokens(iq[1].query + " " + iq[1].text["en"]))),
+            iq[0],
+        ),
+    )
+    for _, q in ranked:
+        if len(out) >= MAX_FOLLOW_UPS:
+            break
+        label = q.label(lg)
+        if label.lower() not in seen:
+            seen.add(label.lower())
+            out.append({"text": label, "id": q.id})
+    return out[:MAX_FOLLOW_UPS]
+
+
 def _try_model(
     scope: Scope,
     lib: Library,
@@ -383,6 +435,7 @@ def _try_model(
     ids = [i for i in dict.fromkeys(out.rubric_rows) if i in lib.rows]
     a = _base(scope, lib, lang, None)
     a.answer, a.mode = (out.answer or "").strip(), "model"
+    a.follow_ups = [{"text": f, "id": None} for f in out.follow_ups]  # filtered in ask()
     a.status_labels = status_labels(lib, ids)
     sources: list[dict[str, Any]] = []
     by_alias = {f"S{i}": h.chunk for i, h in enumerate(hits, 1)}
@@ -419,7 +472,8 @@ def free_text(
     why = guard.refusal(query)
     if why:  # a policy refusal: no search, no source, and it says why
         a = abstain(scope, lib, lang)
-        a.answer = guard.REASON[why] + " " + scope.line("can", _lang(scope, lang))
+        lg = _lang(scope, lang)
+        a.answer = f"{guard.REASON[why]} {CAN_PREFIX[lg]} {scope.line('can', lg)}"
         a.notes.append("refused: " + why)
         return a
     hits = retrieve.search(scope, query, k=5, index_dir=lib.index_dir)
@@ -492,6 +546,9 @@ def ask(
         a = free_text(scope, lib, text.strip(), lang, ctx, session, caps)
     else:
         a = abstain(scope, lib, lang)
+    a.follow_ups = follow_ups_for(
+        scope, lib, lang, text or "", question_id, a.answer, [f["text"] for f in a.follow_ups]
+    )
     # What the log may hold: the effective role, the scope and the question id. Never the text.
     log.info(
         "assistant role=%s scope=%s question=%s mode=%s",

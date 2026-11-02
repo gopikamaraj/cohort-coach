@@ -24,7 +24,7 @@ Bands: Pass 9 to 10, Partial 6 to 8, Gap 5 or less.
 ## What this does not cover
 
 - A real low-end phone and Slow 3G (the checklist item Gate 2): the crawl uses Chromium with a phone viewport.
-- Telegram: the same flows are covered by the golden-transcript tests through each adapter, not in a browser.
+- Telegram (roadmap, not in the demo): the same flows are covered by the golden-transcript tests through each adapter, not in a browser.
 - Live AI and live speech: the run uses recorded fixtures and stub speech, so it tests the screens, not the models.
 - Whether a page is easy to understand. That needs the user-testing rounds (`docs/feedback-log.md`).
 - The crawl opens each page in its first state, as an officer, so a page that needs a longer journey to reach its main content is judged by its feature tests, not by the crawl.

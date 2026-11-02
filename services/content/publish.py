@@ -7,13 +7,17 @@ can hide behind slots until the numbers are in. Each lesson is voiced once: the 
 hash of its words, voice and format, so the same words are never paid for twice. The model-lesson
 script is published as text (the teacher reads it to her class); its audio is the model run.
 
+Lessons are voiced through services/speech/lessons.py (1 Nov, branch speech-bodhan): Bodhan first,
+Sarvam as the fallback, one voice per lesson, MP3 mono 48 kbps with a timing map, each chunk checked
+by transcribing it back. A coach can listen, regenerate and approve afterwards
+(services/content/lesson_audio.py); a lesson whose providers all fail is published as text only.
+
 The manifest lists, for the lesson screen (T4) and the bot, every part's id, audio, size, script,
 badge, and who reviewed and switched it on (role and time, never a name).
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 from collections.abc import Mapping
 from datetime import UTC, datetime
@@ -33,21 +37,17 @@ from ai.validators.arithmetic import (
 )
 from ai.validators.check_items import check_items
 from services.api.db import ContentAudit, ContentVersion, ReviewItem, TrackManifest
-from services.content import slots, versions
+from services.content import lesson_audio, slots, versions
 from services.content.lessons_view import MAX_LESSON_SECONDS
 from services.content.track import load_track
-from services.pilot.audio import chunks
-from services.pilot.storage import BlobStore
-from services.speech.audio import join_to_file
-from services.speech.voices import Voice
+from services.media.storage import BlobStore
+from services.speech import lessons
 
 BLOCK = Path(__file__).resolve().parents[2] / "data" / "synthetic" / "block_T1T2.json"
-FORMAT = "ogg"  # OGG/Opus: what Telegram plays as a voice note
-KBPS = 16
-FALLBACK_KBPS = 12
-BUDGET_BYTES_PER_5_MIN = 600_000  # CLAUDE.md section 9: ~0.6 MB per 5 minutes
-LESSON_VOICE = "ritu"  # the default teacher voice (content/voices/pilot.v1.yaml)
-MIME = "audio/ogg"
+FORMAT = "mp3"  # MP3 mono 48 kbps (decided 1 Nov 2026, DECISIONS.md; was OGG/Opus 16 kbps)
+KBPS = lessons.settings()["kbps"]  # the lesson bit rate (LESSON_MP3_KBPS, default 48)
+BUDGET_BYTES_PER_5_MIN = 1_850_000  # CLAUDE.md section 9: ~1.8 MB per 5 minutes at 48 kbps
+MIME = lesson_audio.MIME
 
 
 class PublishBlocked(ValueError):
@@ -95,11 +95,13 @@ def cohort_values(cohort_id: str, error: str, *, example: tuple[int, int]) -> di
 
 
 def encode(clips: list[bytes]) -> tuple[bytes, float]:
-    """OGG/Opus mono at 16 kbps; re-encoded at 12 kbps if the container pushes it over budget."""
-    data, seconds = join_to_file(clips, fmt=FORMAT, kbps=KBPS)
-    if seconds > 0 and len(data) / seconds * 300 > BUDGET_BYTES_PER_5_MIN:
-        data, seconds = join_to_file(clips, fmt=FORMAT, kbps=FALLBACK_KBPS)
-    return data, seconds
+    """Clips joined with the sentence pause, loudness-normalised, as MP3 mono (LESSON_MP3_KBPS)."""
+    cfg = lessons.settings()
+    pcms = [lessons._pcm(c) for c in clips]
+    fake = [lessons.Chunk(i, "x", 0, (i,)) for i in range(len(clips))]
+    sentences = [lessons.Sentence(i, "x", 0) for i in range(len(clips))]
+    wav, seconds, _ = lessons.stitch(pcms, fake, sentences, cfg["sentence_gap_ms"])
+    return lessons.encode_mp3(wav, cfg["kbps"]), seconds
 
 
 def checked_text(script: str, values: Mapping[str, str], part: str) -> str:
@@ -112,10 +114,6 @@ def checked_text(script: str, values: Mapping[str, str], part: str) -> str:
     if problems:
         raise PublishBlocked(part, [v.code for v in problems])
     return strip_child_tags(filled)
-
-
-def _key(track_id: str, version: int, language: str, part: str, digest: str) -> str:
-    return f"tracks/{track_id}/v{version}/{language}/{part}-{digest[:16]}.{FORMAT}"
 
 
 def publish_version(
@@ -166,6 +164,9 @@ def publish_version(
             )
 
     # 2. voice what is not already published, and build the manifest
+    classes = len(
+        next((c["class_ids"] for c in block()["cohorts"] if c["cohort_id"] == cohort_id), [])
+    )
     known_seconds: dict[str, float] = {}
     for old in db.execute(select(TrackManifest).where(TrackManifest.version_id == v.id)).scalars():
         for q in old.body.get("parts", []):
@@ -173,37 +174,34 @@ def publish_version(
                 known_seconds[q["audio_key"]] = float(q.get("seconds", 0.0))
     parts: list[dict[str, Any]] = []
     voiced = 0
+    text_only = 0
     for p in planned:
-        digest = hashlib.sha256(
-            json.dumps([p["text"], LESSON_VOICE, FORMAT, KBPS], ensure_ascii=False).encode()
-        ).hexdigest()
-        audio_key: str | None = None
-        size, seconds = 0, 0.0
+        digest = lesson_audio.digest(p["text"], p["language"])
+        audio: dict[str, Any] = {"audio_key": None, "mime": None, "bytes": 0, "seconds": 0.0}
         if p["kind"] == "lesson":
-            audio_key = _key(track.id, v.version, p["language"], p["part"], digest)
-            existing = store.size(audio_key)
-            if existing is None:
-                voice = Voice(speaker=LESSON_VOICE, pitch=1.0, pace=1.0)
-                clips = [speech.synthesize(c, p["language"], voice) for c in chunks(p["text"])]
-                data, seconds = encode(clips)
-                if seconds > MAX_LESSON_SECONDS:  # the content gate: a lesson over 5 minutes
-                    raise PublishBlocked(f"{p['part']} ({p['language']})", ["lesson_too_long"])
-                store.put(audio_key, data, MIME)
-                size = len(data)
-                voiced += 1
+            try:
+                rec = lesson_audio.voice_for_publish(
+                    db, store, speech, part_id=p["item"].item_id, track_id=track.id,
+                    cohort_id=cohort_id, cohort_classes=classes, version=v.version,
+                    language=p["language"], day=p["day"], text=p["text"],
+                )  # fmt: skip
+            except lessons.LessonAudioUnavailable as exc:
+                # every provider failed: the lesson is published as text, and can be voiced later
+                audio["audio_status"] = "text_only"
+                audio["audio_error"] = sorted(exc.reasons.values())[:3]
+                text_only += 1
             else:
-                size = existing
-                seconds = known_seconds.get(audio_key, 0.0)
+                if rec.seconds > MAX_LESSON_SECONDS:  # the content gate: a lesson over 5 minutes
+                    raise PublishBlocked(f"{p['part']} ({p['language']})", ["lesson_too_long"])
+                voiced += int(rec.audio_key not in known_seconds)
+                audio = lesson_audio.manifest_fields(rec)
         parts.append(
             {
                 "id": p["item"].item_id,
                 "kind": p["kind"],
                 "day": p["day"],
                 "language": p["language"],
-                "audio_key": audio_key,
-                "mime": MIME if audio_key else None,
-                "bytes": size,
-                "seconds": round(seconds, 1),
+                **audio,
                 "sha256": digest,
                 "script": p["text"],
                 "badge": p["item"].badge,
@@ -265,7 +263,12 @@ def publish_version(
             content_type="track",
             content_id=track.id,
             version=v.version,
-            detail={"cohort": cohort_id, "voiced": voiced, "parts": len(parts)},
+            detail={
+                "cohort": cohort_id,
+                "voiced": voiced,
+                "text_only": text_only,
+                "parts": len(parts),
+            },
         )
     )
     db.commit()

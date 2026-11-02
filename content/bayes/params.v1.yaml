@@ -1,0 +1,59 @@
+# 32-state Bayesian child model (docs/BAYESIAN-MODEL.md): every numeric parameter, as
+# {default, low, high, provenance}. low and high are the default +-30%, clipped to the valid range
+# (whole turns are rounded). Build defaults, not reviewed by an educator, not fitted to real children.
+# TODO-HUMAN(Seema): review every value. engine/bayes/content.py checks every one is present and in
+# range when SIMULATOR_MODEL=bayesian. BAYES_PARAMS can point to another file of the same shape.
+# The attention base and start come from the scenario's start_engagement, and the overhear share from
+# the scenario's overhear: they are not repeated here.
+version: 1
+params:
+  # Prior
+  p_P0:            {default: 0.6,   low: 0.42,   high: 0.78,   provenance: "build default, not reviewed by an educator"}  # P(place_value=1) at start
+  p_E0_P1:         {default: 0.4,   low: 0.28,   high: 0.52,   provenance: "build default, not reviewed by an educator"}  # P(exchange=1) at start if place_value=1
+  p_E0_P0:         {default: 0.1,   low: 0.07,   high: 0.13,   provenance: "build default, not reviewed by an educator"}  # P(exchange=1) at start if place_value=0
+  # Observer
+  r_diag:          {default: 0.85,  low: 0.595,  high: 1.0,    provenance: "build default, not reviewed by an educator"}  # trust in the diagnosed habit
+  obs_W0:          {default: 0.9,   low: 0.63,   high: 1.0,    provenance: "build default, not reviewed by an educator"}  # observer's starting P(written_step=0)
+  # Response
+  g0:              {default: 0.05,  low: 0.035,  high: 0.065,  provenance: "build default, not reviewed by an educator"}  # right by chance: habit, not P and E
+  g_PE:            {default: 0.25,  low: 0.175,  high: 0.325,  provenance: "build default, not reviewed by an educator"}  # right by reasoning: habit, P and E
+  slip:            {default: 0.05,  low: 0.035,  high: 0.065,  provenance: "build default, not reviewed by an educator"}  # wrong despite the written step
+  c_none:          {default: 0.2,   low: 0.14,   high: 0.26,   provenance: "build default, not reviewed by an educator"}  # right: no habit, no written step, not P and E
+  c_none_PE:       {default: 0.6,   low: 0.42,   high: 0.78,   provenance: "build default, not reviewed by an educator"}  # right: no habit, no written step, P and E
+  g_nm:            {default: 0.05,  low: 0.035,  high: 0.065,  provenance: "build default, not reviewed by an educator"}  # right: no method, item needs the step
+  c_nm_easy:       {default: 0.6,   low: 0.42,   high: 0.78,   provenance: "build default, not reviewed by an educator"}  # right: no method, item needs no step
+  # Priming
+  delta0:          {default: 0.3,   low: 0.21,   high: 0.39,   provenance: "build default, not reviewed by an educator"}  # priming strength on the demo turn
+  rho:             {default: 0.5,   low: 0.35,   high: 0.65,   provenance: "build default, not reviewed by an educator"}  # decay per turn
+  prime_window:    {default: 2,     low: 1,      high: 3,      provenance: "build default, not reviewed by an educator"}  # turns the priming lasts
+  # Learning
+  beta0:           {default: -4.0,  low: -5.2,   high: -2.8,   provenance: "build default, not reviewed by an educator"}  # intercept
+  beta_cov:        {default: 3.0,   low: 2.1,    high: 3.9,    provenance: "build default, not reviewed by an educator"}  # coverage weight
+  beta_fit:        {default: 1.5,   low: 1.05,   high: 1.95,   provenance: "build default, not reviewed by an educator"}  # fit weight
+  beta_scaf:       {default: 1.0,   low: 0.7,    high: 1.3,    provenance: "build default, not reviewed by an educator"}  # scaffolding weight
+  beta_att:        {default: 2.0,   low: 1.4,    high: 2.6,    provenance: "build default, not reviewed by an educator"}  # attention weight
+  beta_over:       {default: 1.0,   low: 0.7,    high: 1.3,    provenance: "build default, not reviewed by an educator"}  # overload weight
+  fit_E_noP:       {default: 0.3,   low: 0.21,   high: 0.39,   provenance: "build default, not reviewed by an educator"}  # fit for exchange when place_value=0
+  fit_W_noE:       {default: 0.3,   low: 0.21,   high: 0.39,   provenance: "build default, not reviewed by an educator"}  # fit for written_step when exchange=0
+  # Habit
+  gamma0:          {default: -3.0,  low: -3.9,   high: -2.1,   provenance: "build default, not reviewed by an educator"}  # intercept for breaking the habit
+  gamma_conf:      {default: 2.5,   low: 1.75,   high: 3.25,   provenance: "build default, not reviewed by an educator"}  # conflict weight
+  gamma_E:         {default: 1.0,   low: 0.7,    high: 1.3,    provenance: "build default, not reviewed by an educator"}  # exchange-idea weight
+  gamma_att:       {default: 1.5,   low: 1.05,   high: 1.95,   provenance: "build default, not reviewed by an educator"}  # attention weight
+  shift_rate:      {default: 0.15,  low: 0.105,  high: 0.195,  provenance: "build default, not reviewed by an educator"}  # habit shift probability under a rule drill
+  # Forgetting
+  h0_P:            {default: 0.005, low: 0.0035, high: 0.0065, provenance: "build default, not reviewed by an educator"}  # per-turn hazard, place_value
+  h0_E:            {default: 0.01,  low: 0.007,  high: 0.013,  provenance: "build default, not reviewed by an educator"}  # per-turn hazard, exchange
+  h0_W:            {default: 0.03,  low: 0.021,  high: 0.039,  provenance: "build default, not reviewed by an educator"}  # per-turn hazard, written_step
+  c0:              {default: 2.0,   low: 1.4,    high: 2.6,    provenance: "build default, not reviewed by an educator"}  # practice scale
+  # Attention
+  tau:             {default: 3.0,   low: 2.1,    high: 3.9,    provenance: "build default, not reviewed by an educator"}  # time constant, turns
+  K_push:          {default: 2.0,   low: 1.4,    high: 2.6,    provenance: "build default, not reviewed by an educator"}  # scale on the legacy engagement change
+  addressed_bonus: {default: 0.1,   low: 0.07,   high: 0.13,   provenance: "build default, not reviewed by an educator"}  # pull up when addressed directly
+  neglect:         {default: 0.15,  low: 0.105,  high: 0.195,  provenance: "build default, not reviewed by an educator"}  # pull down when not addressed
+  neglect_after:   {default: 3,     low: 2,      high: 4,      provenance: "build default, not reviewed by an educator"}  # turns before the neglect pull starts
+  overload_drag:   {default: 0.1,   low: 0.07,   high: 0.13,   provenance: "build default, not reviewed by an educator"}  # pull down per overload unit
+  # Overload
+  ov_window:       {default: 3,     low: 2,      high: 4,      provenance: "build default, not reviewed by an educator"}  # look-back window, turns
+  ov_free:         {default: 2,     low: 1,      high: 3,      provenance: "build default, not reviewed by an educator"}  # heavy moves allowed before overload
+  heavy_cov:       {default: 0.5,   low: 0.35,   high: 0.65,   provenance: "build default, not reviewed by an educator"}  # coverage that makes a move heavy

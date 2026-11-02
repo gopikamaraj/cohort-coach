@@ -53,25 +53,29 @@
  },
  {
   "bullet": "Impact potential",
-  "claim": "A pilot path is built and deployed: a coordinator uploads consented pre-test sheets, the system reads them, drafts lessons from the class counts, a coach approves, and the audio is shared.",
+  "claim": "The pilot runs in the same app a teacher uses: the real pre-test is imported on Papers (read from a PDF or an answered sheet, confirmed by a person), chosen in Enter check, whose sheets are read by the AI from the camera or a folder of pictures and approved one roll number at a time, and the error finder uses that paper's own key.",
   "code": [
-   "services/pilot/routes.py",
-   "services/pilot/sheets.py",
-   "services/pilot/lessons.py"
+   "services/papers_hub/importer.py",
+   "services/papers/keys.py",
+   "services/pilot_demo/api.py",
+   "apps/pwa/src/components/AddSheets.tsx"
   ],
   "criterion": "Efficacy and user centricity",
-  "demo": "Staff sign-in on the pilot server · Upload sheets, then Intervention audio",
+  "demo": "Teacher · Papers, From a PDF or an answered sheet; then Enter check, Add the sheets (camera or a folder of pictures)",
   "differs": [],
-  "feature": "Pilot mode",
+  "feature": "Papers import and Enter check, on the machine that holds the pilot folder",
   "id": "E1.3",
-  "limit": "Checked end to end with synthetic sheets (`docs/build/reports/PILOT-MODE.md`); no real class has used it yet.",
+  "limit": "Checked with a stand-in class; the real pilot answer file is a draft awaiting review, and the real pre-test has 15 items.",
   "slides": [
    10
   ],
   "status": "Built",
   "tests": [
-   "tests/pilot/test_full_pass.py",
-   "tests/pilot/test_uploads.py"
+   "tests/papers_hub/test_api.py",
+   "tests/papers/test_keys.py",
+   "tests/pilot_demo/test_api.py",
+   "apps/pwa/e2e/pilot-demo.spec.ts",
+   "apps/pwa/e2e/paper-flow.spec.ts"
   ],
   "video": []
  },
@@ -79,12 +83,15 @@
   "bullet": "Impact potential",
   "claim": "A real class has been taught with it and the next check shows whether children improved.",
   "code": [
-   "engine/evaluation.py"
+   "engine/evaluation.py",
+   "engine/checkpair.py",
+   "apps/pwa/src/components/BeforeAfter.tsx",
+   "scripts/pilot_results.py"
   ],
   "criterion": "Efficacy and user centricity",
-  "demo": "—",
+  "demo": "Teacher · My class, Before and after (demo class: Judge, Load a simulated class, Advance to Term 2, load again)",
   "differs": [],
-  "feature": "Pilot results",
+  "feature": "Pilot results and the before-and-after view",
   "id": "E1.5",
   "limit": "The method (extra fall and exact McNemar) is built and tested; no real class result exists yet.",
   "slides": [
@@ -92,7 +99,9 @@
   ],
   "status": "Roadmap",
   "tests": [
-   "tests/engine/test_evaluation_pilot.py"
+   "tests/engine/test_evaluation_pilot.py",
+   "tests/engine/test_checkpair.py",
+   "apps/pwa/e2e/checks.spec.ts"
   ],
   "video": []
  },
@@ -112,6 +121,30 @@
   "status": "Built",
   "tests": [
    "tests/flows/test_t4.py"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Impact potential",
+  "claim": "Two teachers' checks form a cohort, with the reason each class is in or out; lesson 1 goes to the coach and then out in each teacher's language; her answer after it (tried, partly, not yet) picks her next lesson by code; the cohort chat masks names and labels an AI reply; and the coach sees each cohort as counts with a timeline.",
+  "code": [
+   "services/cohort_run/service.py",
+   "services/cohort_run/formation.py",
+   "services/cohort_run/next_lesson.py",
+   "apps/pwa/src/screens/TwoClasses.tsx"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · #/two-classes (demo step 13), View as T1, T2, the coach, a mentor, the officer",
+  "differs": [],
+  "feature": "Two classes to a cohort",
+  "id": "E1.6",
+  "limit": "Runs on a simulated two-class scenario that copies the pilot's patterns, and in a local scripted pilot run (`tools/pilot/flow_run.py`, counts only in `docs/build/reports/FLOW-CHECK.md`). Two-class cohorts and counting a paper's only question of a kind are pilot and demo settings, off in production (DECISIONS 2026-11-01). The strategy library is still a draft awaiting review, and the Hindi and Tamil lines are unreviewed.",
+  "slides": [],
+  "status": "Simulated",
+  "tests": [
+   "tests/cohort_run/test_api.py",
+   "tests/cohort_run/test_rules.py",
+   "apps/pwa/e2e/two-classes.spec.ts"
   ],
   "video": []
  },
@@ -224,6 +257,31 @@
   "video": []
  },
  {
+  "bullet": "An intuitive interface",
+  "claim": "A judge runs the whole product in about 15 minutes on a made-up class: paper, sheets, AI reading and review, cohorts, the first lesson, Practice Class, the cohort chat, the coach and the officer, with a step bar, Reset, and every made-up thing labelled.",
+  "code": [
+   "services/demo/scenario.py",
+   "services/demo/cohorts.py",
+   "services/demo/live.py",
+   "apps/pwa/src/screens/DemoStudio.tsx",
+   "apps/pwa/src/components/DemoPanel.tsx",
+   "demo/scenarios/class_3a.yaml"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · Judge page, Run the demo flow",
+  "differs": [],
+  "feature": "Demo Studio",
+  "id": "E2.6",
+  "limit": "The class, the other classes, the mentor card and the post-test are simulated; the chat AI has no approved material yet, so a person answers.",
+  "slides": [],
+  "status": "Simulated",
+  "tests": [
+   "tests/demo/test_scenario.py",
+   "apps/pwa/e2e/demo.spec.ts"
+  ],
+  "video": []
+ },
+ {
   "bullet": "User constraints",
   "claim": "Everything except the Practice Class works offline: checks and results queue and send when signal returns.",
   "code": [
@@ -294,26 +352,24 @@
  },
  {
   "bullet": "User constraints",
-  "claim": "Teachers who live in chat get the same lessons and two taps in Telegram, from the same back end.",
+  "claim": "Teachers who live in chat will get the same lessons and two taps in Telegram, from the same back end.",
   "code": [
    "services/api/channels/telegram",
    "services/api/flows"
   ],
   "criterion": "Efficacy and user centricity",
-  "demo": "Judge · Telegram, /start judge",
+  "demo": "Not in the demo: read the adapter and its golden-transcript tests",
   "differs": [],
-  "feature": "Telegram adapter",
+  "feature": "Telegram adapter (not in the demo)",
   "id": "E3.4",
-  "limit": "The cohort-thread relay and voice replies in Telegram were cut (`docs/build/PARKING.md`).",
+  "limit": "The adapter is built in code and tested with recorded transcripts; no bot is deployed, so nothing here runs for a judge. The cohort-thread relay and voice replies were cut (`docs/build/PARKING.md`).",
   "slides": [],
-  "status": "Partly built",
+  "status": "Roadmap",
   "tests": [
    "tests/channels/test_t4_golden.py",
    "tests/channels/test_golden.py"
   ],
-  "video": [
-   "01:40"
-  ]
+  "video": []
  },
  {
   "bullet": "Proof of testing and refinement",
@@ -344,7 +400,7 @@
    "scripts/feedback_table.py"
   ],
   "criterion": "Efficacy and user centricity",
-  "demo": "Read `docs/feedback-log.md`",
+  "demo": "Read `docs/feedback-log.md`; live tester feedback and the changes made from it: Testing evidence, `docs/evidence/user_testing_snapshot.md`; AI reading of real pilot sheets against hand-keyed truth: `docs/evidence/pilot_reading_accuracy.md` (written by `python tasks.py pilot-ingest` once truth exists; absent until then)",
   "differs": [],
   "feature": "Feedback log",
   "id": "E4.2",
@@ -381,6 +437,29 @@
   "video": [
    "01:15"
   ]
+ },
+ {
+  "bullet": "Proof of testing and refinement",
+  "claim": "People who try the public demo can agree to share coarse usage and feedback (device-hashed, opt-in, nothing private); judges see the live counts, the feedback and the changes made because of it, with judge and team devices left out.",
+  "code": [
+   "services/tester/routes.py",
+   "services/tester/evidence.py",
+   "apps/pwa/src/screens/TestingEvidence.tsx"
+  ],
+  "criterion": "Efficacy and user centricity",
+  "demo": "Judge · guided tour, last step, or #/testing; read `docs/evidence/user_testing_snapshot.md`",
+  "differs": [],
+  "feature": "Tester stats and the Testing evidence view",
+  "id": "E4.4",
+  "limit": "Only as strong as the number of testers who join: the snapshot holds the real counts, and none are seeded. On only where `TESTER_STATS=1` (the public demo).",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/api/test_tester.py",
+   "apps/pwa/src/lib/tester.test.ts",
+   "apps/pwa/e2e/tester.spec.ts"
+  ],
+  "video": []
  },
  {
   "bullet": "A novel AI-centred approach",
@@ -516,7 +595,7 @@
   "differs": [],
   "feature": "Cohort space",
   "id": "I2.2",
-  "limit": "The Telegram relay of the thread was cut.",
+  "limit": "The Telegram relay of the thread is roadmap (cut).",
   "slides": [],
   "status": "Partly built",
   "tests": [
@@ -752,6 +831,7 @@
    "ai/validators/mask.py",
    "ai/validators/pii.py",
    "services/api/sheets.py",
+   "services/practice/session.py",
    "docs/privacy.md"
   ],
   "criterion": "Effective AI use and technical strength",
@@ -759,14 +839,15 @@
   "differs": [],
   "feature": "Privacy rules",
   "id": "A2.4",
-  "limit": "Pilot mode keeps the pre-test photos privately, with consent and a retention period (`CLAUDE.md`, rule 2).",
+  "limit": "No sheet photo is stored anywhere; the pilot class's sheets stay in a git-ignored folder on one machine (`CLAUDE.md`, rule 2).",
   "slides": [
    6
   ],
   "status": "Built",
   "tests": [
    "apps/pwa/e2e/stages.spec.ts",
-   "tests/practice/test_api.py"
+   "tests/practice/test_api.py",
+   "tests/practice/test_session.py"
   ],
   "video": []
  },
@@ -788,6 +869,153 @@
   "tests": [
    "tests/ai/test_judge_api.py",
    "apps/pwa/e2e/practice.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Check papers are made by code from approved rules, never by AI, and an independent verifier that shares no code with the generator re-checks every key, wrong answer, coverage and layout before anyone sees a paper.",
+  "code": [
+   "services/papers/generator.py",
+   "services/papers/verifier.py",
+   "services/papers/render.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Teacher · Papers, Create a paper, Generate from rules, A new paper, Make the paper",
+  "differs": [],
+  "feature": "Paper Studio: generator and verifier",
+  "id": "A2.6",
+  "limit": "A new paper is printed and marked by hand: entering its answers on the phone, and the photo reader checking its printed code, are parked.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/papers/test_generator.py",
+   "tests/papers/test_verifier.py",
+   "tests/papers/test_render.py",
+   "docs/evidence/paper_studio_verification.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "Paper rules are versioned and never edited in place; the author of a change cannot publish it; only papers that pass every check on published rules in reviewed wording are approved without a person, and one in five of those is spot-checked.",
+  "code": [
+   "services/papers/store.py",
+   "services/papers/models.py",
+   "services/api/papers.py",
+   "rules/paper-rules.v1.yaml"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Coach · Papers: review queue, paper rules, Test these rules",
+  "differs": [],
+  "feature": "Paper Studio: rules and approval",
+  "id": "A2.7",
+  "limit": "The rule editor is a read-only view with version history; changes are made by importing YAML through the API. The Hindi and Tamil wording waits for a reader of each language.",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/papers/test_store.py",
+   "tests/papers/test_papers_api.py",
+   "apps/pwa/e2e/papers.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "A teacher, mentor or coach creates and manages check papers on one Papers page: a list with status, source and whether cohorts formed (and why not), a detail page, assignments to a class or a cohort inside their scope, and Enter check only chooses a paper.",
+  "code": [
+   "services/papers_hub/service.py",
+   "services/papers_hub/api.py",
+   "apps/pwa/src/screens/Papers.tsx",
+   "apps/pwa/src/components/PaperHubParts.tsx",
+   "apps/pwa/src/lib/paperStatus.ts"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Teacher · Papers, Create a paper, Details, Assign; Enter check, Choose a paper",
+  "differs": [],
+  "feature": "Papers page",
+  "id": "A2.10",
+  "limit": "Built: the list, cohort reasons, the detail tabs (read only), assignments with scopes and counts-only progress, Assigned to you on Papers and in Enter check, archive. Edit (an imported paper in place; a generated paper as a reviewed new paper) and Delete (confirmed, refused while in use) are built. Not built: Duplicate as new version, an Assigned card on Home, reminders, the assistant preparing an assignment draft, and Generate 20 demo sheets on the Files tab. Roles are session headers until real role assignment (P12).",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/papers_hub/test_api.py",
+   "apps/pwa/src/lib/paperStatus.test.ts",
+   "apps/pwa/e2e/papers-hub.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "A paper already used can be brought in from a PDF or an answered sheet: the AI only reads the printed questions, code computes every key and probe, a printed key that differs is flagged, handwriting and names are ignored, the upload is deleted, and a person confirms every item.",
+  "code": [
+   "ai/prompts/c16_paper_read.v2.md",
+   "services/papers_hub/importer.py",
+   "services/papers_hub/service.py",
+   "apps/pwa/src/components/PaperImport.tsx"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Teacher · Papers, Create a paper, From a PDF or an answered sheet",
+  "differs": [],
+  "feature": "Papers page: import from PDF (call 16)",
+  "id": "A2.11",
+  "limit": "Tested on a recorded reader only: no live run on a real paper, so no accuracy claim. The layout map is always approximate (the exact Paper Studio map is not reused yet), keeping a sheet for a check is not offered, and Enter check scores an imported paper with its own key, worked out by code from its numbers.",
+  "slides": [],
+  "status": "Partly built",
+  "tests": [
+   "tests/papers_hub/test_importer.py",
+   "tests/papers_hub/test_api.py",
+   "tests/papers_hub/test_recorded_reader.py",
+   "apps/pwa/e2e/papers-hub.spec.ts"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Technical depth and guardrails",
+  "claim": "In the judge's demo, sheet 1 is read by a real AI call on a synthetic sheet (cached by the image's hash, capped per demo session); the other sheets load from a demo answer file and are labelled so; the reading summary counts AI reads of synthetic sheets only and is never shown as real-world accuracy.",
+  "code": [
+   "services/demo/api.py",
+   "services/demo/sheets.py",
+   "apps/pwa/src/components/DemoEntry.tsx",
+   "scripts/demo_evidence.py"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Judge · Run the demo flow, steps 3 to 6",
+  "differs": [],
+  "feature": "Demo Studio: reading and review",
+  "id": "A2.8",
+  "limit": "Synthetic handwriting only; real handwriting is measured on the hand-keyed set.",
+  "slides": [],
+  "status": "Simulated",
+  "tests": [
+   "tests/demo/test_demo_api.py",
+   "tests/demo/test_sheets.py",
+   "apps/pwa/e2e/demo.spec.ts",
+   "docs/evidence/demo_synthetic_reading.md"
+  ],
+  "video": []
+ },
+ {
+  "bullet": "Working in real scenarios",
+  "claim": "When the AI is unavailable, every AI feature says so, keeps the user's work and offers its non-AI path; replayed answers say Recorded AI answer.",
+  "code": [
+   "ai/client.py",
+   "ai/config.py",
+   "apps/pwa/src/lib/aiMode.ts",
+   "apps/pwa/src/components/parts.tsx"
+  ],
+  "criterion": "Effective AI use and technical strength",
+  "demo": "Judge · the header badge; any AI step of the demo",
+  "differs": [],
+  "feature": "AI modes (live, recorded, off)",
+  "id": "A3.5",
+  "limit": "A newly made demo sheet has no recording to replay in recorded mode, so it says so and Auto-fill carries on (`docs/build/reports/QA-DEMO.md`).",
+  "slides": [],
+  "status": "Built",
+  "tests": [
+   "tests/ai/test_client.py",
+   "apps/pwa/e2e/demo-path-ai-off.spec.ts",
+   "apps/pwa/e2e/demo-path.spec.ts"
   ],
   "video": []
  },

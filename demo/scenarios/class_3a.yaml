@@ -1,0 +1,38 @@
+# Demo scenario: one made-up Grade 3 class for the judge's demo flow. SIMULATED: no real child,
+# school or teacher. services/demo/scenario.py builds the class from it; the same seed always gives
+# the same children, answers, sheets and cohorts (tests/demo/test_scenario.py).
+id: class_3a
+class_code: 3A
+strength: 20
+language: en
+medium: english
+grade: 3
+seed: 2026
+form: A # the pilot paper (Form A): the paper the phone scores
+
+# How many children carry each hidden error. The child model (data/synthetic/block.py) then writes
+# each answer: the error's wrong answer most of the time, an occasional slip, else the right one.
+# Two errors sit above the 25% line (SUB-SFL, ADD-NOCARRY); PV-HEARD sits below it on purpose.
+plant:
+  SUB-SFL: 9
+  ADD-NOCARRY: 7
+  PV-HEARD: 3
+
+# Sheets made hard to read, by roll number: the answer file gives these a low confidence.
+hard_cases:
+  smudge: 6 # one answer smudged
+  crossed: 11 # one answer crossed out and written again
+  blank: 15 # one answer left empty
+marks_share: 0.4 # children who write small carry and borrow marks
+
+# The other classes, simulated after her check (class-level counts only).
+other_classes:
+  schools: 8
+  classes_per_school: 3
+  seed: 2026
+  dominant_weights: { PV-HEARD: 0.30, ADD-NOCARRY: 0.30, SUB-SFL: 0.40, SUB-NODEC: 0.0, PV-REVERSE: 0.0, none: 0.0 }
+split_seed: 114 # the real waitlist split (this term or next); this seed starts her class this term
+
+# Optional step 12: the post-test after the track. The share of children whose error goes.
+post:
+  fixed_share: { SUB-SFL: 0.6, ADD-NOCARRY: 0.15, PV-HEARD: 0.3 }

@@ -46,3 +46,24 @@ export async function forgetLesson(url: string, deps: LessonAudioDeps = realDeps
   if (!deps.caches) return;
   await (await deps.caches.open(CACHE_NAME)).delete(url);
 }
+
+/** What the server tells the player about a lesson's audio (services/api/flows/t4.py). */
+export interface AudioInfo {
+  bytes: number;
+  seconds: number;
+  sentences: string[];
+  timing: { i: number; start: number; end: number }[];
+  ai_voice: boolean;
+}
+
+/** The sentence being said at `t` seconds, or null in a pause or outside the audio. */
+export function sentenceAt(timing: AudioInfo["timing"], t: number): number | null {
+  for (const s of timing) if (t >= s.start && t < s.end) return s.i;
+  return null;
+}
+
+/** A file size as "1.2 MB" or "350 KB" (a count, for the Save button). */
+export function sizeLabel(bytes: number): string {
+  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(bytes / 1000))} KB`;
+}

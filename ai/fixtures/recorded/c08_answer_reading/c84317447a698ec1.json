@@ -1,0 +1,39 @@
+{
+  "call": "c08_answer_reading",
+  "model": "claude-haiku-5-5",
+  "outputs": [
+    {
+      "confidences": [
+        0.95,
+        0.93,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9
+      ],
+      "reads": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ]
+    }
+  ],
+  "prompt_version": 1,
+  "usage": {
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 1104,
+    "input_tokens": 2148,
+    "output_tokens": 76
+  }
+}

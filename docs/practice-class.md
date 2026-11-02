@@ -178,6 +178,24 @@ Recorded here because they changed the build; numbers are in `docs/evidence/eval
 - The red team found a Hinglish role-reversal line labelled `other` instead of `off_task`. The child stayed in role and nothing changed, but the labeller prompt (v3) now lists off-task examples in four languages.
 - Latency: three serial calls (label, child line, check) put the median text turn above the 3 s target. The plan: in voice mode the checker runs while the speech is synthesised (P07), so its time is hidden; the API server will sit near the Claude endpoint (P15); an A/B with Haiku for call 1 was slower and is not adopted. Text mode stays over target until then, and the Practice Class degrades to templates when a call times out.
 
+## One to three children speak, and the room overhears (31 Oct 2026)
+
+- **Who speaks.** The engine picks one to three children each turn: the child she named first, then others chosen by engagement. The shy child speaks only when named and a child who went quiet stays out. The first speaker is made exactly as before; the others answer the problem on the board in their own words from the engine's templates (their answer is right or wrong by the same bug function) or agree, thank or say they are lost. They never use the AI.
+- **Who hears.** Every child in the class hears what the teacher says to one child. The named child gets the full effect of the move on her error strength and engagement; the others get `overhear` (0.5 in the scenario files) of it. Scolding makes only the child it was aimed at go quiet.
+- **Speed switches (.env).** `PRACTICE_SKIP_CHECKER=1` skips call 7 on a child's line; the validators and pre-filter still run. `PRACTICE_AI_INTENTS=explain,work_aloud` sends only explanations to call 1; any other line is a template. Both are off by default. Decision: `docs/build/DECISIONS.md` (2026-10-31).
+
+## Voice through the speech layer (1 Nov 2026, branch `speech-bodhan`)
+
+Speech goes through the provider chain (`services/speech/chain.py`): Bodhan AI first, Sarvam as the fallback (Prompt 3 of `docs/build/bodhan-speech-prompts.md`; report `docs/build/reports/SPEECH-PRACTICE.md`).
+
+- **In.** The phone records in the format it supports (`MediaRecorder.isTypeSupported`) and sends the file as recorded. A timer counts to 25 s and the recording stops by itself at 25 s, with a message. The server converts to 16 kHz mono WAV, trims silence, never sends more than 28 s in one request, passes the session language, and drops the audio once the text exists. Silence or a very short clip is never sent or scored.
+- **Masking.** The transcript and typed lines are masked before calls 1 to 3 (`mask_personal`, keeping the five pretend children's names); this was already in place and is tested by `tests/practice/test_session.py::test_a_real_childs_name_is_masked_before_any_model_call_but_the_pretend_children_keep_theirs`.
+- **Out.** Each child keeps one Bodhan voice for the session, chosen by seat and the persona's gender from `content/voices.yaml` (distinct from the lesson narrator), with her Sarvam voice as the fallback. The engine's mood sets the style by code: bright to happy, small to sad, the others to the voice's neutral reading. A child's line is at most 120 characters (a gate check). Speech is still started in parallel with call 7 and released only on pass; chorus lines are voiced in parallel; a failure leaves that child's line as text.
+- **Failures and caps.** A failed line is text only and the next turn tries again; after two failures in a row (no audio, or the first provider failing so a fallback answered) the session moves to the next provider for the rest of it. Each session has a speech allowance (`SPEECH_SESSION_MAX_STT_SECONDS`, `SPEECH_SESSION_MAX_TTS_CHARS`); when it is used, "Voice is off for the rest of this practice. The text continues."
+- **Rate limit.** Bodhan's default allowance is about 8 requests a minute per model, so a live turn waits at most `BODHAN_LIVE_PACE_MAX_WAIT_S` (2 s) for it before Sarvam speaks instead.
+- **Cache.** Lines are cached in memory and in the private audio store (`line-cache/`); `python tasks.py practice-pregen` voices the engine's template lines ahead of time. `scripts/voice_audition.py` makes a listening page to choose the voices.
+- **Timing.** Every voice turn records each stage and the provider in `layers.evaluation.timing`; `scripts/practice_voice_latency.py` reports medians and 95th percentiles (mock, or `--live --yes`).
+
 ## Files
 
 `engine/simulator.py` (pure), `services/practice/` (content, templates, session, stub), `ai/calls/c01…c03*.py`, `services/api/practice.py`, `scripts/practice_cli.py`, `content/{movelists,rubrics,scenarios,personas,templates,schemas}`, `evals/runners/sim_fidelity.py`, `evals/sets/sim_fidelity/`.
@@ -200,7 +218,7 @@ In judge mode the Practice Class has more than free typing. Real teachers never 
 | --- | --- | --- |
 | Watch | An AI plays the teacher in an experienced or a struggling style, then the normal feedback card shows. Both runs can sit side by side. Playback has pause, step, 2× and skip to feedback. | `#/watch` (`services/practice/watch.py`) |
 | Try with hints | Each turn offers three replies built by code from the move list (a strong move, a common mistake, a neutral line), shuffled, with no label until the move tag shows. | Practice Class (`services/practice/hints.py`) |
-| Try to break it | Four prepared bad lines run through the real pre-filter; the reason is shown in her language. | Practice Class and the AI map (`POST /api/judge/try-break`) |
+| Try to break it | Four prepared bad lines, or a line the visitor types, run through the real pre-filter (a typed line is not stored, logged or sent to a model); the reason, or "Passed", is shown in her language. | Practice Class and the AI map (`POST /api/judge/try-break`) |
 
 Every teacher line in Watch says "AI playing the teacher (demo only)" (call 10). Every child line has an English subtitle (call 1 prompt v3; the digits in both lines must match). Each turn shows a move tag, a confusion meter per child (a word and a bar from the engine's strength) and, on request, "Show the machinery": what code decided, which AI call ran and which checks passed.
 

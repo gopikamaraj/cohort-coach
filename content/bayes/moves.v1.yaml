@@ -1,0 +1,28 @@
+# 32-state Bayesian child model (docs/BAYESIAN-MODEL.md): what each move teaches. One entry per move
+# id in every legacy move list (content/movelists/). Build defaults, not reviewed by an educator.
+# TODO-HUMAN(Seema): review every value.
+#   cov_P, cov_E, cov_W  coverage of place value, the exchange idea and the written step (0 to 1)
+#   scaf                 scaffolding: how much the child does the thinking (0 to 1)
+#   conf                 conflict: how visibly the move makes the old habit fail (0 to 1)
+#   demo                 a worked demonstration, which primes the next answers
+#   rule_drill           drills the rule without the idea
+# The engagement change is read from the legacy move list, not repeated here. `other` and `off_task`
+# are neutral (only the turn counter changes) and are not listed.
+version: 1
+provenance: build default, not reviewed by an educator
+moves:
+  pose_problem:       {cov_P: 0.0, cov_E: 0.0, cov_W: 0.1, scaf: 0.3, conf: 0.0, demo: false, rule_drill: false}
+  ask_explain:        {cov_P: 0.2, cov_E: 0.3, cov_W: 0.2, scaf: 0.9, conf: 0.3, demo: false, rule_drill: false}
+  show_bundles:       {cov_P: 0.6, cov_E: 0.9, cov_W: 0.3, scaf: 0.5, conf: 0.2, demo: true, rule_drill: false}
+  exchange_ten:       {cov_P: 0.3, cov_E: 0.9, cov_W: 0.5, scaf: 0.5, conf: 0.2, demo: true, rule_drill: false}
+  regroup_ten:        {cov_P: 0.3, cov_E: 0.9, cov_W: 0.5, scaf: 0.5, conf: 0.2, demo: true, rule_drill: false}
+  decomposition:      {cov_P: 0.8, cov_E: 0.5, cov_W: 0.3, scaf: 0.6, conf: 0.2, demo: true, rule_drill: false}
+  compensation:       {cov_P: 0.5, cov_E: 0.3, cov_W: 0.2, scaf: 0.5, conf: 0.1, demo: true, rule_drill: false}
+  show_chart:         {cov_P: 0.9, cov_E: 0.3, cov_W: 0.4, scaf: 0.4, conf: 0.2, demo: true, rule_drill: false}
+  check_back:         {cov_P: 0.1, cov_E: 0.2, cov_W: 0.4, scaf: 0.8, conf: 0.8, demo: false, rule_drill: false}
+  order_probe:        {cov_P: 0.3, cov_E: 0.2, cov_W: 0.2, scaf: 0.8, conf: 0.9, demo: false, rule_drill: false}
+  tell_rule:          {cov_P: 0.0, cov_E: 0.0, cov_W: 0.6, scaf: 0.0, conf: 0.1, demo: false, rule_drill: true}
+  repeat_rule_louder: {cov_P: 0.0, cov_E: 0.0, cov_W: 0.3, scaf: 0.0, conf: 0.0, demo: false, rule_drill: true}
+  give_the_answer:    {cov_P: 0.0, cov_E: 0.0, cov_W: 0.0, scaf: 0.0, conf: 0.0, demo: false, rule_drill: false}
+  praise:             {cov_P: 0.0, cov_E: 0.0, cov_W: 0.0, scaf: 0.0, conf: 0.0, demo: false, rule_drill: false}
+  scold:              {cov_P: 0.0, cov_E: 0.0, cov_W: 0.0, scaf: 0.0, conf: 0.0, demo: false, rule_drill: false}

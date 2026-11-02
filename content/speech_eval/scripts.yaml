@@ -1,0 +1,77 @@
+# The listening test pack (Prompt 4): 20 scripts per language. 10 lesson sentences with numbers,
+# sums such as "703 minus 468", and mixed English maths words (borrow, regroup); 10 child lines,
+# two in each mood. Made-up content: no real child, teacher or school.
+# TODO-HUMAN(Seema: Hindi, Gopi: Tamil): check the wording before the pack is used with raters.
+version: 1
+key_terms:
+  en: [borrow, regroup, ten, bundle, tens, ones, carry]
+  hi: [borrow, regroup, दस, गट्ठर, दहाई, इकाई, carry]
+  ta: [borrow, regroup, பத்து, கட்டு, பத்துகள், ஒன்றுகள், carry]
+lesson:
+  en:
+    - "Today we look at 703 minus 468, a sum where we must borrow twice."
+    - "Write 52 minus 29 on the board and ask who can solve it."
+    - "If a child writes 37, ask her to check by adding back 29."
+    - "Show 52 as 5 bundles of ten and 2 loose sticks."
+    - "Open one bundle: now there are 4 bundles and 12 loose sticks."
+    - "When we regroup, one ten becomes ten ones."
+    - "Try 74 minus 46 next, and say each step aloud."
+    - "Sixty-two is 6 tens and 2 ones, not 602."
+    - "Count the carried ten: 47 plus 25 is 72."
+    - "Five hundred and twenty-seven has 5 hundreds, 2 tens and 7 ones."
+  hi:
+    - "आज हम 703 में से 468 घटाना देखेंगे, जिसमें दो बार borrow करना होता है।"
+    - "बोर्ड पर 52 में से 29 लिखिए और पूछिए कि कौन हल करेगा।"
+    - "अगर बच्चा 37 लिखे, तो उससे 29 जोड़कर जाँचने को कहिए।"
+    - "52 को दस-दस के 5 गट्ठर और 2 खुली तीलियों से दिखाइए।"
+    - "एक गट्ठर खोलिए: अब 4 गट्ठर और 12 खुली तीलियाँ हैं।"
+    - "जब हम regroup करते हैं, तो एक दहाई दस इकाई बन जाती है।"
+    - "अब 74 में से 46 करके देखिए, और हर कदम ज़ोर से बोलिए।"
+    - "बासठ में 6 दहाई और 2 इकाई हैं, 602 नहीं।"
+    - "carry वाली दहाई गिनिए: 47 और 25 मिलकर 72 होते हैं।"
+    - "पाँच सौ सत्ताईस में 5 सैकड़े, 2 दहाई और 7 इकाई हैं।"
+  ta:
+    - "இன்று 703 இலிருந்து 468 கழிப்பதைப் பார்ப்போம், இதில் இரண்டு முறை borrow செய்ய வேண்டும்."
+    - "பலகையில் 52 கழித்தல் 29 என்று எழுதி, யார் தீர்ப்பார்கள் என்று கேளுங்கள்."
+    - "குழந்தை 37 என்று எழுதினால், 29 ஐக் கூட்டிச் சரிபார்க்கச் சொல்லுங்கள்."
+    - "52 ஐ 5 பத்துக் கட்டுகளாகவும் 2 தனிக் குச்சிகளாகவும் காட்டுங்கள்."
+    - "ஒரு கட்டைப் பிரியுங்கள்: இப்போது 4 கட்டுகளும் 12 தனிக் குச்சிகளும் உள்ளன."
+    - "நாம் regroup செய்யும்போது, ஒரு பத்து பத்து ஒன்றுகளாக மாறுகிறது."
+    - "அடுத்து 74 கழித்தல் 46 செய்து பாருங்கள், ஒவ்வொரு படியையும் உரக்கச் சொல்லுங்கள்."
+    - "அறுபத்து இரண்டு என்பது 6 பத்துகளும் 2 ஒன்றுகளும், 602 அல்ல."
+    - "carry செய்த பத்தை எண்ணுங்கள்: 47 கூட்டல் 25 என்பது 72."
+    - "ஐந்நூற்று இருபத்து ஏழு இல் 5 நூறுகள், 2 பத்துகள், 7 ஒன்றுகள் உள்ளன."
+child:
+  en:
+    - {mood: bright, text: "I got it! 52 minus 29 is 23!"}
+    - {mood: bright, text: "Yes Miss, I opened a bundle, so 12 ones."}
+    - {mood: small, text: "Sorry Miss, I wrote 37 again."}
+    - {mood: small, text: "I don't know how to do 74 minus 46."}
+    - {mood: calm, text: "First I take 9 from 12, that is 3."}
+    - {mood: calm, text: "Then 4 tens minus 2 tens is 2 tens."}
+    - {mood: flat, text: "Is it 34?"}
+    - {mood: flat, text: "I took 2 from 9."}
+    - {mood: doubtful, text: "37 plus 29 is 66? That is not 52."}
+    - {mood: doubtful, text: "Maybe I have to borrow?"}
+  hi:
+    - {mood: bright, text: "मुझे आ गया! 52 में से 29 घटाने पर 23!"}
+    - {mood: bright, text: "हाँ दीदी, मैंने गट्ठर खोला, तो 12 इकाई।"}
+    - {mood: small, text: "माफ़ कीजिए दीदी, मैंने फिर 37 लिखा।"}
+    - {mood: small, text: "मुझे 74 में से 46 करना नहीं आता।"}
+    - {mood: calm, text: "पहले 12 में से 9 घटाया, तो 3।"}
+    - {mood: calm, text: "फिर 4 दहाई में से 2 दहाई, तो 2 दहाई।"}
+    - {mood: flat, text: "क्या 34 है?"}
+    - {mood: flat, text: "मैंने 9 में से 2 घटाया।"}
+    - {mood: doubtful, text: "37 और 29 मिलकर 66? यह तो 52 नहीं है।"}
+    - {mood: doubtful, text: "शायद borrow करना पड़ेगा?"}
+  ta:
+    - {mood: bright, text: "எனக்குப் புரிந்துவிட்டது! 52 கழித்தல் 29 என்பது 23!"}
+    - {mood: bright, text: "ஆமாம் டீச்சர், ஒரு கட்டைப் பிரித்தேன், 12 ஒன்றுகள்."}
+    - {mood: small, text: "மன்னிக்கவும் டீச்சர், மீண்டும் 37 என்று எழுதினேன்."}
+    - {mood: small, text: "74 கழித்தல் 46 எப்படிச் செய்வது என்று தெரியவில்லை."}
+    - {mood: calm, text: "முதலில் 12 இலிருந்து 9 கழித்தேன், 3 வந்தது."}
+    - {mood: calm, text: "பிறகு 4 பத்துகள் கழித்தல் 2 பத்துகள், 2 பத்துகள்."}
+    - {mood: flat, text: "34 ஆ?"}
+    - {mood: flat, text: "9 இலிருந்து 2 கழித்தேன்."}
+    - {mood: doubtful, text: "37 கூட்டல் 29 என்பது 66? அது 52 இல்லையே."}
+    - {mood: doubtful, text: "ஒருவேளை borrow செய்ய வேண்டுமோ?"}

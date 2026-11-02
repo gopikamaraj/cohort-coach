@@ -1,0 +1,17 @@
+# Which screens each role can reach: the assistant must offer questions written for the screen the
+# person is on, in their role. The key is the screen name the app sends (`landing` is the role
+# picker, `#/roles`; every other name is the route, such as `papers` for `#/papers`).
+# scripts/check_assistant_questions.py reads this file before every deploy: each role must have at
+# least `min_questions` questions written for each of its screens, and every route of the app must
+# be named under at least one role. Tabs per role come from apps/pwa/src/App.tsx.
+min_questions: 2
+roles:
+  teacher: [landing, home, papers, check, cards, practice, programme, history, profile, privacy]
+  mentor: [landing, mentor, home, papers, check, cards, practice, programme, history, profile, cohort]
+  coach: [landing, coach, review, papers, cohort, profile]
+  officer: [landing, officer, review, profile]
+  judge: [landing, judge, demo, two-classes, home, papers, check, cards, practice, programme, history,
+          coach, review, cohort, mentor, officer, admin, profile, privacy, aimap, audit, testing,
+          tour, watch, assistant, flow]
+# Routes that are not screens of their own for questions (a sub-view reached from another screen).
+not_screens: []

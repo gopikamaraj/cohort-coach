@@ -135,3 +135,36 @@ def test_the_audit_row_holds_metadata_only_and_nothing_is_logged(
     blob = " ".join(r.getMessage() for r in caplog.records)
     assert base64.b64encode(PNG).decode()[:40] not in blob
     assert not any(a in blob for a in ("346", "728"))
+
+
+def test_the_header_the_reader_saw_comes_back_to_the_phone(make_client: Any) -> None:
+    from ai.schemas import SheetHeader
+
+    reply = good()
+    reply.header = SheetHeader(class_code="3A", roll_number=7, confidence=0.9)
+    client, _ = make_client(reply)
+    body = post(client).json()
+    assert body["header"] == {"class_code": "3A", "roll_number": 7, "confidence": 0.9}
+
+
+def test_no_header_is_null_and_the_file_hash_is_sent_only_when_it_is_valid(
+    make_client: Any,
+) -> None:
+    client, fake = make_client(good(), good())
+    res = client.post(
+        "/api/sheets/read",
+        files={"image": ("s.png", PNG, "image/png")},
+        data={"form": "A", "sha256": "ab" * 32},
+    )
+    assert res.status_code == 200 and res.json()["header"] is None
+    bad = client.post(
+        "/api/sheets/read",
+        files={"image": ("s.png", PNG, "image/png")},
+        data={"form": "A", "sha256": "not-a-hash"},
+    )
+    assert bad.status_code == 200
+    texts = [
+        " ".join(p["text"] for p in c["messages"][0]["content"] if p["type"] == "text")
+        for c in fake.messages.calls
+    ]
+    assert "file_sha256" in texts[0] and "file_sha256" not in texts[1]

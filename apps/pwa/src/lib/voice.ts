@@ -1,6 +1,8 @@
 // Voice for the Practice Class: when to use it, how a recording is sent, how a reply is played.
 // Only the recording of her own voice goes out (to be turned into text and dropped); nothing
 // is stored. Two failures in a row, or a 2g connection, switch her to typing without asking.
+import { runAction } from "./action";
+import { track } from "./tester";
 import { API_BASE } from "./api";
 import { PracticeError, type TurnResponse } from "./practice";
 
@@ -61,11 +63,18 @@ export interface VoiceTurn extends TurnResponse {
   audio: string | null;
   audio_mime: string | null;
   speech_mode: string;
+  /** This practice's speech allowance is used: the text continues, voice is off. */
+  voice_off?: boolean;
 }
 
 const TIMEOUT_MS = 30_000;
 
-export async function postVoiceTurn(
+/** One practice turn by voice is one action: the cost and time of the last one show in the footer. */
+export function postVoiceTurn(sessionId: string, clip: Blob, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<VoiceTurn> {
+  return runAction("practice_turn", () => voiceTurnCall(sessionId, clip, fetchFn));
+}
+
+async function voiceTurnCall(
   sessionId: string,
   clip: Blob,
   fetchFn: typeof fetch = (...a) => fetch(...a),
@@ -88,8 +97,9 @@ export async function postVoiceTurn(
   if (res.ok) return (await res.json()) as VoiceTurn;
   if (res.status === 503) {
     const body = (await res.json().catch(() => ({}))) as {
-      detail?: { text_mode?: boolean };
+      detail?: { text_mode?: boolean; voice_off?: boolean };
     };
+    if (body.detail?.voice_off) throw new PracticeError("voice_off", 503); // not a failure: the allowance is used
     throw new PracticeError(body.detail?.text_mode ? "voice" : "paused", 503);
   }
   if (res.status === 422) throw new PracticeError("unheard", 422); // silence: ask again, not a failure
@@ -101,6 +111,7 @@ export async function postVoiceTurn(
 
 /** Play a base64 reply. Resolves when it ends; a blocked or broken play resolves too (the text is there). */
 export function playReply(b64: string, mime: string): Promise<void> {
+  track("feature_used", { feature_id: "voice_play" });
   return new Promise((resolve) => {
     const audio = new Audio(`data:${mime};base64,${b64}`);
     audio.onended = () => resolve();

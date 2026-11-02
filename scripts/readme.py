@@ -24,18 +24,30 @@ END = "<!-- AI-USED:END -->"
 
 
 def render() -> str:
+    built = [c for c in CALLS if c.built]
+    planned = [c for c in CALLS if not c.built]
     lines = [
-        "Eight Claude calls, each loaded from a versioned prompt in `ai/prompts/` and run through "
-        "one path (`ai/client.py`): structured output, prompt caching, bounded retries, a "
-        "deterministic fallback and one audit row. Everything below is read from `ai/registry.py`.",
+        f"{len(built)} Claude calls are built, each loaded from a versioned prompt in "
+        "`ai/prompts/` and run through one path (`ai/client.py`): structured output, prompt "
+        "caching, bounded retries, a deterministic fallback and one audit row. "
+        + (
+            f"{len(planned)} more are specified but not built yet (calls "
+            + " and ".join(str(c.id) for c in planned)
+            + "): they have a prompt and a schema, and no code calls them. "
+            if planned
+            else ""
+        )
+        + "Everything below is read from `ai/registry.py`.",
         "",
         "| # | Call | Model | When |",
         "| --- | --- | --- | --- |",
     ]
     for c in CALLS:
-        lines.append(f"| {c.id} | {c.name} | `{c.model}` | {c.when} |")
+        name = c.name if c.built else f"{c.name} (planned, not built)"
+        lines.append(f"| {c.id} | {name} | `{c.model}` | {c.when} |")
     for c in CALLS:
-        lines += ["", f"**Call {c.id}: {c.name}.** {c.purpose}", ""]
+        status = "" if c.built else " *Planned, not built: no code calls it yet.*"
+        lines += ["", f"**Call {c.id}: {c.name}.** {c.purpose}{status}", ""]
         lines += [f"- *{layer}*: {text}" for layer, text in c.layers.items()]
     lines += [
         "",

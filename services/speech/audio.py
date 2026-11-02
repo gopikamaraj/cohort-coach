@@ -197,3 +197,141 @@ def join_to_file(
         if done.returncode != 0 or not out.exists():
             raise SpeechError("bad_request", 0, "ffmpeg_failed")
         return out.read_bytes(), seconds
+
+
+# --- The speech layer's helpers (Bodhan and Sarvam). Unit-tested with tones and silence only. ---
+
+STT_MAX_SECONDS = MAX_CHUNK_SECONDS  # never send more than 28 s in one request (both limits are 30)
+
+
+def to_wav_16k_mono(audio: bytes) -> bytes:
+    """Whatever a phone records (WebM, M4A, OGG, MP3, WAV) -> 16 kHz mono 16-bit WAV. Bodhan refuses
+    WebM and M4A (415), so speech to text always goes through this first. The WAV is rewritten so
+    its header carries the true length: ffmpeg writing to a pipe leaves it unset, and a service that
+    meters by duration would read a huge clip."""
+    samples, rate = _samples(to_wav16k(audio))
+    return _wav_bytes(samples, rate)
+
+
+def duration_seconds(wav: bytes) -> float:
+    """The real length of a WAV. Reads the fmt and data chunks itself, and when the data chunk's
+    size is missing or wrong (streamed WAVs leave it 0 or 0xFFFFFFFF) uses the bytes present."""
+    if len(wav) < 12 or wav[:4] != b"RIFF" or wav[8:12] != b"WAVE":
+        raise SpeechError("bad_request", 0, "not_wav")
+    pos, rate, block = 12, 0, 0
+    while pos + 8 <= len(wav):
+        cid, size = wav[pos : pos + 4], int.from_bytes(wav[pos + 4 : pos + 8], "little")
+        body = pos + 8
+        if cid == b"fmt ":
+            channels = int.from_bytes(wav[body + 2 : body + 4], "little")
+            rate = int.from_bytes(wav[body + 4 : body + 8], "little")
+            bits = int.from_bytes(wav[body + 14 : body + 16], "little")
+            block = max(1, channels * bits // 8)
+        elif cid == b"data":
+            present = len(wav) - body
+            data = present if size in (0, 0xFFFFFFFF) or size > present else size
+            return data / block / rate if rate else 0.0
+        pos = body + size + (size & 1)
+    return 0.0
+
+
+def _frame_energy(samples: np.ndarray, frame: int) -> np.ndarray:
+    n = len(samples) // frame
+    if n == 0:
+        return np.zeros(0)
+    x = samples[: n * frame].reshape(n, frame).astype(np.float64)
+    return np.sqrt(np.mean(x**2, axis=1))
+
+
+def trim_silence(
+    wav: bytes, *, threshold: float = 500.0, keep_ms: int = 150, max_pause_ms: int = 600
+) -> bytes:
+    """Cut the silence before the first and after the last sound (keeping `keep_ms` either side),
+    and shorten any pause longer than `max_pause_ms` to that length. Fewer seconds billed; nothing
+    that is louder than `threshold` (RMS of 16-bit samples, about -36 dBFS) is removed."""
+    samples, rate = _samples(wav)
+    frame = int(rate * FRAME_MS / 1000)
+    energy = _frame_energy(samples, frame)
+    loud = np.flatnonzero(energy >= threshold)
+    if len(loud) == 0:
+        return _wav_bytes(samples[:0], rate)  # nothing but silence
+    keep, max_pause = keep_ms // FRAME_MS, max_pause_ms // FRAME_MS
+    first, last = max(0, loud[0] - keep), min(len(energy), loud[-1] + 1 + keep)
+    out: list[np.ndarray] = []
+    quiet_run = 0
+    for i in range(first, last):
+        if energy[i] >= threshold:
+            quiet_run = 0
+        else:
+            quiet_run += 1
+            if quiet_run > max_pause:
+                continue
+        out.append(samples[i * frame : (i + 1) * frame])
+    tail = samples[last * frame :] if last == len(energy) else np.zeros(0, dtype=np.int16)
+    return _wav_bytes(np.concatenate([*out, tail]) if out else samples[:0], rate)
+
+
+def split_for_stt(
+    wav: bytes, max_seconds: float = STT_MAX_SECONDS, *, threshold: float = 500.0
+) -> list[bytes]:
+    """Pieces of at most `max_seconds`. Each cut is at the quietest silent frame (RMS below
+    `threshold`) in the second half of the window; when there is no silence there, the cut is at the
+    limit. Together the pieces hold every sample of the input, in order."""
+    samples, rate = _samples(wav)
+    limit = int(max_seconds * rate)
+    frame = int(rate * FRAME_MS / 1000)
+    pieces: list[bytes] = []
+    start = 0
+    while len(samples) - start > limit:
+        lo, hi = start + limit // 2, start + limit
+        energy = _frame_energy(samples[lo:hi], frame)
+        quiet = np.flatnonzero(energy < threshold)
+        if len(quiet):
+            best = quiet[np.argmin(energy[quiet])]
+            cut = min(lo + int(best) * frame + frame // 2, hi)
+        else:
+            cut = hi
+        pieces.append(_wav_bytes(samples[start:cut], rate))
+        start = cut
+    pieces.append(_wav_bytes(samples[start:], rate))
+    return pieces
+
+
+def wav_to_mp3(wav: bytes, kbps: int = 48, mono: bool = True) -> bytes:
+    """MP3 for stored lessons and offline downloads (48 kbps mono by default)."""
+    args = ["-i", "pipe:0"]
+    if mono:
+        args += ["-ac", "1"]
+    return _run([*args, "-c:a", "libmp3lame", "-b:a", f"{kbps}k", "-f", "mp3", "pipe:1"], wav, 60.0)
+
+
+def loudness_normalise(wav: bytes, target_lufs: float = -16.0) -> bytes:
+    """EBU R128 loudness normalisation to about `target_lufs`, keeping the sample rate."""
+    _, rate = _samples(wav)
+    return _run(
+        [
+            "-i", "pipe:0", "-af", f"loudnorm=I={target_lufs:g}:TP=-1.5:LRA=11", "-ar", str(rate),
+            "-ac", "1", "-f", "wav", "pipe:1",
+        ],
+        wav,
+        60.0,
+    )  # fmt: skip
+
+
+def concat(pieces: list[bytes], gap_ms: int = 250) -> bytes:
+    """Join WAV pieces with `gap_ms` of silence between them. All pieces must share a sample
+    rate."""
+    if not pieces:
+        raise ValueError("nothing to join")
+    decoded = [_samples(p) for p in pieces]
+    rates = {r for _, r in decoded}
+    if len(rates) != 1:
+        raise ValueError(f"pieces have different sample rates: {sorted(rates)}")
+    rate = rates.pop()
+    gap = np.zeros(int(rate * gap_ms / 1000), dtype=np.int16)
+    parts: list[np.ndarray] = []
+    for i, (s, _) in enumerate(decoded):
+        if i:
+            parts.append(gap)
+        parts.append(s)
+    return _wav_bytes(np.concatenate(parts), rate)

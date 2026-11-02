@@ -14,10 +14,10 @@ from scripts.seed_demo_track import NotAJudgeDeployment, seed
 from services.api.db import ContentAudit, TrackManifest
 from services.content import drafting
 from services.content.track import load_track
-from services.pilot import storage as storage_mod
-from services.pilot.storage import LocalBlobStore
+from services.media import storage as storage_mod
+from services.media.storage import LocalBlobStore
 from tests.ai.test_c05_track_draft import GOOD, PASS
-from tests.content.test_publish import MODEL, TAGGED, Voice, fake_join
+from tests.content.test_publish import MODEL, TAGGED, Voice, fake_mp3
 from tests.support_ai import FakeClient
 
 FAIL = Verdict(passed=False, failed_items=["tone"], reason_short="no", reason_for_user="no")
@@ -41,7 +41,7 @@ def judge_env(monkeypatch: pytest.MonkeyPatch) -> LocalBlobStore:
     store = LocalBlobStore(b"s")
     monkeypatch.setattr(storage_mod, "audio_store", lambda: store)
     monkeypatch.setattr("services.speech.service.default_service", lambda: Voice())
-    monkeypatch.setattr("services.content.publish.encode", fake_join)
+    monkeypatch.setattr("services.speech.lessons.encode_mp3", fake_mp3)
     return store
 
 

@@ -1,0 +1,596 @@
+[
+ {
+  "route": "roles",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1340
+ },
+ {
+  "route": "tour",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 934
+ },
+ {
+  "route": "judge",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1577
+ },
+ {
+  "route": "home",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 780
+ },
+ {
+  "route": "check",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "cards",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "practice",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 852
+ },
+ {
+  "route": "programme",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 946
+ },
+ {
+  "route": "history",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "aimap",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 7271
+ },
+ {
+  "route": "audit",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "profile",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 6,
+  "fontSizes": 6,
+  "mainHeight": 3455
+ },
+ {
+  "route": "privacy",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 2501
+ },
+ {
+  "route": "flow",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "watch",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "review",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 728
+ },
+ {
+  "route": "cohort",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "mentor",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "coach",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1189
+ },
+ {
+  "route": "officer",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 3,
+  "fontSizes": 7,
+  "mainHeight": 4564
+ },
+ {
+  "route": "assistant",
+  "size": "360x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 1222
+ },
+ {
+  "route": "roles",
+  "size": "360x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1304
+ },
+ {
+  "route": "home",
+  "size": "360x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 729
+ },
+ {
+  "route": "check",
+  "size": "360x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "practice",
+  "size": "360x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 879
+ },
+ {
+  "route": "officer",
+  "size": "360x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 3,
+  "fontSizes": 7,
+  "mainHeight": 4297
+ },
+ {
+  "route": "assistant",
+  "size": "360x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 1246
+ },
+ {
+  "route": "roles",
+  "size": "360x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1998
+ },
+ {
+  "route": "home",
+  "size": "360x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 947
+ },
+ {
+  "route": "check",
+  "size": "360x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 643
+ },
+ {
+  "route": "practice",
+  "size": "360x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 1119
+ },
+ {
+  "route": "officer",
+  "size": "360x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 3,
+  "fontSizes": 7,
+  "mainHeight": 6101
+ },
+ {
+  "route": "assistant",
+  "size": "360x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 1270
+ },
+ {
+  "route": "roles",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 674
+ },
+ {
+  "route": "tour",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 739
+ },
+ {
+  "route": "judge",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1378
+ },
+ {
+  "route": "home",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "check",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "cards",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "practice",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "programme",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 693
+ },
+ {
+  "route": "history",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "aimap",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 3082
+ },
+ {
+  "route": "audit",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "profile",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 6,
+  "fontSizes": 6,
+  "mainHeight": 2488
+ },
+ {
+  "route": "privacy",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 1163
+ },
+ {
+  "route": "flow",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "watch",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "review",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "cohort",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "mentor",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "coach",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 703
+ },
+ {
+  "route": "officer",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 3,
+  "fontSizes": 7,
+  "mainHeight": 2945
+ },
+ {
+  "route": "assistant",
+  "size": "1280x800",
+  "lang": "en",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 864
+ },
+ {
+  "route": "roles",
+  "size": "1280x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 674
+ },
+ {
+  "route": "home",
+  "size": "1280x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "check",
+  "size": "1280x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "practice",
+  "size": "1280x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "officer",
+  "size": "1280x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 3,
+  "fontSizes": 7,
+  "mainHeight": 2945
+ },
+ {
+  "route": "assistant",
+  "size": "1280x800",
+  "lang": "hi",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 864
+ },
+ {
+  "route": "roles",
+  "size": "1280x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 748
+ },
+ {
+  "route": "home",
+  "size": "1280x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "check",
+  "size": "1280x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 4,
+  "mainHeight": 681
+ },
+ {
+  "route": "practice",
+  "size": "1280x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 1,
+  "fontSizes": 5,
+  "mainHeight": 681
+ },
+ {
+  "route": "officer",
+  "size": "1280x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 3,
+  "fontSizes": 7,
+  "mainHeight": 3127
+ },
+ {
+  "route": "assistant",
+  "size": "1280x800",
+  "lang": "ta",
+  "overflowX": false,
+  "small": 0,
+  "fontSizes": 5,
+  "mainHeight": 864
+ }
+]

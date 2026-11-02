@@ -1,0 +1,1033 @@
+{
+  "form": "A",
+  "children": [
+    {
+      "roll": 1,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": []
+    },
+    {
+      "roll": 2,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": []
+    },
+    {
+      "roll": 3,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "50"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "other",
+          "codes": []
+        }
+      ],
+      "shows": []
+    },
+    {
+      "roll": 4,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "42",
+        "34",
+        "57",
+        "66"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        }
+      ],
+      "shows": [
+        "SUB-SFL"
+      ]
+    },
+    {
+      "roll": 5,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "42",
+        "26",
+        "57",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "SUB-SFL"
+      ]
+    },
+    {
+      "roll": 6,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "34",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": []
+    },
+    {
+      "roll": 7,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "42",
+        "34",
+        "57",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "SUB-SFL"
+      ]
+    },
+    {
+      "roll": 8,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "48",
+        "36",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-NODEC"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-NODEC"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "SUB-NODEC"
+      ]
+    },
+    {
+      "roll": 9,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "53",
+        "64"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-NODEC"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-NODEC"
+          ]
+        }
+      ],
+      "shows": [
+        "SUB-NODEC"
+      ]
+    },
+    {
+      "roll": 10,
+      "answers": [
+        "3046",
+        "7028",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "error",
+          "codes": [
+            "PV-HEARD"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "PV-HEARD"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "PV-HEARD"
+      ]
+    },
+    {
+      "roll": 11,
+      "answers": [
+        "364",
+        "782",
+        "75",
+        "64",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "error",
+          "codes": [
+            "PV-REVERSE"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "PV-REVERSE"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "ADD-NOCARRY"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "ADD-NOCARRY"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "ADD-NOCARRY",
+        "PV-REVERSE"
+      ]
+    },
+    {
+      "roll": 12,
+      "answers": [
+        "346",
+        "728",
+        "75",
+        "64",
+        "72",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "ADD-NOCARRY"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "ADD-NOCARRY"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "ADD-NOCARRY"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "ADD-NOCARRY"
+      ]
+    },
+    {
+      "roll": 13,
+      "answers": [
+        "346",
+        "728",
+        "85",
+        "74",
+        "11",
+        "",
+        "42",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "other",
+          "codes": []
+        },
+        {
+          "kind": "blank",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": []
+    },
+    {
+      "roll": 14,
+      "answers": [
+        "30046",
+        "999",
+        "85",
+        "74",
+        "82",
+        "35",
+        "38",
+        "26",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "error",
+          "codes": [
+            "PV-HEARD"
+          ]
+        },
+        {
+          "kind": "other",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": []
+    },
+    {
+      "roll": 15,
+      "answers": [
+        "346",
+        "728",
+        "75",
+        "614",
+        "82",
+        "35",
+        "42",
+        "34",
+        "43",
+        "54"
+      ],
+      "cells": [
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "ADD-NOCARRY"
+          ]
+        },
+        {
+          "kind": "other",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        }
+      ],
+      "shows": [
+        "SUB-SFL"
+      ]
+    },
+    {
+      "roll": 16,
+      "answers": [
+        "3046",
+        "70028",
+        "85",
+        "74",
+        "82",
+        "35",
+        "42",
+        "26",
+        "43",
+        "66"
+      ],
+      "cells": [
+        {
+          "kind": "error",
+          "codes": [
+            "PV-HEARD"
+          ]
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "PV-HEARD"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "correct",
+          "codes": []
+        },
+        {
+          "kind": "error",
+          "codes": [
+            "SUB-SFL"
+          ]
+        }
+      ],
+      "shows": [
+        "PV-HEARD",
+        "SUB-SFL"
+      ]
+    }
+  ],
+  "class": {
+    "checked": 16,
+    "counts": {
+      "PV-HEARD": 2,
+      "PV-REVERSE": 1,
+      "ADD-NOCARRY": 2,
+      "SUB-SFL": 5,
+      "SUB-NODEC": 2
+    },
+    "track": "SUB-SFL",
+    "untracked": {
+      "ADD-WHOLE-ONES": 1
+    }
+  }
+}

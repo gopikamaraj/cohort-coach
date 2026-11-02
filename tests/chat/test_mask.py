@@ -74,3 +74,13 @@ def test_the_masked_text_has_no_raw_name_even_with_many_names() -> None:
     masked = mask_personal("Meena, Ravi and Anu all write 403; Ravi's mother says so")
     for name in ("Meena", "Ravi", "Anu"):
         assert name not in masked.text
+
+
+def test_names_in_keep_are_left_and_every_other_name_is_still_masked() -> None:
+    # The Practice Class's five children are fictional: their names stay, a real child's does not.
+    masked = mask_personal("Priya, what is 52 minus 29? Rahul got 37.", keep=("Priya", "Arun"))
+    assert "Priya" in masked.text and "Rahul" not in masked.text
+    assert masked.kinds == ("child_name",)
+    assert "52 minus 29" in masked.text
+    tamil = mask_personal("ப்ரியாவுக்கு 52 கழித்தல் 29", keep=("ப்ரியா",))
+    assert "ப்ரியா" in tamil.text

@@ -1,6 +1,6 @@
 /* THE LOOK OF THE APP, IN ONE PLACE.
-   Every colour, corner, spacing step, type size and state layer comes from this file. styles.css and
-   pilot/pilot.css hold layout only and read these tokens (tests/test_design_tokens.py fails if a hex
+   Every colour, corner, spacing step, type size and state layer comes from this file. styles.css holds
+   layout only and reads these tokens (tests/test_design_tokens.py fails if a hex
    colour or an rgba() creeps back into styles.css). To change the look, change a value here:
 
      colour     the palette block (Material 3 roles; each name says what it is for)
@@ -49,6 +49,14 @@
   --stage-bg: #e6eceb; /* the page around the app column on a laptop */
   --frame-ruling: none; /* the ruled-notebook lines behind the app; classic turns them on */
   --bad: var(--margin);
+  /* answer map (results page): one colour per mistake from the Okabe-Ito set, checked for contrast with
+     --ink and for being told apart under protan, deutan and tritan simulation (tests/test_design_tokens.py).
+     The map never relies on colour alone: each mistake also has two letters and its own pattern. */
+  --heat-ph: #56b4e9; /* PV-HEARD */
+  --heat-pr: #cc79a7; /* PV-REVERSE */
+  --heat-ac: #e69f00; /* ADD-NOCARRY */
+  --heat-sf: #009e73; /* SUB-SFL */
+  --heat-sn: #f0e442; /* SUB-NODEC */
 
   /* ---- shape ---- */
   --r-card: 16px; /* cards, tiles, panels */

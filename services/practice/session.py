@@ -9,6 +9,7 @@ twice in a row, or at the turn cap (40, also the judge-mode cap).
 
 from __future__ import annotations
 
+import logging
 import random
 import time
 import uuid
@@ -20,17 +21,21 @@ from ai.calls.c01_child_voice import ChildLineResult, child_line
 from ai.calls.c02_move_label import LabelResult, label_move
 from ai.calls.c03_feedback import FeedbackCard, TurnLine, give_feedback
 from ai.client import CallContext, CallResult
+from ai.config import practice_ai_intents, practice_skip_checker
+from ai.validators.mask import mask_personal
+from engine import sim_switch
 from engine.model import ErrorCode
 from engine.simulator import (
     Problem,
-    SessionState,
     TurnPlan,
     fill_seats,
-    new_session,
-    plan_turn,
 )
 from services.practice.content import LoadedScenario, PersonaChild, load_personas, load_scenario
 from services.practice.faces import face
+from services.practice.templates import render_line
+from services.speech.costs import SessionSpeechBudget
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -56,6 +61,7 @@ class TurnRecord:
     child_text: str
     intent: str
     source: str
+    others: list[tuple[str, str]] = field(default_factory=list)  # (speaker, line) who joined in
 
 
 @dataclass
@@ -66,13 +72,24 @@ class PracticeSession:
     judge: bool
     seed: int
     loaded: LoadedScenario
-    state: SessionState
+    # engine.simulator.SessionState (legacy) or engine.bayes.planner.BayesState (bayesian): the
+    # model is chosen once, when the session starts (engine/sim_switch.py)
+    state: Any
     personas: dict[str, PersonaChild]
     records: list[TurnRecord] = field(default_factory=list)
     plan_numbers: set[int] = field(default_factory=set)
     last_addressed: str | None = None
     ended: bool = False
     created: float = field(default_factory=time.time)
+    model: str = "legacy"  # the child model this session runs on (SIMULATOR_MODEL when it began)
+    # Voice (services/api/practice.py): this session's speech allowance, failures in a row, the
+    # providers it is pinned to after two failures, whether voice is off for the rest of it, and the
+    # mood of each child speaking this turn (the engine's; it decides the voice style by code).
+    speech_budget: SessionSpeechBudget = field(default_factory=SessionSpeechBudget)
+    tts_failures: int = 0
+    tts_order: list[str] | None = None
+    voice_off: bool = False
+    moods: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -95,6 +112,10 @@ class TurnResult:
     answer: int | None = None  # what she said
     move: dict[str, Any] = field(default_factory=dict)  # the teacher's move as a tag
     children: list[dict[str, Any]] = field(default_factory=list)  # the confusion meter
+    # The other children who spoke this turn (the engine's template lines): speaker, line, subtitle,
+    # what she said and wrote. The first speaker's fields stay above.
+    others: list[dict[str, Any]] = field(default_factory=list)
+    source: str = ""  # how the first line was made: ai, template (a fallback), engine (by choice)
 
 
 def confusion_band(strength: float) -> str:
@@ -108,9 +129,13 @@ def children_view(
     """The five children as the screen needs them: the confusion meter, who they are (a sprite
     persona id) and the expression their faces show. All of it is computed here, by code."""
     out = []
+    talking: dict[str | None, TurnPlan] = {}
+    if plan is not None:
+        talking = {p.speaker: p for p in (plan, *plan.chorus)}
     for c in kids:
         persona = session.personas.get(c.name)
-        speaking = plan is not None and c.name == plan.speaker
+        mine = talking.get(c.name)
+        speaking = mine is not None
         out.append(
             {
                 "name": c.name,
@@ -121,8 +146,8 @@ def children_view(
                 "speaking": speaking,
                 "expression": face(
                     speaking=speaking,
-                    intent=plan.intent if plan else "",
-                    correct=plan.correct if plan else None,
+                    intent=(mine or plan).intent if (mine or plan) else "",
+                    correct=(mine or plan).correct if (mine or plan) else None,
                     engagement=c.engagement,
                     strength=c.strength,
                     quiet=c.quiet_turns > 0,
@@ -144,11 +169,16 @@ def seating(session: PracticeSession) -> list[dict[str, Any]]:
                 "shy": c.shy,
                 "persona": persona.id if persona else None,
                 "expression": face(
-                    speaking=False, intent="", correct=None, engagement=0.5, strength=0.0,
-                    quiet=False, shy=c.shy,
+                    speaking=False,
+                    intent="",
+                    correct=None,
+                    engagement=0.5,
+                    strength=0.0,
+                    quiet=False,
+                    shy=c.shy,
                 ),
             }
-        )  # fmt: skip
+        )
     return out
 
 
@@ -156,9 +186,11 @@ def _move_tag(session: PracticeSession, move_id: str) -> dict[str, Any]:
     for m in session.loaded.movelist.moves:
         if m.id == move_id:
             return {
-                "id": m.id, "label": m.label[session.language], "quality": m.quality,
+                "id": m.id,
+                "label": m.label[session.language],
+                "quality": m.quality,
                 "strategy": m.strategy,
-            }  # fmt: skip
+            }
     return {"id": move_id, "label": move_id, "quality": "neutral", "strategy": False}
 
 
@@ -184,7 +216,10 @@ def start_session(
     seed: int | None = None,
     judge: bool = False,
     session_id: str | None = None,
+    note_tags: Sequence[str] = (),
 ) -> PracticeSession:
+    """A new rehearsal. The child model comes from SIMULATOR_MODEL now and stays for the session.
+    `note_tags` are teacher-note tags for the bayesian model (no screen sends them yet)."""
     loaded = load_scenario(error)
     seed = random.SystemRandom().randrange(1, 2**31) if seed is None else seed
     kids = _pick_names(language, seed)
@@ -197,6 +232,7 @@ def start_session(
         names=names,
         stage_mix=loaded.scenario.stage_mix,
     )
+    state = sim_switch.new_session(loaded.config, seats, seed, note_tags=note_tags)
     return PracticeSession(
         id=session_id or uuid.uuid4().hex[:12],
         error=error,
@@ -204,8 +240,9 @@ def start_session(
         judge=judge,
         seed=seed,
         loaded=loaded,
-        state=new_session(loaded.config, seats, seed),
+        state=state,
         personas={k.names[language]: k for k in kids},
+        model=sim_switch.model_of(state),
     )
 
 
@@ -215,6 +252,7 @@ def _history(session: PracticeSession) -> list[str]:
         lines.append(f"teacher: {r.teacher_text}")
         if r.child_text:
             lines.append(f"{r.speaker}: {r.child_text}")
+        lines.extend(f"{who}: {said}" for who, said in r.others)
     return lines
 
 
@@ -248,6 +286,10 @@ def _engine_layer(plan: TurnPlan) -> dict[str, Any]:
         "mood": plan.mood,
         "strength_before": dict(plan.strength_before),
         "strength_after": dict(plan.strength_after),
+        "chorus": [
+            {"speaker": c.speaker, "intent": c.intent, "answer": c.answer, "correct": c.correct}
+            for c in plan.chorus
+        ],
     }
 
 
@@ -289,7 +331,9 @@ def take_turn(
         addressed = session.last_addressed
     else:
         assert text is not None
-        teacher_text = text.strip()
+        # A real child's name, a roll number or a phone number never reaches a model or the record;
+        # the five pretend children are fictional, so their names stay.
+        teacher_text = mask_personal(text.strip(), keep=children).text
         label = label_move(
             teacher_text,
             moves=[(m.id, m.description["en"]) for m in loaded.movelist.moves],
@@ -300,25 +344,59 @@ def take_turn(
         move_id, addressed, posed = label.move_id, label.addressed, label.posed
         if label.scope == "none":  # she named nobody: the child she was talking to continues
             addressed = session.last_addressed
-    plan, new_state = plan_turn(
+    t_engine = time.monotonic()
+    plan, new_state, trace = sim_switch.plan_turn(
         session.state, loaded.config, move_id, addressed=addressed, posed=posed
     )
+    engine_ms = int((time.monotonic() - t_engine) * 1000)
+    # before the child's line is written, so a voice started in parallel knows her mood
+    session.moods = {p.speaker: p.mood for p in (plan, *plan.chorus) if p.speaker}
+    # Bayesian child model only: the five fictional children's hidden states and the observer's
+    # beliefs, in the debug log only (never in the API response).
+    if trace is not None:
+        log.debug("bayes trace turn %d: %s", plan.turn, trace)
     persona = session.personas.get(plan.speaker or "")
-    line: ChildLineResult = child_line(
-        plan,
-        name=plan.speaker or "",
-        temperament=persona.temperament if persona else "",
-        language=session.language,
-        teacher_line=teacher_text,
-        history=_history(session),
-        target_error=session.error,
-        context=ctx,
-        on_candidate=on_candidate,
-    )
+    skip_checker = practice_skip_checker()
+    ai_intents = practice_ai_intents()
+    if plan.speaker is not None and ai_intents is not None and plan.intent not in ai_intents:
+        # Not a kind of line the deployment asks the AI for: the engine's own template line.
+        line: ChildLineResult = ChildLineResult(
+            render_line(plan, session.language), "engine", None, None, render_line(plan, "en")
+        )
+    else:
+        line = child_line(
+            plan,
+            name=plan.speaker or "",
+            temperament=persona.temperament if persona else "",
+            language=session.language,
+            teacher_line=teacher_text,
+            history=_history(session),
+            target_error=session.error,
+            context=ctx,
+            on_candidate=on_candidate,
+            skip_checker=skip_checker,
+        )
+    # The other children who speak in the same turn answer or react in the engine's template words:
+    # they say their own answer to the problem on the board, which a template carries whole. Only a
+    # child explaining her working needs the AI, and that is always the first speaker.
+    others = [
+        {
+            "speaker": sub.speaker,
+            "child_text": render_line(sub, session.language),
+            "child_text_en": render_line(sub, "en"),
+            "intent": sub.intent,
+            "answer": sub.answer,
+            "written": sub.written,
+            "source": "engine",
+        }
+        for sub in plan.chorus
+    ]
     session.state = new_state
     if addressed:
         session.last_addressed = addressed
     session.plan_numbers |= set(plan.allowed_numbers)
+    for sub in plan.chorus:
+        session.plan_numbers |= set(sub.allowed_numbers)
     session.records.append(
         TurnRecord(
             plan.turn,
@@ -329,6 +407,7 @@ def take_turn(
             line.text,
             plan.intent,
             line.source,
+            [(o["speaker"], o["child_text"]) for o in others],
         )
     )
     latency_ms = int((time.monotonic() - started) * 1000)
@@ -339,6 +418,8 @@ def take_turn(
         badge, explanation = (
             (line.gate.badge.value, line.gate.explanation) if line.gate else ("none", "")
         )
+    elif line.source == "engine":
+        badge, explanation = "none", ""
     elif line.source == "template":
         badge = "none"
         explanation = line.gate.explanation if line.gate else "A safe template line was used."
@@ -363,7 +444,7 @@ def take_turn(
                     "addressed": addressed,
                     "confidence": label.confidence,
                     "forced": label.forced,
-                }  # fmt: skip
+                }
                 if label
                 else {"move_id": move_id, "source": "material tap"}
             ),
@@ -379,9 +460,12 @@ def take_turn(
             ),
             "retries": stats["retries"],
             "fallback_used": line.run.fallback_used if line.run else None,
+            # call 7 was left out by the deployment's choice: the code checks alone released it
+            "checker_skipped": bool(skip_checker and line.source == "ai"),
         },
         "evaluation": {
             "latency_ms": latency_ms,
+            "engine_ms": engine_ms,
             "tokens": stats["tokens"],
             "cost_usd": stats["cost_usd"],
             "calls": stats["calls"],
@@ -393,7 +477,7 @@ def take_turn(
                     ("check", checker_run),
                 )
                 if v is not None
-            },  # fmt: skip
+            },
         },
         "output": {"child_line": line.text, "source": line.source, "badge": badge},
     }
@@ -412,6 +496,8 @@ def take_turn(
         finished=new_state.finished,
         finished_reason=new_state.finished_reason,
         child_text_en=line.english,
+        others=others,
+        source=line.source,
         written=plan.written,
         answer=plan.answer,
         move=_move_tag(session, move_id),

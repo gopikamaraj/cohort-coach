@@ -1,6 +1,8 @@
 // Data used: how many bytes this app has sent and received, counted on the phone, so she can see what it
 // costs on her plan and clear the count. It measures our own calls (the API), not the phone's other traffic.
 // The cost is code arithmetic from a price per GB she types; nothing is estimated by AI.
+import { actionHeaders } from "./action";
+
 export interface KV {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;
@@ -78,6 +80,12 @@ export function installMeter(api: string): void {
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
     const ours = url.startsWith("/api") || (api !== "" && url.startsWith(api));
+    const extra = ours ? actionHeaders() : {};
+    if (Object.keys(extra).length > 0) {
+      const h = new Headers(init?.headers);
+      for (const [k, v] of Object.entries(extra)) h.set(k, v); // the running action's id (lib/action.ts)
+      init = { ...init, headers: h };
+    }
     const res = await original(input, init);
     if (ours) {
       const len = Number(res.headers.get("content-length"));

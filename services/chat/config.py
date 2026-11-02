@@ -20,6 +20,7 @@ DEFAULT_TIMEOUT_HOURS = 24
 MIN_TIMEOUT_HOURS = 1
 MAX_TIMEOUT_HOURS = 168
 DAILY_AI_REPLY_LIMIT = 3  # per teacher per day: a ceiling on what the AI may send on its own
+DAILY_WINDOW = timedelta(days=1)
 GLOBAL = "global"
 
 

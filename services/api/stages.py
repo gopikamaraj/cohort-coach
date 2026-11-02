@@ -7,16 +7,21 @@ per-child data. A stage is always "most likely", and carries a one-minute probe.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field, field_validator
+from sqlalchemy.orm import Session
 
 from engine.forms import PILOT_FORMS
 from engine.model import Reading
 from engine.stages import StageResult, class_counts, classify_child
+from services.api.profiles import SESSION
 from services.api.roles import require
 from services.api.strings import text
+from services.papers import keys
+from services.papers.models import PaperRow
 from services.practice.content import LANGS
 
 router = APIRouter(
@@ -58,10 +63,14 @@ class StagesIn(BaseModel):
 
 
 @router.post("/stages")
-def post_stages(body: StagesIn) -> dict[str, Any]:
+def post_stages(body: StagesIn, db: Session = SESSION) -> dict[str, Any]:
+    # a paper id (P-...), or one of the built-in forms
     form = PILOT_FORMS.get(body.form)
     if form is None:
-        raise HTTPException(422, "The form must be A or B.")
+        row = db.get(PaperRow, body.form) if re.fullmatch(r"P-[0-9a-f]{12}", body.form) else None
+        if row is None:
+            raise HTTPException(422, "Unknown paper.")
+        form = keys.form_of(row.body, row.check_code)
     if body.language not in LANGS:
         raise HTTPException(422, f"language must be one of {', '.join(LANGS)}")
     results: list[StageResult] = []

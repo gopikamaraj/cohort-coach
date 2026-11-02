@@ -2,8 +2,8 @@
 // server rewrite, so a static host and the offline cache both serve every screen.
 import { useSyncExternalStore } from "react";
 
-export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/programme" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer" | "/watch" | "/tour" | "/review" | "/cohort" | "/assistant";
-export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/programme", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer", "/watch", "/tour", "/review", "/cohort", "/assistant"];
+export type Route = "/judge" | "/home" | "/check" | "/cards" | "/practice" | "/cohort" | "/history" | "/aimap" | "/audit" | "/profile" | "/privacy" | "/admin" | "/coach" | "/mentor" | "/flow" | "/roles" | "/officer" | "/watch" | "/tour" | "/review" | "/cohort_chat" | "/assistant" | "/testing" | "/papers" | "/demo" | "/two-classes";
+export const ROUTES: readonly Route[] = ["/judge", "/home", "/check", "/cards", "/practice", "/cohort", "/history", "/aimap", "/audit", "/profile", "/privacy", "/admin", "/coach", "/mentor", "/flow", "/roles", "/officer", "/watch", "/tour", "/review", "/cohort_chat", "/assistant", "/testing", "/papers", "/demo", "/two-classes"];
 
 function current(): Route {
   const raw = window.location.hash.replace(/^#/, "").split("?")[0] ?? "";

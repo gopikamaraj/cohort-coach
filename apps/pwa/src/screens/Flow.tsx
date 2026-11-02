@@ -56,8 +56,9 @@ export default function Flow() {
       {turn?.messages.map((m, i) => (
         <div key={`${m.step_id}-${i}`} className="panel" data-testid={`flow-${m.step_id}`}>
           {m.scene ? <SceneView scene={m.scene} label={m.alt ?? ""} /> : null}
-          <p style={{ whiteSpace: "pre-line" }}>{m.text}</p>
-          {m.audio ? <LessonAudio url={m.audio} /> : null}
+          {/* a lesson with timing shows its script under the player, highlighted as it plays */}
+          <p style={{ whiteSpace: "pre-line" }}>{m.audio && m.audio_info?.sentences.length ? m.text.split("\n\n")[0] : m.text}</p>
+          {m.audio ? <LessonAudio url={m.audio} info={m.audio_info} /> : null}
           {m.url ? (
             <a className="btn btn-secondary" href={m.url} data-testid="flow-link">
               {m.url_label}
@@ -81,7 +82,6 @@ export default function Flow() {
           ))}
         </div>
       ) : null}
-      <p className="muted">{tr("flow.telegram")}</p>
     </section>
   );
 }

@@ -28,6 +28,7 @@ from services.content.slots import literal_class_counts
 CALL_ID = 14
 MAX_WORDS = 120
 MIN_QUOTE_WORDS = 3
+MAX_FOLLOW_UP_WORDS = 14
 
 
 @dataclass(frozen=True)
@@ -50,12 +51,22 @@ def answer_results(
     reason = (reply.no_answer_reason or "").strip()
     if bool(answer) == bool(reason):
         shape.append(Violation("answer_xor_reason", "give an answer, or no answer and why"))
+    follow: list[Violation] = []
+    for f in reply.follow_ups:
+        if len(f.split()) > MAX_FOLLOW_UP_WORDS or not f.strip().endswith("?"):
+            follow.append(
+                Violation(
+                    "follow_up_shape", f"a short question of at most {MAX_FOLLOW_UP_WORDS} words"
+                )
+            )
+        follow += check_masked(f)
     if not answer:
         if reply.citations or reply.rubric_rows:
             citations.append(Violation("citation_without_answer"))
         return [
             ValidatorResult("shape", tuple(shape)),
             ValidatorResult("citations", tuple(citations)),
+            ValidatorResult("follow_ups", tuple(follow)),
         ]
     if not reply.citations:
         citations.append(Violation("no_citation", "an answer must cite a passage"))
@@ -81,6 +92,7 @@ def answer_results(
         ValidatorResult("length", tuple(check_length(answer, max_words=MAX_WORDS))),
         ValidatorResult("personal", tuple(check_masked(answer))),
         ValidatorResult("read_only", tuple(check_read_only(answer))),
+        ValidatorResult("follow_ups", tuple(follow)),
     ]
     if (
         role != "judge"

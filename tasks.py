@@ -150,6 +150,27 @@ def cmd_readme(args: list[str]) -> int:
     return run([venv_python(), "scripts/readme.py", *args])
 
 
+def cmd_predeploy(args: list[str]) -> int:
+    """Before a deploy: rebuild the assistant's reference index (no AI call), then check that every
+    role has suggested questions for every screen it reaches, the README is current and the
+    assistant tests pass. Questions that are missing are written by the prompt
+    docs/build/Claude Code prompt refresh the assistant reference before deploy.md."""
+    py = venv_python()
+    must([py, "scripts/build_assistant_index.py"])
+    steps = [
+        [py, "scripts/check_assistant_questions.py"],
+        [py, "scripts/build_assistant_index.py", "--check"],
+        [py, "scripts/readme.py", "--check"],
+        [py, "-m", "pytest", "-q", "tests/assistant"],
+    ]
+    failed = [" ".join(c[1:3]) for c in steps if run(c) != 0]
+    if failed:
+        print("predeploy FAILED:", "; ".join(failed))
+        return 1
+    print("predeploy ok: the assistant's reference and questions are ready to deploy")
+    return 0
+
+
 def cmd_practice(args: list[str]) -> int:
     return run([venv_python(), "scripts/practice_cli.py", *args])
 
@@ -166,8 +187,27 @@ def cmd_e2e(args: list[str]) -> int:
     return run([npm(), "run", "e2e", "--", *args], PWA)
 
 
+def cmd_stitch_pack(args: list[str]) -> int:
+    """Capture, build and validate the Stitch screenshot pack (demo data only, no paid calls)."""
+    return run([venv_python(), "tools/stitch_pack/run.py", *args])
+
+
+def cmd_pilot_ingest(args: list[str]) -> int:
+    """Tidy the local pilot sheets and write the answer file (data/pilot/, never committed)."""
+    return run([venv_python(), "tools/pilot/ingest.py", *args])
+
+
 def cmd_export_keys(args: list[str]) -> int:
     return run([venv_python(), "scripts/export_keys.py", *args])
+
+
+def script(path: str) -> Callable[[list[str]], int]:
+    """A command that runs one script with the project's Python (live scripts ask for --yes)."""
+
+    def _run(args: list[str]) -> int:
+        return run([venv_python(), path, *args])
+
+    return _run
 
 
 def deferred(phase: str) -> Callable[[list[str]], int]:
@@ -191,10 +231,46 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     ),
     "bundle": (cmd_bundle, "build the PWA and check the initial JS budget"),
     "e2e": (cmd_e2e, "Playwright end-to-end tests on the production build"),
+    "pilot-ingest": (
+        cmd_pilot_ingest,
+        "tidy local pilot sheets, write pilot_answers.json [--no-ai] [--max-usd N]",
+    ),
+    "stitch-pack": (
+        cmd_stitch_pack,
+        "screenshots and descriptions for Stitch [--only a,b] [--skip-capture]",
+    ),
     "export-keys": (cmd_export_keys, "answer keys JSON for on-device diagnosis [--check]"),
     "budget": (cmd_budget, "spend by call, model and day, from the audit trail"),
     "evidence": (cmd_evidence, "regenerate docs/evidence/ and the numbers table [--check]"),
+    "predeploy": (
+        cmd_predeploy,
+        "before a deploy: rebuild the assistant index, check its questions",
+    ),
     "readme": (cmd_readme, "regenerate README 'Where AI is used' [--check]"),
+    "modules-due": (
+        script("scripts/modules_due.py"),
+        "daily job, 06:00 IST: make each improvement-track module that is due [--now ISO] [--loop]",
+    ),
+    "lessons-pregen": (
+        script("scripts/lessons_pregen.py"),
+        "voice and cache every published demo lesson (prints the cost; --yes to spend)",
+    ),
+    "practice-pregen": (
+        script("scripts/practice_pregen.py"),
+        "cache the Practice Class template lines (prints counts and cost; --yes [--limit N])",
+    ),
+    "speech-eval-pack": (
+        script("scripts/speech_eval_pack.py"),
+        "blinded listening pack, Bodhan and Sarvam (prints the cost; --yes to spend)",
+    ),
+    "speech-eval-stt": (
+        script("scripts/speech_eval_stt.py"),
+        "speech-to-text eval on data/speech-eval/ (prints the cost; --yes) [--record NAME]",
+    ),
+    "speech-latency": (
+        script("scripts/speech_latency.py"),
+        "speech latency per function and provider, live and capped (prints the cost; --yes)",
+    ),
 }
 
 
