@@ -44,7 +44,7 @@ export default function History() {
           {checks.map((c) => (
             <li key={c.id} className="card" data-testid="history-check">
               <p>
-                <strong>{tr("history.check_line", { term: c.term, form: c.paperCode ?? tr("check.form_n", { f: c.formKey }), n: c.children })}</strong>
+                <strong>{tr("history.check_line", { form: c.paperCode ?? tr("check.form_n", { f: c.formKey }), n: c.children })}</strong>
               </p>
               {c.kind ? (
                 <p data-testid="history-kind">

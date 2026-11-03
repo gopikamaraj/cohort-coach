@@ -47,7 +47,7 @@ function EnteredChecks() {
               {rows.map((r) => (
                 <tr key={`${r.teacher}-${r.id}`}>
                   <th scope="row">{r.teacher}</th>
-                  <td>{[r.data.kind, r.data.term ? `T${r.data.term}` : null, r.data.checkDate].filter(Boolean).join(" Â· ")}</td>
+                  <td>{[r.data.kind, r.data.checkDate].filter(Boolean).join(" Â· ")}</td>
                   <td>{r.data.entered ?? 0}</td>
                   <td>{r.data.absent ?? 0}</td>
                   <td>{r.data.status ?? ""}</td>
@@ -62,8 +62,8 @@ function EnteredChecks() {
 }
 
 interface Summary {
-  terms: Record<string, { classes: number; children_checked: number; children_showing: Record<string, number> }>;
-  classes: { teacher: string; class: string; term: number; errors: string[] }[];
+  totals: { classes: number; children_checked: number; children_showing: Record<string, number> };
+  classes: { teacher: string; class: string; errors: string[] }[];
 }
 
 /** The classes that really entered a check (3A, 3B, ...), added up; and where the coach makes a cohort from them. */
@@ -85,9 +85,9 @@ function EnteredClasses() {
         <h2>{tr("coach.real.title")}</h2>
         <p className="muted">{tr("coach.real.note")}</p>
         {sum.classes.length === 0 ? <p>{tr("coach.real.none")}</p> : null}
-        {Object.entries(sum.terms).map(([term, t]) => (
-          <div key={term} data-testid={`coach-real-${term}`}>
-            <h3>{tr("coach.real.term", { term, classes: t.classes, total: t.children_checked })}</h3>
+        {sum.classes.length > 0 ? [sum.totals].map((t) => (
+          <div key="all" data-testid="coach-real-all">
+            <h3>{tr("coach.real.term", { classes: t.classes, total: t.children_checked })}</h3>
             <ul className="plain">
               {ERRORS.map((e) => (
                 <li key={e}>
@@ -96,8 +96,8 @@ function EnteredClasses() {
               ))}
             </ul>
           </div>
-        ))}
-        {sum.classes.length > 0 ? <p className="muted">{tr("coach.real.classes", { list: sum.classes.map((c) => `${label(c.class)} (${c.teacher}, T${c.term})`).join("; ") })}</p> : null}
+        )) : null}
+        {sum.classes.length > 0 ? <p className="muted">{tr("coach.real.classes", { list: sum.classes.map((c) => `${label(c.class)} (${c.teacher})`).join("; ") })}</p> : null}
       </section>
       <CohortMaker who="coach" />
     </>

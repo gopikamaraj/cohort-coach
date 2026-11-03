@@ -6,7 +6,6 @@ import { hasAnswers } from "./check";
 
 export interface CheckSummary {
   id: string;
-  term: number;
   formKey: string;
   paperCode?: string | null;
   kind?: string;
@@ -27,7 +26,6 @@ export async function listChecks(store: CohortDb = db): Promise<CheckSummary[]> 
       const rows = c.children.filter(hasAnswers);
       return {
         id: c.id,
-        term: c.term,
         formKey: c.formKey,
         paperCode: c.paperCode,
         kind: c.kind,
@@ -39,5 +37,5 @@ export async function listChecks(store: CohortDb = db): Promise<CheckSummary[]> 
         rows,
       };
     })
-    .sort((a, b) => b.term - a.term || b.updatedAt - a.updatedAt);
+    .sort((a, b) => b.updatedAt - a.updatedAt); // newest first, by date saved
 }

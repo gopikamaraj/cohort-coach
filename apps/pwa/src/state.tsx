@@ -1,10 +1,11 @@
 // App state: the language and role (kept in localStorage, they are tiny), and what the phone
-// holds for the active class and term (kept in IndexedDB and reloaded after every change).
+// holds for the active class and her current check (kept in IndexedDB and reloaded after every change).
 import { reconcileWithServer } from "./lib/serverTruth";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { isLang, t as translate, type Key, type Lang } from "./i18n";
 import { clearCloud, forgetQueue, hydrate, watchTables } from "./lib/cloudStore";
-import { activeClass, clearPhone, db, getSetting, setSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
+import { activeClass, clearPhone, db, getSetting, type CheckRow, type ClassRow, type ProfileRow } from "./lib/db";
+import { currentCheck, nextSeq, seqOf } from "./lib/checks";
 import { demoPair } from "./lib/demo";
 import { fetchPaperKey } from "./lib/paperKeys";
 import { samplePaper } from "./lib/papers";
@@ -24,7 +25,10 @@ interface AppState {
   setLang: (lang: Lang) => void;
   role: Role;
   setRole: (role: Role) => void;
-  term: number;
+  /** The running number of the check she is on (or about to start): it only keeps check ids apart. */
+  slot: number;
+  /** How many checks the active class has, so a screen can tell whether it has a later one. */
+  checkCount: number;
   online: boolean;
   forcedOffline: boolean;
   setOffline: (on: boolean) => void;
@@ -34,7 +38,10 @@ interface AppState {
   pending: number;
   reload: () => Promise<void>;
   loadDemo: () => Promise<void>;
-  advanceTerm: () => Promise<void>;
+  /** Start another check for the class: earlier ones stay as they are. */
+  startAnother: () => Promise<void>;
+  /** Judge mode and the tour: add the simulated later check (the post-test) to the demo class. */
+  addLaterDemo: () => Promise<void>;
   reset: () => Promise<void>;
   tr: (key: Key, params?: Record<string, string | number>) => string;
 }
@@ -55,7 +62,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [role, setRoleState] = useState<Role>(() =>
     stored("cc.role", (v): v is Role => (ROLES as readonly string[]).includes(v as string), "teacher"),
   );
-  const [term, setTerm] = useState(1);
+  const [slot, setSlot] = useState(1);
+  const [checkCount, setCheckCount] = useState(0);
+  const fresh = useRef<number | null>(null); // the number of a check she asked to start; in memory only
   const [klass, setKlass] = useState<ClassRow | null>(null);
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [check, setCheck] = useState<CheckRow | null>(null);
@@ -64,13 +73,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const forcedOffline = useForcedOffline();
 
   const reload = useCallback(async () => {
-    const termNow = await getSetting("term", 1);
     const id = await getSetting<string | null>("activeClass", null);
     const row = id ? ((await db.classes.get(id)) ?? null) : null;
-    setTerm(termNow);
+    const all = row ? await db.checks.where("classId").equals(row.id).toArray() : [];
+    if (fresh.current !== null && all.some((c) => seqOf(c.id) === fresh.current)) fresh.current = null; // the new check now exists
+    // Her current check is the one still being entered, else the most recent: no term decides it.
+    const cur = row && fresh.current === null ? currentCheck(all, row.id) : undefined;
+    setSlot(fresh.current ?? (cur ? seqOf(cur.id) : row ? nextSeq(all, row.id) : 1));
+    setCheckCount(all.length);
     setKlass(row);
-    setProfile(row ? ((await db.profiles.get(`${row.id}:${termNow}`)) ?? null) : null);
-    setCheck(row ? ((await db.checks.get(`${row.id}:${termNow}`)) ?? null) : null);
+    setProfile(cur ? ((await db.profiles.get(cur.id)) ?? null) : null);
+    setCheck(cur ?? null);
     setPending(await pendingCount());
   }, []);
 
@@ -117,51 +130,67 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const putDemo = useCallback(async (kind: "pre" | "post"): Promise<void> => {
+    const row = await activeClass(true);
+    // A pre-test and, later, its post-test with the same children in the same order, so the before-and-after
+    // view has something to show. All of it is made up. Each check is on a real paper (the sample paper and its
+    // twin, stored on the server and keyed like any paper); with no connection the same numbers are used from
+    // the phone's built-in copy.
+    const { pre, post } = demoPair();
+    const day = 86_400_000;
+    const existing = await db.checks.where("classId").equals(row.id).toArray();
+    const seq = nextSeq(existing, row.id);
+    const id = `${row.id}:${seq}`;
+    let form = kind === "post" ? "B" : "A";
+    let code: string | null = null;
+    try {
+      const p = await samplePaper(id, kind, "Demo", seq, lang);
+      await fetchPaperKey(p.id, { role: "teacher", classId: row.id });
+      form = p.id;
+      code = p.check_code;
+    } catch {
+      /* the built-in copy is used */
+    }
+    const rows = kind === "post" ? post : pre;
+    const at = kind === "post" ? Date.now() : Date.now() - 21 * day;
+    await db.checks.put({
+      id, classId: row.id, term: seq, formKey: form, children: rows, updatedAt: at,
+      kind, round: 1, checkDate: new Date(at).toISOString().slice(0, 10), paperVersion: keys.content_hash,
+      trackId: null, expectedChildren: rows.length, status: "closed", paperId: form.startsWith("P-") ? form : null, paperCode: code,
+    });
+    const result = await finishCheck(row.id, seq, form, rows, true);
+    if (kind === "post") {
+      const first = existing.find((c) => c.kind === "pre") ?? existing[0];
+      const prof = first ? await db.profiles.get(first.id) : undefined;
+      await db.checks.update(id, { trackId: prof?.track ?? null });
+    } else if (result.track) await db.checks.update(id, { trackId: result.track });
+  }, [lang]);
+
   const loadDemo = useCallback(async () => {
     track("sample_input_run", { value: { sample: "demo_class" } });
     const row = await activeClass(true);
-    const termNow = await getSetting("term", 1);
-    // A pre-test and, from term 2, its post-test with the same children in the same order, so the
-    // before-and-after view has something to show. All of it is made up. Each check is on a real paper
-    // (the sample paper and its twin, stored on the server and keyed like any paper); with no
-    // connection the same numbers are used from the phone's built-in copy.
-    const { pre, post } = demoPair();
-    const day = 86_400_000;
-    const paperFor = async (kind: "pre" | "post", term: number): Promise<{ id: string; code: string | null }> => {
-      try {
-        const p = await samplePaper(`${row.id}:${term}`, kind, "Demo", term, lang);
-        await fetchPaperKey(p.id, { role: "teacher", classId: row.id });
-        return { id: p.id, code: p.check_code };
-      } catch {
-        return { id: kind === "post" ? "B" : "A", code: null };
-      }
-    };
-    const put = async (term: number, kind: "pre" | "post", rows: string[][], at: number) => {
-      const paper = await paperFor(kind, term);
-      const form = paper.id;
-      await db.checks.put({
-        id: `${row.id}:${term}`, classId: row.id, term, formKey: form, children: rows, updatedAt: at,
-        kind, round: 1, checkDate: new Date(at).toISOString().slice(0, 10), paperVersion: keys.content_hash,
-        trackId: null, expectedChildren: rows.length, status: "closed", paperId: form.startsWith("P-") ? form : null, paperCode: paper.code,
-      });
-      const result = await finishCheck(row.id, term, form, rows, true);
-      if (result.track) await db.checks.update(`${row.id}:${term}`, { trackId: result.track });
-    };
-    if (termNow >= 2) {
-      if (!(await db.checks.get(`${row.id}:1`))) await put(1, "pre", pre, Date.now() - 21 * day);
-      await put(termNow, "post", post, Date.now());
-      const first = await db.profiles.get(`${row.id}:1`);
-      await db.checks.update(`${row.id}:${termNow}`, { trackId: first?.track ?? null });
-    } else await put(termNow, "pre", pre, Date.now());
+    if ((await db.checks.where("classId").equals(row.id).count()) === 0) await putDemo("pre");
     await reload();
     await flushAllowed(isOnline());
     setPending(await pendingCount());
-  }, [reload, lang]);
+  }, [reload, putDemo]);
 
-  const advanceTerm = useCallback(async () => {
-    await setSetting("term", 2);
+  const addLaterDemo = useCallback(async () => {
+    const row = await activeClass(true);
+    const have = await db.checks.where("classId").equals(row.id).toArray();
+    if (have.length === 0) await putDemo("pre");
+    if (!have.some((c) => c.kind === "post")) await putDemo("post");
     await reload();
-  }, [reload]);
+    await flushAllowed(isOnline());
+    setPending(await pendingCount());
+  }, [reload, putDemo]);
+
+  const startAnother = useCallback(async () => {
+    const row = klass;
+    const all = row ? await db.checks.where("classId").equals(row.id).toArray() : [];
+    fresh.current = row ? nextSeq(all, row.id) : 1;
+    await reload();
+  }, [reload, klass]);
 
   const reset = useCallback(async () => {
     await clearCloud();
@@ -175,7 +204,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setLang,
       role,
       setRole,
-      term,
+      slot,
+      checkCount,
       online,
       forcedOffline,
       setOffline: (on: boolean) => {
@@ -188,11 +218,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       pending,
       reload,
       loadDemo,
-      advanceTerm,
+      startAnother,
+      addLaterDemo,
       reset,
       tr: (key, params) => translate(lang, key, params),
     }),
-    [lang, setLang, role, setRole, term, online, forcedOffline, klass, profile, check, pending, reload, loadDemo, advanceTerm, reset],
+    [lang, setLang, role, setRole, slot, checkCount, online, forcedOffline, klass, profile, check, pending, reload, loadDemo, startAnother, addLaterDemo, reset],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

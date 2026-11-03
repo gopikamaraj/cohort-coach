@@ -133,33 +133,32 @@ def entered(_: str = RESULTS, db: Session = SESSION) -> dict[str, Any]:
     from services.api.devicestore import entered_summary
 
     floor = _min_entered()
-    classes = entered_summary(db)["classes"]
-    terms = sorted({c["term"] for c in classes})
+    summary = entered_summary(db)
+    classes = summary["classes"]  # each class once, by its most recent check
     codes = [e.value for e in ErrorCode]
-    out: dict[str, Any] = {"min_classes": floor, "lowered": floor < MIN_CLASSES_SHOWN, "terms": terms, "source": "system: class counts from the entered checks"}
-    latest = [c for c in classes if terms and c["term"] == terms[-1]]
-    hidden = len(latest) < floor
+    out: dict[str, Any] = {"min_classes": floor, "lowered": floor < MIN_CLASSES_SHOWN, "has_data": bool(classes), "source": "system: class counts from the entered checks"}
+    hidden = len(classes) < floor
     cells = []
     for code in codes:
         if hidden:
             cells.append({"error": code, "hidden": True})
             continue
-        showing = sum(1 for c in latest if c["_counts"].get(code, 0) > 0)  # a mistake seen even once (possible) counts
-        cells.append({"error": code, "hidden": False, "classes": len(latest), "showing": showing, "share_percent": round(100 * showing / len(latest), 1), "children_showing": sum(c["_counts"].get(code, 0) for c in latest), "children_checked": sum(c["children_checked"] for c in latest)})
-    out["error_map"] = {"term": terms[-1] if terms else None, "classes": len(latest), "cells": cells}
-    both = {k for k in {c["_class"] for c in classes} if len({c["term"] for c in classes if c["_class"] == k}) >= 2}
-    first, last = (terms[0], terms[-1]) if len(terms) >= 2 else (None, None)
+        showing = sum(1 for c in classes if c["_counts"].get(code, 0) > 0)  # a mistake seen even once (possible) counts
+        cells.append({"error": code, "hidden": False, "classes": len(classes), "showing": showing, "share_percent": round(100 * showing / len(classes), 1), "children_showing": sum(c["_counts"].get(code, 0) for c in classes), "children_checked": sum(c["children_checked"] for c in classes)})
+    out["error_map"] = {"classes": len(classes), "cells": cells}
+    # Before and after: a class with two or more checks is read first check against most recent, by date saved.
+    by_class: dict[str, list[dict[str, Any]]] = {}
+    for c in summary["all"]:
+        by_class.setdefault(c["_class"], []).append(c)
+    pairs = [(min(v, key=lambda x: x["_at"]), max(v, key=lambda x: x["_at"])) for v in by_class.values() if len(v) >= 2]
     rows = []
-    if first is not None and both:
-        for code in codes:
-            a = [c for c in classes if c["_class"] in both and c["term"] == first]
-            b = [c for c in classes if c["_class"] in both and c["term"] == last]
-            na, nb = sum(c["children_checked"] for c in a), sum(c["children_checked"] for c in b)
-            sa, sb = sum(c["_counts"].get(code, 0) for c in a), sum(c["_counts"].get(code, 0) for c in b)
-            if sa == 0:
-                continue
-            rows.append({"error": code, "before": sa, "before_of": na, "after": sb, "after_of": nb, "fall_points": round(100 * (sa / na - sb / nb), 1) if na and nb else None})
-    out["results"] = {"from_term": first, "to_term": last, "classes": len(both), "rows": rows if len(both) >= floor else [], "hidden": bool(both) and len(both) < floor, "verdict_needs": "15 classes per arm and a comparison group, so no verdict yet"}
+    for code in codes:
+        na, nb = sum(a["children_checked"] for a, _ in pairs), sum(b["children_checked"] for _, b in pairs)
+        sa, sb = sum(a["_counts"].get(code, 0) for a, _ in pairs), sum(b["_counts"].get(code, 0) for _, b in pairs)
+        if sa == 0:
+            continue
+        rows.append({"error": code, "before": sa, "before_of": na, "after": sb, "after_of": nb, "fall_points": round(100 * (sa / na - sb / nb), 1) if na and nb else None})
+    out["results"] = {"classes": len(pairs), "rows": rows if len(pairs) >= floor else [], "hidden": bool(pairs) and len(pairs) < floor, "verdict_needs": "15 classes per arm and a comparison group, so no verdict yet"}
     cohorts = list(db.execute(select(ClassCohort).where(ClassCohort.scope == "coach")).scalars())
     out["funnel"] = {"cohorts": [{"error": c.errors[0] if c.errors else "", "classes": int(c.counts.get("_classes", 1))} for c in cohorts], "grouped_source": "system: cohorts a coach created", "wip": ["Delivered", "Tried", "Practised", "Changed"]}
     return out

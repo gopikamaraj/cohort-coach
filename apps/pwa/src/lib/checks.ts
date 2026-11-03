@@ -10,23 +10,47 @@ import type { CheckKind, CheckRow, ProfileRow } from "./db";
 export const KINDS: readonly CheckKind[] = ["pre", "post", "termly"];
 export type { CheckKind };
 
-export function checkId(classId: string, term: number, round = 1): string {
-  return round <= 1 ? `${classId}:${term}` : `${classId}:${term}:${round}`; // round 1 keeps the id used before labels existed
+/** A check's id is its class and a running number (1, 2, 3 ...). The number only keeps ids apart: there are no
+ *  terms. Ids saved before (`class:1`, `class:2`) stay exactly as they are. */
+export function checkId(classId: string, seq: number): string {
+  return `${classId}:${seq}`;
 }
 
-export function nextRound(history: CheckRow[], classId: string, term: number): number {
-  const taken = history.filter((c) => c.classId === classId && c.term === term).map((c) => c.round ?? 1);
-  return taken.length === 0 ? 1 : Math.max(...taken) + 1;
+/** The running number inside a check id (`c-ab12:3` or `c-ab12:3:2` -> 3); 0 when the id has none. */
+export function seqOf(id: string): number {
+  const n = Number(id.split(":")[1]);
+  return Number.isInteger(n) && n > 0 ? n : 0;
+}
+
+/** The number the class's next check takes: one more than the highest used. */
+export function nextSeq(history: CheckRow[], classId: string): number {
+  return Math.max(0, ...history.filter((c) => c.classId === classId).map((c) => seqOf(c.id))) + 1;
 }
 
 const latest = (rows: CheckRow[]): CheckRow | undefined => [...rows].sort((a, b) => b.updatedAt - a.updatedAt)[0];
 const kindOf = (c: CheckRow): CheckKind => c.kind ?? "pre";
 
-/** Pre-test when nothing is saved, post-test once a track began after a pre-test and a new term started, else termly. */
-export function suggestKind(history: CheckRow[], profiles: ProfileRow[], term: number): CheckKind {
+/** The number a check entered now takes: the one still being entered, else the next free number. */
+export function slotForNew(history: CheckRow[], classId: string): number {
+  const open = history.filter((c) => c.classId === classId && c.status === "entering");
+  return open.length > 0 ? seqOf(latest(open)!.id) : nextSeq(history, classId);
+}
+
+/** The check a class is working on: the one still being entered, else the most recent by date saved. */
+export function currentCheck(history: CheckRow[], classId: string): CheckRow | undefined {
+  const mine = history.filter((c) => c.classId === classId);
+  const open = mine.filter((c) => c.status === "entering");
+  return latest(open.length > 0 ? open : mine);
+}
+
+/** The days a 3-week track takes: a post-test is only suggested once that long has passed since the pre-test. */
+export const TRACK_DAYS = 21;
+
+/** Pre-test when nothing is saved, post-test once a track began after a pre-test and three weeks have passed, else termly. */
+export function suggestKind(history: CheckRow[], profiles: ProfileRow[], now: number = Date.now()): CheckKind {
   if (history.length === 0) return "pre";
   const pre = latest(history.filter((c) => kindOf(c) === "pre"));
-  if (pre && pre.status === "closed" && term > pre.term) {
+  if (pre && pre.status === "closed" && now - pre.updatedAt >= TRACK_DAYS * 86_400_000) {
     const hadTrack = profiles.some((p) => p.id === pre.id && p.track !== null);
     const answered = history.some((c) => kindOf(c) === "post" && c.updatedAt > pre.updatedAt);
     if (hadTrack && !answered) return "post";

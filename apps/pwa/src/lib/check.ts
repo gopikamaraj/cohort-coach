@@ -67,16 +67,16 @@ export async function backfillAnyCounts(store: CohortDb = db): Promise<number> {
 
 export function profileRow(
   classId: string,
-  term: number,
+  seq: number,
   formKey: string,
   rows: string[][],
   simulated: boolean,
 ): ProfileRow {
   const profile = classProfile(diagnoseAll(formKey, rows));
   return {
-    id: `${classId}:${term}`,
+    id: `${classId}:${seq}`,
     classId,
-    term,
+    term: seq,
     formKey,
     childrenChecked: profile.children_checked,
     counts: profile.counts,
@@ -93,14 +93,14 @@ export function profileRow(
 /** Finish a check: diagnose on the phone, keep the class result, queue the counts to send. */
 export async function finishCheck(
   classId: string,
-  term: number,
+  seq: number,
   formKey: string,
   rows: string[][],
   simulated: boolean,
   store: CohortDb = db,
   stages?: StageCounts | null,
 ): Promise<ProfileRow> {
-  const row = { ...profileRow(classId, term, formKey, rows, simulated), ...(stages ? { stages } : {}) };
+  const row = { ...profileRow(classId, seq, formKey, rows, simulated), ...(stages ? { stages } : {}) };
   await store.profiles.put(row);
   await enqueueProfile(row, store);
   return row;

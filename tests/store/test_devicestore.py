@@ -142,8 +142,8 @@ def test_a_coach_sees_the_entered_classes_added_up_and_makes_a_cohort_from_them(
     teacher(kb, "3B Math Teacher", "3B", {"PV-HEARD": 3, "SUB-SFL": 2}, 18)
     assert client.get("/api/store/coach-summary", headers=on(ka)).status_code == 403
     s = client.get("/api/store/coach-summary", headers=on(ka, "coach")).json()
-    assert s["terms"]["1"] == {"classes": 2, "children_checked": 38, "children_showing": {"PV-HEARD": 7, "SUB-SFL": 2}}
-    assert all(set(c) == {"teacher", "class", "term", "errors"} for c in s["classes"])  # no class's own count
+    assert s["totals"] == {"classes": 2, "children_checked": 38, "children_showing": {"PV-HEARD": 7, "SUB-SFL": 2}}
+    assert all(set(c) == {"teacher", "class", "errors"} for c in s["classes"])  # no class's own count
     body = {"name": "Place value group", "error": "PV-HEARD"}
     made = client.post("/api/cohorts/class-only/coach", json=body, headers=on(ka, "coach")).json()
     assert made["classes"] == 2 and made["counts"] == {"PV-HEARD": 7} and made["children_checked"] == 38 and made["scope"] == "coach"
@@ -161,9 +161,9 @@ def test_the_officer_sees_the_entered_classes_as_groups_and_the_five_class_rule_
 
     for key, nick, counts in ((ka, "3A", {"PV-HEARD": 6}), (kb, "3B", {"PV-HEARD": 5})):
         client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": nick}}, headers=on(key))
-        client.put("/api/store/profiles/p1", json={"data": {"id": "p1", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": counts}}, headers=on(key))
-    client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 2}}}, headers=on(ka))
-    client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 3}}}, headers=on(kb))
+        client.put("/api/store/profiles/p1", json={"data": {"id": "p1", "classId": "c1", "term": 1, "createdAt": 1, "childrenChecked": 20, "counts": counts}}, headers=on(key))
+    client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "createdAt": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 2}}}, headers=on(ka))
+    client.put("/api/store/profiles/p2", json={"data": {"id": "p2", "classId": "c1", "term": 2, "createdAt": 2, "childrenChecked": 20, "counts": {"PV-HEARD": 3}}}, headers=on(kb))
     o = client.get("/api/officer/entered", headers=on(ka, "officer")).json()
     assert o["min_classes"] == 2  # the pilot default
     monkeypatch.setenv("OFFICER_MIN_CLASSES", "5")  # block scale: the five-class rule
@@ -189,7 +189,7 @@ def test_coach_and_peers_count_a_mistake_seen_even_once_and_ignore_the_confirmed
         client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": "c"}}, headers=on(key))
         client.put("/api/store/profiles/p", json={"data": {"id": "p", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": {}, "anyCounts": {"SUB-SFL": n}}}, headers=on(key))
     s = client.get("/api/store/coach-summary", headers=on(ka, "coach")).json()
-    assert s["terms"]["1"]["children_showing"] == {"SUB-SFL": 5} and all(c["errors"] == ["SUB-SFL"] for c in s["classes"])
+    assert s["totals"]["children_showing"] == {"SUB-SFL": 5} and all(c["errors"] == ["SUB-SFL"] for c in s["classes"])
     assert client.get("/api/store/peers?errors=SUB-SFL", headers=on(ka)).json()[0]["errors"] == ["SUB-SFL"]
 
 
@@ -203,7 +203,7 @@ def test_the_officer_can_make_a_cohort_and_sees_no_class_or_teacher_name(client:
         client.put("/api/store/classes/c1", json={"data": {"id": "c1", "name": nick}}, headers=on(key))
         client.put("/api/store/profiles/p", json={"data": {"id": "p", "classId": "c1", "term": 1, "childrenChecked": 20, "counts": {}, "anyCounts": {"SUB-SFL": 4}}}, headers=on(key))
     s = client.get("/api/store/coach-summary", headers=on(ka, "officer")).json()
-    assert all(set(c) == {"term", "errors"} for c in s["classes"])
+    assert all(set(c) == {"errors"} for c in s["classes"])
     made = client.post("/api/cohorts/class-only/officer", json={"name": "Borrowing group", "error": "SUB-SFL"}, headers=on(ka, "officer"))
     assert made.status_code == 200 and made.json()["classes"] == 2
     assert len(client.get("/api/cohorts/class-only/officer", headers=on(ka, "officer")).json()) == 1

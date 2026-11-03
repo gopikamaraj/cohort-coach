@@ -5,7 +5,7 @@
 // dropped at Finish: never saved, never sent again.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BLANK, enteredChildren, finishCheck, hasAnswers, UNREADABLE } from "../lib/check";
-import { activeClass, db, getSetting, setSetting, type CheckRow, type ProfileRow } from "../lib/db";
+import { activeClass, db, type CheckRow, type ProfileRow } from "../lib/db";
 import { formOf, keys } from "../lib/diagnosis";
 import { flushAllowed } from "../lib/sendnow";
 import { getConsent, hasConsent, recordOnServer, setConsent, type Choices, countsOn } from "../lib/consent";
@@ -82,7 +82,7 @@ interface Picture {
 }
 
 export default function Check({ onDone }: { onDone?: () => void } = {}) {
-  const { tr, lang, term, klass, check, reload, role } = useApp();
+  const { tr, lang, slot, klass, check, reload, role, startAnother } = useApp();
   const aiMode = useAiMode();
   const devTesting = useDevTesting();
   // Testing only: the roll numbers the "mark the rest absent" box marked, so unticking it can undo exactly those.
@@ -127,17 +127,19 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   metaRef.current = meta;
   const [history, setHistory] = useState<CheckRow[]>([]);
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
+  const slotRef = useRef(slot);
+  slotRef.current = slot;
   const [reopened, setReopened] = useState(false); // a finished check opened again for changes
 
-  const checkKey = klass ? `${klass.id}:${term}` : "";
+  const checkKey = klass ? `${klass.id}:${slot}` : "";
   useEffect(() => {
     if (!klass?.id || !formKey) return;
     void keepStatus(role, klass.id).then((s) => {
       setKeepOn(s.enabled);
       setRetention(s.retention_days);
-      if (s.enabled) void listKept(role, klass.id, `${klass.id}:${term}`).then((l) => setKept(Object.fromEntries(l.map((k) => [k.roll - 1, k]))));
+      if (s.enabled) void listKept(role, klass.id, `${klass.id}:${slot}`).then((l) => setKept(Object.fromEntries(l.map((k) => [k.roll - 1, k]))));
     });
-  }, [klass?.id, term, formKey, role]);
+  }, [klass?.id, slot, formKey, role]);
 
   const dropPictures = useCallback(() => {
     picUrls.current.forEach((u) => URL.revokeObjectURL(u));
@@ -178,11 +180,11 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
       writes.current = writes.current.then(async () => {
         const key = form ?? formKey;
         const cls = klass ?? (await activeClass(false));
-        const termNow = await getSetting("term", term);
-        const m = over ?? metaRef.current ?? { kind: suggestKind(history, profiles, termNow), checkDate: today(), expectedChildren: null, confirm: false };
+        const seq = slotRef.current;
+        const m = over ?? metaRef.current ?? { kind: suggestKind(history, profiles), checkDate: today(), expectedChildren: null, confirm: false };
         if (key) {
           await db.checks.put({
-            id: `${cls.id}:${termNow}`, classId: cls.id, term: termNow, formKey: key, children: next.rows, updatedAt: Date.now(), missedConcepts: missedToStore(next.missed), absent: [...next.absent], approved: [...next.approved], viaPhoto: [...photoKids.current],
+            id: `${cls.id}:${seq}`, classId: cls.id, term: seq, formKey: key, children: next.rows, updatedAt: Date.now(), missedConcepts: missedToStore(next.missed), absent: [...next.absent], approved: [...next.approved], viaPhoto: [...photoKids.current],
             kind: m.kind, round: 1, checkDate: m.checkDate, paperVersion: keys.content_hash, trackId: m.kind === "post" ? trackToEvaluate(history, profiles) : null, expectedChildren: m.expectedChildren, status: "entering", confirm: m.confirm,
             paperId: m.paperId ?? null, paperCode: m.paperCode ?? null,
           });
@@ -191,7 +193,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
         if (inFlight.current === 0) setMessage(tr("check.saved"));
       });
     },
-    [klass, term, tr, formKey, history, profiles],
+    [klass, tr, formKey, history, profiles],
   );
 
   const clone = (): Snap => ({ rows: snap.current.rows.map((r) => [...r]), absent: new Set(snap.current.absent), approved: new Set(snap.current.approved), missed: new Map(snap.current.missed) });
@@ -241,8 +243,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     if ((entered > 0 || snap.current.absent.size > 0) && !window.confirm(tr("check.another_confirm", { n: entered + snap.current.absent.size }))) return;
     await writes.current;
     const cls = klass ?? (await activeClass(false));
-    const termNow = await getSetting("term", term);
-    await db.checks.delete(`${cls.id}:${termNow}`);
+    await db.checks.delete(`${cls.id}:${slotRef.current}`);
     dropPictures();
     setDrawer(false);
     snap.current = { rows: [], absent: new Set(), approved: new Set(), missed: new Map() };
@@ -253,10 +254,10 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     setMeta(null);
     setFormKey(null);
     setChild(0);
-    await reload();
+    await startAnother();
   };
 
-  // A finished check stays as it is (its results too); the next paper's check is the class's next term.
+  // A finished check stays as it is (its results too); the next paper's check gets the next running number.
   const nextPaper = async () => {
     await writes.current;
     dropPictures();
@@ -270,8 +271,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     setFormKey(null);
     setChild(0);
     setReopened(false);
-    await setSetting("term", term + 1);
-    await reload();
+    await startAnother();
   };
 
   // The first sheet entered freezes the paper on the server: it can no longer change.
@@ -517,13 +517,13 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     if (!window.confirm(tr("check.finish_confirm", { a: gate.entered, b: gate.absent }))) return;
     await writes.current; // the last write lands before the check is closed
     const cls = klass ?? (await activeClass(false));
-    const termNow = await getSetting("term", term);
+    const seq = slotRef.current;
     const s = snap.current;
     // only approved answers feed the finder; an absent roll has none
     const all = s.rows.map((r, i) => (s.absent.has(i) || !s.approved.has(i) ? emptyRow(items) : r));
     const stages = stagesFor(formKey, all, s.missed);
-    const done = await finishCheck(cls.id, termNow, formKey, all, cls.simulated, undefined, stages);
-    await db.checks.update(`${cls.id}:${termNow}`, { status: "closed", trackId: meta?.kind === "post" ? trackToEvaluate(history, profiles) : done.track });
+    const done = await finishCheck(cls.id, seq, formKey, all, cls.simulated, undefined, stages);
+    await db.checks.update(`${cls.id}:${seq}`, { status: "closed", trackId: meta?.kind === "post" ? trackToEvaluate(history, profiles) : done.track });
     dropPictures();
     setDrawer(false);
     await reload();
@@ -536,7 +536,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     return (
       <section aria-labelledby="start-title">
         {klass?.simulated ? <SimulatedBanner /> : null}
-        <StartCheck className={shownClassName(tr, klass)} term={term} onStart={start} lastCount={history.find((c) => c.expectedChildren)?.expectedChildren ?? null} preferKind={suggestKind(history, profiles, term)} />
+        <StartCheck className={shownClassName(tr, klass)} onStart={start} lastCount={history.find((c) => c.expectedChildren)?.expectedChildren ?? null} preferKind={suggestKind(history, profiles)} />
       </section>
     );
   }
@@ -544,7 +544,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   // A finished check: what was entered, See results, and Reopen to change it.
   if (check?.status === "closed" && check.formKey === formKey && !reopened) {
     const reopen = async () => {
-      if (klass) await db.checks.update(`${klass.id}:${term}`, { status: "entering" });
+      if (klass) await db.checks.update(`${klass.id}:${slot}`, { status: "entering" });
       setReopened(true);
     };
     return (
@@ -572,8 +572,8 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   }
 
   const rs = setOf();
-  const shownMeta = meta ?? { kind: suggestKind(history, profiles, term), checkDate: today(), expectedChildren: null, confirm: false };
-  const label = formatCheckLabel(tr, { id: "", classId: "", term, formKey, children: [], updatedAt: 0, kind: shownMeta.kind, checkDate: shownMeta.checkDate, paperCode: meta?.paperCode ?? null }, shownClassName(tr, klass), lang);
+  const shownMeta = meta ?? { kind: suggestKind(history, profiles), checkDate: today(), expectedChildren: null, confirm: false };
+  const label = formatCheckLabel(tr, { id: "", classId: "", term: slot, formKey, children: [], updatedAt: 0, kind: shownMeta.kind, checkDate: shownMeta.checkDate, paperCode: meta?.paperCode ?? null }, shownClassName(tr, klass), lang);
   const row = rowAt(snap.current, child);
   const state = dataState(rs, child);
   const isAbsent = state === "absent";

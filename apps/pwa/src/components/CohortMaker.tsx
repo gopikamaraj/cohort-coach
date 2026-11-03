@@ -20,7 +20,6 @@ interface Row {
 }
 interface Seen {
   class?: string;
-  term: number;
   errors: string[];
 }
 
@@ -42,8 +41,7 @@ export function CohortMaker({ who }: { who: "coach" | "officer" }) {
       .catch(() => setMade([]));
   };
   useEffect(load, [who]);
-  const latest = Math.max(0, ...seen.map((c) => c.term));
-  const byError = (e: string) => seen.filter((c) => c.term === latest && c.errors.includes(e));
+  const byError = (e: string) => seen.filter((c) => c.errors.includes(e)); // each class by its most recent check
   const enough = code !== "" && byError(code).length >= 2;
   const pick = (e: string) => {
     setCode(e);

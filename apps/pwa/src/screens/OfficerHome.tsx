@@ -30,8 +30,8 @@ export function pos(v: number): number {
 interface Entered {
   min_classes: number;
   lowered: boolean;
-  terms: number[];
-  error_map?: { term: number | null; classes: number; cells: { error: string; hidden: boolean; classes?: number; showing?: number; share_percent?: number; children_showing?: number; children_checked?: number }[] };
+  has_data: boolean;
+  error_map?: { classes: number; cells: { error: string; hidden: boolean; classes?: number; showing?: number; share_percent?: number; children_showing?: number; children_checked?: number }[] };
   results: { classes: number; hidden: boolean; rows: { error: string; before: number; before_of: number; after: number; after_of: number; fall_points: number | null }[] };
 }
 
@@ -82,11 +82,11 @@ function EnteredOfficer() {
   useEffect(() => {
     get<Entered>("entered").then(setD, () => setD(null));
   }, []);
-  if (!d || d.terms.length === 0) return null;
+  if (!d || !d.has_data) return null;
   return (
     <div className="panel" data-testid="officer-entered">
       <h2>{tr("officer.real.title")}</h2>
-      <p className="muted">{tr("officer.real.note", { classes: d.error_map?.classes ?? 0, term: d.error_map?.term ?? 1 })}</p>
+      <p className="muted">{tr("officer.real.note", { classes: d.error_map?.classes ?? 0 })}</p>
       {d.lowered ? <p className="note">{tr("officer.real.lowered")}</p> : null}
       <h3>{tr("officer.real.results")}</h3>
       {d.results.hidden ? <p className="muted">{tr("officer.real.hidden", { min: d.min_classes })}</p> : null}

@@ -11,6 +11,7 @@ import { AiOffNote, RecordedChip, SimulatedBanner } from "../components/parts";
 import type { Key } from "../i18n";
 import { API_BASE } from "../lib/api";
 import { db, newClassId, setSetting } from "../lib/db";
+import { nextSeq } from "../lib/checks";
 import { DemoError, dcall, demoBlob, demoSession, demoSource, saveReads, setDemoStep, startDemo, type DemoSummary, type ReadsFile } from "../lib/demoStudio";
 import { useQuery } from "../lib/router";
 import { track } from "../lib/tester";
@@ -791,7 +792,7 @@ function OfficerDash({ dash }: { dash: Dashboard }) {
 // --- step 12 ----------------------------------------------------------------------------------
 
 function StepPost() {
-  const { tr, klass, term, reload } = useApp();
+  const { tr, klass, reload } = useApp();
   const sid = demoSession();
   const [done, setDone] = useState(false);
   const [msg, setMsg] = useState("");
@@ -804,8 +805,9 @@ function StepPost() {
       const out = await dcall<{ rows: string[][]; form: string; paper_code: string | null }>(`/${sid}/post-test`, { method: "POST" });
       // the post-test is the pre-test's twin paper: its own key comes from the server like any paper's
       if (out.form.startsWith("P-")) await fetchPaperKey(out.form, { role: "teacher", classId: klass.id });
+      const seq = nextSeq(await db.checks.where("classId").equals(klass.id).toArray(), klass.id);
       await db.checks.put({
-        id: `${klass.id}:${term + 1}`, classId: klass.id, term: term + 1, formKey: out.form, children: out.rows, updatedAt: Date.now(), paperId: out.form.startsWith("P-") ? out.form : null, paperCode: out.paper_code,
+        id: `${klass.id}:${seq}`, classId: klass.id, term: seq, formKey: out.form, children: out.rows, updatedAt: Date.now(), paperId: out.form.startsWith("P-") ? out.form : null, paperCode: out.paper_code,
         kind: "post", round: 1, checkDate: new Date(Date.now() + 21 * 86400000).toISOString().slice(0, 10), expectedChildren: out.rows.length, status: "closed", confirm: false, notes: "Simulated post-test (demo)",
       });
       await reload();

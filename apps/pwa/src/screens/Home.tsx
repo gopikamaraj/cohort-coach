@@ -10,7 +10,7 @@ import { useJudge } from "../lib/roles";
 import { AssignedToYou, useHubIdentity } from "../components/PaperHubParts";
 
 export default function Home() {
-  const { tr, term, klass, profile } = useApp();
+  const { tr, klass, profile } = useApp();
   const consent = useConsent();
   const judge = useJudge();
   const who = useHubIdentity();
@@ -18,7 +18,6 @@ export default function Home() {
   return (
     <section aria-labelledby="home-title">
       <h1 id="home-title">{tr("home.title")}</h1>
-      <p className="muted">{tr("home.term", { term })}</p>
       {klass?.simulated ? <SimulatedBanner /> : null}
       {!consent ? (
         <div className="panel notice-card" data-testid="privacy-prompt">

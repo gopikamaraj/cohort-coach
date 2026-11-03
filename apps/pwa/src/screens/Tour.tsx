@@ -30,7 +30,7 @@ function Pending({ phase, children }: { phase: string; children?: React.ReactNod
 }
 
 export default function Tour() {
-  const { tr, lang, setRole, term, advanceTerm, profile, reload } = useApp();
+  const { tr, lang, setRole, slot, checkCount, addLaterDemo, profile, reload } = useApp();
   const [paperTick, setPaperTick] = useState(0);
   const [paperBusy, setPaperBusy] = useState(false);
   // Enter check chooses a paper that exists; on the tour the judge makes the standard one first.
@@ -38,7 +38,7 @@ export default function Tour() {
     setPaperBusy(true);
     try {
       const cls = await activeClass(false);
-      const p = await samplePaper(`${cls.id}:${term}`, "pre", "3A", term, lang);
+      const p = await samplePaper(`${cls.id}:${slot}`, "pre", "3A", slot, lang);
       await fetchPaperKey(p.id, { role: "teacher", classId: cls.id });
       await reload();
       setPaperTick((n) => n + 1);
@@ -115,10 +115,9 @@ export default function Tour() {
       ) : null}
       {step.screen === "term2" ? (
         <>
-          <button type="button" className="btn btn-primary" onClick={() => void advanceTerm()} disabled={term >= 2} data-testid="tour-advance">
+          <button type="button" className="btn btn-primary" onClick={() => void addLaterDemo()} disabled={checkCount >= 2} data-testid="tour-advance">
             {tr("judge.advance")}
           </button>
-          <p className="muted">{tr("judge.term", { term })}</p>
           <Pending phase="P12" />
           <Programme />
         </>

@@ -6,7 +6,7 @@ import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
 
 export default function Judge() {
-  const { tr, klass, term, forcedOffline, setOffline, loadDemo, advanceTerm, reset } = useApp();
+  const { tr, klass, checkCount, forcedOffline, setOffline, loadDemo, addLaterDemo, reset } = useApp();
   const steps: { key: Key; to: Route | null }[] = [
     { key: "judge.step1", to: null },
     { key: "judge.step2", to: "/home" },
@@ -50,8 +50,7 @@ export default function Judge() {
             {tr("judge.demo_loaded")}
           </p>
         ) : null}
-        <p>{tr("judge.term", { term })}</p>
-        <button type="button" className="btn btn-secondary" onClick={() => void advanceTerm()} disabled={term >= 2} data-testid="advance">
+        <button type="button" className="btn btn-secondary" onClick={() => void addLaterDemo()} disabled={checkCount >= 2} data-testid="advance">
           {tr("judge.advance")}
         </button>
         <button type="button" className="btn btn-secondary" onClick={() => setOffline(!forcedOffline)} aria-pressed={forcedOffline} data-testid="offline-toggle">

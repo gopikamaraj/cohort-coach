@@ -7,7 +7,10 @@ import {
   findDuplicate,
   formatCheckLabel,
   legacyFields,
-  nextRound,
+  nextSeq,
+  seqOf,
+  currentCheck,
+  slotForNew,
   openCheck,
   pairChecks,
   suggestForm,
@@ -26,36 +29,47 @@ const tr = (key: string, p?: Record<string, string | number>) =>
   ({ "check.kind.pre": "Pre-test", "check.kind.post": "Post-test", "check.kind.termly": "Termly check", "check.form_n": `Form ${p?.f}`, "check.class_n": `Class ${p?.c}` })[key] ?? key;
 
 describe("ids", () => {
-  it("keeps the old id for round 1 so nothing already saved is orphaned", () => {
+  it("keeps the old id so nothing already saved is orphaned", () => {
     expect(checkId("c1", 2)).toBe("c1:2");
-    expect(checkId("c1", 2, 1)).toBe("c1:2");
-    expect(checkId("c1", 2, 3)).toBe("c1:2:3");
+    expect(seqOf("c1:2")).toBe(2);
+    expect(seqOf("c1:2:3")).toBe(2);
+    expect(seqOf("coach")).toBe(0);
   });
-  it("takes the next free round in a term", () => {
-    expect(nextRound([], "c1", 1)).toBe(1);
-    expect(nextRound([check({ round: 1 }), check({ id: "c1:1:2", round: 2 })], "c1", 1)).toBe(3);
-    expect(nextRound([check({ round: 1 })], "c1", 2)).toBe(1);
-    expect(nextRound([check({ round: 1, classId: "c2" })], "c1", 1)).toBe(1);
+  it("takes the next free running number for a class, whatever terms its old checks carry", () => {
+    expect(nextSeq([], "c1")).toBe(1);
+    expect(nextSeq([check({}), check({ id: "c1:2", term: 2 })], "c1")).toBe(3);
+    expect(nextSeq([check({ classId: "c2", id: "c2:5" })], "c1")).toBe(1);
+  });
+  it("her current check is the one being entered, else the latest saved; never hidden by a number", () => {
+    const old = check({ id: "c1:1", status: "closed", updatedAt: 10 });
+    const newer = check({ id: "c1:2", term: 2, status: "closed", updatedAt: 20 });
+    const open = check({ id: "c1:3", status: "entering", updatedAt: 5 });
+    expect(currentCheck([old, newer], "c1")?.id).toBe("c1:2");
+    expect(currentCheck([old, newer, open], "c1")?.id).toBe("c1:3");
+    expect(currentCheck([old], "c2")).toBeUndefined();
+    expect(slotForNew([old, newer], "c1")).toBe(3);
+    expect(slotForNew([old, newer, open], "c1")).toBe(3);
   });
 });
 
 describe("what to suggest", () => {
   it("suggests a pre-test, Form A, when there is no check yet", () => {
-    expect(suggestKind([], [], 1)).toBe("pre");
+    expect(suggestKind([], [])).toBe("pre");
     expect(suggestForm("pre", [])).toBe("A");
   });
-  it("suggests a post-test, Form B, once a track started after a Form A pre-test and the next term has begun", () => {
+  it("suggests a post-test, Form B, once a track started after a Form A pre-test and three weeks have passed", () => {
     const pre = check({ kind: "pre", formKey: "A", status: "closed" });
     const prof = profile({ track: "SUB-SFL" });
-    expect(suggestKind([pre], [prof], 2)).toBe("post");
+    expect(suggestKind([pre], [prof], pre.updatedAt + 22 * 86_400_000)).toBe("post");
     expect(suggestForm("post", [pre])).toBe("B");
   });
   it("suggests a termly check when no track has finished, or a post-test already exists", () => {
     const pre = check({ kind: "pre", formKey: "A", status: "closed" });
-    expect(suggestKind([pre], [profile({ track: null })], 2)).toBe("termly");
-    expect(suggestKind([pre], [profile({ track: "SUB-SFL" })], 1)).toBe("termly"); // same term: the track is not over
+    const later = pre.updatedAt + 22 * 86_400_000;
+    expect(suggestKind([pre], [profile({ track: null })], later)).toBe("termly");
+    expect(suggestKind([pre], [profile({ track: "SUB-SFL" })], pre.updatedAt + 86_400_000)).toBe("termly"); // the track is not over
     const post = check({ id: "c1:2", term: 2, kind: "post", formKey: "B", status: "closed", updatedAt: Date.parse("2026-12-01T10:00:00Z") });
-    expect(suggestKind([pre, post], [profile({ track: "SUB-SFL" })], 3)).toBe("termly");
+    expect(suggestKind([pre, post], [profile({ track: "SUB-SFL" })], post.updatedAt + 30 * 86_400_000)).toBe("termly");
   });
   it("alternates the paper for later checks so a child does not see the same numbers twice", () => {
     expect(suggestForm("termly", [check({ formKey: "B", updatedAt: 5 })])).toBe("A");

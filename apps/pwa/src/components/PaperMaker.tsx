@@ -19,7 +19,7 @@ export function shortClass(name: string): string {
 export function PaperMaker({
   checkId,
   className,
-  term,
+  slot,
   kind,
   form,
   latest,
@@ -27,7 +27,7 @@ export function PaperMaker({
 }: {
   checkId: string | null; // null on a fresh phone: the class is made when she makes a paper
   className: string;
-  term: number;
+  slot: number;
   kind: CheckKind;
   form: string;
   latest: ProfileRow | null;
@@ -62,11 +62,11 @@ export function PaperMaker({
     try {
       let id = checkId;
       if (id === null) {
-        id = `${(await activeClass(false)).id}:${term}`;
+        id = `${(await activeClass(false)).id}:${slot}`;
         await reload(); // every screen now knows the class
       }
       const body = {
-        check: { id, kind, form, class_label: shortClass(className), term },
+        check: { id, kind, form, class_label: shortClass(className), term: slot },
         profile: { ...profile, language: layout },
         blueprint: "standard_10_5",
         language: layout,

@@ -132,7 +132,7 @@ def _counts_only(coll: str, data: Any) -> Any:
         return data
     rows = data.get("children") or []
     entered = sum(1 for r in rows if isinstance(r, list) and any(str(c).strip() for c in r))
-    keep = ("id", "kind", "term", "checkDate", "status", "updatedAt", "expectedChildren")
+    keep = ("id", "kind", "checkDate", "status", "updatedAt", "expectedChildren")
     return {**{k: data[k] for k in keep if k in data}, "entered": entered, "absent": len(data.get("absent") or [])}
 
 
@@ -216,31 +216,36 @@ def _with_any(db: Session, prof: dict[str, Any], check: dict[str, Any] | None) -
 
 
 def entered_summary(db: Session) -> dict[str, Any]:
-    """Every teacher's entered classes, added up for a coach: per term the number of classes, children checked
-    and children showing each mistake, plus a label per class ("Teacher 1", class name). Counts only."""
+    """Every teacher's entered classes, added up for a coach or the officer. There are no terms: each class counts
+    once, by its most recent check (by date saved), and `all` lists every check so a before-and-after can be read.
+    Each class has a label ("Teacher 1", class name). Counts only."""
     rows = db.scalars(
         select(DeviceDoc).where(DeviceDoc.collection.in_(("profiles", "classes", "settings", "checks"))).order_by(DeviceDoc.device)
     ).all()
     docs: dict[str, dict[str, dict[str, Any]]] = {}
     for r in rows:
         docs.setdefault(r.device, {}).setdefault(r.collection, {})[r.doc_id] = r.data if isinstance(r.data, dict) else {}
-    terms: dict[str, dict[str, Any]] = {}
-    classes: list[dict[str, Any]] = []
+    every: list[dict[str, Any]] = []
     for n, (_dev, d) in enumerate(docs.items(), start=1):
         nick = str((d.get("settings", {}).get("nickname") or {}).get("value") or "").strip()
         for prof in d.get("profiles", {}).values():
             if not int(prof.get("childrenChecked", 0) or 0):
                 continue
-            prof = _with_any(db, prof, d.get("checks", {}).get(str(prof.get("id"))))
-            term = str(prof.get("term", 1))
-            t = terms.setdefault(term, {"classes": 0, "children_checked": 0, "children_showing": {}})
-            t["classes"] += 1
-            t["children_checked"] += int(prof["childrenChecked"])
-            for code, c in _seen(prof).items():
-                t["children_showing"][code] = t["children_showing"].get(code, 0) + int(c or 0)
+            check = d.get("checks", {}).get(str(prof.get("id")))
+            prof = _with_any(db, prof, check)
+            at = int((check or {}).get("updatedAt") or prof.get("createdAt") or 0)
             cname = str((d.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
-            classes.append({"teacher": nick or f"Teacher {n}", "class": cname, "term": int(term), "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof).items()}, "_class": f"{n}:{prof.get('classId')}", "_key": _dev, "_check": str(prof.get("id") or "")})
-    return {"terms": terms, "classes": classes}
+            every.append({"teacher": nick or f"Teacher {n}", "class": cname, "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof).items()}, "_class": f"{n}:{prof.get('classId')}", "_key": _dev, "_check": str(prof.get("id") or ""), "_at": at})
+    latest: dict[str, dict[str, Any]] = {}
+    for c in every:
+        if c["_class"] not in latest or c["_at"] > latest[c["_class"]]["_at"]:
+            latest[c["_class"]] = c
+    classes = list(latest.values())
+    totals: dict[str, Any] = {"classes": len(classes), "children_checked": sum(c["children_checked"] for c in classes), "children_showing": {}}
+    for c in classes:
+        for code, k in c["_counts"].items():
+            totals["children_showing"][code] = totals["children_showing"].get(code, 0) + k
+    return {"totals": totals, "classes": classes, "all": every}
 
 
 @router.get("/coach-summary")
@@ -249,8 +254,8 @@ def coach_summary(role: str = Depends(role_of), db: Session = SESSION) -> dict[s
     if role not in ("coach", "mentor", "officer"):
         raise HTTPException(403, "Only a coach, a mentor or the officer can see this.")
     s = entered_summary(db)
-    keep = ("term", "errors") if role == "officer" else ("teacher", "class", "term", "errors")  # the officer sees groups, never a class or teacher
-    return {"terms": s["terms"], "classes": [{k: c[k] for k in keep} for c in s["classes"]]}
+    keep = ("errors",) if role == "officer" else ("teacher", "class", "errors")  # the officer sees groups, never a class or teacher
+    return {"totals": s["totals"], "classes": [{k: c[k] for k in keep} for c in s["classes"]]}
 
 
 @router.get("/all/{collection}")

@@ -1029,3 +1029,13 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Not done:** teachers in a coach-made cohort do not yet get its track; the e2e specs that clicked the teacher's create button need rewriting.
 
 - **Update (Gopi, 2 Nov 2026):** the pilot default for the officer page is now 2 classes (`PILOT_MIN_CLASSES` in `services/api/officer.py`), with no env setting needed; block scale sets `OFFICER_MIN_CLASSES=5`.
+
+## 2026-11-03 · Clean-up step A: terms are off
+
+- **Decision (Gopi, clean-up prompt, step A):** there are no terms. A check's id is its class and a running number (`class:1`, `class:2`, ...), which only keeps ids apart. A teacher's current check is the one still being entered, else the most recent by date saved; History lists every check newest first by date saved. The saved `term` setting is no longer read, so no route (Check another paper, Judge or Tour advance, a setting synced from another browser) can hide earlier checks. `FIXED_TERM`, `advanceTerm` and the term bump are gone.
+- **Server:** `entered_summary` counts each class once, by its most recent check, and keeps every check for before-and-after; the officer's before-and-after reads a class's first against its latest check by date; cohorts are formed per mistake from classes' latest checks (`coach:CODE`; the earlier `coach:CODE:1` rows are still recognised). Coach and officer summaries no longer carry a term.
+- **Post-test suggestion:** was "a new term has started"; it is now "three weeks (`TRACK_DAYS` = 21, the track length) since the pre-test". A suggestion only; she can choose any kind.
+- **Judge and Tour:** the "advance to term 2" button now adds the simulated later check (post-test) to the demo class.
+- **Kept on purpose:** the `term` field on saved rows and in backups (old name, now the running number, so nothing already saved is orphaned); the printed paper code still ends `T{n}` (changing it breaks stored papers' codes and several e2e specs, so it is left for a human decision); the simulated block panels and `ProfileSync` keep their synthetic T1/T2.
+- **Tests changed because they encoded the old rule:** `checks.test.ts` (ids, `nextRound` removed, `suggestKind`), `history.test.ts` (order by date), `tests/store/test_devicestore.py` (summary shape, createdAt on the later profile).
+- **Confirmed by:** Gopi ("go", clean-up prompt).

@@ -20,7 +20,7 @@ import { useApp } from "../state";
 import { SimulatedBanner } from "../components/parts";
 
 function CreatePaper({ onMade }: { onMade: () => void }) {
-  const { tr, klass, term, reload } = useApp();
+  const { tr, klass, slot, reload } = useApp();
   const who = useHubIdentity();
   const [open, setOpen] = useState(false);
   const [route, setRoute] = useState<"rules" | "pdf" | null>(null);
@@ -68,7 +68,7 @@ function CreatePaper({ onMade }: { onMade: () => void }) {
           {route === "rules" ? (
             <details className="card" open data-testid="paper-details">
               <summary>{tr("papers.make_title")}</summary>
-              <PaperMaker checkId={klass?.id ? `${klass.id}:${term}` : null} className={klass?.name ?? ""} term={term} kind={kind} form={form} latest={latest} onMade={onMade} />
+              <PaperMaker checkId={klass?.id ? `${klass.id}:${slot}` : null} className={klass?.name ?? ""} slot={slot} kind={kind} form={form} latest={latest} onMade={onMade} />
             </details>
           ) : null}
           {route === "pdf" && who.classId ? <PaperImport who={who} kind={kind} onConfirmed={() => { onMade(); setRoute(null); }} /> : null}

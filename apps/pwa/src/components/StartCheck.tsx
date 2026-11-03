@@ -18,7 +18,7 @@ export interface CheckMeta {
   paperCode?: string | null;
 }
 
-export function StartCheck({ className, term, onStart, lastCount, preferKind }: { className: string; term: number; onStart: (form: string, meta: CheckMeta) => void; lastCount?: number | null; preferKind?: string }) {
+export function StartCheck({ className, onStart, lastCount, preferKind }: { className: string; onStart: (form: string, meta: CheckMeta) => void; lastCount?: number | null; preferKind?: string }) {
   const { tr, klass, reload } = useApp();
   const who = useHubIdentity();
   const [paper, setPaper] = useState<HubPaper | null>(null);
@@ -53,7 +53,7 @@ export function StartCheck({ className, term, onStart, lastCount, preferKind }: 
     <section aria-labelledby="start-title" data-testid="start-check">
       <h1 id="start-title">{tr("check.start_title")}</h1>
       <p className="muted" data-testid="start-class">
-        {className} · {tr("check.term_n", { n: term })}
+        {className}
       </p>
       <PaperSelect who={who} chosen={paper?.id ?? null} onChoose={setPaper} preferKind={preferKind} />
       {paper ? (

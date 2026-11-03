@@ -27,10 +27,10 @@ describe("the check history", () => {
     await s.profiles.put(profile(2));
     await s.syncQueue.add({ kind: "profile", classId: "c-1", payload: { term: "T2" }, createdAt: 1, tries: 0 });
     const list = await listChecks(s);
-    expect(list.map((c) => c.term)).toEqual([3, 2, 1]);
-    expect(list.find((c) => c.term === 1)).toMatchObject({ children: 3, viaPhoto: 2, state: "sent" });
-    expect(list.find((c) => c.term === 2)).toMatchObject({ children: 2, viaPhoto: 0, state: "waiting" });
-    expect(list.find((c) => c.term === 3)?.state).toBe("open");
+    expect(list.map((c) => c.id)).toEqual(["c-1:3", "c-1:2", "c-1:1"]); // newest first, by date saved
+    expect(list.find((c) => c.id === "c-1:1")).toMatchObject({ children: 3, viaPhoto: 2, state: "sent" });
+    expect(list.find((c) => c.id === "c-1:2")).toMatchObject({ children: 2, viaPhoto: 0, state: "waiting" });
+    expect(list.find((c) => c.id === "c-1:3")?.state).toBe("open");
   });
 
   it("does not count a child with nothing written", async () => {

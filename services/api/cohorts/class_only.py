@@ -135,9 +135,16 @@ def for_officer(
     return [view(r) for r in db.execute(select(ClassCohort)).scalars()]
 
 
+def _group_for(db: Session, code: str) -> ClassCohort | None:
+    """The cohort already formed for a mistake. Ones formed before terms were removed are named `coach:CODE:1`."""
+    return db.execute(
+        select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id.like(f"coach:{code}%"))
+    ).scalars().first()
+
+
 def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
-    """A coach or the officer forms a cohort from the entered classes that show one mistake (latest term), counts added up.
-    One per mistake and term; a second tap returns the same cohort."""
+    """A coach or the officer forms a cohort from the entered classes that show one mistake (each class by its most recent check), counts added up.
+    One per mistake; a second tap returns the same cohort."""
     from services.api.devicestore import entered_summary
 
     if body.error not in CODES:
@@ -145,14 +152,11 @@ def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
     classes = entered_summary(db)["classes"]
     if not classes:
         raise HTTPException(422, "No class has entered a check yet.")
-    term = max(c["term"] for c in classes)
-    picked = [c for c in classes if c["term"] == term and c["_counts"].get(body.error, 0) > 0]
+    picked = [c for c in classes if c["_counts"].get(body.error, 0) > 0]
     if len(picked) < 2:
         raise HTTPException(422, "A cohort needs at least two classes that show this mistake.")
-    check_id = f"coach:{body.error}:{term}"
-    have = db.execute(
-        select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id == check_id)
-    ).scalar_one_or_none()
+    check_id = f"coach:{body.error}"
+    have = _group_for(db, body.error)
     if have is not None:
         return view(have)
     problems = check_thread_post(body.name, body.language)
@@ -186,27 +190,23 @@ def _error_label(code: str) -> str:
 def form_cohorts(
     _: str = Depends(require("officer.approve_cohorts")), db: Session = SESSION
 ) -> dict[str, Any]:
-    """The officer's one button: for every mistake that two or more entered classes show (latest term), form
+    """The officer's one button: for every mistake that two or more entered classes show (each class by its most recent check), form
     a cohort from them, once. Each teacher whose class is in it finds it on her next visit."""
     from services.api.devicestore import entered_summary
 
     classes = entered_summary(db)["classes"]
     if not classes:
         return {"created": [], "already": 0, "waiting": []}
-    term = max(c["term"] for c in classes)
     created: list[dict[str, Any]] = []
     already, waiting = 0, []
     for code in sorted(CODES):
-        n = sum(1 for c in classes if c["term"] == term and c["_counts"].get(code, 0) > 0)
+        n = sum(1 for c in classes if c["_counts"].get(code, 0) > 0)
         if n == 0:
             continue
         if n < 2:
             waiting.append(code)
             continue
-        have = db.execute(
-            select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id == f"coach:{code}:{term}")
-        ).scalar_one_or_none()
-        if have is not None:
+        if _group_for(db, code) is not None:
             already += 1
             continue
         created.append(_make_group(CoachMakeIn(name=f"{_error_label(code)} cohort", error=code), db))

@@ -6,7 +6,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { finishCheck } from "../lib/check";
-import { activeClass, db, getSetting, type CheckKind } from "../lib/db";
+import { activeClass, db, type CheckKind } from "../lib/db";
+import { slotForNew } from "../lib/checks";
 import { DemoError, dcall, demoBlob, demoSession, demoSource, loadReads, matchSheet, pilotAutofill, pilotProbe, pilotRead, pilotSheet, pngText, rowFrom, saveReads, setDemoSource, type DemoSource, type PilotClassInfo, type PilotProbe, type ReadCell, type ReadsFile, type RollStatus } from "../lib/demoStudio";
 import { formOf, keys } from "../lib/diagnosis";
 import { fetchPaperKey } from "../lib/paperKeys";
@@ -57,7 +58,7 @@ function saved(production: boolean): { status: Record<number, RollStatus>; reads
 export type PilotEntryFor = { paperId: string | null; paperCode: string | null; kind: CheckKind; formKey: string };
 
 export function DemoEntry({ strength: synthStrength, classCode: synthCode, onFinished, production }: { strength: number; classCode: string; onFinished: () => void; production?: PilotEntryFor }) {
-  const { tr, klass, term, reload } = useApp();
+  const { tr, klass, reload } = useApp();
   const aiOff = isAiOff(useAiMode());
   const sid = demoSession();
   const [status, setStatus] = useState<Record<number, RollStatus>>(() => saved(!!production).status);
@@ -303,7 +304,7 @@ export function DemoEntry({ strength: synthStrength, classCode: synthCode, onFin
     if (rest > 0 && !window.confirm(tr("demo.entry.finish_confirm", { n: rest }))) return;
     await guard("demo.busy.finish", async () => {
       const cls = klass ?? (await activeClass(true));
-      const termNow = await getSetting("term", term);
+      const seq = slotForNew(await db.checks.where("classId").equals(cls.id).toArray(), cls.id);
       // the paper the sheets were written on: the one chosen in Enter check, or the demo's own paper (step 2)
       const formKey = production?.formKey ?? localStorage.getItem("cc.demo.paper") ?? "A";
       if (formKey.startsWith("P-") && !formOf(formKey)) await fetchPaperKey(formKey, { role: "teacher", classId: cls.id });
@@ -312,11 +313,11 @@ export function DemoEntry({ strength: synthStrength, classCode: synthCode, onFin
       const absent = rolls.filter((r) => status[r] !== "approved").map((r) => r - 1);
       const paperId = production ? production.paperId : pilot ? null : localStorage.getItem("cc.demo.paper");
       await db.checks.put({
-        id: `${cls.id}:${termNow}`, classId: cls.id, term: termNow, formKey, children: rows, updatedAt: Date.now(), absent, viaPhoto: approved.map((r) => r - 1),
+        id: `${cls.id}:${seq}`, classId: cls.id, term: seq, formKey, children: rows, updatedAt: Date.now(), absent, viaPhoto: approved.map((r) => r - 1),
         kind: production?.kind ?? "pre", round: 1, checkDate: pilot && pilotInfo ? pilotInfo.test_date : new Date().toISOString().slice(0, 10), paperVersion: keys.content_hash, trackId: null, expectedChildren: strength, status: "entering", confirm: false, paperId, paperCode: production ? production.paperCode : openCode,
       });
-      const done = await finishCheck(cls.id, termNow, formKey, rows, cls.simulated, undefined, stagesFor(formKey, rows, new Map()));
-      await db.checks.update(`${cls.id}:${termNow}`, { status: "closed", trackId: done.track });
+      const done = await finishCheck(cls.id, seq, formKey, rows, cls.simulated, undefined, stagesFor(formKey, rows, new Map()));
+      await db.checks.update(`${cls.id}:${seq}`, { status: "closed", trackId: done.track });
       await reload();
       onFinished();
     });
