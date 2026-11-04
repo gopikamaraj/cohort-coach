@@ -1,4 +1,5 @@
-import { expect, test, type Page, type Request } from "@playwright/test";
+import { type Page, type Request } from "@playwright/test";
+import { expect, test } from "./test";
 import { chooseLanguage, chooseRole } from "./switch";
 import { finishEntering, startSample } from "./sample";
 import { readFileSync } from "node:fs";
@@ -38,7 +39,7 @@ async function enterCheck(page: Page, rows: string[][]) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  await page.evaluate(() => ((localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester")), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}')));
+  await page.evaluate(() => ((((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")])), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}')));
 });
 
 test("judge mode loads a simulated class: Home, then cards with counts, never a percentage", async ({ page }) => {
@@ -49,7 +50,7 @@ test("judge mode loads a simulated class: Home, then cards with counts, never a 
   await expect(page.getByRole("note")).toContainText("Simulated data");
 
   await page.goto("/#/home");
-  await expect(page.getByTestId("home-status")).toHaveText("You checked 28 children this term.");
+  await expect(page.getByTestId("home-status")).toHaveText("You checked 28 children.");
   await page.getByTestId("home-action").click();
   await expect(page.getByTestId("line-SUB-SFL")).toHaveText("11 of 28 children take the smaller digit from the larger.");
   await expect(page.getByTestId("card-SUB-SFL")).toContainText("From your class:");
@@ -157,7 +158,7 @@ test("works offline after the first load: Home, Enter check and My class", async
   await page.reload();
 
   await page.goto("/#/home");
-  await expect(page.getByTestId("home-status")).toHaveText("You checked 28 children this term.");
+  await expect(page.getByTestId("home-status")).toHaveText("You checked 28 children.");
   await expect(page.getByTestId("status")).toContainText("Offline");
   await page.goto("/#/check");
   await expect(page.getByTestId("check-finished")).toBeVisible(); // a finished check: See results, Reopen
@@ -192,7 +193,7 @@ test("Advance to Term 2 starts a new term for the simulated class", async ({ pag
   await expect(page.getByTestId("demo-loaded")).toBeVisible();
   await page.getByTestId("advance").click();
   await page.goto("/#/home");
-  await expect(page.getByTestId("home-status")).toHaveText("You have not entered this term's check yet.");
+  await expect(page.getByTestId("home-status")).toHaveText("You have not entered a check yet.");
   await page.goto("/#/judge");
   await page.getByTestId("load-demo").click();
   await page.goto("/#/cards");

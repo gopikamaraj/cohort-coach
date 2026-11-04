@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page, type Route } from "@playwright/test";
+import { type Page, type Route } from "@playwright/test";
+import { expect, test } from "./test";
 
 // Lesson audio (Prompt 2): the coach's review panel and the teacher's player. The lesson-audio API is
 // mocked here (the real routes, roles, the rule for small cohorts and the audit rows are tested in

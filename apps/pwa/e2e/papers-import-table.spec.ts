@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,7 +13,7 @@ const PDF = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "fixtures
 async function open(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "teacher");
   }, CONSENT);

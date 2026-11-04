@@ -48,11 +48,15 @@ export async function makeTestPaper(page: Page, kind: "pre" | "post" = "pre", te
 /** From a fresh browser: open Enter check with the standard test paper made for this class and chosen. */
 export async function openWithPaper(page: Page, opts: { kind?: "pre" | "post" } = {}): Promise<void> {
   await page.goto("/#/check");
-  await makeTestPaper(page, opts.kind ?? "pre");
+  const paperId = await makeTestPaper(page, opts.kind ?? "pre");
   await page.reload();
   await expect(page.getByTestId("paper-chooser")).toBeVisible();
   if (opts.kind && opts.kind !== "pre") await page.getByTestId(`kind-${opts.kind}`).click();
-  await expect(page.getByTestId("paper-attached")).toBeVisible({ timeout: 20_000 }); // the only paper is chosen for her
+  // papers are shared, so the test database holds every earlier test's paper too: choose this one by id
+  const select = page.getByTestId("paper-select");
+  await select.waitFor({ timeout: 20_000 });
+  await select.selectOption(paperId);
+  await expect(page.getByTestId("paper-attached")).toBeVisible({ timeout: 20_000 });
 }
 
 /** Give the class size and press Start the check. */

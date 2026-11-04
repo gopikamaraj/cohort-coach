@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 
 // The pilot class's sheets in the demo studio (Enter check no longer offers them: one flow, no data source). The server side (404 without the folder, consent and
 // PILOT_DEMO=1; no-store headers; no AI call on auto-fill) is tested in tests/pilot_demo. Here the
@@ -40,7 +41,7 @@ const MANIFEST = {
 async function fresh(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "teacher");
     localStorage.setItem("cc.lang", "en");

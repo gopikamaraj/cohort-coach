@@ -6,6 +6,7 @@ import { Busy } from "../components/Busy";
 import { PaperView } from "../components/PaperView";
 import { PaperMaker } from "../components/PaperMaker";
 import { PaperImport } from "../components/PaperImport";
+import { ASSIGNMENT_ENABLED } from "../lib/flags";
 import { AssignedToYou, AssignPanel, PaperDetail, sourceLabel, useHubIdentity } from "../components/PaperHubParts";
 import { hcall, HubError, type HubPaper } from "../lib/paperHub";
 import { suggestForm } from "../lib/checks";
@@ -212,9 +213,11 @@ function TeacherPapers() {
                 <button type="button" className="btn btn-secondary" onClick={() => { setNonce((n) => n + 1); setDetailTab("overview"); setAskDelete(true); setDetail(p.id); }} data-testid={`paper-delete-${p.form}`}>
                   {tr("ph.delete")}
                 </button>
-                <button type="button" className="btn btn-secondary" aria-expanded={assigning === p.id} onClick={() => setAssigning(assigning === p.id ? null : p.id)} data-testid={`paper-assign-${p.form}`}>
-                  {tr("ph.assign")}
-                </button>
+                {ASSIGNMENT_ENABLED ? (
+                  <button type="button" className="btn btn-secondary" aria-expanded={assigning === p.id} onClick={() => setAssigning(assigning === p.id ? null : p.id)} data-testid={`paper-assign-${p.form}`}>
+                    {tr("ph.assign")}
+                  </button>
+                ) : null}
                 {hub[p.id]?.source === "imported_pdf" && p.kind === "pre" && !Object.values(hub).some((h) => h.twin_of === p.id) ? (
                   <button type="button" className="btn btn-secondary" disabled={twinning === p.id} onClick={() => void makeTwin(p.id)} data-testid={`paper-twin-${p.form}`}>
                     {tr("ph.make_twin")}
@@ -224,7 +227,7 @@ function TeacherPapers() {
               {open === p.id && hub[p.id]?.source === "imported_pdf" ? <p className="muted">{tr("ph.not_printed")}</p> : null}
               {open === p.id ? <PaperView paper={p} role="teacher" /> : null}
               {detail === p.id ? <PaperDetail key={`${p.id}-${nonce}`} paperId={p.id} who={who} startTab={detailTab} askDelete={askDelete} onChanged={() => setBump((b) => b + 1)} onClose={() => setDetail(null)} onDeleted={() => { setDetail(null); setBump((b) => b + 1); }} /> : null}
-              {assigning === p.id ? <AssignPanel paper={hub[p.id] ?? ({ id: p.id, kind: p.kind, form: p.form, status: p.status } as HubPaper)} who={who} onDone={reloadHub} /> : null}
+              {ASSIGNMENT_ENABLED && assigning === p.id ? <AssignPanel paper={hub[p.id] ?? ({ id: p.id, kind: p.kind, form: p.form, status: p.status } as HubPaper)} who={who} onDone={reloadHub} /> : null}
             </li>
           );
         })}
@@ -276,15 +279,17 @@ function ScopedPapers() {
               <button type="button" className="btn btn-secondary" onClick={() => { setNonce((n) => n + 1); setDetailTab("overview"); setAskDelete(true); setDetail(p.id); }} data-testid={`scoped-delete-${p.form}`}>
                 {tr("ph.delete")}
               </button>
-              <button type="button" className="btn btn-secondary" aria-expanded={assigning === p.id} onClick={() => setAssigning(assigning === p.id ? null : p.id)}>
-                {tr("ph.assign")}
-              </button>
+              {ASSIGNMENT_ENABLED ? (
+                <button type="button" className="btn btn-secondary" aria-expanded={assigning === p.id} onClick={() => setAssigning(assigning === p.id ? null : p.id)}>
+                  {tr("ph.assign")}
+                </button>
+              ) : null}
               <button type="button" className="btn btn-secondary" onClick={() => void archive(p.id)} data-testid={`scoped-archive-${p.form}`}>
                 {tr("ph.archive")}
               </button>
             </div>
             {detail === p.id ? <PaperDetail key={`${p.id}-${nonce}`} paperId={p.id} who={who} startTab={detailTab} askDelete={askDelete} onChanged={load} onClose={() => setDetail(null)} onDeleted={() => { setDetail(null); load(); }} /> : null}
-            {assigning === p.id ? <AssignPanel paper={p} who={who} onDone={load} /> : null}
+            {ASSIGNMENT_ENABLED && assigning === p.id ? <AssignPanel paper={p} who={who} onDone={load} /> : null}
           </li>
         ))}
       </ul>
@@ -497,7 +502,7 @@ export default function Papers() {
   return (
     <section className="stack" aria-label={tr("papers.title")} data-testid="papers">
       {klass?.simulated || !teacher ? <SimulatedBanner /> : null}
-      {teacher && who.classId ? <AssignedToYou who={who} compact /> : null}
+      {ASSIGNMENT_ENABLED && teacher && who.classId ? <AssignedToYou who={who} compact /> : null}
       {teacher ? <TeacherPapers /> : null}
       {coach || role === "mentor" ? <ScopedPapers /> : null}
       {coach ? <ReviewQueue /> : null}

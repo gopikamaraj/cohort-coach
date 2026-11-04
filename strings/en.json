@@ -537,7 +537,6 @@
   "roles.can.library_view": "See the content library",
   "roles.can.officer_cohorts": "Approve proposed cohorts",
   "roles.can.officer_results": "Read the error map, funnel and track results",
-  "roles.can.officer_advance": "Advance to Term 2 (demo only)",
   "roles.can.officer_assign": "Assign coach and officer roles",
   "roles.cannot.no_elevation": "Take another role by changing something on your phone",
   "roles.cannot.teacher_not_scored": "Be scored: the AI never scores a teacher",

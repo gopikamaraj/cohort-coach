@@ -46,6 +46,7 @@ class Env:
 @pytest.fixture
 def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Env]:
     monkeypatch.setenv("JUDGE_MODE", "1")
+    monkeypatch.setenv("ASSIGNMENT_ENABLED", "1")  # these tests cover the assignment feature itself; it is off by default (see the test below)
     monkeypatch.setenv("PAPER_IMPORT_DIR", str(tmp_path / "imports"))
     engine = make_engine(f"sqlite:///{tmp_path / 'hub.sqlite'}")
     Base.metadata.create_all(engine)
@@ -291,6 +292,21 @@ def test_a_reviewer_confirms_an_imported_paper_but_never_her_own(env: Env) -> No
 
         with pytest.raises(store.BadState):
             store.approve_paper(db, paper["id"], "coach-aaa")
+
+
+def test_assignment_is_off_by_default_and_every_paper_is_shared(
+    env: Env, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("ASSIGNMENT_ENABLED")
+    for method, path in (("get", "/api/paper-hub/assignable"), ("get", "/api/paper-hub/assignments/mine"), ("post", "/api/paper-hub/assignments")):
+        assert getattr(env.client, method)(path, headers=hdr("teacher")).status_code == 404
+    # listing, reading and choosing a paper need no class at all, and no class that is not hers
+    made = make_generated(env, "c-own1")  # created by one teacher, visible to another
+    ids = {p["id"] for p in env.client.get("/api/paper-hub/papers", headers={"X-Role": "teacher", "X-User": "newcomer"}).json()}
+    assert made in ids
+    other = {"X-Role": "teacher", "X-User": "newcomer", "X-Class-Id": "c-aaa1"}  # someone else's class
+    assert {p["id"] for p in env.client.get("/api/paper-hub/papers", headers=other).json()} == ids
+    assert env.client.get(f"/api/paper-hub/papers/{made}/detail", headers=other).status_code == 200
 
 
 def test_officers_have_no_access(env: Env) -> None:

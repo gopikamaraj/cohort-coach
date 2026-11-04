@@ -537,7 +537,6 @@
   "roles.can.library_view": "உள்ளடக்க நூலகத்தைப் பாருங்கள்",
   "roles.can.officer_cohorts": "முன்மொழியப்பட்ட குழுக்களை அங்கீகரியுங்கள்",
   "roles.can.officer_results": "பிழை வரைபடம், புனல், பாதை முடிவுகளைப் படியுங்கள்",
-  "roles.can.officer_advance": "பருவம் 2க்குச் செல்லுங்கள் (டெமோ மட்டும்)",
   "roles.can.officer_assign": "பயிற்சியாளர், அலுவலர் பொறுப்புகளை ஒதுக்குங்கள்",
   "roles.cannot.no_elevation": "தொலைபேசியில் எதையாவது மாற்றி வேறு பொறுப்பை எடுக்க",
   "roles.cannot.teacher_not_scored": "மதிப்பெண் பெற: AI ஆசிரியருக்கு மதிப்பெண் தருவதில்லை",

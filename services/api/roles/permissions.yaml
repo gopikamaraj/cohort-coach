@@ -23,7 +23,6 @@ permissions:
   library.view: {key: roles.can.library_view, planned: P12}
   officer.approve_cohorts: {key: roles.can.officer_cohorts}
   officer.results: {key: roles.can.officer_results}
-  officer.advance_term: {key: roles.can.officer_advance, planned: P12, judge_only: true}
   officer.assign_roles: {key: roles.can.officer_assign, planned: P12}
   # The review queue and the two keys (P09). The coach's key is gate 3; the officer's switches on.
   content.review_view: {key: roles.can.content_review_view}
@@ -92,5 +91,5 @@ roles:
     holders: roles.holders.officer
     data: roles.data.officer
     also_on: []
-    can: [assistant.ask, officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, content.review_view, content.officer_activate, content.propose]
+    can: [assistant.ask, officer.approve_cohorts, officer.results, officer.assign_roles, library.view, content.review_view, content.officer_activate, content.propose]
     cannot: [officer.aggregates_only, officer.no_approval, role.no_client_elevation]

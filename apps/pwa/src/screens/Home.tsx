@@ -7,6 +7,7 @@ import type { Key } from "../i18n";
 import { Icon } from "../components/icons";
 import { useConsent } from "../lib/useConsent";
 import { useJudge } from "../lib/roles";
+import { ASSIGNMENT_ENABLED } from "../lib/flags";
 import { AssignedToYou, useHubIdentity } from "../components/PaperHubParts";
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
           </a>
         </div>
       ) : null}
-      {who.classId ? <AssignedToYou who={who} showEmpty testId="assigned-home" /> : null}
+      {ASSIGNMENT_ENABLED && who.classId ? <AssignedToYou who={who} showEmpty testId="assigned-home" /> : null}
       {profile ? (
         <>
           <p data-testid="home-status">{tr("home.status.checked", { n: profile.childrenChecked })}</p>

@@ -7,6 +7,7 @@ server enforces every scope here. Responses carry counts and papers only: no chi
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Any
 
@@ -30,6 +31,19 @@ from services.papers_hub import service as svc
 from services.papers_hub.models import PaperAssignment, PaperImport
 
 router = APIRouter(prefix="/api/paper-hub", tags=["paper-hub"])
+
+
+def assignment_enabled() -> bool:
+    """Assignment (sending a paper to a teacher or class) is off: every paper is shared with everyone."""
+    return os.environ.get("ASSIGNMENT_ENABLED", "0") == "1"
+
+
+def _assignment_on() -> None:
+    if not assignment_enabled():
+        raise HTTPException(404, "Papers are shared with everyone; assigning is not available.")
+
+
+ASSIGN_ON = [Depends(_assignment_on)]
 ACT = Depends(require("papers.generate"))
 CLASS = re.compile(r"^[A-Za-z0-9:_-]{1,40}$")
 NO_STORE = {"Cache-Control": "no-store, max-age=0", "X-Content-Type-Options": "nosniff"}
@@ -46,13 +60,16 @@ def who(
     x_class_id: str | None = Header(default=None),
     db: Session = SESSION,
 ) -> Who:
-    """The signed-in user, and (for a teacher) one of her own classes: a class is its owner plus its code."""
+    """The signed-in user. Papers are shared, so listing, reading and choosing a paper need no class.
+
+    A teacher may send `X-Class-Id`; it counts only if the class is hers (a class is its owner plus its
+    code). Anything that writes class data (marking an assignment, editing a paper for a class) needs
+    `own_class`, which stays None for a class that is not hers.
+    """
     own = x_class_id if x_class_id and CLASS.match(x_class_id) else None
     if role == "teacher":
-        if own is None:
-            raise HTTPException(422, "X-Class-Id must be the class code of one of your classes.")
-        if db.get(UserDoc, (uid, "classes", own)) is None:
-            raise HTTPException(403, "That class is not yours.")
+        if own is not None and db.get(UserDoc, (uid, "classes", own)) is None:
+            own = None
         return Who(role, uid, own)
     return Who(role, person_id(role, uid), own)
 
@@ -409,7 +426,7 @@ def detail(paper_id: str, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]
 # --- assignments -------------------------------------------------------------------------------------------
 
 
-@router.get("/assignable")
+@router.get("/assignable", dependencies=ASSIGN_ON)
 def assignable(w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
     """Who this person may assign to: classes, and cohorts with member counts (counts only)."""
     classes = sorted(svc.scope_classes(db, w.role, w.person, w.own_class))
@@ -461,7 +478,7 @@ def _assignment_view(a: PaperAssignment) -> dict[str, Any]:
     }
 
 
-@router.post("/assignments")
+@router.post("/assignments", dependencies=ASSIGN_ON)
 def assign(body: AssignIn, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
     if body.via == "assistant":
         raise HTTPException(403, "The assistant prepares a draft; only a person presses Assign.")
@@ -489,7 +506,7 @@ def assign(body: AssignIn, w: Who = WHO, db: Session = SESSION) -> dict[str, Any
     return {"assignments": [_assignment_view(r) for r in rows], "warnings": sorted(set(warnings))}
 
 
-@router.get("/assignments/mine")
+@router.get("/assignments/mine", dependencies=ASSIGN_ON)
 def mine(w: Who = WHO, db: Session = SESSION) -> list[dict[str, Any]]:
     """Assigned to you: the papers assigned to this teacher's class."""
     if w.own_class is None:
@@ -497,7 +514,7 @@ def mine(w: Who = WHO, db: Session = SESSION) -> list[dict[str, Any]]:
     return [_assignment_view(a) for a in svc.for_class(db, w.own_class)]
 
 
-@router.get("/assignments/progress")
+@router.get("/assignments/progress", dependencies=ASSIGN_ON)
 def progress(w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
     return svc.progress(db, w.role, w.person)
 
@@ -508,7 +525,7 @@ class MarkIn(BaseModel):
     expected: int | None = Field(default=None, ge=0, le=200)
 
 
-@router.post("/assignments/{assignment_id}/mark")
+@router.post("/assignments/{assignment_id}/mark", dependencies=ASSIGN_ON)
 def mark(assignment_id: str, body: MarkIn, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
     if w.own_class is None:
         raise HTTPException(403, "Only a teacher's own phone marks progress.")
@@ -516,7 +533,7 @@ def mark(assignment_id: str, body: MarkIn, w: Who = WHO, db: Session = SESSION) 
     return _assignment_view(a)
 
 
-@router.post("/assignments/{assignment_id}/withdraw")
+@router.post("/assignments/{assignment_id}/withdraw", dependencies=ASSIGN_ON)
 def withdraw(assignment_id: str, w: Who = WHO, db: Session = SESSION) -> dict[str, Any]:
     return _assignment_view(_wrap(svc.withdraw, db, assignment_id, w.role, w.person))
 

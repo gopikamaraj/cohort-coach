@@ -2,6 +2,7 @@
 // and the paper chooser Enter check uses. Counts only; the server enforces every scope.
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
+import { ASSIGNMENT_ENABLED } from "../lib/flags";
 import { HubError, hcall, type Assignable, type Assignment, type HubIdentity, type HubPaper, type PaperDetailData } from "../lib/paperHub";
 import { parseQuestion, signOf } from "../lib/paperEdit";
 import { href } from "../lib/router";
@@ -345,7 +346,7 @@ export function useAssigned(who: HubIdentity): { rows: Assignment[]; papers: Rec
   const [rows, setRows] = useState<Assignment[]>([]);
   const [papers, setPapers] = useState<Record<string, HubPaper>>({});
   const reload = useCallback(() => {
-    if (!who.classId) return;
+    if (!ASSIGNMENT_ENABLED || !who.classId) return;
     hcall<Assignment[]>("/assignments/mine", who)
       .then(async (a) => {
         setRows(a);

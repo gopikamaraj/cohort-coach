@@ -2,7 +2,7 @@ import path from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 
 // The offline rating page of the listening test (scripts/speech_eval_pack.py). The fixture was made
 // by the same page() function with two generated tone clips. It works from a file, offline.

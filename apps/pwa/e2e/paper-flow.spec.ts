@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 
 // The flow: a paper is made (with its answer key), Enter check chooses that paper, and the phone reads
 // the answers with the paper's OWN key: it has the paper's number of boxes, finds the errors its
@@ -9,7 +10,7 @@ const CONSENT = '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal"
 async function fresh(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "teacher");
   }, CONSENT);

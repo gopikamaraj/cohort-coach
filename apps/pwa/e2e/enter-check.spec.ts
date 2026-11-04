@@ -5,7 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page, type Route } from "@playwright/test";
+import { type Page, type Route } from "@playwright/test";
+import { expect, test } from "./test";
 import { begin, fillAndApprove, finishEntering, startSample } from "./sample";
 
 // The nine changes to Enter check: an existing paper, the camera or a folder, a roll dropdown with data
@@ -19,7 +20,7 @@ const RIGHT = ["346", "728", "85", "74", "82", "35", "38", "26", "43", "54"];
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate((c) => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "teacher");
   }, CONSENT);

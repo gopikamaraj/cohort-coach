@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { startSample } from "./sample";
 import { PDF, axe, fresh, shot } from "./qa";
 

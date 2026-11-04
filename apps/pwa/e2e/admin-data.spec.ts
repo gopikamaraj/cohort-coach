@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { CONSENT, fresh } from "./qa";
 
 // Admin: the Admin card on the landing page, what testers said, and deleting one scope of data to

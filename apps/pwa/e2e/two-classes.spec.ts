@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 
 // Two classes to a cohort, across roles, on the real API (recorded AI answers, the stub voice):
 // T1 enters 3A and waits, T2 enters 3B and the cohort forms, the coach approves lesson 1, T1 marks
@@ -17,7 +18,7 @@ const REPLY_HI = "बच्चे से दस की गड्डियों 
 async function fresh(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "judge");
     localStorage.setItem("cc.lang", "en");

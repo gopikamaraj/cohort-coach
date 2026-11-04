@@ -537,7 +537,6 @@
   "roles.can.library_view": "सामग्री पुस्तकालय देखें",
   "roles.can.officer_cohorts": "प्रस्तावित समूह मंज़ूर करें",
   "roles.can.officer_results": "त्रुटि नक्शा, फ़नल और ट्रैक के नतीजे देखें",
-  "roles.can.officer_advance": "टर्म 2 पर जाएँ (सिर्फ़ डेमो)",
   "roles.can.officer_assign": "कोच और अधिकारी की भूमिकाएँ सौंपें",
   "roles.cannot.no_elevation": "फ़ोन में कुछ बदलकर दूसरी भूमिका लेना",
   "roles.cannot.teacher_not_scored": "अंक पाना: AI किसी शिक्षक को अंक नहीं देता",

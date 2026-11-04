@@ -1,4 +1,5 @@
-import { expect, test, type Route } from "@playwright/test";
+import { type Route } from "@playwright/test";
+import { expect, test } from "./test";
 import { chooseLanguage } from "./switch";
 
 // The officer's view (P12, reduced). The API is mocked here; the real numbers (engine verdicts,

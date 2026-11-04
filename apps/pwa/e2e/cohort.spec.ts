@@ -1,4 +1,5 @@
-import { expect, test, type Page, type Route } from "@playwright/test";
+import { type Page, type Route } from "@playwright/test";
+import { expect, test } from "./test";
 import { chooseLanguage } from "./switch";
 
 // The cohort chat (P11, reduced). The API is mocked here; the real checks (names blocked, held posts

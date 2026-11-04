@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 
 // Paper Studio: a teacher makes a paper inside Start a check (the pilot paper, or a new one for her
 // class with its key and coverage grid), sees it on Papers, and a coach reviews the queue and reads
@@ -11,7 +12,7 @@ async function as(page: Page, role: string) {
   await page.goto("/");
   await page.evaluate(
     ([c, r]) => {
-      (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+      (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
       localStorage.setItem("cc.consent", c);
       localStorage.setItem("cc.role", r);
     },

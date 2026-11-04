@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { writeFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 
 // The judge's demo flow, all 11 steps and the optional 12th, on the product's own screens and the
 // real API (recorded AI answers: ai/fixtures/recorded). Every made-up thing must say Demo or
@@ -12,7 +13,7 @@ async function fresh(page: Page, lang = "en") {
   await page.goto("/");
   await page.evaluate(
     ([c, l]) => {
-      (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+      (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
       localStorage.setItem("cc.consent", c);
       localStorage.setItem("cc.role", "judge");
       localStorage.setItem("cc.lang", l);

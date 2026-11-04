@@ -1,4 +1,5 @@
-import { expect, test, type Page, type Route } from "@playwright/test";
+import { type Page, type Route } from "@playwright/test";
+import { expect, test } from "./test";
 import { chooseLanguage } from "./switch";
 
 // P3: the review queue and the two keys. The API is mocked here (the real routes, the gates and the

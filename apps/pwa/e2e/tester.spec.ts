@@ -1,6 +1,7 @@
 // Tester stats in a real browser. The tester endpoints are answered by the test (page.route), so the
 // shared recorded API stays unchanged; the checks are about what the browser sends and when.
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./test";
 
 const SALT = "cc-tester-v1";
 interface Sent { url: string; method: string; body: string; headers: Record<string, string> }
@@ -19,7 +20,7 @@ async function mockTester(page: Page): Promise<Sent[]> {
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(async () => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     for (const d of (await indexedDB.databases?.()) ?? []) if (d.name) indexedDB.deleteDatabase(d.name);
   });
 });

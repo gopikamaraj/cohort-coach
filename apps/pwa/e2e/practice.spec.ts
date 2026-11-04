@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { expect, test, type Page, type Request } from "@playwright/test";
+import { type Page, type Request } from "@playwright/test";
+import { expect, test } from "./test";
 import { chooseRole } from "./switch";
 
 // The recorded rehearsal (evals/sets/practice_scripts/sub-sfl-en.txt, seed 5).
@@ -50,7 +51,7 @@ async function rehearse(page: Page, turns: TurnJson[]) {
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
     localStorage.setItem("cc.voice", "0"); // these tests type; e2e/voice.spec.ts covers speaking
   });

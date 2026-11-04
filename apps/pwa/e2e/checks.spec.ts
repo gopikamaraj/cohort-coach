@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { begin, openWithPaper, startSample } from "./sample";
 
 // Every check says what it is: Start a check, the header on every entry screen, a before-and-after view
@@ -9,7 +9,7 @@ const CONSENT = '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal"
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate((c) => {
-    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
+    (((u: (string | null)[]) => (localStorage.clear(), u[0] && localStorage.setItem("cc.user", u[0]), u[1] && localStorage.setItem("cc.cacheOwner", u[1])))([localStorage.getItem("cc.user"), localStorage.getItem("cc.cacheOwner")]));
     localStorage.setItem("cc.consent", c);
   }, CONSENT);
 });
