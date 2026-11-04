@@ -9,7 +9,10 @@ path, and the cohort formation never reads it. A coach sees it in counts, never 
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import json
+import os
 import re
 import secrets
 from pathlib import Path
@@ -22,6 +25,7 @@ from sqlalchemy.orm import Session
 
 from ai.validators.thread import check_thread_post
 from engine.model import ErrorCode
+from services.api import caps
 from services.api.cohorts.routes import _teacher
 from services.api.db import ClassCohort
 from services.api.identity import user_of
@@ -54,6 +58,7 @@ def view(row: ClassCohort) -> dict[str, Any]:
         "counts": {k: v for k, v in row.counts.items() if not k.startswith("_")},
         "children_checked": row.children_checked,
         "classes": int(row.counts.get("_classes", 1)),
+        "rule": {"min_hits": int(row.counts.get("_rule", 1 if (row.scope == "coach" or row.group_id) else 2))},  # a group cohort made before the rule was stored counted any sighting; a teacher's own counts confirmed
         "simulated": row.simulated,
     }
 
@@ -110,6 +115,8 @@ class CoachMakeIn(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     error: str
     language: str = "en"
+    class_refs: list[str] | None = None  # the classes to include (from /officer/candidates); None = every class that shows it
+    min_hits: int | None = None  # the rule it is built under: 2 confirmed, 1 possible (else the creator's saved rule)
 
 
 COACH_OWNER = "coach-cohorts"
@@ -119,14 +126,14 @@ COACH_OWNER = "coach-cohorts"
 def make_for_coach(
     body: CoachMakeIn, _: str = Depends(require("coach.moderate")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
-    return _make_group(body, db, coach=uid)
+    return _make_group(body, db, coach=uid, creator=uid)
 
 
 @router.post("/officer")
 def make_for_officer(
     body: CoachMakeIn, _: str = Depends(require("officer.approve_cohorts")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
-    return _make_group(body, db, coach=None)
+    return _make_group(body, db, coach=None, creator=uid)
 
 
 @router.get("/officer")
@@ -136,30 +143,86 @@ def for_officer(
     return [view(r) for r in db.execute(select(ClassCohort)).scalars()]
 
 
-def _group_for(db: Session, code: str, coach: str | None = None) -> ClassCohort | None:
-    """The cohort already formed for a mistake by this coach (or by the officer when `coach` is None). Ones
-    formed before terms were removed are named `coach:CODE:1`."""
-    for g in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id.like(f"coach:{code}%"))).scalars():
+def _ref(owner: str, class_id: str) -> str:
+    """An opaque reference to one entered class: the same every time, and it says nothing about who or where. The
+    officer picks classes by it; the page shows only an anonymous label ("Class A") and a count of children."""
+    salt = os.environ.get("AUDIT_HASH_SALT", "") or "cohort-coach"
+    return hmac.new(salt.encode(), f"{owner}/{class_id}".encode(), hashlib.sha256).hexdigest()[:16]
+
+
+def _letters(n: int) -> str:
+    out = ""
+    n += 1
+    while n:
+        n, r = divmod(n - 1, 26)
+        out = chr(65 + r) + out
+    return out
+
+
+def _showing(db: Session, error: str, rule: int) -> list[dict[str, Any]]:
+    """The entered classes (each by its most recent check) that show this mistake under the rule, as anonymous
+    entries: a reference, a label and the number of children with it. No nickname, class code or child detail."""
+    from services.api.devicestore import entered_summary
+
+    picked = sorted((c for c in entered_summary(db, None, rule)["classes"] if c["_counts"].get(error, 0) > 0), key=lambda c: _ref(c["_owner"], c["_class"].split("/", 1)[1]))
+    return [{"ref": _ref(c["_owner"], c["_class"].split("/", 1)[1]), "label": f"Class {_letters(n)}", "children": int(c["_counts"][error]), "children_checked": c["children_checked"], "_c": c} for n, c in enumerate(picked)]
+
+
+@router.get("/officer/candidates")
+def candidates(
+    error: str,
+    _: str = Depends(require("officer.approve_cohorts")),
+    uid: str = Depends(user_of),
+    db: Session = SESSION,
+    min_hits: int | None = None,
+) -> dict[str, Any]:
+    """For Create a cohort: the classes that show this mistake under the rule, as Class A, Class B, ... with the
+    number of children who show it. Nothing that names a teacher, a class or a child."""
+    from services.api.devicestore import rule_for
+
+    if error not in CODES:
+        raise HTTPException(422, "Choose from the errors the check can find.")
+    rule = rule_for(db, uid, min_hits)
+    return {"error": error, "rule": {"min_hits": rule}, "caps": caps.describe(), "classes": [{k: v for k, v in c.items() if k != "_c"} for c in _showing(db, error, rule)]}
+
+
+def _selection_key(owners: list[str]) -> str:
+    return hashlib.sha1("|".join(sorted(owners)).encode()).hexdigest()[:8]  # noqa: S324 (a label, not security)
+
+
+def _group_for(db: Session, check_id: str, coach: str | None = None) -> ClassCohort | None:
+    """The cohort already formed from this exact set of classes by this coach (or by the officer when `coach` is None)."""
+    for g in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id == check_id)).scalars():
         if g.counts.get("_coach") == coach:
             return g
     return None
 
 
-def _make_group(body: CoachMakeIn, db: Session, coach: str | None = None) -> dict[str, Any]:
-    """A coach or the officer forms a cohort from the entered classes that show one mistake (each class by its most recent check), counts added up.
-    One per mistake; a second tap returns the same cohort."""
-    from services.api.devicestore import entered_summary
+def _make_group(body: CoachMakeIn, db: Session, coach: str | None = None, creator: str = "") -> dict[str, Any]:
+    """A coach or the officer forms a cohort from entered classes that show one mistake (each class by its most
+    recent check), counts added up. With `class_refs` it is exactly those classes; without, every class that shows it.
+    The same set of classes gives the same cohort on a second tap. A cohort leaves an audit row."""
+    from services.api.cohorts.lifecycle import audit
+    from services.api.devicestore import rule_for
 
     if body.error not in CODES:
         raise HTTPException(422, "Choose from the errors the check can find.")
-    classes = entered_summary(db)["classes"]
-    if not classes:
-        raise HTTPException(422, "No class has entered a check yet.")
-    picked = [c for c in classes if c["_counts"].get(body.error, 0) > 0]
-    if len(picked) < 2:
-        raise HTTPException(422, "A cohort needs at least two classes that show this mistake.")
-    check_id = f"coach:{body.error}"
-    have = _group_for(db, body.error, coach)
+    rule = rule_for(db, creator, body.min_hits)
+    offered = _showing(db, body.error, rule)
+    if not offered:
+        raise HTTPException(422, "No class has entered a check yet." if not body.class_refs else "None of those classes shows this mistake.")
+    chosen = [c for c in offered if body.class_refs is None or c["ref"] in set(body.class_refs)]
+    if body.class_refs is not None and len(chosen) != len(set(body.class_refs)):
+        raise HTTPException(422, "A class you chose does not show this mistake under this rule.")
+    picked = [c["_c"] for c in chosen]
+    need = caps.min_cohort_classes()
+    if len(picked) < need:
+        raise HTTPException(422, "A cohort needs at least two classes that show this mistake." if need > 1 else "Choose at least one class.")
+    members: dict[str, str] = {}
+    for c in picked:  # a user is in a cohort once, on the first of her chosen classes
+        members.setdefault(c["_owner"], c["_check"])
+    check_id = f"coach:{body.error}:{_selection_key(list(members))}"
+    have = _group_for(db, check_id, coach)
     if have is not None:
         return view(have)
     problems = check_thread_post(body.name, body.language)
@@ -172,11 +235,12 @@ def _make_group(body: CoachMakeIn, db: Session, coach: str | None = None) -> dic
         name=body.name.strip(),
         scope="coach",
         errors=[body.error],
-        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked), "_members": {c["_owner"]: c["_check"] for c in picked if c.get("_check")}, **({"_coach": coach} if coach else {})},
+        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked), "_rule": rule, "_members": {k: v for k, v in members.items() if v}, **({"_coach": coach} if coach else {})},
         children_checked=sum(c["children_checked"] for c in picked),
         simulated=False,
     )
     db.add(row)
+    audit(db, row.id, "coach" if coach else "officer", creator or (coach or "officer"), "group_created", error=body.error, classes=len(picked), children=sum(c["_counts"][body.error] for c in picked), min_hits=rule)
     db.commit()
     return view(row)
 
@@ -191,28 +255,27 @@ def _error_label(code: str) -> str:
 
 @router.post("/form")
 def form_cohorts(
-    _: str = Depends(require("officer.approve_cohorts")), db: Session = SESSION
+    _: str = Depends(require("officer.approve_cohorts")), uid: str = Depends(user_of), db: Session = SESSION, min_hits: int | None = None
 ) -> dict[str, Any]:
-    """The officer's one button: for every mistake that two or more entered classes show (each class by its most recent check), form
-    a cohort from them, once. Each teacher whose class is in it finds it on her next visit."""
-    from services.api.devicestore import entered_summary
+    """The officer's one button: for every mistake that enough entered classes show (each by its most recent check), form
+    a cohort from all of them, once. Each teacher whose class is in it finds it on her next visit."""
+    from services.api.devicestore import rule_for
 
-    classes = entered_summary(db)["classes"]
-    if not classes:
-        return {"created": [], "already": 0, "waiting": []}
+    rule = rule_for(db, uid, min_hits)
     created: list[dict[str, Any]] = []
     already, waiting = 0, []
     for code in sorted(CODES):
-        n = sum(1 for c in classes if c["_counts"].get(code, 0) > 0)
-        if n == 0:
+        offered = _showing(db, code, rule)
+        if not offered:
             continue
-        if n < 2:
+        if len(offered) < caps.min_cohort_classes():
             waiting.append(code)
             continue
-        if _group_for(db, code, None) is not None:
+        owners = {c["_c"]["_owner"] for c in offered}
+        if _group_for(db, f"coach:{code}:{_selection_key(list(owners))}", None) is not None:
             already += 1
             continue
-        created.append(_make_group(CoachMakeIn(name=f"{_error_label(code)} cohort", error=code), db))
+        created.append(_make_group(CoachMakeIn(name=f"{_error_label(code)} cohort", error=code, min_hits=rule), db, creator=uid))
     return {"created": created, "already": already, "waiting": waiting}
 
 

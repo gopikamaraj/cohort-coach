@@ -3,9 +3,9 @@
 // and flag buttons. Choosing a row marks the same mistake in the answer map and the matrix. The checkbox
 // above it keeps only the mistakes seen on enough questions (the engine's own rule); unchecked, everything
 // is shown, confirmed and possible.
+import { ErrorRuleControl } from "./ErrorRuleControl";
 import type { ReactNode } from "react";
 import type { Key } from "../i18n";
-import { keys } from "../lib/diagnosis";
 import { SHORT, type LegendEntry } from "../lib/results";
 import { IconButton } from "./icons";
 import { Sticks } from "./parts";
@@ -41,8 +41,6 @@ export function MistakesTable({
   rows,
   activeCode,
   onCode,
-  onlyConfirmed,
-  onOnlyConfirmed,
   flagged,
   onFlag,
   canHighlight,
@@ -50,8 +48,6 @@ export function MistakesTable({
   rows: MistakeRow[];
   activeCode: string | null;
   onCode: (code: string | null) => void;
-  onlyConfirmed: boolean;
-  onOnlyConfirmed: (on: boolean) => void;
   flagged: ReadonlySet<string>;
   onFlag: (code: string) => void;
   canHighlight: boolean;
@@ -70,10 +66,7 @@ export function MistakesTable({
   return (
     <section className="stack results-detail" aria-labelledby="mistakes-title" data-testid="mistakes">
       <h2 id="mistakes-title">{tr("results.map.legend")}</h2>
-      <label className="check-line">
-        <input type="checkbox" checked={onlyConfirmed} onChange={(e) => onOnlyConfirmed(e.target.checked)} data-testid="only-confirmed" />
-        <span>{tr("results.table.only_confirmed", { n: keys.rules.min_hits })}</span>
-      </label>
+      <ErrorRuleControl name="rule-results" />
       {canHighlight ? <p className="muted">{tr("results.map.legend_hint")}</p> : null}
       {rows.length === 0 ? <p className="muted">{tr("cards.not_shown")}</p> : null}
       {rows.length > 0 ? (

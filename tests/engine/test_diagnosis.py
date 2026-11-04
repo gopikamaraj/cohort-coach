@@ -165,3 +165,14 @@ def test_empty_class_has_no_prevalence_and_no_track() -> None:
     profile = class_profile([])
     assert profile.children_checked == 0 and profile.track is None
     assert all(p == 0.0 for p in profile.prevalence.values())
+
+
+def test_one_rule_for_every_count_view_confirmed_by_default_possible_on_request() -> None:
+    from engine.diagnosis import RULE_CONFIRMED, RULE_POSSIBLE, counts_for_rule, valid_rule
+
+    confirmed = {"SUB-SFL": 3}
+    seen_once = {"SUB-SFL": 5, "PV-HEARD": 2}
+    assert counts_for_rule(confirmed, seen_once, RULE_CONFIRMED) == {"SUB-SFL": 3}  # seen in two or more questions
+    assert counts_for_rule(confirmed, seen_once, RULE_POSSIBLE) == {"SUB-SFL": 5, "PV-HEARD": 2}  # seen in one
+    assert counts_for_rule(confirmed, None, RULE_POSSIBLE) == {"SUB-SFL": 3}  # an older result has no once-counts
+    assert [valid_rule(x) for x in (1, "2", 3, "x", None)] == [1, 2, 2, 2, 2]

@@ -3,6 +3,7 @@
 // percentage) with sticks, the sentence, a listen button (audio arrives with voice) and a "this is
 // wrong" flag. Mistakes come first, then where it most likely went wrong (never stated as a cause),
 // then what else was seen. The flag is kept on the phone for now: these cards are made by code.
+import { useErrorRule } from "../lib/errorRule";
 import { useState, type ReactNode } from "react";
 import { buildCards } from "../lib/cards";
 import { IconButton } from "../components/icons";
@@ -42,7 +43,8 @@ export default function Cards() {
   const consent = useConsent();
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
   const [code, setCode] = useState<string | null>(null);
-  const [onlyConfirmed, setOnlyConfirmed] = useState(false);
+  const [rule] = useErrorRule();
+  const onlyConfirmed = rule === 2; // the shared rule: two or more questions, or one
   const [tab, setTab] = useState<"known" | "unknown">("known");
 
   if (!profile) {
@@ -72,6 +74,8 @@ export default function Cards() {
   const canMap = (role === "teacher" || role === "judge") && Boolean(check) && Boolean(profile);
   const map = canMap && check ? buildAnswerMap(check.formKey, check.children, check.absent ?? [], check.approved) : null;
   const rows = mistakeRows(view.cards, map ? map.legend : null, view.childrenChecked, onlyConfirmed);
+  // under two or more questions a mistake seen once is hidden, so it cannot stay selected
+  const shown = onlyConfirmed && code && !rows.some((r) => r.code === code && r.confirmed > 0) ? null : code;
 
   // 2. Where it most likely went wrong: one card per stage, with its one-minute check.
   const st = profile.stages;
@@ -148,7 +152,7 @@ export default function Cards() {
         ))}
       </div>
       <div role="tabpanel" id="mistakes-panel-known" aria-labelledby="mistakes-tab-known" hidden={tab !== "known"} data-testid="panel-known">
-        <MistakesTable rows={rows} activeCode={code} onCode={setCode} onlyConfirmed={onlyConfirmed} onOnlyConfirmed={(on) => { setOnlyConfirmed(on); if (on && code && !rows.some((r) => r.code === code && r.confirmed > 0)) setCode(null); }} flagged={flagged} onFlag={flag} canHighlight={canMap} />
+        <MistakesTable rows={rows} activeCode={shown} onCode={setCode} flagged={flagged} onFlag={flag} canHighlight={canMap} />
       </div>
       <div role="tabpanel" id="mistakes-panel-unknown" aria-labelledby="mistakes-tab-unknown" hidden={tab !== "unknown"} data-testid="panel-unknown">
         {findings.length === 0 ? <p className="muted">{tr("cards.unknown_none")}</p> : (
@@ -202,7 +206,7 @@ export default function Cards() {
         </p>
       ) : null}
       <ClassCohortMaker onlyConfirmed={onlyConfirmed} />
-      <ResultsDetail untracked={view.untracked} activeCode={code} onCode={setCode} onlyConfirmed={onlyConfirmed} />
+      <ResultsDetail untracked={view.untracked} activeCode={shown} onCode={setCode} onlyConfirmed={onlyConfirmed} />
       <BeforeAfter hideWhenEmpty />
     </section>
   );

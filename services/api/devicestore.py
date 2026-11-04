@@ -16,9 +16,10 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
-from sqlalchemy import JSON, DateTime, String, delete, select
+from sqlalchemy import JSON, DateTime, Integer, String, delete, select
 from sqlalchemy.orm import Mapped, Session, mapped_column
 
+from engine.diagnosis import RULE_CONFIRMED, counts_for_rule, valid_rule
 from services.api.db import Base
 from services.api.identity import user_of
 from services.api.profiles import SESSION
@@ -47,6 +48,36 @@ class UserDoc(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)
 
 
+class DocVersion(Base):
+    """The version of a stored document: it goes up by one at every write. A device sends the version it last
+    read; a write that is based on an older one still wins (the later write wins), but the version it replaced
+    is kept in `doc_conflicts`, so nothing is lost silently. A separate table so no existing table changes."""
+
+    __tablename__ = "doc_versions"
+
+    owner: Mapped[str] = mapped_column(String(32), primary_key=True)
+    collection: Mapped[str] = mapped_column(String(12), primary_key=True)
+    doc_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    version: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class DocConflict(Base):
+    """A version of a document that a later write replaced while it was based on something older."""
+
+    __tablename__ = "doc_conflicts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    owner: Mapped[str] = mapped_column(String(32), index=True)
+    collection: Mapped[str] = mapped_column(String(12))
+    doc_id: Mapped[str] = mapped_column(String(80))
+    data: Mapped[Any] = mapped_column(JSON)  # the overwritten version
+    overwritten_version: Mapped[int] = mapped_column(Integer)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+MAX_CONFLICTS = 50  # a short list: the newest ones per user
+
+
 def _collection(name: str) -> str:
     if name not in COLLECTIONS:
         raise HTTPException(404, "Unknown collection.")
@@ -55,6 +86,7 @@ def _collection(name: str) -> str:
 
 class DocIn(BaseModel):
     data: Any = Field(...)
+    base_version: int | None = Field(default=None, ge=0)  # the version this device last read, if it knows one
 
 
 @router.get("")
@@ -66,27 +98,69 @@ def read_all(owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, 
     return out
 
 
+@router.get("/versions")
+def versions(owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, dict[str, int]]:
+    """The version of each of this user's documents, by collection and id."""
+    out: dict[str, dict[str, int]] = {c: {} for c in COLLECTIONS}
+    for row in db.scalars(select(DocVersion).where(DocVersion.owner == owner)):
+        if row.collection in out:
+            out[row.collection][row.doc_id] = row.version
+    return out
+
+
+@router.get("/conflicts")
+def conflicts(owner: str = Depends(user_of), db: Session = SESSION) -> list[dict[str, Any]]:
+    """Versions of this user's documents that a later write replaced, newest first (her own only)."""
+    rows = db.scalars(select(DocConflict).where(DocConflict.owner == owner).order_by(DocConflict.id.desc()).limit(MAX_CONFLICTS))
+    return [{"id": r.id, "collection": r.collection, "doc_id": r.doc_id, "at": r.at.isoformat(), "overwritten_version": r.overwritten_version, "data": r.data} for r in rows]
+
+
+@router.delete("/conflicts/{conflict_id}")
+def dismiss_conflict(conflict_id: int, owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
+    db.execute(delete(DocConflict).where(DocConflict.owner == owner, DocConflict.id == conflict_id))
+    db.commit()
+    return {"ok": True}
+
+
 @router.put("/{collection}/{doc_id}")
-def write(collection: str, doc_id: str, body: DocIn, owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
+def write(collection: str, doc_id: str, body: DocIn, owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
     coll = _collection(collection)
     if not DOC_ID.match(doc_id):
         raise HTTPException(422, "Bad document id.")
     if len(str(body.data)) > MAX_DOC_BYTES:
         raise HTTPException(413, "This document is too large.")
     row = db.get(UserDoc, (owner, coll, doc_id))
+    ver = db.get(DocVersion, (owner, coll, doc_id))
+    current = ver.version if ver is not None else 0
+    conflict = False
+    if row is not None and body.base_version is not None and body.base_version != current:
+        # the device wrote from an older version: the later write wins, the version it replaces is kept
+        conflict = True
+        db.add(DocConflict(owner=owner, collection=coll, doc_id=doc_id, data=row.data, overwritten_version=current))
+        db.flush()
+        old = db.scalars(select(DocConflict.id).where(DocConflict.owner == owner).order_by(DocConflict.id.desc()).offset(MAX_CONFLICTS)).all()
+        if old:
+            db.execute(delete(DocConflict).where(DocConflict.id.in_(old)))
     if row is None:
         db.add(UserDoc(owner=owner, collection=coll, doc_id=doc_id, data=body.data))
     else:
         row.data = body.data
         row.updated_at = _now()
+    if ver is None:
+        db.add(DocVersion(owner=owner, collection=coll, doc_id=doc_id, version=current + 1))
+    else:
+        ver.version = current + 1
     db.commit()
-    return {"ok": True}
+    return {"ok": True, "version": current + 1, "conflict": conflict}
 
 
 @router.delete("/{collection}/{doc_id}")
 def remove(collection: str, doc_id: str, owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
     coll = _collection(collection)
     db.execute(delete(UserDoc).where(UserDoc.owner == owner, UserDoc.collection == coll, UserDoc.doc_id == doc_id))
+    ver = db.get(DocVersion, (owner, coll, doc_id))
+    if ver is not None:
+        ver.version += 1  # a delete is a change too, so a device holding an older copy is told
     db.commit()
     return {"ok": True}
 
@@ -95,6 +169,8 @@ def remove(collection: str, doc_id: str, owner: str = Depends(user_of), db: Sess
 def clear(owner: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
     """Delete everything this user stored (the 'delete my data' action)."""
     db.execute(delete(UserDoc).where(UserDoc.owner == owner))
+    db.execute(delete(DocVersion).where(DocVersion.owner == owner))
+    db.execute(delete(DocConflict).where(DocConflict.owner == owner))
     db.commit()
     return {"ok": True}
 
@@ -109,53 +185,70 @@ def _counts_only(coll: str, data: Any) -> Any:
     return {**{k: data[k] for k in keep if k in data}, "entered": entered, "absent": len(data.get("absent") or [])}
 
 
-def _seen(prof: dict[str, Any]) -> dict[str, Any]:
-    """Children per mistake counting a mistake seen even once (confirmed or possible): `anyCounts`, which the app
-    writes with each class result. An older result without it falls back to its confirmed counts."""
+def _seen(prof: dict[str, Any], min_hits: int = RULE_CONFIRMED) -> dict[str, Any]:
+    """Children per mistake under the rule (engine/diagnosis.py `counts_for_rule`): confirmed (seen in two or more
+    questions, the result's `counts`) or possible (seen in one or more, `anyCounts`, which the app writes with each
+    class result). An older result without `anyCounts` falls back to its confirmed counts."""
     got = prof.get("anyCounts")
-    return got if isinstance(got, dict) else (prof.get("counts") or {})
+    return counts_for_rule(prof.get("counts") or {}, got if isinstance(got, dict) else None, min_hits)
 
 
-def _with_any(db: Session, prof: dict[str, Any], check: dict[str, Any] | None) -> dict[str, Any]:
-    """A class result saved before `anyCounts` existed: work it out from the check's answers and the paper's own
-    key (engine-built from the paper's numbers), the same way the phone does. Children who made a mistake at
-    least once, confirmed or possible, per mistake. Anything that cannot be read leaves the result as it was."""
-    got = prof.get("anyCounts")
-    if isinstance(got, dict) and got:
-        return prof
-    paper_id = str(prof.get("formKey") or "")
+def saved_rule(db: Session, uid: str) -> int:
+    """The rule this user saved (the settings document `errorRule`); confirmed (two or more) when she has none."""
+    row = db.get(UserDoc, (uid, "settings", "errorRule"))
+    return valid_rule((row.data or {}).get("value") if row is not None and isinstance(row.data, dict) else None)
+
+
+def rule_for(db: Session, uid: str, requested: int | None) -> int:
+    """The rule a request counts under: the one it asks for, else the one the user saved, else confirmed."""
+    return valid_rule(requested, saved_rule(db, uid)) if requested is not None else saved_rule(db, uid)
+
+
+def form_for(db: Session, form_key: str) -> tuple[Any, frozenset[int] | None, dict[str, str | None]]:
+    """What a result was made on: the engine form (a stored paper, by its own numbers, or a built-in form), the
+    numbers of its anchor items (None when every item is one), and how it is linked to its twin: the id of the paper it
+    is the twin of, and its own content hash and the hash of the pre-test it is the twin of."""
+    if form_key.startswith("P-"):
+        from services.papers import keys as paper_keys
+        from services.papers.models import PaperRow
+
+        paper = db.get(PaperRow, form_key)
+        if paper is None:
+            return None, None, {}
+        imported = (paper.body or {}).get("source") == "imported_pdf"
+        anchors = frozenset(int(it["n"]) for it in paper.body["items"] if imported or bool(it.get("is_anchor", True)))
+        body = paper.body or {}
+        return paper_keys.form_of(paper.body, paper.check_code), anchors, {"twin_of": paper.twin_of, "hash": body.get("hash"), "twin_hash": body.get("twin_of_paper")}
+    from engine.forms import FORM_A, FORM_B
+
+    # the pilot's printed forms: B is A's twin by construction
+    link = {"A": {"hash": "builtin:A"}, "B": {"hash": "builtin:B", "twin_hash": "builtin:A"}}.get(form_key, {})
+    return {"A": FORM_A, "B": FORM_B}.get(form_key), None, link
+
+
+def recomputed(db: Session, prof: dict[str, Any], check: dict[str, Any] | None) -> dict[str, Any]:
+    """The result with its numbers worked out again from the answers and the paper, by the engine (engine/class_counts.py).
+    The phone writes counts too, but an officer or coach number is never a copy: where the answers and the paper are
+    here, children checked, the confirmed counts and the seen-once counts come from them. A result whose answers or
+    paper cannot be found keeps the numbers it was saved with."""
     rows = (check or {}).get("children")
-    if not paper_id.startswith("P-") or not isinstance(rows, list):
+    form, anchors, link = form_for(db, str(prof.get("formKey") or ""))
+    if form is None or not isinstance(rows, list):
         return prof
-    from engine.normalize import normalize_answer
-    from services.papers import keys as paper_keys
-    from services.papers.models import PaperRow
+    from engine.class_counts import count_class
 
-    paper = db.get(PaperRow, paper_id)
-    if paper is None:
-        return prof
-    items = paper_keys.key_of(paper.id, paper.body, "")["forms"][paper.id]["items"]
-    absent = {int(i) for i in (check or {}).get("absent") or []}
-    out: dict[str, int] = {}
-    for i, row in enumerate(rows):
-        if i in absent or not isinstance(row, list) or not any(str(c).strip() for c in row):
-            continue
-        codes: set[str] = set()
-        for q, item in enumerate(items):
-            raw = row[q] if q < len(row) else ""
-            ans = normalize_answer(str(raw) if str(raw).strip() else None)
-            if isinstance(ans, int):
-                codes.update(item["wrong"].get(str(ans), []))
-        for code in codes:
-            out[code] = out.get(code, 0) + 1
-    return {**prof, "anyCounts": out}
+    rows = [r if isinstance(r, list) else [] for r in rows]
+    absent = list((check or {}).get("absent") or [])
+    got = count_class(form, rows, absent)
+    anchor = count_class(form, rows, absent, anchors) if anchors is not None else got
+    return {**prof, "childrenChecked": got.children_checked, "counts": got.confirmed, "anyCounts": got.seen_once, "_recomputed": True, "_link": link, "_kind": str((check or {}).get("kind") or ""), "_anchor": anchor}
 
 
-def entered_summary(db: Session, owners: set[str] | None = None) -> dict[str, Any]:
+def entered_summary(db: Session, owners: set[str] | None = None, min_hits: int = RULE_CONFIRMED) -> dict[str, Any]:
     """Entered classes, added up. There are no terms: each class counts once, by its most recent check (by date
     saved), and `all` lists every check so a before-and-after can be read. A class is its owner plus its class
     code. `owners` limits it to those users (a coach's or mentor's assigned cohorts); None means everyone (the
-    officer, and the cohort-forming code). Counts only."""
+    officer, and the cohort-forming code). Counts only, under the rule `min_hits` (2 confirmed, 1 possible)."""
     q = select(UserDoc).where(UserDoc.collection.in_(("profiles", "classes", "checks")))
     if owners is not None:
         q = q.where(UserDoc.owner.in_(owners or {""}))
@@ -169,13 +262,13 @@ def entered_summary(db: Session, owners: set[str] | None = None) -> dict[str, An
     every: list[dict[str, Any]] = []
     for owner, d in docs.items():
         for prof in d.get("profiles", {}).values():
+            check = d.get("checks", {}).get(str(prof.get("id")))
+            prof = recomputed(db, prof, check)
             if not int(prof.get("childrenChecked", 0) or 0):
                 continue
-            check = d.get("checks", {}).get(str(prof.get("id")))
-            prof = _with_any(db, prof, check)
             at = int((check or {}).get("updatedAt") or prof.get("createdAt") or 0)
             cname = str((d.get("classes", {}).get(str(prof.get("classId"))) or {}).get("name") or "")
-            every.append({"teacher": nicks.get(owner, owner), "class": cname, "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof).items()}, "_class": f"{owner}/{prof.get('classId')}", "_owner": owner, "_check": str(prof.get("id") or ""), "_at": at})
+            every.append({"teacher": nicks.get(owner, owner), "class": cname, "children_checked": int(prof["childrenChecked"]), "errors": sorted(c for c, v in _seen(prof, min_hits).items() if int(v or 0) > 0), "_counts": {c: int(v or 0) for c, v in _seen(prof, min_hits).items()}, "_class": f"{owner}/{prof.get('classId')}", "_owner": owner, "_check": str(prof.get("id") or ""), "_at": at, "_form": str(prof.get("formKey") or ""), "_kind": prof.get("_kind", ""), "_link": prof.get("_link") or {}, "_anchor": prof.get("_anchor")})
     latest: dict[str, dict[str, Any]] = {}
     for c in every:
         if c["_class"] not in latest or c["_at"] > latest[c["_class"]]["_at"]:
@@ -208,18 +301,19 @@ def assigned_owners(db: Session, uid: str, role: str) -> set[str]:
 
 
 @router.get("/coach-summary")
-def coach_summary(role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+def coach_summary(role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION, min_hits: int | None = None) -> dict[str, Any]:
     """Counts. The officer: across all classes, groups only. A coach or mentor: the classes of their assigned
     cohorts, with the nickname and class name, plus `pool`: how many classes across all show each mistake (a
     count and nothing else), so a coach can start a cohort. A teacher is refused."""
     if role not in ("coach", "mentor", "officer"):
         raise HTTPException(403, "Only a coach, a mentor or the officer can see this.")
+    rule = rule_for(db, uid, min_hits)
     if role == "officer":
-        s = entered_summary(db)
-        return {"totals": s["totals"], "classes": [{"errors": c["errors"]} for c in s["classes"]]}
-    mine = entered_summary(db, assigned_owners(db, uid, role))
-    pool = entered_summary(db)["totals"]
-    return {"totals": mine["totals"], "classes": [{k: c[k] for k in ("teacher", "class", "errors")} for c in mine["classes"]], "pool": pool["children_showing"] | {"_classes": pool["classes"]}}
+        s = entered_summary(db, None, rule)
+        return {"rule": {"min_hits": rule}, "totals": s["totals"], "classes": [{"errors": c["errors"]} for c in s["classes"]]}
+    mine = entered_summary(db, assigned_owners(db, uid, role), rule)
+    pool = entered_summary(db, None, rule)["totals"]
+    return {"rule": {"min_hits": rule}, "totals": mine["totals"], "classes": [{k: c[k] for k in ("teacher", "class", "errors")} for c in mine["classes"]], "pool": pool["children_showing"] | {"_classes": pool["classes"]}}
 
 
 @router.get("/all/{collection}")

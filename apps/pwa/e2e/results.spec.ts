@@ -22,12 +22,14 @@ const SHOTS = path.resolve(here, "../../../data/autopilot-screens");
 const CODES = ["PV-HEARD", "PV-REVERSE", "ADD-NOCARRY", "SUB-SFL", "SUB-NODEC"];
 const SHORT: Record<string, string> = { "PV-HEARD": "PH", "PV-REVERSE": "PR", "ADD-NOCARRY": "AC", "SUB-SFL": "SF", "SUB-NODEC": "SN" };
 
-async function enter16(page: Page): Promise<void> {
+async function enter16(page: Page, rule: 1 | 2 = 1): Promise<void> {
   await startSample(page, { size: fx.children.length });
   await enterRolls(page, fx.children.map((c) => c.answers));
   await finishEntering(page);
   await page.goto("/#/cards");
   await expect(page.getByTestId("answer-map")).toBeVisible();
+  // the one error rule defaults to two or more questions; most checks here read the possible mistakes too, so they choose one
+  await page.getByTestId(`rule-${rule}`).check();
 }
 const primary = (codes: string[], shows: string[]): string | null => {
   const order = CODES;
@@ -98,7 +100,7 @@ test.describe("phone", () => {
     const possible = fx.children.filter((c) => c.cells.some((x) => x.codes.includes("SUB-SFL")) && !c.shows.includes("SUB-SFL")).length;
     expect(possible).toBe(2);
     await expect(page.getByTestId("card-SUB-SFL").locator(".mistake-count")).toContainText(`${possible} possible`);
-    await expect(page.getByTestId("amap-local")).toHaveText("This table stays on this phone.");
+    await expect(page.getByTestId("amap-local")).toHaveText("This table shows only what you entered, from your account.");
   });
 
   test("sorting, highlighting, the popover and the keyboard", async ({ page }) => {
@@ -242,27 +244,29 @@ test.describe("phone", () => {
 test.describe("show only confirmed mistakes", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("the checkbox keeps only mistakes seen on 2 or more questions; unchecked shows confirmed and possible", async ({ page }) => {
-    await enter16(page);
-    const box = page.getByTestId("only-confirmed");
-    await expect(box).not.toBeChecked(); // everything is shown to begin with
+  test("the rule keeps only mistakes seen on 2 or more questions; one question shows confirmed and possible", async ({ page }) => {
+    await enter16(page, 1);
+    const two = page.getByTestId("rule-2");
+    const one = page.getByTestId("rule-1");
+    await expect(one).toBeChecked(); // everything is shown under one question
     await expect(page.getByTestId("mistakes-table").locator("tbody tr")).toHaveCount(5);
     await expect(page.getByTestId("card-SUB-SFL").locator(".mistake-count")).toContainText("2 possible");
     await expect(page.getByTestId("cell-6-8")).toHaveText("SF"); // roll 6 made it once: shown as a possible mistake
     await expect(page.getByTestId("cell-6-8")).toHaveClass(/amap-possible/);
-    await box.check();
+    await two.check();
+    await expect(page.getByTestId("rule-shown")).toContainText("two or more");
     await expect(page.getByTestId("mistakes-table").getByText(/possible/)).toHaveCount(0);
     await expect(page.getByTestId("card-SUB-SFL").locator(".numeral")).toHaveText(String(fx.class.counts["SUB-SFL"])); // confirmed counts do not change
     await expect(page.getByTestId("cell-6-8")).toHaveText("×"); // once only: no longer drawn as a mistake
     await expect(page.getByTestId("cell-4-7")).toHaveText("SF"); // a confirmed mistake stays
     await expect(page.getByTestId("results-coverage-SUB-SFL-class")).not.toContainText("possible");
-    await box.uncheck();
+    await one.check();
     await expect(page.getByTestId("cell-6-8")).toHaveText("SF");
     await expect(page.getByTestId("results-coverage-SUB-SFL-class")).toContainText("2 possible");
   });
 
   test("the table is one table with a row per mistake, its letters, counts and the listen and flag buttons", async ({ page }) => {
-    await enter16(page);
+    await enter16(page, 1);
     const table = page.getByTestId("mistakes-table");
     await expect(table.locator("thead th")).toHaveCount(3);
     for (const code of CODES) {
@@ -271,7 +275,7 @@ test.describe("show only confirmed mistakes", () => {
       await expect(page.getByTestId(`listen-${code}`)).toBeVisible();
       await expect(page.getByTestId(`flag-${code}`)).toBeVisible();
     }
-    await expect(page.getByTestId("card-SUB-SFL")).toContainText("This is the focus for your class.");
+    await expect(page.getByTestId("card-PV-HEARD")).toContainText("This is the focus for your class."); // the 25% share rule is gone (DECISIONS 2026-11-02): PV-HEARD (2 of 16 children) is eligible and comes first
     await expect(page.getByTestId("card-SUB-SFL")).toContainText("From your class: 74 − 36 → 42");
     expect(await page.locator("[data-testid=findings] [data-kind=error]").count()).toBe(0); // no separate mistake cards any more
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

@@ -24,6 +24,32 @@ from engine.model import (
 # A child shows an error only if it appears on at least 2 of the items probing it
 # (items 1-2: both; items 3-5: 2 of 3; items 7-10: 2 of 4).
 MIN_HITS = 2
+# The one error rule every count view uses (decided 3 Nov 2026, DECISIONS.md): an error is CONFIRMED when it is seen
+# in two or more questions and POSSIBLE when it is seen in one. A view counts under one of them, chosen by the
+# reader (saved per user, default confirmed); `min_hits` is 2 or 1.
+RULE_CONFIRMED = 2
+RULE_POSSIBLE = 1
+RULES: tuple[int, ...] = (RULE_POSSIBLE, RULE_CONFIRMED)
+
+
+def valid_rule(value: object, default: int = RULE_CONFIRMED) -> int:
+    """`value` as a rule (1 or 2); anything else is the default."""
+    try:
+        n = int(str(value))
+    except ValueError:
+        return default
+    return n if n in RULES else default
+
+
+def counts_for_rule(confirmed: dict[str, int], seen_once: dict[str, int] | None, min_hits: int) -> dict[str, int]:
+    """Children per error under the rule. `confirmed` counts children who show the error on two or more
+    questions; `seen_once` counts those who made it on one or more (confirmed or possible). Possible counts
+    are the second; a result saved without them falls back to the confirmed counts."""
+    if min_hits <= RULE_POSSIBLE and seen_once is not None:
+        return {k: int(v) for k, v in seen_once.items()}
+    return {k: int(v) for k, v in confirmed.items()}
+
+
 # A class is eligible for a track on an error when at least 1 child shows it and at least 10
 # children were checked. There is no share-of-class threshold (the 25% rule was removed
 # 2026-11-02, DECISIONS.md).

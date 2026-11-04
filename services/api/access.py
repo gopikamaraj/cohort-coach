@@ -67,6 +67,8 @@ RULES: list[Rule] = [
     # --- a signed-in user's own things ---
     r("user", "self", r"/api/users/me", "GET"),
     r("user", "self", r"/api/store", "GET DELETE"),
+    r("user", "self", r"/api/store/(versions|conflicts)", "GET"),
+    r("user", "self", r"/api/store/conflicts/[^/]+", "DELETE"),
     r("user", "self", r"/api/store/[^/]+/[^/]+", "PUT DELETE"),
     r("staff", "assigned", r"/api/store/coach-summary", "GET", "coach mentor officer"),
     r("staff", "assigned", r"/api/store/all/[^/]+", "GET", "coach mentor"),
@@ -94,7 +96,7 @@ RULES: list[Rule] = [
     r("user", "cohort", r"/api/cohort-chat/.*"),
     r("user", "self", r"/api/cohorts/class-only", "GET POST"),
     r("staff", "assigned", r"/api/cohorts/class-only/coach", "GET POST", "coach"),
-    r("staff", "counts", r"/api/cohorts/class-only/(officer|form)", "GET POST", "officer"),
+    r("staff", "counts", r"/api/cohorts/class-only/(officer(/candidates)?|form)", "GET POST", "officer"),
     r("staff", "assigned", r"/api/cohorts/coach/.*", "", "coach"),
     r("staff", "assigned", r"/api/cohorts/mentor/.*", "", "mentor"),
     r("staff", "counts", r"/api/cohorts/officer/.*", "", "officer"),

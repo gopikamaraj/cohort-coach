@@ -2,6 +2,8 @@
 // figure with its source, nothing covering fewer than 5 classes or teachers. The numbers are computed
 // by the server from class-level counts; this screen only shows them. A failed track counts against the
 // track, not the teacher. Percentages appear here (an officer view) and nowhere a teacher sees.
+import { ErrorRuleControl, RuleLine } from "../components/ErrorRuleControl";
+import { ruleQuery, useErrorRule } from "../lib/errorRule";
 import { useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import OfficerCohorts from "../components/OfficerCohorts";
@@ -28,6 +30,8 @@ export function pos(v: number): number {
 }
 
 interface Entered {
+  rule?: { min_hits: number };
+  caps?: { off: boolean; label: string | null };
   min_classes: number;
   lowered: boolean;
   has_data: boolean;
@@ -41,11 +45,12 @@ function FormCohorts() {
   const [busy, setBusy] = useState(false);
   const [out, setOut] = useState<{ created: { name: string; classes: number }[]; already: number; waiting: string[] } | null>(null);
   const [failed, setFailed] = useState(false);
+  const [rule] = useErrorRule();
   async function press() {
     setBusy(true);
     setFailed(false);
     try {
-      const res = await fetch(`${API_BASE}/api/cohorts/class-only/form`, { method: "POST", headers: { "X-Role": "officer" } });
+      const res = await fetch(`${API_BASE}/api/cohorts/class-only/form?${ruleQuery(rule)}`, { method: "POST", headers: { "X-Role": "officer" } });
       if (!res.ok) throw new Error(String(res.status));
       setOut((await res.json()) as NonNullable<typeof out>);
     } catch {
@@ -79,15 +84,19 @@ function FormCohorts() {
 function EnteredOfficer() {
   const { tr } = useApp();
   const [d, setD] = useState<Entered | null>(null);
+  const [rule] = useErrorRule();
   useEffect(() => {
-    get<Entered>("entered").then(setD, () => setD(null));
-  }, []);
+    get<Entered>(`entered?${ruleQuery(rule)}`).then(setD, () => setD(null));
+  }, [rule]);
   if (!d || !d.has_data) return null;
   return (
     <div className="panel" data-testid="officer-entered">
       <h2>{tr("officer.real.title")}</h2>
       <p className="muted">{tr("officer.real.note", { classes: d.error_map?.classes ?? 0 })}</p>
-      {d.lowered ? <p className="note">{tr("officer.real.lowered")}</p> : null}
+      <ErrorRuleControl name="rule-officer" />
+      <RuleLine minHits={d.rule?.min_hits} />
+      {d.caps?.off ? <p className="note" data-testid="demo-caps">{tr("officer.caps.demo")}</p> : null}
+      {d.lowered && !d.caps?.off ? <p className="note">{tr("officer.real.lowered")}</p> : null}
       <h3>{tr("officer.real.results")}</h3>
       {d.results.hidden ? <p className="muted">{tr("officer.real.hidden", { min: d.min_classes })}</p> : null}
       {d.results.classes === 0 ? <p>{tr("officer.real.results_none")}</p> : null}
