@@ -48,7 +48,7 @@ def world(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[tuple[Tes
 
 def enter_class(c: TestClient, user: str, code: str) -> None:
     c.put(f"/api/store/classes/{code}", json={"data": {"id": code, "name": code}}, headers=who(user))
-    prof = {"id": f"{code}:1", "classId": code, "term": 1, "createdAt": 1, "childrenChecked": 20, "counts": {}, "anyCounts": {"ADD-NOCARRY": 5}}
+    prof = {"id": f"{code}:1", "classId": code, "term": 1, "createdAt": 1, "childrenChecked": 20, "counts": {"ADD-NOCARRY": 5}, "anyCounts": {"ADD-NOCARRY": 5}}
     c.put(f"/api/store/profiles/{code}:1", json={"data": prof}, headers=who(user))
 
 

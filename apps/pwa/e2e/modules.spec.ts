@@ -23,7 +23,7 @@ async function trackStarted(page: Page): Promise<void> {
   await expect(page.getByTestId("class-cohort-made")).toBeVisible();
   await page.goto("/#/cohort");
   await page.getByTestId("module-start").click();
-  await expect(page.getByTestId("module-1")).toBeVisible();
+  await expect(page.getByTestId("module-1")).toBeVisible({ timeout: 45_000 }); // Module 1 is made when she starts (recorded AI, stub voice); on a slow machine that takes longer than 5 seconds
 }
 
 test.use({ viewport: { width: 360, height: 800 } });
@@ -95,18 +95,17 @@ test("offline: the saved module text opens and getting the next module says it n
   await context.setOffline(false);
 });
 
-test("a coach sees counts per module and can move the remaining dates", async ({ page }) => {
+test("a coach sees module counts only for cohorts assigned to her, never a teacher's own class cohort", async ({ page }) => {
+  // A teacher's own single-class cohort is not assigned to any coach (decided 3 Nov 2026, clean-up step C), so a coach who
+  // opens the page sees no module counts for it and nothing that names the teacher. Counts and the date shift for a cohort a
+  // coach is assigned to are covered by tests/modules/test_api.py and tests/api/test_identity_and_access.py.
   await trackStarted(page);
   await chooseRole(page, "coach");
   await page.goto("/#/cohort");
-  const box = page.getByTestId("class-only-coach");
-  await expect(box.locator("[data-testid^=coach-modules-]")).toBeVisible();
-  await expect(page.getByTestId("coach-module-1")).toBeVisible();
-  await page.getByTestId("coach-shift-days").fill("3");
-  await page.getByTestId("coach-shift-reason").fill("school holiday");
-  await page.getByTestId("coach-shift-apply").click();
-  const text = await box.innerText();
-  expect(text).not.toMatch(/[0-9a-f]{16}/); // no device id
+  await expect(page.locator("[data-testid^=coach-modules-]")).toHaveCount(0); // no module counts for a class that is not assigned to her
+  const text = await page.locator("main").innerText();
+  expect(text).not.toMatch(/[0-9a-f]{16}/); // no device id or other id
+  expect(text).not.toContain(await page.evaluate(() => (JSON.parse(localStorage.getItem("cc.user") ?? "{}") as { id: string }).id)); // not her nickname
 });
 
 test("the feedback card has four answers with icons, and Send is closed until one is chosen", async ({ page }) => {
@@ -219,4 +218,37 @@ test("a blocked share says what to remove, and the sharing step fits in Hindi an
     await page.goto("/#/cohort");
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
   }
+});
+
+test("a module's audio plays in the browser: no autoplay, play and pause, seek, speeds, a played event, and a copy for offline", async ({ page, context }) => {
+  await trackStarted(page);
+  await expect(page.getByTestId("module-1-player-audio")).toHaveCount(0); // nothing is made or played until she presses Listen
+  await page.getByTestId("module-1-listen").click();
+  await expect(page.getByTestId("module-1-toggle")).toBeVisible({ timeout: 45_000 });
+  const audio = page.getByTestId("module-1-player-audio");
+  const paused = () => audio.evaluate((a: HTMLAudioElement) => a.paused);
+  expect(await paused()).toBe(true); // no autoplay
+  await expect(page.getByTestId("module-1-time")).toContainText("0:00 /");
+  await expect(page.getByTestId("module-1-seek")).toBeVisible();
+  await page.getByTestId("module-1-speed-0.75").click();
+  expect(await audio.evaluate((a: HTMLAudioElement) => a.playbackRate)).toBe(0.75);
+  await page.getByTestId("module-1-speed-1.25").click();
+  expect(await audio.evaluate((a: HTMLAudioElement) => a.playbackRate)).toBe(1.25);
+  await page.getByTestId("module-1-speed-1").click();
+  const played = page.waitForResponse((r) => r.url().includes("/modules/1/played") && r.request().method() === "POST");
+  await page.getByTestId("module-1-toggle").click();
+  expect((await played).ok()).toBe(true); // the first start is recorded on the module
+  await expect.poll(paused).toBe(false);
+  await page.getByTestId("module-1-toggle").click();
+  await expect.poll(paused).toBe(true);
+  await expect(page.getByTestId("module-1-save")).toBeVisible(); // Download sits next to the player
+  await expect(page.getByTestId("module-1-kept")).toBeVisible(); // a copy is kept on the phone
+  // offline: the kept copy plays with no signal
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByTestId("module-1-toggle")).toBeVisible({ timeout: 20_000 });
+  await context.setOffline(false);
 });

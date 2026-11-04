@@ -5,12 +5,13 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
-import { endBanner, getNext, loadTrack, markDownloaded, ModuleError, generateAllModules, nextBlocked, refreshNarration, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
+import { endBanner, getNext, loadTrack, markDownloaded, markPlayed, ModuleError, QueuedForLater, generateAllModules, nextBlocked, refreshNarration, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
 import { useDevTesting } from "../lib/aiMode";
 import { exportStem } from "../lib/packAudio";
 import { href } from "../lib/router";
 import { useApp } from "../state";
 import { AudioDownload } from "./AudioDownload";
+import { ModulePlayer } from "./ModulePlayer";
 import { CheckIn } from "./CheckIn";
 import { OpenChat } from "./OpenChat";
 import { Icon, type IconName } from "./icons";
@@ -243,6 +244,24 @@ function ModuleBody({ m, track, code, current, onTrack }: { m: ModuleView; track
         </details>
       ) : null}
       {m.spoken ? (
+        <ModulePlayer
+          text={m.spoken}
+          language={speakLang}
+          stem={exportStem(code, speakLang, `Improvement-Track-Module-${m.number}`)}
+          keyId={`${track.id}/${m.number}/${speakLang}`}
+          played={Boolean(m.played)}
+          testId={`module-${m.number}`}
+          onPlayed={async () => {
+            try {
+              const view = await markPlayed(track.id, m.number, lang);
+              if (view) onTrack(view);
+            } catch {
+              /* a played mark that cannot be sent is not worth interrupting the audio for */
+            }
+          }}
+        />
+      ) : null}
+      {m.spoken ? (
         <AudioDownload
           request={{ text: m.spoken }}
           language={speakLang}
@@ -267,6 +286,7 @@ function FeedbackCard({ m, track, onTrack, late }: { m: ModuleView; track: Track
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
+  const [queuedNote, setQueuedNote] = useState(false);
   const held = m.feedback?.answer === "not_tried";
   if (m.feedback && !held) {
     return <CheckIn track={track} number={m.number} answerWord={tr(`module.feedback.${m.feedback.answer}` as Key)} />;
@@ -281,14 +301,16 @@ function FeedbackCard({ m, track, onTrack, late }: { m: ModuleView; track: Track
       onTrack(view);
       setAnswer(null);
       setNote("");
-    } catch {
-      setErr(true);
+    } catch (e) {
+      if (e instanceof QueuedForLater) setQueuedNote(true);
+      else setErr(true);
     } finally {
       setBusy(false);
     }
   };
   return (
     <div className="stack">
+      {queuedNote ? <p role="status" data-testid={`module-${m.number}-queued`}>{tr("sync.queued_note")}</p> : null}
       {held ? <HoldPanel m={m} track={track} onTrack={onTrack} /> : null}
       <fieldset className="module-feedback" data-testid={`module-${m.number}-feedback`}>
         <legend>{tr("module.feedback.title", { n: m.number })}</legend>

@@ -163,6 +163,22 @@ def test_the_downloaded_call_marks_the_module(client: TestClient) -> None:
     assert r.status_code == 200 and r.json()["modules"][0]["status"] == "downloaded"
 
 
+def test_pressing_play_in_the_browser_is_recorded_once_and_shown_on_the_module(client: TestClient) -> None:
+    tid = start(client, make_cohort(client))["id"]
+    assert client.post(f"/api/modules/tracks/{tid}/modules/2/played", headers=h("teacher", DEV1)).status_code == 409  # not made yet
+    r = client.post(f"/api/modules/tracks/{tid}/modules/1/played", headers=h("teacher", DEV1))
+    assert r.status_code == 200 and r.json()["modules"][0]["played"] is True
+    again = client.post(f"/api/modules/tracks/{tid}/modules/1/played", headers=h("teacher", DEV1)).json()
+    assert again["modules"][0]["played"] is True
+    from sqlalchemy import func, select
+
+    from services.modules.models import ModuleEvent
+
+    with next(client.app.dependency_overrides[__import__("services.api.profiles", fromlist=["get_session"]).get_session]()) as db:
+        assert db.execute(select(func.count()).select_from(ModuleEvent).where(ModuleEvent.event == "played")).scalar_one() == 1  # once
+    assert client.post(f"/api/modules/tracks/{tid}/modules/1/played", headers=h("teacher", DEV2)).status_code in (403, 404)  # another teacher's track
+
+
 def test_the_coach_sees_counts_and_no_teacher(client: TestClient) -> None:
     cid = make_cohort(client)
     tid = start(client, cid)["id"]

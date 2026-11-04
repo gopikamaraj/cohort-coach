@@ -2,6 +2,7 @@
 // which module comes next and holds every module and answer; this phone shows them. The last view read is kept
 // per track only so the module text and downloaded audio still open when the phone is offline; it is replaced
 // by the server's view whenever the phone is online, and it holds no child, no name and no roll number.
+import { writeOrQueue } from "./cloudStore";
 import { userHeader } from "./identity";
 import { API_BASE } from "./api";
 
@@ -31,6 +32,7 @@ export interface ModuleView {
   reason_text?: string;
   generated_by?: string | null;
   audio_ref?: string | null;
+  played?: boolean; // she started the audio in the browser player (system: the player started)
   feedback?: { answer: Answer; note: string } | null;
   hold?: { deferrals: number; max: number; days: number; short: { parts: TextPart[] } | null };
   spoken?: string;
@@ -50,6 +52,13 @@ export interface TrackView {
   current: number;
   can_next: { enabled: boolean; code: NextCode; number?: number; next?: number; due_date?: string };
   modules: ModuleView[];
+}
+
+/** The write could not go now (no connection); it waits in the outbox and is sent when she is online. */
+export class QueuedForLater extends Error {
+  constructor() {
+    super("queued");
+  }
 }
 
 export class ModuleError extends Error {
@@ -138,7 +147,15 @@ export async function getNext(trackId: string, lang: string, fetchFn?: typeof fe
 }
 
 export async function sendFeedback(trackId: string, number: number, answer: Answer, note: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
-  return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/feedback?lang=${lang}`, { method: "POST", body: { answer, note } }, fetchFn));
+  const path = `/tracks/${trackId}/modules/${number}/feedback?lang=${lang}`;
+  try {
+    return remember(await call<TrackView>(path, { method: "POST", body: { answer, note } }, fetchFn));
+  } catch (e) {
+    if (!(e instanceof ModuleError && e.status === 0)) throw e;
+    // no connection: her answer is kept in the outbox and sent when she is online
+    await writeOrQueue(`module ${number} feedback`, "POST", `/api/modules${path}`, { answer, note }, { "X-Role": "teacher" });
+    throw new QueuedForLater();
+  }
 }
 
 export async function sendWhyNot(trackId: string, number: number, chip: Chip, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
@@ -166,7 +183,26 @@ export async function answerReview(trackId: string, number: number, answers: { i
 }
 
 export async function markDownloaded(trackId: string, number: number, audioRef: string, lang: string, fetchFn?: typeof fetch): Promise<TrackView> {
-  return remember(await call<TrackView>(`/tracks/${trackId}/modules/${number}/downloaded?lang=${lang}`, { method: "POST", body: { audio_ref: audioRef } }, fetchFn));
+  const path = `/tracks/${trackId}/modules/${number}/downloaded?lang=${lang}`;
+  try {
+    return remember(await call<TrackView>(path, { method: "POST", body: { audio_ref: audioRef } }, fetchFn));
+  } catch (e) {
+    if (!(e instanceof ModuleError && e.status === 0)) throw e;
+    await writeOrQueue(`module ${number} downloaded`, "POST", `/api/modules${path}`, { audio_ref: audioRef }, { "X-Role": "teacher" });
+    throw new QueuedForLater();
+  }
+}
+
+/** She started a module's audio in the browser player. With no connection it waits in the outbox. */
+export async function markPlayed(trackId: string, number: number, lang: string, fetchFn?: typeof fetch): Promise<TrackView | null> {
+  const path = `/tracks/${trackId}/modules/${number}/played?lang=${lang}`;
+  try {
+    return await remember(await call<TrackView>(path, { method: "POST" }, fetchFn));
+  } catch (e) {
+    if (!(e instanceof ModuleError && e.status === 0)) throw e;
+    await writeOrQueue(`module ${number} played`, "POST", `/api/modules${path}`, undefined, { "X-Role": "teacher" });
+    return null;
+  }
 }
 
 /** Testing only (DEV_TESTING=1): make every module that is still planned, without feedback. */

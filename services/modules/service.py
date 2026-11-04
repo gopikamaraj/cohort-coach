@@ -535,6 +535,28 @@ def mark_downloaded(
     return module
 
 
+def mark_played(db: Session, track_id: str, number: int, teacher_id: str, now: datetime) -> TrackModule:
+    """She pressed play on a module's audio in the browser (a system fact: the player started it; it does not say she
+    listened to the end). Recorded once per module, as an event; the module's view then says `played`."""
+    track = _owned(db, track_id, teacher_id)
+    module = _by_number(db, track.id, number)
+    if module.status in (states.PLANNED, states.SKIPPED):
+        raise ModulesError("not_made", "That module is not made yet.")
+    if not _played(db, module):
+        _event(db, track, "played", "teacher", now, module)
+        db.commit()
+    return module
+
+
+def _played(db: Session, m: TrackModule) -> bool:
+    return (
+        db.execute(
+            select(func.count()).select_from(ModuleEvent).where(ModuleEvent.module_id == m.id, ModuleEvent.event == "played")
+        ).scalar_one()
+        > 0
+    )
+
+
 def generate_all_for_testing(db: Session, track_id: str, teacher_id: str, now: datetime) -> int:
     """Testing only (DEV_TESTING=1): make every module still planned, one after another, without waiting
     for feedback or a due date (audited as trigger "coach"). Returns how many were made."""
@@ -633,6 +655,7 @@ def module_view(db: Session, track: Track, m: TrackModule, lang: str, total: int
     out["reason_text"] = reason_text(m.reason, lang)
     out["generated_by"] = m.generated_by
     out["audio_ref"] = m.audio_ref
+    out["played"] = _played(db, m)  # she pressed play in the browser (system: the player started)
     fb = _feedback(db, m)
     out["feedback"] = {"answer": fb.answer, "note": fb.note} if fb else None
     if fb is not None and fb.answer == "not_tried":
@@ -729,6 +752,7 @@ def coach_counts(db: Session, cohort_id: str, now: datetime) -> dict[str, Any]:
                 "at": 0,
                 "generated": 0,
                 "downloaded": 0,
+                "played": 0,
                 "feedback": {"worked": 0, "partly": 0, "not_yet": 0, "not_tried": 0},
                 "overdue": 0,
                 "failed": 0,
@@ -750,6 +774,8 @@ def coach_counts(db: Session, cohort_id: str, now: datetime) -> dict[str, Any]:
                 s["generated"] += 1
                 if m.audio_ref:  # only audio she actually took counts, not a later state
                     s["downloaded"] += 1
+                if _played(db, m):
+                    s["played"] += 1
                 fb = _feedback(db, m)
                 if fb:
                     s["feedback"][fb.answer] += 1
