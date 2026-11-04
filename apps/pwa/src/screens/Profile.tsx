@@ -1,5 +1,6 @@
 // My profile: who I am here (role, language), my classes, my data (storage, backup, data used) and my
 // privacy choices. Everything here is about this phone; nothing is sent unless a button says so.
+import { dismissConflict, listConflicts, type Conflict } from "../lib/cloudStore";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { IconButton, Icon } from "../components/icons";
 import { useToast } from "../components/toast";
@@ -380,6 +381,34 @@ function Feedback() {
   );
 }
 
+function ConflictsList() {
+  const { tr } = useApp();
+  const [rows, setRows] = useState<Conflict[] | null>(null);
+  const [openId, setOpenId] = useState<number | null>(null);
+  const load = useCallback(() => void listConflicts().then(setRows), []);
+  useEffect(load, [load]);
+  return (
+    <Section icon="refresh" title={tr("sync.conflicts_title")} id="conflicts">
+      <p className="muted">{tr("sync.conflicts_hint")}</p>
+      {rows && rows.length === 0 ? <p data-testid="conflicts-none">{tr("sync.conflicts_none")}</p> : null}
+      <ul className="list">
+        {(rows ?? []).map((c) => (
+          <li key={c.id} data-testid={`conflict-${c.id}`}>
+            <span>{tr("sync.conflict_row", { what: `${c.collection} ${c.doc_id}`, when: new Date(c.at).toLocaleString() })}</span>{" "}
+            <button type="button" className="btn btn-secondary" aria-expanded={openId === c.id} onClick={() => setOpenId(openId === c.id ? null : c.id)}>
+              {tr("sync.open")}
+            </button>{" "}
+            <button type="button" className="btn btn-secondary" onClick={() => void dismissConflict(c.id).then(load)}>
+              {tr("sync.dismiss")}
+            </button>
+            {openId === c.id ? <pre className="muted" tabIndex={0}>{JSON.stringify(c.data, null, 2)}</pre> : null}
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
 export default function Profile() {
   const { tr, role, lang, setLang } = useApp();
   return (
@@ -413,6 +442,7 @@ export default function Profile() {
       <NicknameField />
       <TesterSettings />
       <Classes />
+      <ConflictsList />
       <Storage />
       <DataUsed />
       <Privacy />

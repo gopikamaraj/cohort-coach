@@ -96,7 +96,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (online) void reconcileWithServer(); // the server is the truth: drop pointers to records it no longer has
     void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
     watchTables(); // every change to the classes, checks and results is written to the cloud copy
-    void hydrate().then(() => backfillAnyCounts().catch(() => 0)).then(() => reload()).then(async () => { // the cloud copy is the record: read it back first
+    void reload().then(() => hydrate()).then(async (got) => { const filled = await backfillAnyCounts().catch(() => 0); if (got !== "same" || filled) await reload(); }).then(async () => { // the cloud copy is the record: read it back first
       await flushAllowed(isOnline());
       setPending(await pendingCount());
     });
@@ -106,7 +106,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const again = () => {
       forgetQueue();
-      void hydrate().then(() => reload());
+      void hydrate().then((got) => (got === "same" ? undefined : reload()));
     };
     window.addEventListener("cc:identity", again);
     return () => window.removeEventListener("cc:identity", again);

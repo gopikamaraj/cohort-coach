@@ -214,6 +214,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     dropPictures();
     const n = formOf(form)?.items.length ?? 10;
     commit({ rows: Array.from({ length: Math.max(1, m.expectedChildren ?? 1) }, () => emptyRow(n)), absent: new Set(), approved: new Set(), missed: new Map() }, form, m);
+    if (!klass) void writes.current.then(() => reload()); // the class was made by this first save: the screen learns of it once, before she types much
   };
 
   const entered = enteredChildren(snap.current.rows).length;
@@ -661,27 +662,27 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
             {sourceText}
           </span>
         ) : null}
-        {pic || kept[child] ? (
-          <button
-            ref={iconRef}
-            type="button"
-            className="btn btn-secondary btn-icon sheet-icon-btn"
-            onClick={() => void openSheet()}
-            aria-expanded={drawer}
-            aria-label={tr("check.show_sheet", { n: child + 1 })}
-            title={tr("check.show_sheet", { n: child + 1 })}
-            data-testid="show-sheet"
-          >
-            <Icon name="image" />
-          </button>
-        ) : null}
+        <button
+          ref={iconRef}
+          type="button"
+          className="btn btn-secondary btn-icon sheet-icon-btn"
+          onClick={() => void openSheet()}
+          disabled={!(pic || kept[child])}
+          aria-expanded={drawer}
+          aria-label={tr("check.show_sheet", { n: child + 1 })}
+          aria-describedby={pic || kept[child] ? undefined : "no-pic-reason"}
+          title={pic || kept[child] ? tr("check.show_sheet", { n: child + 1 }) : tr("check.no_picture")}
+          data-testid="show-sheet"
+        >
+          <Icon name="image" />
+        </button>
       </div>
       {!pic && state === "entered" && photoKids.current.has(child) ? (
         <p id="no-pic-reason" className="muted" data-testid="no-pic-reason">
           {tr("check.no_picture_reload")}
         </p>
       ) : !pic ? (
-        <p id="no-pic-reason" className="sr">
+        <p id="no-pic-reason" className="muted">
           {tr("check.no_picture")}
         </p>
       ) : null}

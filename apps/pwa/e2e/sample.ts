@@ -46,7 +46,7 @@ export async function makeTestPaper(page: Page, kind: "pre" | "post" = "pre", te
 }
 
 /** From a fresh browser: open Enter check with the standard test paper made for this class and chosen. */
-export async function openWithPaper(page: Page, opts: { kind?: "pre" | "post" } = {}): Promise<void> {
+export async function openWithPaper(page: Page, opts: { kind?: "pre" | "post" } = {}): Promise<string> {
   await page.goto("/#/check");
   const paperId = await makeTestPaper(page, opts.kind ?? "pre");
   await page.reload();
@@ -57,6 +57,7 @@ export async function openWithPaper(page: Page, opts: { kind?: "pre" | "post" } 
   await select.waitFor({ timeout: 20_000 });
   await select.selectOption(paperId);
   await expect(page.getByTestId("paper-attached")).toBeVisible({ timeout: 20_000 });
+  return paperId;
 }
 
 /** Give the class size and press Start the check. */
@@ -68,9 +69,10 @@ export async function begin(page: Page, size = 1): Promise<void> {
 }
 
 /** The two together: the usual way into an entering check. */
-export async function startSample(page: Page, opts: { size?: number; kind?: "pre" | "post" } = {}): Promise<void> {
-  await openWithPaper(page, opts);
+export async function startSample(page: Page, opts: { size?: number; kind?: "pre" | "post" } = {}): Promise<string> {
+  const paperId = await openWithPaper(page, opts);
   await begin(page, opts.size ?? 1);
+  return paperId;
 }
 
 /** Type one roll's answers and approve it (there is no picture, so the confirmation is accepted). */

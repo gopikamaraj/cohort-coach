@@ -187,7 +187,7 @@ def class_doc(c: TestClient, who_: str, code: str, name: str) -> None:
 
 
 def result(c: TestClient, who_: str, code: str, anyc: dict[str, int], n: int = 20) -> None:
-    doc = {"id": f"{code}:1", "classId": code, "term": 1, "createdAt": 1, "childrenChecked": n, "counts": {}, "anyCounts": anyc}
+    doc = {"id": f"{code}:1", "classId": code, "term": 1, "createdAt": 1, "childrenChecked": n, "counts": anyc, "anyCounts": anyc}
     assert c.put(f"/api/store/profiles/{code}:1", json={"data": doc}, headers=who(who_)).status_code == 200
 
 

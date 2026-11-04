@@ -3,6 +3,7 @@
 // sent (made offline, or the network failed), until it goes through; then the copy is removed. Counts only,
 // never a child or an answer. The server makes one per check, so a retry or a second tap returns the same cohort.
 import { ccall, CohortError } from "./cohort";
+import { getUser } from "./identity";
 
 export interface ClassCohort {
   id: string; // "local-..." until the server has it
@@ -13,10 +14,29 @@ export interface ClassCohort {
   childrenChecked: number;
   simulated: boolean;
   synced: boolean;
+  rule?: number; // 2 confirmed, 1 possible: the rule its counts were made under
 }
 
 const KEY = "cc.classCohorts";
-let served: ClassCohort[] = []; // read from the server this visit; not kept on the phone
+// The server's list is the record. A copy of it is kept on the phone for this user (a cache, replaced at every online
+// visit) so her cohort, its track and its modules still open with no signal.
+const cacheKey = (): string => `cc.classCohorts.cache.${getUser()?.id ?? "-"}`;
+function readCache(): ClassCohort[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(cacheKey()) ?? "[]") as unknown;
+    return Array.isArray(v) ? (v as ClassCohort[]) : [];
+  } catch {
+    return [];
+  }
+}
+function writeCache(rows: ClassCohort[]): void {
+  try {
+    localStorage.setItem(cacheKey(), JSON.stringify(rows));
+  } catch {
+    /* private window */
+  }
+}
+let served: ClassCohort[] | null = null; // read from the server this visit; until then (offline) the cached copy
 
 /** Only the ones still waiting to be sent are kept on the phone; an older saved copy that was sent is ignored. */
 function pending(): ClassCohort[] {
@@ -38,8 +58,9 @@ function writePending(rows: ClassCohort[]): void {
 
 /** What is known now: the server's list (once read) and any waiting to be sent. */
 export function readAll(): ClassCohort[] {
-  const wait = pending().filter((p) => !served.some((s) => s.checkId === p.checkId));
-  return [...served, ...wait];
+  const list = served ?? readCache();
+  const wait = pending().filter((p) => !list.some((s) => s.checkId === p.checkId));
+  return [...list, ...wait];
 }
 
 /** The cohort made from this check, if there is one. */
@@ -65,6 +86,7 @@ interface Served {
   counts: Record<string, number>;
   children_checked: number;
   simulated: boolean;
+  rule?: { min_hits: number };
 }
 
 function localId(): string {
@@ -88,7 +110,7 @@ async function send(c: ClassCohort, language: string, fetchFn?: typeof fetch): P
 }
 
 function fromServer(g: Served): ClassCohort {
-  return { id: g.id, checkId: g.check_id ?? "", name: g.name, errors: g.errors, counts: g.counts, childrenChecked: g.children_checked, simulated: g.simulated, synced: true };
+  return { id: g.id, checkId: g.check_id ?? "", name: g.name, errors: g.errors, counts: g.counts, childrenChecked: g.children_checked, simulated: g.simulated, synced: true, rule: g.rule?.min_hits };
 }
 
 /** Make it: sent now when online, and then it lives on the server only. A refused name is thrown (so she can
@@ -110,7 +132,7 @@ export async function create(input: Input, online: boolean, fetchFn?: typeof fet
     try {
       const got = await send(row, input.language, fetchFn);
       const made = { ...row, id: got.id, synced: true };
-      served = [...served.filter((s) => s.checkId !== made.checkId), made];
+      served = [...(served ?? readCache()).filter((s) => s.checkId !== made.checkId), made];
       return made;
     } catch (e) {
       if (e instanceof CohortError && e.status > 0) throw e; // refused: she can change the name
@@ -136,8 +158,9 @@ export async function syncPending(language: string, fetchFn?: typeof fetch): Pro
   try {
     const list = await ccall<Served[]>("/class-only", "teacher", {}, fetchFn);
     served = list.map(fromServer);
+    writeCache(served);
   } catch {
-    /* offline: what was read earlier this visit stays */
+    /* offline: what was read earlier this visit, or the cached copy, stays */
   }
 }
 

@@ -1,5 +1,6 @@
 // The teacher's own cohort(s) of one class on the cohort page: the label, what it works on, and the
 // intervention pack built from her results. The coach's list shows the same cohorts in counts only.
+import { RuleLine } from "./ErrorRuleControl";
 import { useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import { forCoach, readAll, syncPending, type ClassCohort, type CoachRow } from "../lib/classCohort";
@@ -45,6 +46,7 @@ export function MyClassCohorts() {
                 </span>
               </p>
               <p>{tr("cohort.mine.errors_line", { names: current.errors.map((c) => tr(`err.${c}` as Key)).join("; ") })}</p>
+              <RuleLine minHits={current.rule} />
               {!current.synced ? <p className="muted">{tr("cohort.mine.saved_here")}</p> : null}
             </div>
           ) : null}

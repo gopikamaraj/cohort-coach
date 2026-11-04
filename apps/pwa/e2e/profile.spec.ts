@@ -204,8 +204,10 @@ test("the card's speaker icon answers with a toast instead of a paragraph, and a
 
 test("role screens: coach sees counts only, mentor sees what mentors do, nothing is a percentage", async ({ page }) => {
   await chooseRole(page, "coach");
-  await expect(page.getByTestId("coach-T1")).toBeVisible();
-  await expect(page.getByTestId("coach-T1")).toContainText(/\d+ of \d+ children checked/);
+  await expect(page.getByTestId("coach")).toBeVisible();
+  await expect(page.getByTestId("coach-T1")).toHaveCount(0); // the old simulated T1 and T2 panels are gone: the coach sees real classes only
+  await expect(page.getByTestId("coach-T2")).toHaveCount(0);
+  await expect(page.getByTestId("rule-control").first()).toBeVisible(); // counts here follow the one error rule
   await chooseRole(page, "mentor");
   await expect(page.getByTestId("mentor")).toContainText("exact words");
   expect(await page.locator("body").innerText()).not.toMatch(/%/);

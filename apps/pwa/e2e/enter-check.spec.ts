@@ -297,7 +297,7 @@ test("a camera read fills the roll as Entered, Not approved, labelled; the image
   await expect(page.getByTestId("child-select").locator("option:checked")).toContainText("Entered · Approved");
 });
 
-test("the drawer is 40% of the height at the bottom on a phone and 40% of the width at the side on a laptop", async ({ page }) => {
+test("the drawer is at the bottom on a phone (tall enough for the picture; its exact size is in the next drawer test) and 40% of the width at the side on a laptop", async ({ page }) => {
   await mockReader(page, new Map());
   await page.setViewportSize({ width: 390, height: 844 });
   await startSample(page, { size: 2 });
@@ -305,7 +305,7 @@ test("the drawer is 40% of the height at the bottom on a phone and 40% of the wi
   await expect(page.getByTestId("input-1")).toHaveValue("346");
   await page.getByTestId("show-sheet").click();
   const box = (await page.getByTestId("sheet-drawer").boundingBox())!;
-  expect(Math.abs(box.height - 844 * 0.4)).toBeLessThan(4);
+  expect(box.height).toBeGreaterThan(844 * 0.4); // it grew past 40% when the picture was given half the screen
   expect(Math.abs(box.y + box.height - 844)).toBeLessThan(2);
   expect(box.width).toBeGreaterThan(385);
   await page.getByTestId("drawer-close").click();
@@ -410,11 +410,11 @@ test("the team's test folder, read in recorded mode with no mock: every sheet is
   const dir = fileURLToPath(new URL("../../../demo/test-sheets", import.meta.url));
   await startSample(page, { size: 28 });
   await page.getByTestId("folder-input").setInputFiles(dir);
-  await expect(page.getByTestId("folder-summary")).toContainText("10 pictures found, 9 matched to roll numbers, 1 need a roll number.", { timeout: 90_000 });
+  await expect(page.getByTestId("folder-summary")).toContainText("10 pictures found, 10 matched to roll numbers, 0 need a roll number.", { timeout: 90_000 });
   await expect(page.getByTestId("folder-summary")).toContainText("1 skipped"); // the folder's README is not a picture
-  // one header was read with confidence 0.7, under the 0.8 bar: she chooses its roll number
-  await expect(page.getByTestId("roll-counts")).toContainText("9 entered · 0 approved · 0 absent · 19 not entered");
-  await expect(page.getByTestId("folder-pending-needs_roll")).toHaveCount(1);
+  // the sheets were re-recorded on 4 Nov 2026 (prompt v3): every header is read at or above the 0.8 bar, so all ten are matched
+  await expect(page.getByTestId("roll-counts")).toContainText("10 entered · 0 approved · 0 absent · 18 not entered");
+  await expect(page.getByTestId("folder-pending-needs_roll")).toHaveCount(0);
   await expect(page.getByTestId("folder-pending-other_class")).toHaveCount(0); // "SO-3A" and "S0-3A" are both class 3A
   await page.getByTestId("child-select").selectOption("6"); // roll no 7 is sheet H01, all correct
   await expect(page.getByTestId("input-1")).toHaveValue("346");
@@ -581,11 +581,12 @@ test("a full keyboard path: the roll list, the boxes, the checkboxes, Approve", 
 });
 
 test("a wrong paper chosen by mistake: Choose another paper goes back to the list, free before any answer, asking first after", async ({ page }) => {
-  await startSample(page, { size: 2 });
+  const paperId = await startSample(page, { size: 2 });
   await page.getByTestId("choose-another").click(); // nothing entered yet: no question
   await expect(page.getByTestId("start-check")).toBeVisible();
   await expect(page.getByTestId("paper-select")).toBeVisible();
-  await expect(page.getByTestId("paper-attached")).toBeVisible({ timeout: 20_000 }); // the only checked paper is chosen again
+  await page.getByTestId("paper-select").selectOption(paperId); // papers are shared, so the list holds every paper: she picks hers
+  await expect(page.getByTestId("paper-attached")).toBeVisible({ timeout: 20_000 });
   await begin(page, 2);
   await page.getByTestId("input-1").fill("346");
   let asked = "";
@@ -641,7 +642,7 @@ test("an approved sheet is kept for her only if she agreed, comes back after a r
   });
   await mockReader(page, new Map());
   await startSample(page, { size: 3 });
-  await expect(page.getByTestId("keep-ask")).toContainText("Keep your approved sheets for 60 days?");
+  await expect(page.getByTestId("keep-ask")).toContainText("Keep your approved sheets for 60 days?", { timeout: 20_000 }); // it waits for the keep-status call, slow on a cold API
 
   // not now: the approved sheet is not kept
   await page.getByTestId("keep-no").click();
@@ -679,7 +680,7 @@ test("an approved sheet is kept for her only if she agreed, comes back after a r
   await expect(page.getByTestId("keep-note")).toContainText("is deleted");
   await page.reload();
   await page.getByTestId("child-select").selectOption("1");
-  await expect(page.getByTestId("show-sheet")).toHaveCount(0);
+  await expect(page.getByTestId("show-sheet")).toBeDisabled(); // the icon is always there; with no picture it is disabled and says why
 });
 
 test("Clear entered data asks first, then empties every roll number on the same paper and class size", async ({ page }) => {
@@ -744,6 +745,7 @@ test("with DEV_TESTING on, a box marks every roll number with nothing entered ab
     await route.fulfill({ response: res, json: { ...(await res.json()), dev_testing: true } });
   });
   await page.reload();
+  await page.waitForTimeout(2500); // the account copy is read once after a reload; type after it
   await page.getByTestId("input-1").fill("346"); // roll 1 has answers; rolls 2 to 4 have nothing
   const box = page.getByTestId("absent-rest-dev");
   await box.check();

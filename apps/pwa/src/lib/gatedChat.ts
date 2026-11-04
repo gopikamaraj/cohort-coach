@@ -1,5 +1,6 @@
 // The gated cohort chat client: types and calls. The server decides who may post, what is hidden, when the
 // AI answers and who may correct; nothing here decides any of that. No name or id comes back, only labels.
+import { writeOrQueue } from "./cloudStore";
 import { userHeader } from "./identity";
 import { API_BASE } from "./api";
 
@@ -89,7 +90,24 @@ export type MyCohort = CohortSummary & { name: string | null; kind: "class" | "c
 export const loadMine = () => call<MyCohort[]>("/mine", "teacher");
 export const loadThread = (cohortId: string, role: ChatRole) => call<ChatThread>(`/${cohortId}`, role);
 export const loadInbox = (role: ChatRole) => call<{ items: InboxItem[]; count: number; ai_mode: string }>("/inbox", role);
-export const postMessage = (cohortId: string, role: ChatRole, kind: "question" | "reply" | "tip", text: string, language: string, replyTo?: string) =>
+export class ChatQueued extends Error {
+  constructor() {
+    super("queued");
+  }
+}
+
+/** Post a message; with no connection it waits in the outbox and is posted when she is online. */
+export async function postMessage(cohortId: string, role: ChatRole, kind: "question" | "reply" | "tip", text: string, language: string, replyTo?: string): Promise<{ id: string; text: string; hidden: string[] }> {
+  try {
+    return await postNow(cohortId, role, kind, text, language, replyTo);
+  } catch (e) {
+    if (!(e instanceof ChatError && e.status === 0)) throw e;
+    await writeOrQueue("cohort chat message", "POST", `/api/cohort-chat/${cohortId}/messages`, { kind, text, language, reply_to: replyTo }, { "X-Role": role });
+    throw new ChatQueued();
+  }
+}
+
+const postNow = (cohortId: string, role: ChatRole, kind: "question" | "reply" | "tip", text: string, language: string, replyTo?: string) =>
   call<{ id: string; text: string; hidden: string[] }>(`/${cohortId}/messages`, role, { method: "POST", body: { kind, text, language, reply_to: replyTo } });
 export const resolveQuestion = (cohortId: string, role: ChatRole, id: string) => call<{ ok: boolean }>(`/${cohortId}/messages/${id}/resolve`, role, { method: "POST" });
 export const correctAi = (cohortId: string, role: ChatRole, id: string, text: string, language: string) => call<{ id: string }>(`/${cohortId}/messages/${id}/correct`, role, { method: "POST", body: { text, language } });

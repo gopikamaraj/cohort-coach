@@ -4,7 +4,7 @@
 // allows and sends what she writes; masking, roles and the timer are the server's.
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Key } from "../i18n";
-import { ChatError, correctAi, loadInbox, loadThread, moderate, postMessage, reportMessage, resolveQuestion, secondsLeft, setTimeoutSeconds, threaded, type ChatMessage, type ChatRole, type ChatThread, type InboxItem } from "../lib/gatedChat";
+import { ChatError, ChatQueued, correctAi, loadInbox, loadThread, moderate, postMessage, reportMessage, resolveQuestion, secondsLeft, setTimeoutSeconds, threaded, type ChatMessage, type ChatRole, type ChatThread, type InboxItem } from "../lib/gatedChat";
 import { useApp } from "../state";
 import { Icon } from "./icons";
 
@@ -273,6 +273,11 @@ function Composer({ cohortId, role, tr, lang, online, onSent }: { cohortId: stri
       setMsg(r.hidden.length > 0 ? { text: tr("gchat.masked", { what: r.hidden.join(", ") }) } : null);
       await onSent();
     } catch (e) {
+      if (e instanceof ChatQueued) {
+        setText("");
+        setMsg({ text: tr("sync.queued_note") });
+        return;
+      }
       setMsg({ text: e instanceof ChatError && e.codes.length ? tr("gchat.blocked", { what: e.codes.join(", ") }) : tr("gchat.error"), bad: true });
     } finally {
       setBusy(false);

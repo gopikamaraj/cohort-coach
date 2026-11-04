@@ -1,6 +1,7 @@
 // Counts-only sync. The payload is built from the class-level profile, field by field, so a
 // per-child value cannot get in by accident; the server's schema rejects anything else too.
 import { API_BASE } from "./api";
+import { parkFailed } from "./cloudStore";
 import { db, type CohortDb, type ProfileRow } from "./db";
 
 export interface ProfilePayload {
@@ -96,10 +97,21 @@ async function sendAll(
         body: JSON.stringify(item.payload),
       });
       if (res.ok || (res.status >= 400 && res.status < 500)) {
-        // A 4xx can never succeed on retry; drop it rather than loop on it.
+        // A 4xx will not be accepted as it is, so it leaves this queue (no loop) but is not dropped: it is kept in the
+        // outbox's failed list with the server's reason, where she sees it and can Retry.
         await store.syncQueue.delete(item.id);
         if (res.ok) result.sent += 1;
-        else result.failed += 1;
+        else {
+          result.failed += 1;
+          let reason = `The server answered ${res.status}.`;
+          try {
+            const d = ((await res.json()) as { detail?: unknown }).detail;
+            if (typeof d === "string") reason = d;
+          } catch {
+            /* no body */
+          }
+          parkFailed("class result", "POST", `/api/classes/${item.classId}/profile`, item.payload, reason);
+        }
       } else {
         await store.syncQueue.update(item.id, { tries: item.tries + 1 });
         result.failed += 1;

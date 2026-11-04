@@ -82,14 +82,15 @@ test("a teacher enters a 10-child check with the phone's number keyboard and get
   expect(Object.keys(body).sort()).toEqual(["anchor_wrong_count", "children_checked", "counts", "form", "simulated", "term", "untracked"]);
   expect(body["children_checked"]).toBe(10);
   expect(JSON.stringify(body)).not.toMatch(/\[/); // no arrays: nothing per child
-  for (const r of requests) expect(r.postData() ?? "").not.toContain(String(items[0]!.correct) + '"');
+  // Cloud-first (DECISIONS 2026-11-02): her own checks are saved to her account at /api/store, answers included. Nothing else may carry them.
+  for (const r of requests.filter((x) => !/\/api\/store\//.test(x.url()))) expect(r.postData() ?? "").not.toContain(String(items[0]!.correct) + '"');
 });
 
 test("the answers are autosaved on the phone and come back after a reload", async ({ page }) => {
   await startSample(page, { size: 2 });
   await typeAnswer(page, 0, "346");
   await expect(page.getByTestId("input-1")).toHaveValue("346");
-  await expect(page.getByTestId("check-count")).toContainText("Saved on this phone");
+  await expect(page.getByTestId("check-count")).toContainText("Saved to your account");
   await page.reload();
   await page.goto("/#/check");
   await expect(page.getByTestId("input-1")).toHaveValue("346");
@@ -187,17 +188,18 @@ test("Simulate offline stops sending and keeps the result waiting, then sends wh
   await expect(page.getByTestId("status")).toContainText("Online");
 });
 
-test("Advance to Term 2 starts a new term for the simulated class", async ({ page }) => {
+test("no screen has a term control or a term label (terms are off; checks are listed by date)", async ({ page }) => {
   await page.goto("/#/judge");
   await page.getByTestId("load-demo").click();
-  await expect(page.getByTestId("demo-loaded")).toBeVisible();
-  await page.getByTestId("advance").click();
-  await page.goto("/#/home");
-  await expect(page.getByTestId("home-status")).toHaveText("You have not entered a check yet.");
-  await page.goto("/#/judge");
-  await page.getByTestId("load-demo").click();
-  await page.goto("/#/cards");
-  await expect(page.getByTestId("line-SUB-SFL")).toHaveText("6 of 28 children take the smaller digit from the larger.");
+  await expect(page.getByTestId("demo-loaded")).toBeVisible({ timeout: 30_000 });
+  for (const route of ["/#/judge", "/#/home", "/#/cards", "/#/check", "/#/history", "/#/papers", "/#/programme", "/#/profile", "/#/roles"]) {
+    await page.goto(route);
+    await page.waitForLoadState("networkidle");
+    const text = await page.locator("body").innerText();
+    expect(text, `${route} shows the word term`).not.toMatch(/\bterms?\b/i);
+    expect(text, `${route} shows a term number`).not.toMatch(/\bterm\s*\d\b/i);
+    await expect(page.getByTestId("term-select"), `${route} has a term selector`).toHaveCount(0);
+  }
 });
 
 test("each role has its own home, and role switching works", async ({ page }) => {
