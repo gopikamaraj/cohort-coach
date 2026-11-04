@@ -56,6 +56,12 @@ def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Env]:
         with factory() as s:
             yield s
 
+    from services.api.devicestore import UserDoc
+
+    with factory() as s:  # each class code below belongs to its own teacher
+        for code in ("c-aaa1", "c-aaa2", "c-aaa3", "c-elsewhere", "c-other", "c-own1", "c-zzz9"):
+            s.add(UserDoc(owner=f"owner of {code}", collection="classes", doc_id=code, data={"id": code}))
+        s.commit()
     fake = FakeClient([pilot_read()])
     app.dependency_overrides[get_session] = session
     app.dependency_overrides[practice_api.get_ai_context] = lambda: CallContext(
@@ -66,8 +72,8 @@ def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Env]:
 
 def hdr(role: str, person: str | None = None, cls: str | None = "c-own1") -> dict[str, str]:
     h = {"X-Role": role}
-    if person:
-        h["X-Person"] = person
+    # a teacher is the owner of her class; staff are users named by `person` (a class is its owner plus its code)
+    h["X-User"] = f"owner of {cls}" if role == "teacher" and cls else (person or f"{role}-demo")
     if cls:
         h["X-Class-Id"] = cls
     return h

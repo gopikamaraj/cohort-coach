@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Shared pytest setup and AI-test fixtures (temp audit database, recordings folder)."""
 
 from __future__ import annotations
@@ -23,6 +24,10 @@ from services.api.db import Base, make_engine
 # A developer's .env may switch pilot mode on; the suite always starts from the normal app (the
 # pilot tests turn it on themselves). Set before any test module imports services.api.main.
 os.environ["PILOT_MODE"] = "0"
+# The suite never touches the developer's database file: tests that do not build their own engine get a throwaway one.
+import tempfile as _tempfile  # noqa: E402
+
+os.environ["DATABASE_URL"] = f"sqlite:///{_tempfile.mkdtemp(prefix='cc-suite-')}/suite.sqlite"
 
 # Property tests check logic, not speed: a loaded CI or laptop must not fail them on timing.
 settings.register_profile("default", deadline=None)
@@ -120,3 +125,31 @@ def _developer_switches_out_of_the_suite(monkeypatch: pytest.MonkeyPatch) -> Non
         "BAYES_PARAMS",
     ):  # fmt: skip
         monkeypatch.delenv(name, raising=False)
+
+
+@pytest.fixture(autouse=True)
+def _register_users_seen_in_headers(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A request that names a user in `X-User` is from someone who registered that nickname. Tests state it in a
+    header and this registers the nickname the first time a client sees it, so most tests do not repeat the sign-up.
+    A request that names no one is made by the signed-in "test user", so the many tests about features (not about
+    who may call them) keep their meaning now that every route needs a user.
+    Tests of sign-in itself and of "not signed in" mark themselves `no_autoregister` and register by hand."""
+    if request.node.get_closest_marker("no_autoregister"):
+        return
+    from fastapi.testclient import TestClient
+
+    original = TestClient.request
+
+    def request_with_user(self: TestClient, method: str, url: Any, **kw: Any) -> Any:  # noqa: ANN401
+        headers = dict(kw.get("headers") or {})
+        uid = headers.get("X-User") or headers.get("x-user")
+        if not uid and str(url).startswith("/api/") and not str(url).startswith("/api/users/"):
+            uid = headers["X-User"] = "test user"  # the default signed-in user of a test that is not about who is calling
+            kw["headers"] = headers
+        seen: set[str] = self.__dict__.setdefault("_seen_users", set())
+        if uid and uid not in seen and not str(url).startswith("/api/users/"):
+            seen.add(uid)
+            original(self, "POST", "/api/users/register", json={"nickname": uid})  # 409 when already there: fine
+        return original(self, method, url, **kw)
+
+    monkeypatch.setattr(TestClient, "request", request_with_user)

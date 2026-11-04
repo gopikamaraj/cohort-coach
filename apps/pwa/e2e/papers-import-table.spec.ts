@@ -12,7 +12,7 @@ const PDF = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "fixtures
 async function open(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "teacher");
   }, CONSENT);

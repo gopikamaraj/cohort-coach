@@ -1,7 +1,7 @@
 // Client for the step API (/api/flow). It only fetches steps and posts answers: the flows, the
 // words and every number come from the server, the same as in the Telegram bot.
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
 import type { AudioInfo } from "./lessonAudio";
 
 export interface FlowButton {
@@ -37,7 +37,7 @@ export interface FlowTurn {
 }
 
 function headers(judge: boolean): Record<string, string> {
-  const h: Record<string, string> = { "Content-Type": "application/json", "X-Device-Id": deviceId() };
+  const h: Record<string, string> = { "Content-Type": "application/json", ...userHeader() };
   if (judge) h["X-Judge"] = "1";
   return h;
 }

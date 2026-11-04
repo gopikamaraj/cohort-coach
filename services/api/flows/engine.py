@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """The flow engine: per-teacher state, the next step, answers, identity, linking and deletion.
 
 Every teacher flow runs here, once, for every channel. A channel adapter only renders the steps this
@@ -83,7 +84,8 @@ class FlowEngine:
                 teacher.judge = True
                 self.db.commit()
             return teacher
-        teacher = Teacher(teacher_id="t-" + secrets.token_hex(8), judge=judge)
+        # a signed-in web user IS the teacher id (the normalised nickname); a chat on another channel gets a random one
+        teacher = Teacher(teacher_id=external_id if channel == "pwa" else "t-" + secrets.token_hex(8), judge=judge)
         self.db.add(teacher)
         self.db.flush()
         self.db.add(
@@ -106,6 +108,8 @@ class FlowEngine:
     def link(self, code: str, channel: str, external_id: str) -> Teacher | None:
         """Join this chat or device to the teacher who made the code. Her other record on this
         channel, if any, is erased: there is one teacher, not two."""
+        if channel == "pwa":  # a web user is her nickname: there is no second record to join
+            return None
         row = self.db.get(LinkCode, code.strip().upper())
         if row is None or row.expires_at.replace(tzinfo=UTC) < datetime.now(UTC):
             return None

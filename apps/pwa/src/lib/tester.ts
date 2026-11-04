@@ -1,9 +1,10 @@
 // Tester stats (TESTER_STATS=1 on the server, public demo only). Opt-in, coarse, and quiet:
-//  - a random device id is made once and stays on this phone; only SHA-256(salt + id) is ever sent;
+//  - stats belong to the signed-in user (the normalised nickname); there is no device id or device hash;
 //  - nothing is sent (no profile, no event, no feedback) unless the person agreed;
 //  - events queue on the phone and go in batches when online; nothing here can block the screen.
 // Never collected: address, location, contacts, the user-agent string, typed text, voice, child data.
 import { API_BASE } from "./api";
+import { getUser, userHeader } from "./identity";
 import { db, getSetting, setSetting, type CohortDb } from "./db";
 import { isOnline } from "./net";
 
@@ -120,7 +121,6 @@ let queue: QueuedEvent[] = [];
 let feedbackQueue: QueuedFeedback[] = [];
 let queueLoaded = false;
 let cfgPromise: Promise<{ enabled: boolean; salt: string }> | null = null;
-let hashPromise: Promise<string | null> | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
 let flushing = false;
 const sessionId = randomId();
@@ -164,39 +164,12 @@ export function resetForTests(): void {
   feedbackQueue = [];
   queueLoaded = false;
   cfgPromise = null;
-  hashPromise = null;
   flushing = false;
   if (timer) clearTimeout(timer);
   timer = null;
 }
 
 export const sharing = (p: TesterPrefs = prefs): boolean => p.consent === "yes" && !p.paused;
-
-// ---- device id: IndexedDB first, then localStorage, then memory ----
-
-let memoryId: string | null = null;
-
-export async function deviceUuid(store: CohortDb = db): Promise<string> {
-  try {
-    const have = await getSetting<string | null>("tester.deviceId", null, store);
-    if (have) return have;
-    const id = randomId();
-    await setSetting("tester.deviceId", id, store);
-    return id;
-  } catch {
-    /* IndexedDB blocked: try localStorage */
-  }
-  try {
-    const have = localStorage.getItem("cc.tester.device");
-    if (have) return have;
-    const id = randomId();
-    localStorage.setItem("cc.tester.device", id);
-    return id;
-  } catch {
-    memoryId ??= randomId();
-    return memoryId;
-  }
-}
 
 async function loadQueues(store: CohortDb = db): Promise<void> {
   if (queueLoaded) return;
@@ -235,20 +208,9 @@ export function testerConfig(fetchFn: Fetch = defaultFetch): Promise<{ enabled: 
   return cfgPromise;
 }
 
-export async function deviceHash(fetchFn: Fetch = defaultFetch, store: CohortDb = db): Promise<string | null> {
-  hashPromise ??= (async () => {
-    const cfg = await testerConfig(fetchFn);
-    if (!cfg.enabled || !crypto?.subtle) return null; // no Web Crypto (plain http): collect nothing
-    return sha256Hex(cfg.salt + (await deviceUuid(store)));
-  })();
-  const h = await hashPromise;
-  if (h === null) hashPromise = null;
-  return h;
-}
-
-/** First 6 characters, shown in settings as "This device". */
-export async function deviceShort(fetchFn: Fetch = defaultFetch): Promise<string> {
-  return ((await deviceHash(fetchFn)) ?? "").slice(0, 6);
+/** Stats are sent for the signed-in user (the server names the row by the user id; there is no device hash). */
+export function signedInForStats(): boolean {
+  return getUser() !== null;
 }
 
 // ---- consent and settings ----
@@ -330,12 +292,11 @@ function scheduleFlush(ms: number): void {
   timer = setTimeout(() => void flush(), ms);
 }
 
-function profileBody(hash: string): Record<string, unknown> {
+function profileBody(): Record<string, unknown> {
   const ua = navigator.userAgent;
   const standalone = window.matchMedia?.("(display-mode: standalone)").matches === true;
   const lang = document.documentElement.lang;
   return {
-    device_hash: hash,
     consent_stats: true,
     nickname: prefs.nickname || "Tester",
     nickname_public: prefs.isPublic,
@@ -353,7 +314,7 @@ function profileBody(hash: string): Record<string, unknown> {
 
 async function post(path: string, body: unknown, fetchFn: Fetch, keepalive = false): Promise<number> {
   try {
-    const res = await fetchFn(`${API_BASE}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), keepalive });
+    const res = await fetchFn(`${API_BASE}${path}`, { method: "POST", headers: { "Content-Type": "application/json", ...userHeader() }, body: JSON.stringify(body), keepalive });
     return res.status;
   } catch {
     return 0;
@@ -366,9 +327,8 @@ export async function flush(fetchFn: Fetch = defaultFetch, store: CohortDb = db,
   flushing = true;
   try {
     await loadQueues(store);
-    const hash = await deviceHash(fetchFn, store);
-    if (!hash || !sharing()) return;
-    const body = profileBody(hash);
+    if (!signedInForStats() || !sharing()) return;
+    const body = profileBody();
     const key = JSON.stringify([body.nickname, body.nickname_public, body.language, body.device_class, body.installed_pwa, body.is_judge, body.invite_source, body.team_token]);
     if (prefs.profileKey !== key) {
       const st = await post("/api/tester/profile", body, fetchFn, keepalive);
@@ -377,7 +337,7 @@ export async function flush(fetchFn: Fetch = defaultFetch, store: CohortDb = db,
     }
     while (queue.length > 0 && sharing()) {
       const batch = queue.slice(0, BATCH);
-      const st = await post("/api/tester/events", { device_hash: hash, events: batch }, fetchFn, keepalive);
+      const st = await post("/api/tester/events", { events: batch }, fetchFn, keepalive);
       if (st === 403) {
         save({ profileKey: "" }); // the server lost the profile: send it again next time
         return;
@@ -387,7 +347,7 @@ export async function flush(fetchFn: Fetch = defaultFetch, store: CohortDb = db,
     }
     while (feedbackQueue.length > 0 && sharing()) {
       const f = feedbackQueue[0]!;
-      const st = await post("/api/tester/feedback", { device_hash: hash, ...f }, fetchFn, keepalive);
+      const st = await post("/api/tester/feedback", { ...f }, fetchFn, keepalive);
       if (st === 0 || st >= 500 || st === 429 || st === 403) return;
       feedbackQueue = feedbackQueue.slice(1);
     }
@@ -403,9 +363,8 @@ export async function flush(fetchFn: Fetch = defaultFetch, store: CohortDb = db,
 export async function deleteMyData(fetchFn: Fetch = defaultFetch, store: CohortDb = db): Promise<"deleted" | "device_only"> {
   let server: "deleted" | "device_only" = "device_only";
   try {
-    const hash = await deviceHash(fetchFn, store);
-    if (hash && isOnline()) {
-      const res = await fetchFn(`${API_BASE}/api/tester/me`, { method: "DELETE", headers: { "X-Device-Hash": hash } });
+    if (signedInForStats() && isOnline()) {
+      const res = await fetchFn(`${API_BASE}/api/tester/me`, { method: "DELETE", headers: { ...userHeader() } });
       if (res.ok) server = "deleted";
     }
   } catch {
@@ -413,16 +372,12 @@ export async function deleteMyData(fetchFn: Fetch = defaultFetch, store: CohortD
   }
   queue = [];
   feedbackQueue = [];
-  hashPromise = null;
   try {
-    await store.settings.delete("tester.deviceId");
     await store.settings.delete("tester.queue");
     await store.settings.delete("tester.fbqueue");
-    localStorage.removeItem("cc.tester.device");
   } catch {
     /* nothing more to clear */
   }
-  memoryId = null;
   save({ consent: "no", nickname: "", isPublic: false, profileKey: "" });
   return server;
 }

@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from services.api.cohorts.routes import _teacher
 from services.api.db import ClassCohort
+from services.api.identity import user_of
 from services.api.profiles import SESSION
 from services.api.roles import require
 from services.modules import checkin, jobs, review, service
@@ -97,6 +98,14 @@ class ShareIn(BaseModel):
     ai_help: bool = False
 
 
+def _assigned(db: Session, uid: str, role: str, cohort_id: str) -> None:
+    """A coach or mentor reaches a cohort's plan only if the cohort is assigned to her."""
+    from services.api.cohorts.assign import is_assigned
+
+    if not is_assigned(db, uid, role, cohort_id):
+        raise HTTPException(403, {"code": "not_assigned", "message": "This cohort is not assigned to you."})
+
+
 class DownloadedIn(BaseModel):
     audio_ref: str = Field(min_length=1, max_length=120)
 
@@ -105,10 +114,10 @@ class DownloadedIn(BaseModel):
 def start(
     body: StartIn,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     cohort = db.get(ClassCohort, body.cohort_id)
     if cohort is None or cohort.teacher_id != teacher.teacher_id:
         raise HTTPException(404, {"code": "no_cohort", "message": "There is no such cohort."})
@@ -124,18 +133,18 @@ def mine(
     cohort_id: str | None = None,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     return [
         service.track_view(db, t, lang, clock())
         for t in service.tracks_of(db, teacher.teacher_id, cohort_id)
     ]
 
 
-def _own(db: Session, track_id: str, x_device_id: str | None) -> Any:
-    teacher = _teacher(db, x_device_id)
+def _own(db: Session, track_id: str, uid: str) -> Any:
+    teacher = _teacher(db, uid)
     try:
         return service._owned(db, track_id, teacher.teacher_id), teacher
     except ModulesError as exc:
@@ -147,10 +156,10 @@ def one(
     track_id: str,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, _t = _own(db, track_id, x_device_id)
+    track, _t = _own(db, track_id, uid)
     return service.track_view(db, track, lang, clock())
 
 
@@ -159,10 +168,10 @@ def get_next(
     track_id: str,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     try:
         service.next_for_teacher(db, track_id, teacher.teacher_id, clock())
     except ModulesError as exc:
@@ -178,10 +187,10 @@ def feedback(
     body: FeedbackIn,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     try:
         service.give_feedback(
             db, track_id, number, teacher.teacher_id, body.answer, body.note, clock()
@@ -199,11 +208,11 @@ def why_not_yet(
     body: WhyIn,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     """Why not yet?: one approved reason chip for a module she has not tried (private to her)."""
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     try:
         service.record_reason(db, track_id, number, teacher.teacher_id, body.chip, clock())
     except ModulesError as exc:
@@ -225,10 +234,10 @@ def review_view(
     number: int,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, _t = _own(db, track_id, x_device_id)
+    track, _t = _own(db, track_id, uid)
     return review.view(db, _module(db, track, number), lang)
 
 
@@ -238,12 +247,12 @@ def review_run(
     number: int,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     """After her answer: the AI review of her note (call 17). Never blocks and never fails the page: AI
     off or any failure gives state "none" or "failed", and only the branch table applies."""
-    track, _t = _own(db, track_id, x_device_id)
+    track, _t = _own(db, track_id, uid)
     module = _module(db, track, number)
     fb = db.get(ModuleFeedback, module.id)
     if fb is None:
@@ -259,10 +268,10 @@ def review_answers(
     body: ReviewAnswersIn,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, _t = _own(db, track_id, x_device_id)
+    track, _t = _own(db, track_id, uid)
     module = _module(db, track, number)
     try:
         review.answer_follow_ups(
@@ -291,11 +300,11 @@ def chat_button(
     track_id: str,
     since: str | None = None,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     """For the Open cohort chat button: whether there is a chat, and how many new posts since `since`."""
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     return checkin.chat_state(db, teacher.teacher_id, track, _since(since))
 
 
@@ -306,10 +315,10 @@ def checkin_state(
     lang: str = "en",
     since: str | None = None,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     return checkin.state(
         db, track, _module(db, track, number), teacher.teacher_id, lang, _since(since)
     )
@@ -322,12 +331,12 @@ def checkin_draft(
     body: DraftIn,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     """The exact text that would be posted (built by code from the ticked parts), and what would block it.
     With `text` it only checks her edited text."""
-    track, _t = _own(db, track_id, x_device_id)
+    track, _t = _own(db, track_id, uid)
     module = _module(db, track, number)
     text = (
         body.text
@@ -344,10 +353,10 @@ def checkin_share(
     body: ShareIn,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     module = _module(db, track, number)
     try:
         checkin.share(
@@ -373,10 +382,10 @@ def checkin_retract(
     number: int,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     module = _module(db, track, number)
     try:
         checkin.retract(db, track, module, teacher.teacher_id, clock())
@@ -390,11 +399,11 @@ def checkin_call_me(
     track_id: str,
     number: int,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, str]:
     """The only way the coach hears of a safety flag: she presses this. No content is sent."""
-    track, _t = _own(db, track_id, x_device_id)
+    track, _t = _own(db, track_id, uid)
     try:
         checkin.call_me(db, track, _module(db, track, number), clock())
     except ModulesError as exc:
@@ -404,9 +413,10 @@ def checkin_call_me(
 
 @router.get("/mentor/cohorts/{cohort_id}")
 def mentor_counts(
-    cohort_id: str, _: str = Depends(require("mentor.items_view")), db: Session = SESSION
+    cohort_id: str, _: str = Depends(require("mentor.items_view")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
     """Counts of answers per module, never a note (a note is only ever seen if she shared it in the chat)."""
+    _assigned(db, uid, "mentor", cohort_id)
     return service.coach_counts(db, cohort_id, clock())
 
 
@@ -417,10 +427,10 @@ def downloaded(
     body: DownloadedIn,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     try:
         service.mark_downloaded(db, track_id, number, teacher.teacher_id, body.audio_ref, clock())
     except ModulesError as exc:
@@ -434,7 +444,7 @@ def generate_all(
     track_id: str,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     """Testing only: DEV_TESTING=1 on the server, a 404 anywhere else."""
@@ -442,7 +452,7 @@ def generate_all(
 
     if not dev_testing():
         raise HTTPException(status_code=404, detail="not found")
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     try:
         service.generate_all_for_testing(db, track_id, teacher.teacher_id, clock())
     except ModulesError as exc:
@@ -457,7 +467,7 @@ def narration_refresh(
     number: int,
     lang: str = "en",
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     """Testing only: DEV_TESTING=1 on the server, a 404 anywhere else."""
@@ -465,7 +475,7 @@ def narration_refresh(
 
     if not dev_testing():
         raise HTTPException(status_code=404, detail="not found")
-    track, teacher = _own(db, track_id, x_device_id)
+    track, teacher = _own(db, track_id, uid)
     try:
         total = len([m for m in service.modules_of(db, track.id) if m.status != "skipped"])
         reworded = service.refresh_narration(db, track_id, number, teacher.teacher_id, lang, total)
@@ -490,8 +500,9 @@ class DueIn(BaseModel):
 
 @router.get("/coach/cohorts/{cohort_id}")
 def coach_counts(
-    cohort_id: str, _: str = Depends(require("coach.moderate")), db: Session = SESSION
+    cohort_id: str, _: str = Depends(require("coach.moderate")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
+    _assigned(db, uid, "coach", cohort_id)
     return service.coach_counts(db, cohort_id, clock())
 
 
@@ -500,8 +511,10 @@ def coach_shift(
     cohort_id: str,
     body: ShiftIn,
     _: str = Depends(require("coach.moderate")),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
+    _assigned(db, uid, "coach", cohort_id)
     try:
         moved = service.shift_dates(db, cohort_id, body.days, body.reason, clock())
     except ModulesError as exc:
@@ -515,18 +528,19 @@ def coach_due(
     number: int,
     body: DueIn,
     _: str = Depends(require("coach.moderate")),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    from sqlalchemy import select
+    from services.modules import plans
 
-    from services.modules.models import Track
-
-    tracks = list(db.execute(select(Track).where(Track.class_cohort_id == cohort_id)).scalars())
+    _assigned(db, uid, "coach", cohort_id)
+    tracks = plans.tracks_in_group(db, cohort_id)
     if not tracks:
         raise HTTPException(
             404, {"code": "no_track", "message": "There is no track for this cohort."}
         )
     try:
+        plans.set_plan_due(db, cohort_id, number, body.due_date)
         for t in tracks:
             service.set_due_date(db, t.id, number, body.due_date, body.reason, clock())
     except ModulesError as exc:
@@ -536,17 +550,17 @@ def coach_due(
 
 @router.post("/coach/cohorts/{cohort_id}/generate")
 def coach_generate(
-    cohort_id: str, _: str = Depends(require("coach.moderate")), db: Session = SESSION
+    cohort_id: str, _: str = Depends(require("coach.moderate")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
     """Make the next module for every active track of the cohort (audited as trigger "coach")."""
-    from sqlalchemy import select
+    from services.modules import plans
 
-    from services.modules.models import Track
+    _assigned(db, uid, "coach", cohort_id)
 
     made = 0
-    for t in db.execute(
-        select(Track).where(Track.class_cohort_id == cohort_id, Track.status == "active")
-    ).scalars():
+    for t in plans.tracks_in_group(db, cohort_id):
+        if t.status != "active":
+            continue
         try:
             if service.coach_generate(db, t.id, clock()).created:
                 made += 1

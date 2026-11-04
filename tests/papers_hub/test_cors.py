@@ -13,7 +13,7 @@ SENT = [
     "x-role",
     "x-class-id",
     "x-person",
-    "x-device-id",
+    "x-user",
     "x-demo-session",
     "x-demo-person",
 ]

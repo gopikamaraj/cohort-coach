@@ -17,13 +17,14 @@ import os
 import re
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from services.api.cohorts.routes import _teacher
 from services.api.db import AudioDownloadUse
+from services.api.identity import user_of
 from services.api.practice import get_speech
 from services.api.profiles import SESSION
 from services.api.roles import require
@@ -119,12 +120,12 @@ def _reply(
 def pack_audio(
     body: PackIn,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
     speech: SpeechService = SPEECH,
     store: BlobStore = STORE,
 ) -> Response:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     name = body.name if NAME.match(body.name) else "audio"
     text, language = spoken_text(body)
     key = cache_key(text, language)
@@ -165,9 +166,9 @@ def pack_script(body: PackIn, _: str = Depends(require("cohort.chat"))) -> dict[
 @router.get("/pack/cap")
 def pack_cap(
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     row = db.get(AudioDownloadUse, teacher.teacher_id)
     return {"cap": chars_cap(), "used": row.chars if row else 0}

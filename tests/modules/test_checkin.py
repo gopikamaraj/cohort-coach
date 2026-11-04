@@ -37,10 +37,9 @@ NOTE = "Ravi could not open the ten and the children were quiet."
 
 def h(role: str, device: str | None = None, person: str | None = None) -> dict[str, str]:
     out = {"X-Role": role}
-    if device:
-        out["X-Device-Id"] = device
-    if person:
-        out["X-Person"] = person
+    who = person or device or (f"{role}-demo" if role != "teacher" else None)  # a staff account is a user too
+    if who:
+        out["X-User"] = who
     return out
 
 
@@ -186,7 +185,7 @@ def test_her_note_is_visible_to_nobody_else_before_sharing(world: World) -> None
         f"/api/modules/mentor/cohorts/{BODY_COHORT(world)}",
     ):
         r = world.c.get(
-            path, headers=h("coach") if "coach" in path else h("mentor", person="mentor-1")
+            path, headers=h("coach", person="coach-1") if "coach" in path else h("mentor", person="mentor-1")
         )
         assert r.status_code == 200
         assert (
@@ -496,12 +495,12 @@ def test_a_safety_flag_tells_the_coach_nothing_unless_she_presses_the_button(wor
     r = world.c.post(world.url("review"), headers=world.t1).json()
     assert r["state"] == "safety" and r["safety"] is True and r["follow_ups"] == []
     coach = world.c.get(
-        f"/api/modules/coach/cohorts/{BODY_COHORT(world)}", headers=h("coach")
+        f"/api/modules/coach/cohorts/{BODY_COHORT(world)}", headers=h("coach", person="coach-1")
     ).json()
     assert coach["call_me"] == 0 and "hit" not in json.dumps(coach)
     assert world.c.post(world.url("checkin/call-me"), headers=world.t1).status_code == 200
     coach = world.c.get(
-        f"/api/modules/coach/cohorts/{BODY_COHORT(world)}", headers=h("coach")
+        f"/api/modules/coach/cohorts/{BODY_COHORT(world)}", headers=h("coach", person="coach-1")
     ).json()
     assert coach["call_me"] == 1 and "hit" not in json.dumps(coach)
     with world.factory() as db:

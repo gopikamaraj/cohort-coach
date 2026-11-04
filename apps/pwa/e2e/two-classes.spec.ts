@@ -17,7 +17,7 @@ const REPLY_HI = "बच्चे से दस की गड्डियों 
 async function fresh(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "judge");
     localStorage.setItem("cc.lang", "en");

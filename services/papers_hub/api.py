@@ -18,6 +18,8 @@ from sqlalchemy.orm import Session
 from ai.client import BudgetExceeded, CallContext
 from services.api.cohorts.routes import person_id
 from services.api.db import CohortMember, Teacher
+from services.api.devicestore import UserDoc
+from services.api.identity import user_of
 from services.api.practice import AI_CONTEXT
 from services.api.profiles import SESSION
 from services.api.roles import require
@@ -40,15 +42,19 @@ class Who:
 
 def who(
     role: str = ACT,
-    x_person: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     x_class_id: str | None = Header(default=None),
+    db: Session = SESSION,
 ) -> Who:
+    """The signed-in user, and (for a teacher) one of her own classes: a class is its owner plus its code."""
     own = x_class_id if x_class_id and CLASS.match(x_class_id) else None
     if role == "teacher":
         if own is None:
-            raise HTTPException(422, "X-Class-Id must be the class id this phone made.")
-        return Who(role, f"teacher-{own[:20]}", own)
-    return Who(role, person_id(role, x_person), own)
+            raise HTTPException(422, "X-Class-Id must be the class code of one of your classes.")
+        if db.get(UserDoc, (uid, "classes", own)) is None:
+            raise HTTPException(403, "That class is not yours.")
+        return Who(role, uid, own)
+    return Who(role, person_id(role, uid), own)
 
 
 WHO = Depends(who)

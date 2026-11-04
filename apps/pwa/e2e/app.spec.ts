@@ -38,7 +38,7 @@ async function enterCheck(page: Page, rows: string[][]) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  await page.evaluate(() => (localStorage.clear(), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}')));
+  await page.evaluate(() => ((localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester")), localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}')));
 });
 
 test("judge mode loads a simulated class: Home, then cards with counts, never a percentage", async ({ page }) => {

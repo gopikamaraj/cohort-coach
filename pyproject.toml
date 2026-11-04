@@ -48,7 +48,7 @@ packages = []
 testpaths = ["tests"]
 asyncio_mode = "auto"
 pythonpath = ["."]
-markers = ["real_audio: run ffmpeg for real (pilot tests use a quick stand-in otherwise)"]
+markers = ["real_audio: run ffmpeg for real (pilot tests use a quick stand-in otherwise)", "no_autoregister: the test registers its own users (sign-in and not-signed-in tests)"]
 
 [tool.ruff]
 line-length = 100

@@ -34,7 +34,8 @@ class Track(Base):
 
     id: Mapped[str] = mapped_column(String(24), primary_key=True)  # "trk-" + 12 hex
     class_cohort_id: Mapped[str] = mapped_column(String(40), index=True)
-    teacher_id: Mapped[str] = mapped_column(String(18), index=True)
+    plan_id: Mapped[str | None] = mapped_column(String(24), index=True)  # the cohort's plan this track follows
+    teacher_id: Mapped[str] = mapped_column(String(32), index=True)
     error: Mapped[str] = mapped_column(String(16))
     language: Mapped[str] = mapped_column(String(4), default="en")
     start_date: Mapped[date] = mapped_column(Date)
@@ -46,6 +47,40 @@ class Track(Base):
         String(120)
     )  # e.g. "no plan for this error: one module"
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class CohortPlan(Base):
+    """The improvement plan of a COHORT: one per (cohort, error). It holds the module templates and their due
+    dates, so every teacher in the cohort works to the same calendar. Each teacher keeps her own `Track` (her
+    progress, her feedback and her branch), so her next module is still chosen by her own feedback inside this
+    plan. `group_id` is the cohort the plan belongs to: the coach's or officer's group cohort, or a teacher's own
+    single-class cohort."""
+
+    __tablename__ = "cohort_plans"
+    __table_args__ = (UniqueConstraint("group_id", "error"),)
+
+    id: Mapped[str] = mapped_column(String(24), primary_key=True)  # "plan-" + 12 hex
+    group_id: Mapped[str] = mapped_column(String(40), index=True)
+    error: Mapped[str] = mapped_column(String(16))
+    language: Mapped[str] = mapped_column(String(4), default="en")
+    start_date: Mapped[date] = mapped_column(Date)
+    end_date: Mapped[date] = mapped_column(Date)
+    cap: Mapped[int] = mapped_column(Integer, default=6)
+    created_by: Mapped[str] = mapped_column(String(32), default="system")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class CohortPlanModule(Base):
+    __tablename__ = "cohort_plan_modules"
+    __table_args__ = (UniqueConstraint("plan_id", "number"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    plan_id: Mapped[str] = mapped_column(ForeignKey("cohort_plans.id"), index=True)
+    number: Mapped[int] = mapped_column(Integer)
+    template_id: Mapped[str | None] = mapped_column(String(60))
+    approach_id: Mapped[str | None] = mapped_column(String(40))
+    title: Mapped[str] = mapped_column(String(160), default="")
+    due_date: Mapped[date] = mapped_column(Date)
 
 
 class TrackModule(Base):

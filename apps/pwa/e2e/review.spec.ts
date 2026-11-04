@@ -18,7 +18,7 @@ const LINES = [
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
     localStorage.setItem("cc.voice", "0");
   });
@@ -136,7 +136,7 @@ test("teacher screens show no English words in Hindi or Tamil", async ({ page })
     for (const route of ["home", "check", "practice", "programme", "history"]) {
       await page.goto("/");
       await page.evaluate((l) => {
-        localStorage.clear();
+        (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
         localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
         localStorage.setItem("cc.lang", l);
         localStorage.setItem("cc.voice", "0");

@@ -1,8 +1,8 @@
 // Approved answer sheets kept for the teacher for 60 days (a private bucket, behind the API). Only if she
 // agreed ("keep_sheets"). The picture is the shrunk JPEG the phone already made; the sheet carries a roll
 // number only. Everything here is best effort: when it fails the picture is still on the phone and she is told.
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
 
 export interface Kept {
   roll: number;
@@ -11,7 +11,7 @@ export interface Kept {
 }
 
 function headers(role: string, classId: string): Record<string, string> {
-  return { "X-Role": role === "mentor" ? "mentor" : "teacher", "X-Class-Id": classId, "X-Device-Id": deviceId() };
+  return { "X-Role": role === "mentor" ? "mentor" : "teacher", "X-Class-Id": classId, ...userHeader() };
 }
 
 const base = (checkId: string) => `${API_BASE}/api/sheet-keep/${encodeURIComponent(checkId)}`;

@@ -28,6 +28,12 @@ def api(tmp_path: Path) -> Iterator[tuple[TestClient, sessionmaker[Session]]]:
             yield s
 
     app.dependency_overrides[get_session] = override
+    from services.api.devicestore import UserDoc
+
+    with factory() as s:  # both classes belong to the default test user: a class is its owner plus its code
+        for code in (REAL, SIM):
+            s.add(UserDoc(owner="test user", collection="classes", doc_id=code, data={"id": code}))
+        s.commit()
     yield TestClient(app), factory
     app.dependency_overrides.clear()
 

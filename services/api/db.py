@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Database models. Class-level counts only: no child, roll number, answer or photo columns.
 
 Alembic migrations arrive with the first real API schema (see DECISIONS.md); until then the dev
@@ -268,9 +269,10 @@ class ProfileSync(Base):
     """
 
     __tablename__ = "profile_sync"
-    __table_args__ = (UniqueConstraint("class_id", "term"),)
+    __table_args__ = (UniqueConstraint("owner", "class_id", "term"),)
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    owner: Mapped[str] = mapped_column(String(32), index=True, default="unclaimed")  # the user id
     class_id: Mapped[str] = mapped_column(String(40), index=True)
     term: Mapped[str] = mapped_column(String(8))
     form: Mapped[str] = mapped_column(String(40))  # a paper id (P-…), not just a letter
@@ -282,12 +284,25 @@ class ProfileSync(Base):
     received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
+class User(Base):
+    """A person who uses the app. The id is the nickname, normalised (lower case, single spaces), so a nickname
+    is unique and is the key every record hangs from. There is no password: whoever types a nickname is that
+    user. That is demo-grade identity and is documented as such (docs/privacy.md)."""
+
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)  # the normalised nickname
+    nickname: Mapped[str] = mapped_column(String(30))  # as first typed, for display to herself only
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
 class Teacher(Base):
     """One pseudonymous teacher across channels. No name, phone or handle is stored here."""
 
     __tablename__ = "teachers"
 
-    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)  # "t-" + 16 random hex
+    teacher_id: Mapped[str] = mapped_column(String(32), primary_key=True)  # the user id (the normalised nickname)
     lang: Mapped[str] = mapped_column(String(4), default="en")
     consent: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)
     judge: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -398,7 +413,7 @@ class LessonTap(Base):
     __table_args__ = (UniqueConstraint("teacher_id", "track_id", "lesson_day"),)
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    teacher_id: Mapped[str] = mapped_column(String(18), index=True)
+    teacher_id: Mapped[str] = mapped_column(String(32), index=True)
     track_id: Mapped[str] = mapped_column(String(20))  # the tracked error, e.g. SUB-SFL
     lesson_day: Mapped[int] = mapped_column(Integer)
     tried: Mapped[bool | None] = mapped_column(Boolean)
@@ -438,8 +453,9 @@ class ClassCohort(Base):
     __table_args__ = (UniqueConstraint("teacher_id", "check_id"),)
 
     id: Mapped[str] = mapped_column(String(40), primary_key=True)
-    teacher_id: Mapped[str] = mapped_column(String(18), index=True)
-    check_id: Mapped[str] = mapped_column(String(80))  # the check it was made from (class:term)
+    teacher_id: Mapped[str] = mapped_column(String(32), index=True)
+    check_id: Mapped[str] = mapped_column(String(80))  # the check it was made from (class:running number)
+    group_id: Mapped[str | None] = mapped_column(String(40), index=True)  # a teacher's copy of a group cohort points at the group
     name: Mapped[str] = mapped_column(String(80))
     scope: Mapped[str] = mapped_column(String(16), default="class_only")
     errors: Mapped[list[str]] = mapped_column(JSON, default=list)
@@ -455,7 +471,7 @@ class AudioDownloadUse(Base):
 
     __tablename__ = "audio_download_use"
 
-    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(32), primary_key=True)
     chars: Mapped[int] = mapped_column(Integer, default=0)
 
 
@@ -467,7 +483,7 @@ class CohortMember(Base):
     __table_args__ = (UniqueConstraint("cohort_id", "display_name"),)
 
     cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), primary_key=True)
-    teacher_id: Mapped[str] = mapped_column(String(18), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(32), primary_key=True)
     display_name: Mapped[str] = mapped_column(String(24))
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
@@ -494,7 +510,7 @@ class ThreadPost(Base):
     id: Mapped[str] = mapped_column(String(32), primary_key=True)
     cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), index=True)
     author_kind: Mapped[str] = mapped_column(String(8))  # teacher | mentor | coach | system
-    author_teacher_id: Mapped[str | None] = mapped_column(String(18))  # never returned by the API
+    author_teacher_id: Mapped[str | None] = mapped_column(String(32))  # never returned by the API
     author_name: Mapped[str] = mapped_column(String(24))
     body: Mapped[str | None] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(10), default="visible", index=True)
@@ -517,7 +533,7 @@ class MentorItem(Base):
     kind: Mapped[str] = mapped_column(String(12))  # recording | method_card
     version: Mapped[int] = mapped_column(Integer, default=1)
     parent_id: Mapped[str | None] = mapped_column(String(32))
-    status: Mapped[str] = mapped_column(String(18), default="draft", index=True)
+    status: Mapped[str] = mapped_column(String(32), default="draft", index=True)
     # draft | awaiting_coach | changes_requested | approved | rejected | in_use | retired
     reason_code: Mapped[str | None] = mapped_column(String(30))
     note: Mapped[str | None] = mapped_column(String(300))
@@ -536,7 +552,7 @@ class ChatThread(Base):
 
     id: Mapped[str] = mapped_column(String(32), primary_key=True)
     cohort_id: Mapped[str] = mapped_column(ForeignKey("cohort_spaces.id"), index=True)
-    teacher_id: Mapped[str] = mapped_column(String(18))
+    teacher_id: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
@@ -557,7 +573,7 @@ class ChatMessage(Base):
     language: Mapped[str] = mapped_column(String(4), default="en")
     # question: pending | ai_draft_ready | answered_by_human | ai_sent | corrected
     # answer or correction: sent (an AI answer is ai_sent, then corrected)
-    status: Mapped[str] = mapped_column(String(18), default="pending", index=True)
+    status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
     ai_assisted: Mapped[bool] = mapped_column(Boolean, default=False)
     ai_consent: Mapped[bool] = mapped_column(Boolean, default=False)
     question_class: Mapped[str | None] = mapped_column(String(24))

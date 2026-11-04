@@ -125,7 +125,8 @@ def main(argv: list[str]) -> int:
     app.dependency_overrides[get_speech] = lambda: speech
     app.dependency_overrides[get_audio_store] = lambda: store
     client = TestClient(app)
-    head = {"X-Role": "teacher", "X-Device-Id": "00000000000000aa"}
+    client.post("/api/users/register", json={"nickname": "pack audio check"})
+    head = {"X-Role": "teacher", "X-User": "pack audio check"}
     r = client.post(
         "/api/audio/pack",
         json={"text": text, "language": "en", "name": "intervention-sub-sfl-check-en"},

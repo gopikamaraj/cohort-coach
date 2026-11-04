@@ -8,7 +8,7 @@ import { chooseRole } from "./switch";
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.voice", "0");
   });
 });

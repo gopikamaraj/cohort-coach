@@ -3,10 +3,9 @@
 // online it reads everything back from the server: the server is the record, and the phone holds only a cache
 // and a queue of changes made offline. Rehearsal transcripts and sheet photos never go (they stay on the phone).
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
+import { getUser, userHeader } from "./identity";
 import { db, type CohortDb } from "./db";
 import { isOnline } from "./net";
-import { getPrefs } from "./tester";
 
 export const SYNCED = ["classes", "checks", "profiles", "settings"] as const;
 export type SyncedTable = (typeof SYNCED)[number];
@@ -76,25 +75,38 @@ export function watchTables(store: CohortDb = db): void {
   }
 }
 
-/** A 16-character key made from the nickname, so the same nickname reads the same documents on any browser
- *  and another nickname gets its own. Not a secret: there is no password, the nickname is the teacher. */
-export function storeKey(nickname: string): string | null {
-  const name = nickname.trim().toLowerCase();
-  if (!name) return null;
-  const mix = (seed: number): string => {
-    let h = seed >>> 0;
-    for (let i = 0; i < name.length; i += 1) {
-      h = Math.imul(h ^ name.charCodeAt(i), 16777619) >>> 0;
-      h = (h ^ (h >>> 13)) >>> 0;
-    }
-    return h.toString(16).padStart(8, "0");
-  };
-  return mix(2166136261) + mix(84696351);
+function headers(): Record<string, string> {
+  return { "Content-Type": "application/json", ...userHeader() };
 }
 
-function headers(): Record<string, string> {
-  const key = storeKey(getPrefs().nickname);
-  return { "Content-Type": "application/json", "X-Device-Id": deviceId(), ...(key ? { "X-Store-Key": key } : {}) };
+const OWNER_KEY = "cc.cacheOwner";
+
+/** The cache belongs to one user. A different user signing in on this browser starts from an empty cache, so
+ *  one person's classes can never be uploaded under another's nickname. The very first sign-in keeps what the
+ *  browser already holds (it was made before nicknames were accounts) and sends it up if the cloud has nothing. */
+async function claimCache(store: CohortDb): Promise<void> {
+  const me = getUser()?.id ?? null;
+  if (!me) return;
+  let owner: string | null = null;
+  try {
+    owner = localStorage.getItem(OWNER_KEY);
+  } catch {
+    /* private mode */
+  }
+  if (owner !== null && owner !== me) {
+    writeQueue([]);
+    suppress += 1;
+    try {
+      for (const t of SYNCED) await store.table(t).clear();
+    } finally {
+      suppress -= 1;
+    }
+  }
+  try {
+    localStorage.setItem(OWNER_KEY, me);
+  } catch {
+    /* private mode */
+  }
 }
 
 /** The nickname changed: she is a different teacher now. What waited to go up belonged to the old one. */
@@ -138,8 +150,8 @@ type Everything = Record<SyncedTable, Record<string, unknown>>;
 export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => fetch(...a)): Promise<"synced" | "offline"> {
   if (!isOnline()) return "offline";
   try {
-    const nick = getPrefs().nickname.trim();
-    if (nick && (await store.settings.get("nickname"))?.value !== nick) await store.settings.put({ key: "nickname", value: nick });
+    if (!getUser()) return "offline"; // not signed in: nothing to read yet
+    await claimCache(store);
     await flushQueue(store, fetchFn);
     const res = await fetchFn(`${API_BASE}/api/store`, { headers: headers() });
     if (!res.ok) return "offline";

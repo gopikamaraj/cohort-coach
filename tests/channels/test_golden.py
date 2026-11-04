@@ -67,7 +67,7 @@ def world(tmp_path: Path) -> Iterator[tuple[TestClient, sessionmaker[Session]]]:
 
 
 def web_transcript(client: TestClient) -> list[Any]:
-    h = {"X-Device-Id": DEVICE}
+    h = {"X-User": DEVICE}
     out = [client.get("/api/flow/current", headers=h).json()["messages"]]
     for step_id, value in SCRIPT:
         r = client.post("/api/flow/answer", headers=h, json={"step_id": step_id, "value": value})
@@ -152,7 +152,7 @@ def test_a_code_from_the_web_app_links_the_bot_through_start(
     world: tuple[TestClient, sessionmaker[Session]],
 ) -> None:
     client, factory = world
-    h = {"X-Device-Id": DEVICE}
+    h = {"X-User": DEVICE}
     client.get("/api/flow/current", headers=h)
     code = client.post("/api/flow/code", headers=h).json()["code"]
     with factory() as db:
@@ -166,15 +166,17 @@ def test_a_code_from_the_web_app_links_the_bot_through_start(
         )
 
 
-def test_the_web_api_rejects_a_missing_or_malformed_device_id(
+@pytest.mark.no_autoregister
+def test_the_web_api_rejects_a_missing_or_unknown_user(
     world: tuple[TestClient, sessionmaker[Session]],
 ) -> None:
     client, _ = world
-    assert client.get("/api/flow/current").status_code == 422
-    assert client.get("/api/flow/current", headers={"X-Device-Id": "nope"}).status_code == 422
+    assert client.get("/api/flow/current").status_code == 401
+    assert client.get("/api/flow/current", headers={"X-User": "nobody signed up"}).status_code == 401
+    client.post("/api/users/register", json={"nickname": DEVICE})
     r = client.post(
         "/api/flow/answer",
-        headers={"X-Device-Id": DEVICE},
+        headers={"X-User": DEVICE},
         json={"step_id": "lang", "value": "klingon"},
     )
     assert r.status_code == 422
@@ -212,7 +214,7 @@ def test_a_judge_session_shows_the_simulated_label_in_both_channels(
     world: tuple[TestClient, sessionmaker[Session]],
 ) -> None:
     client, factory = world
-    h = {"X-Device-Id": DEVICE, "X-Judge": "1"}
+    h = {"X-User": DEVICE, "X-Judge": "1"}
     client.get("/api/flow/current", headers=h)
     for step_id, value in SCRIPT[:5]:
         client.post("/api/flow/answer", headers=h, json={"step_id": step_id, "value": value})

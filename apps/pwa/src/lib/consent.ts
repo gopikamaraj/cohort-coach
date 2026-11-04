@@ -5,6 +5,7 @@
 // random device id (no name). Using the check, the cards and the history on this phone needs no consent
 // beyond reading the notice ("core"); sending class counts, using the AI Practice Class, and sharing
 // rehearsals each have their own switch.
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
 
 export interface KV {
@@ -24,7 +25,6 @@ export interface Consent extends Choices {
 }
 
 const KEY = "cc.consent";
-const DEVICE = "cc.device";
 const local = (): KV | null => {
   try {
     return typeof localStorage === "undefined" ? null : localStorage;
@@ -65,26 +65,15 @@ export function withdrawAll(kv: KV | null = local()): Consent {
   return setConsent({ core: false, counts: false, practice_ai: false, share_rehearsal: false, feedback: false }, kv);
 }
 
-/** A random id for this phone, used only to key consent records. It is not a name or a phone number. */
-export function deviceId(kv: KV | null = local()): string {
-  let id = kv?.getItem(DEVICE) ?? null;
-  if (!id) {
-    id = [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("");
-    kv?.setItem(DEVICE, id);
-  }
-  return id;
-}
-
 /** Tell the server what changed, so there is a record. Best effort: the phone's own record is what counts offline. */
 export async function recordOnServer(before: Consent | null, after: Consent, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<void> {
-  const id = deviceId();
   for (const scope of SCOPES) {
     if (before?.[scope] === after[scope] && before?.v === after.v) continue;
     try {
       await fetchFn(`${API_BASE}/api/consents`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ device_id: id, scope, granted: after[scope], version: after.v }),
+        headers: { "Content-Type": "application/json", ...userHeader() },
+        body: JSON.stringify({ scope, granted: after[scope], version: after.v }),
       });
     } catch {
       /* offline: the next change sends it again */

@@ -22,7 +22,7 @@ from services.speech import lessons
 from tests.speech.test_lessons import Scripted, Speech, Store
 
 DEV = f"{7:016x}"
-HEAD = {"X-Role": "teacher", "X-Device-Id": DEV}
+HEAD = {"X-Role": "teacher", "X-User": DEV}
 TEXT = "Take 703 − 468 with bundles. The child writes 365.\n\nThe correct answer is 235."
 
 

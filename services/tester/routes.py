@@ -23,6 +23,7 @@ from sqlalchemy.orm import Session
 
 from ai.config import judge_mode
 from ai.validators.pii import check_pii
+from services.api.identity import user_of
 from services.api.profiles import get_session
 from services.api.ratelimit import RateLimiter
 from services.tester.evidence import delete_device, evidence
@@ -32,7 +33,7 @@ router = APIRouter(prefix="/api", tags=["tester"])
 _limit_events = RateLimiter("tester_events", 60)
 _limit_other = RateLimiter("tester_other", 30)
 
-HASH = r"^[0-9a-f]{64}$"
+HASH = r"^[0-9a-f]{64}$"  # unused since the user id replaced the device hash
 SLUG = r"^[A-Za-z0-9_.:-]{1,48}$"
 EVENT_TYPES = (
     "session_start", "session_end", "role_selected", "view_as_role", "screen_viewed", "tour_started",
@@ -68,7 +69,6 @@ SESSION = Depends(tester_session)
 class ProfileIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    device_hash: str = Field(pattern=HASH)
     consent_stats: bool
     nickname: str = Field(min_length=1, max_length=30)
     nickname_public: bool = False
@@ -130,14 +130,12 @@ class EventIn(BaseModel):
 class EventsIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    device_hash: str = Field(pattern=HASH)
     events: list[EventIn] = Field(max_length=MAX_BATCH)
 
 
 class FeedbackIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    device_hash: str = Field(pattern=HASH)
     role: Literal["teacher", "mentor", "coach", "officer", "admin", "judge"] | None = None
     screen_id: str | None = Field(None, pattern=SLUG)
     rating: int = Field(ge=1, le=5)
@@ -164,15 +162,15 @@ def config() -> dict[str, Any]:
     return {"enabled": True, "salt": salt(), "retention_days": retention_days()}
 
 
-def _consented(db: Session, device_hash: str) -> TesterDevice:
-    row = db.get(TesterDevice, device_hash)
+def _consented(db: Session, user_id: str) -> TesterDevice:
+    row = db.get(TesterDevice, user_id)
     if row is None or not row.consent_stats:
         raise HTTPException(403, "Sharing is off for this device.")
     return row
 
 
 @router.post("/tester/profile", dependencies=[Depends(_limit_other)])
-def post_profile(body: ProfileIn, db: Session = SESSION) -> dict[str, Any]:
+def post_profile(body: ProfileIn, uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
     if not body.consent_stats:
         raise HTTPException(403, "Nothing is stored without consent.")
     team_token = os.environ.get("TESTER_TEAM_TOKEN", "")
@@ -182,9 +180,9 @@ def post_profile(body: ProfileIn, db: Session = SESSION) -> dict[str, Any]:
         and hmac.compare_digest(body.team_token, team_token)
     )
     now = datetime.now(UTC)
-    row = db.get(TesterDevice, body.device_hash)
+    row = db.get(TesterDevice, uid)
     if row is None:
-        row = TesterDevice(device_hash=body.device_hash, created_at=now, consent_at=now)
+        row = TesterDevice(user_id=uid, created_at=now, consent_at=now)
         db.add(row)
     row.consent_stats = True
     row.nickname = body.nickname
@@ -204,8 +202,8 @@ def post_profile(body: ProfileIn, db: Session = SESSION) -> dict[str, Any]:
 
 
 @router.post("/tester/events", dependencies=[Depends(_limit_events)])
-def post_events(body: EventsIn, db: Session = SESSION) -> dict[str, Any]:
-    device = _consented(db, body.device_hash)
+def post_events(body: EventsIn, uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    device = _consented(db, uid)
     ids = [e.event_id for e in body.events]
     have = (
         set(db.scalars(select(TesterEvent.event_id).where(TesterEvent.event_id.in_(ids))))
@@ -220,7 +218,7 @@ def post_events(body: EventsIn, db: Session = SESSION) -> dict[str, Any]:
         seen.add(e.event_id)
         db.add(
             TesterEvent(
-                event_id=e.event_id, device_hash=body.device_hash, session_id=e.session_id,
+                event_id=e.event_id, user_id=uid, session_id=e.session_id,
                 ts=datetime.fromtimestamp(e.ts / 1000, UTC), type=e.type, role=e.role,
                 screen_id=e.screen_id, tour_id=e.tour_id, step_id=e.step_id, feature_id=e.feature_id,
                 value_json=dict(e.value) if e.value else None, connection_class=e.connection_class,
@@ -233,12 +231,12 @@ def post_events(body: EventsIn, db: Session = SESSION) -> dict[str, Any]:
 
 
 @router.post("/tester/feedback", dependencies=[Depends(_limit_other)])
-def post_feedback(body: FeedbackIn, db: Session = SESSION) -> dict[str, Any]:
-    _consented(db, body.device_hash)
+def post_feedback(body: FeedbackIn, uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    _consented(db, uid)
     comment = mask_contacts(body.comment.strip()) if body.comment and body.comment.strip() else None
     db.add(
         TesterFeedback(
-            device_hash=body.device_hash, role=body.role, screen_id=body.screen_id, rating=body.rating,
+            user_id=uid, role=body.role, screen_id=body.screen_id, rating=body.rating,
             tags=list(dict.fromkeys(body.tags)), comment=comment,
         )
     )  # fmt: skip
@@ -247,10 +245,8 @@ def post_feedback(body: FeedbackIn, db: Session = SESSION) -> dict[str, Any]:
 
 
 @router.delete("/tester/me")
-def delete_me(x_device_hash: str = Header(default=""), db: Session = SESSION) -> dict[str, Any]:
-    if not re.fullmatch(HASH, x_device_hash):
-        raise HTTPException(400, "A device hash is needed.")
-    return {"deleted": delete_device(db, x_device_hash)}
+def delete_me(uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    return {"deleted": delete_device(db, uid)}
 
 
 def _judge_only(x_role: str | None = Header(default=None)) -> None:
@@ -271,19 +267,19 @@ def _team_only(x_team_token: str | None = Header(default=None)) -> None:
 
 @router.get("/team/testing-export", dependencies=[Depends(_team_only)])
 def testing_export(db: Session = SESSION) -> Response:
-    """CSV of feedback with comments, for the team's analysis. Hashes are shortened to 6 characters."""
+    """CSV of feedback with comments, for the team's analysis. A tester is a running number, never an id."""
     buf = io.StringIO()
     w = csv.writer(buf)
     w.writerow(
-        ["date", "device6", "is_judge", "is_team", "role", "screen", "rating", "tags", "comment"]
+        ["date", "tester", "is_judge", "is_team", "role", "screen", "rating", "tags", "comment"]
     )
-    devs = {d.device_hash: d for d in db.scalars(select(TesterDevice))}
+    devs = {d.user_id: d for d in db.scalars(select(TesterDevice))}
     for f in db.scalars(select(TesterFeedback).order_by(TesterFeedback.ts)):
-        d = devs.get(f.device_hash)
+        d = devs.get(f.user_id)
         w.writerow(
             [
                 f.ts.date().isoformat(),
-                f.device_hash[:6],
+                list(devs).index(f.user_id) + 1 if f.user_id in devs else 0,
                 bool(d and d.is_judge),
                 bool(d and d.is_team),
                 f.role,

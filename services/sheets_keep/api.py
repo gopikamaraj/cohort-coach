@@ -21,6 +21,8 @@ from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Respo
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from services.api.devicestore import UserDoc
+from services.api.identity import user_of
 from services.api.profiles import SESSION
 from services.api.roles import require
 from services.media.storage import BlobStore, GcsBlobStore, LocalBlobStore, StorageNotConfigured
@@ -30,7 +32,6 @@ RETENTION_DAYS = int(os.environ.get("SHEET_RETENTION_DAYS", "60"))
 MAX_BYTES = 800_000
 CLASS = re.compile(r"^[A-Za-z0-9:_-]{1,40}$")
 CHECK = re.compile(r"^[A-Za-z0-9:_-]{1,60}$")
-DEVICE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
 JPEG = b"\xff\xd8\xff"
 
 router = APIRouter(
@@ -65,22 +66,21 @@ def _now() -> datetime:
 
 
 class Owner:
-    def __init__(self, class_id: str, device: str) -> None:
-        self.class_id, self.device = class_id, device
+    def __init__(self, class_id: str, owner: str) -> None:
+        self.class_id, self.owner = class_id, owner
 
 
 def owner(
     x_class_id: str | None = Header(default=None),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
+    db: Session = SESSION,
 ) -> Owner:
-    if (
-        not x_class_id
-        or not CLASS.match(x_class_id)
-        or not x_device_id
-        or not DEVICE.match(x_device_id)
-    ):
-        raise HTTPException(422, "This phone's class and device ids are needed.")
-    return Owner(x_class_id, x_device_id)
+    """The signed-in user and one of her own classes (the class code, owned by her)."""
+    if not x_class_id or not CLASS.match(x_class_id):
+        raise HTTPException(422, "The class code is needed.")
+    if db.get(UserDoc, (uid, "classes", x_class_id)) is None:
+        raise HTTPException(403, "That class is not yours.")
+    return Owner(x_class_id, uid)
 
 
 OWNER = Depends(owner)
@@ -120,7 +120,7 @@ def _find(db: Session, o: Owner, check_id: str, roll: int) -> KeptSheet | None:
     return db.scalars(
         select(KeptSheet).where(
             KeptSheet.class_id == o.class_id,
-            KeptSheet.device == o.device,
+            KeptSheet.owner == o.owner,
             KeptSheet.check_id == check_id,
             KeptSheet.roll == roll,
         )
@@ -174,7 +174,7 @@ def keep(
     row = KeptSheet(
         id=secrets.token_hex(12),
         class_id=o.class_id,
-        device=o.device,
+        owner=o.owner,
         check_id=check_id,
         roll=roll,
         object_key=key,
@@ -197,7 +197,7 @@ def listing(
         select(KeptSheet)
         .where(
             KeptSheet.class_id == o.class_id,
-            KeptSheet.device == o.device,
+            KeptSheet.owner == o.owner,
             KeptSheet.check_id == check_id,
         )
         .order_by(KeptSheet.roll)

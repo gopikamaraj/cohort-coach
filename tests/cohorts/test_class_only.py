@@ -28,7 +28,7 @@ BODY = {
 def h(role: str, device: str | None = None) -> dict[str, str]:
     out = {"X-Role": role}
     if device:
-        out["X-Device-Id"] = device
+        out["X-User"] = device
     return out
 
 
@@ -71,12 +71,13 @@ def test_another_teacher_sees_none_of_it(client: TestClient) -> None:
     assert client.get("/api/cohorts/class-only", headers=h("teacher", DEV2)).json() == []
 
 
-def test_the_coach_sees_it_in_counts_without_a_teacher_or_check_id(client: TestClient) -> None:
+def test_a_coach_does_not_see_a_teachers_own_cohort_unless_it_is_assigned_to_her(client: TestClient) -> None:
     client.post("/api/cohorts/class-only", json=BODY, headers=h("teacher", DEV1))
     r = client.get("/api/cohorts/class-only/coach", headers=h("coach"))
     assert r.status_code == 200
     rows = r.json()
-    assert len(rows) == 1 and rows[0]["scope"] == "class_only" and rows[0]["classes"] == 1
+    # a coach sees the cohorts she made, not a teacher's own single-class cohort: that is not assigned to her
+    assert rows == []
     text = json.dumps(rows)
     assert DEV1 not in text and "t-" not in text and "c-abc" not in text
 

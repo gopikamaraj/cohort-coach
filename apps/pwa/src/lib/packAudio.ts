@@ -1,8 +1,8 @@
 // "Download audio": send the text she is reading to the server, get an MP3 back, hand it to the browser
 // as a file download. Nothing is made until she presses the button, and nothing is kept on the phone
 // beyond the file she downloads (the object URL is dropped at once).
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
 
 export type AudioFailure = "offline" | "cap" | "unavailable" | "other";
 
@@ -65,7 +65,7 @@ export async function previewScript(input: AudioRequest, fetchFn: typeof fetch =
   try {
     res = await fetchFn(`${API_BASE}/api/audio/pack/script`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Role": "teacher", "X-Device-Id": deviceId() },
+      headers: { "Content-Type": "application/json", "X-Role": "teacher", ...userHeader() },
       body: JSON.stringify(input),
     });
   } catch {
@@ -83,7 +83,7 @@ export async function makeAudio(
   try {
     res = await fetchFn(`${API_BASE}/api/audio/pack`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Role": "teacher", "X-Device-Id": deviceId() },
+      headers: { "Content-Type": "application/json", "X-Role": "teacher", ...userHeader() },
       body: JSON.stringify(input),
     });
   } catch {

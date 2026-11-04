@@ -12,6 +12,7 @@ import { defineConfig, devices } from "@playwright/test";
 const venvPython = ["Scripts/python.exe", "bin/python"]
   .map((p) => path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.venv", p))
   .find((p) => existsSync(p));
+export const E2E_USER = "e2e tester";
 const python = process.env["PYTHON"] ?? venvPython ?? "python";
 // A port of its own, so the tests never meet a dev server someone left running on 8000.
 const apiPort = "8011";
@@ -26,8 +27,13 @@ export default defineConfig({
   retries: 0,
   workers: 1,
   reporter: [["list"]],
+  globalSetup: "./e2e/global-setup.ts", // registers the tests' user on both APIs
   use: {
     baseURL: "http://localhost:4173",
+    // Every request carries the test user (the API needs a signed-in user for every route), and the browser starts
+    // signed in as the same user. Tests of sign-in itself clear it.
+    extraHTTPHeaders: { "X-User": E2E_USER },
+    storageState: { cookies: [], origins: ["http://localhost:4173", "http://localhost:4174"].map((origin) => ({ origin, localStorage: [{ name: "cc.user", value: JSON.stringify({ id: E2E_USER, nickname: E2E_USER }) }, { name: "cc.cacheOwner", value: E2E_USER }] })) },
     ...devices["Pixel 5"], // a phone-sized viewport and touch
     serviceWorkers: "allow",
     permissions: ["microphone"],

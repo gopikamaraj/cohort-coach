@@ -153,13 +153,13 @@ def test_admin_endpoints_need_the_key_when_one_is_set(
     assert client.post("/api/feedback", json=GOOD).status_code == 200  # sending feedback stays open
 
 
-def test_consent_records_are_kept_with_a_random_device_id(api: Any) -> None:
+def test_consent_records_are_kept_under_the_signed_in_user(api: Any) -> None:
     client, factory = api
-    body = {"device_id": "a1b2c3d4e5f60718", "scope": "practice_ai", "granted": True, "version": 1}
+    body = {"scope": "practice_ai", "granted": True, "version": 1}
     assert client.post("/api/consents", json=body).status_code == 200
     assert client.post("/api/consents", json={**body, "granted": False}).status_code == 200
     assert client.post("/api/consents", json={**body, "scope": "x"}).status_code == 422
-    assert client.post("/api/consents", json={**body, "device_id": "Ravi Kumar"}).status_code == 422
+    assert client.post("/api/consents", json={**body, "device_id": "a1b2c3d4e5f60718"}).status_code == 422  # a device id is no longer taken: the user is who signed in
     with factory() as s:
         rows = s.query(Consent).order_by(Consent.id).all()
     assert [r.granted for r in rows] == [True, False] and rows[0].scope == "practice_ai.v1"

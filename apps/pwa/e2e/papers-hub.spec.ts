@@ -15,7 +15,7 @@ async function as(page: Page, role: string) {
   await page.goto("/");
   await page.evaluate(
     ([c, r]) => {
-      localStorage.clear();
+      (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
       localStorage.setItem("cc.consent", c);
       localStorage.setItem("cc.role", r);
     },

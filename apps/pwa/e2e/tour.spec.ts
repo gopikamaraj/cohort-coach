@@ -6,7 +6,7 @@ const CONSENT = '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal"
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate((c) => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", c);
   }, CONSENT);
 });

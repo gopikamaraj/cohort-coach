@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Feedback, the admin review page, consent records and erasure.
 
 Feedback is anonymous: no user id, class id or name is stored, and the text (at most 500 characters)
@@ -12,7 +13,6 @@ from __future__ import annotations
 
 import hmac
 import os
-import re
 from collections import Counter
 from typing import Any, Literal
 
@@ -22,6 +22,7 @@ from sqlalchemy import delete, select
 
 from ai.validators.pii import check_pii
 from services.api.db import Consent, Feedback, ProfileSync, SimObservation
+from services.api.identity import user_of
 from services.api.profiles import CLASS_ID, SESSION
 
 router = APIRouter(prefix="/api", tags=["feedback"])
@@ -29,7 +30,6 @@ router = APIRouter(prefix="/api", tags=["feedback"])
 Kind = Literal["app", "simulation", "content", "card_flag"]
 Role = Literal["teacher", "coach", "mentor", "admin", "judge"]
 SCOPES = ("core", "counts", "practice_ai", "share_rehearsal", "feedback", "keep_sheets")
-DEVICE_ID = re.compile(r"^[0-9a-f]{16}$")
 
 
 class FeedbackIn(BaseModel):
@@ -69,25 +69,17 @@ def add_feedback(body: FeedbackIn, db=SESSION) -> dict[str, Any]:  # type: ignor
 class ConsentIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    device_id: str
     scope: Literal["core", "counts", "practice_ai", "share_rehearsal", "feedback", "keep_sheets"]
     granted: bool
     version: int = Field(ge=1, le=99)
 
-    @field_validator("device_id")
-    @classmethod
-    def _random_id_only(cls, v: str) -> str:
-        if not DEVICE_ID.match(v):
-            raise ValueError("device_id must be the random id the app made")
-        return v
-
 
 @router.post("/consents")
-def add_consent(body: ConsentIn, db=SESSION) -> dict[str, Any]:  # type: ignore[no-untyped-def]
+def add_consent(body: ConsentIn, uid: str = Depends(user_of), db=SESSION) -> dict[str, Any]:  # type: ignore[no-untyped-def]
     """A consent or its withdrawal is a new row; the history is kept (DPDP: proof of consent)."""
     db.add(
         Consent(
-            subject_id=body.device_id, scope=f"{body.scope}.v{body.version}", granted=body.granted
+            subject_id=uid, scope=f"{body.scope}.v{body.version}", granted=body.granted
         )
     )
     db.commit()
@@ -95,11 +87,11 @@ def add_consent(body: ConsentIn, db=SESSION) -> dict[str, Any]:  # type: ignore[
 
 
 @router.delete("/classes/{class_id}")
-def erase_class(class_id: str, db=SESSION) -> dict[str, Any]:  # type: ignore[no-untyped-def]
+def erase_class(class_id: str, uid: str = Depends(user_of), db=SESSION) -> dict[str, Any]:  # type: ignore[no-untyped-def]
     """Erase a class's counts from the server (the right to erasure). Feedback is anonymous."""
     if not CLASS_ID.match(class_id):
         raise HTTPException(422, "Unknown class id.")
-    res = db.execute(delete(ProfileSync).where(ProfileSync.class_id == class_id))
+    res = db.execute(delete(ProfileSync).where(ProfileSync.owner == uid, ProfileSync.class_id == class_id))
     db.commit()
     return {"deleted": res.rowcount or 0}
 

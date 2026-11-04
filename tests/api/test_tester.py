@@ -26,9 +26,9 @@ from services.tester.models import (
 )
 from services.tester.routes import _DropTesterAccess, mask_contacts
 
-H1 = "a" * 64
-H2 = "b" * 64
-H3 = "c" * 64
+H1 = "asha tester"  # the testers are users now: the nickname (normalised) is the id
+H2 = "bala tester"
+H3 = "chitra tester"
 TOKEN = "team-secret"
 NOW_MS = int(datetime.now(UTC).timestamp() * 1000)
 
@@ -51,6 +51,24 @@ def ev(
     return {"event_id": f"ev-{i:06d}", "session_id": session, "ts": ts, "type": type, **kw}
 
 
+@pytest.fixture(autouse=True)
+def _tester_is_the_signed_in_user(monkeypatch: pytest.MonkeyPatch) -> None:
+    """These tests name the tester with a `device_hash` key in the body. Stats now belong to the signed-in user,
+    so the key becomes the `X-User` header (the user is registered on first use by the suite-wide fixture)."""
+    original = TestClient.request
+
+    def request(self: TestClient, method: str, url: Any, **kw: Any) -> Any:
+        body = kw.get("json")
+        if isinstance(body, dict) and "device_hash" in body:
+            body = dict(body)
+            who = body.pop("device_hash")
+            kw["json"] = body
+            kw["headers"] = {**(kw.get("headers") or {}), "X-User": who}
+        return original(self, method, url, **kw)
+
+    monkeypatch.setattr(TestClient, "request", request)
+
+
 @pytest.fixture
 def api(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -61,6 +79,9 @@ def api(
     monkeypatch.setenv("RATE_LIMIT_TESTER_EVENTS_PER_MIN", "0")
     monkeypatch.setenv("RATE_LIMIT_TESTER_OTHER_PER_MIN", "0")
     engine = make_engine(f"sqlite:///{tmp_path / 't.sqlite'}")
+    from services.api.db import Base
+
+    Base.metadata.create_all(engine)  # the users table too: stats belong to a signed-in user
     ensure_tester_schema(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
 
@@ -92,10 +113,11 @@ def test_no_profile_no_events_no_feedback_without_consent(api: Any) -> None:
         )
 
 
-def test_only_a_64_hex_hash_is_accepted(api: Any) -> None:
+@pytest.mark.no_autoregister
+def test_stats_need_a_signed_in_user_not_a_device_hash(api: Any) -> None:
     c, _ = api
-    uuid = "3f2b8c1e-9d4a-4e6b-8a1f-2c5d7e9b0a13"
-    assert c.post("/api/tester/profile", json=profile(uuid)).status_code == 422
+    assert c.post("/api/tester/profile", json={k: v for k, v in profile().items() if k != "device_hash"}).status_code == 401
+    assert c.post("/api/tester/profile", json=profile(), headers={"X-User": "not signed up"}).status_code == 401
 
 
 def test_profile_rejects_unknown_fields_and_personal_nicknames(api: Any) -> None:
@@ -179,7 +201,7 @@ def test_team_export_refuses_a_bad_token(api: Any, monkeypatch: pytest.MonkeyPat
     assert c.get("/api/team/testing-export").status_code == 403
     assert c.get("/api/team/testing-export", headers={"X-Team-Token": "wrong"}).status_code == 403
     ok = c.get("/api/team/testing-export", headers={"X-Team-Token": TOKEN})
-    assert ok.status_code == 200 and ok.text.startswith("date,device6")
+    assert ok.status_code == 200 and ok.text.startswith("date,tester")
     monkeypatch.delenv("TESTER_TEAM_TOKEN")
     assert c.get("/api/team/testing-export", headers={"X-Team-Token": ""}).status_code == 403
 
@@ -320,7 +342,7 @@ def test_aggregates_come_from_the_rows(api: Any) -> None:
     row = next(t for t in d["testers"] if t["listed"])
     assert (
         row["name"] == "Asha"
-        and row["hash6"] == "aaaaaa"
+        and row["hash6"] == "#01"
         and row["features_used"] == 1
         and row["rating"] == 4.0
     )
@@ -329,11 +351,10 @@ def test_aggregates_come_from_the_rows(api: Any) -> None:
 def test_delete_my_data_removes_every_row_for_that_hash(api: Any) -> None:
     c, factory = api
     _populate(c)
-    assert c.delete("/api/tester/me", headers={"X-Device-Hash": "short"}).status_code == 400
-    assert c.delete("/api/tester/me", headers={"X-Device-Hash": H1}).status_code == 200
+    assert c.delete("/api/tester/me", headers={"X-User": H1}).status_code == 200
     with factory() as s:
         for model in (TesterDevice, TesterEvent, TesterFeedback):
-            assert s.query(model).filter(model.device_hash == H1).count() == 0
+            assert s.query(model).filter(model.user_id == H1).count() == 0
         assert s.query(TesterDevice).count() == 2  # other devices untouched
 
 
@@ -343,8 +364,8 @@ def test_retention_deletes_records_past_90_days(api: Any) -> None:
     old = int((datetime.now(UTC) - timedelta(days=91)).timestamp() * 1000)
     c.post("/api/tester/events", json={"device_hash": H1, "events": [ev(1, ts=old), ev(2)]})
     with factory() as s:
-        s.add(TesterFeedback(device_hash=H1, ts=datetime.now(UTC) - timedelta(days=95), rating=3))
-        s.add(TesterFeedback(device_hash=H1, rating=5))
+        s.add(TesterFeedback(user_id=H1, ts=datetime.now(UTC) - timedelta(days=95), rating=3))
+        s.add(TesterFeedback(user_id=H1, rating=5))
         s.commit()
         assert purge_older_than(s, datetime.now(UTC), 90) == {"events": 1, "feedback": 1}
         assert s.query(TesterEvent).count() == 1 and s.query(TesterFeedback).count() == 1
@@ -413,5 +434,5 @@ def test_snapshot_has_counts_and_dates_but_no_names_hashes_or_comments(api: Any)
     with factory() as s:
         text = _snapshot_module().snapshot(s)
     assert "Collected between" in text and "| Testers | 2 |" in text
-    for private in ("Asha", "Hidden", "Judy", "aaaaaa", H1, "Clear", "judge note"):
+    for private in ("Asha", "Hidden", "Judy", H1, "Clear", "judge note"):
         assert private not in text

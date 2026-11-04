@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from services.api.db import ClassCohort, make_engine  # noqa: E402
-from services.api.devicestore import DeviceDoc  # noqa: E402
+from services.api.devicestore import UserDoc  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -33,10 +33,10 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     engine = make_engine()
     with Session(engine) as db:
-        rows = db.scalars(select(DeviceDoc)).all()
+        rows = db.scalars(select(UserDoc)).all()
         keys: dict[str, dict[str, object]] = {}
         for r in rows:
-            k = keys.setdefault(r.device, {"docs": 0, "classes": [], "nick": "", "checks": 0})
+            k = keys.setdefault(r.owner, {"docs": 0, "classes": [], "nick": "", "checks": 0})
             k["docs"] = int(k["docs"]) + 1  # type: ignore[call-overload]
             if r.collection == "classes" and isinstance(r.data, dict):
                 k["classes"].append(str(r.data.get("name") or r.doc_id))  # type: ignore[attr-defined]
@@ -63,10 +63,10 @@ def main(argv: list[str] | None = None) -> int:
             if len(hit) != 1 or not term.isdigit():
                 print(f"'{spec}': needs one matching key and a number; nothing changed.")
                 continue
-            row = db.get(DeviceDoc, (hit[0], "settings", "term"))
+            row = db.get(UserDoc, (hit[0], "settings", "term"))
             before = row.data.get("value") if row is not None and isinstance(row.data, dict) else None
             if row is None:
-                db.add(DeviceDoc(device=hit[0], collection="settings", doc_id="term", data={"key": "term", "value": int(term)}))
+                db.add(UserDoc(device=hit[0], collection="settings", doc_id="term", data={"key": "term", "value": int(term)}))
             else:
                 row.data = {"key": "term", "value": int(term)}
             db.commit()
@@ -77,7 +77,7 @@ def main(argv: list[str] | None = None) -> int:
             if len(hit) != 1:
                 print(f"'{prefix}' matches {len(hit)} keys: nothing dropped.")
                 continue
-            mine = db.scalars(select(DeviceDoc).where(DeviceDoc.device == hit[0])).all()
+            mine = db.scalars(select(UserDoc).where(UserDoc.owner == hit[0])).all()
             ids = {r.doc_id for r in mine if r.collection == "classes" and isinstance(r.data, dict) and r.data.get("name") == name}
             others = [r.doc_id for r in mine if r.collection == "classes" and r.doc_id not in ids]
             gone = [r for r in mine if (r.collection == "classes" and r.doc_id in ids) or (r.collection in ("checks", "profiles") and isinstance(r.data, dict) and r.data.get("classId") in ids)]
@@ -105,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
             if not args.yes and input(f"Delete all {keys[hit[0]]['docs']} documents of {hit[0][:6]}? Type yes: ").strip() != "yes":
                 print("Skipped.")
                 continue
-            db.execute(delete(DeviceDoc).where(DeviceDoc.device == hit[0]))
+            db.execute(delete(UserDoc).where(UserDoc.owner == hit[0]))
             db.commit()
             print(f"Deleted {hit[0][:6]}.")
     return 0

@@ -24,8 +24,9 @@ DEV_A, DEV_B, DEV_X = f"{1:016x}", f"{2:016x}", f"{9:016x}"
 
 def h(role: str, device: str | None = None) -> dict[str, str]:
     out = {"X-Role": role}
-    if device:
-        out["X-Device-Id"] = device
+    who = device or (f"{role}-demo" if role != "teacher" else None)  # a staff account is a user too
+    if who:
+        out["X-User"] = who
     return out
 
 

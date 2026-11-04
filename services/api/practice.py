@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Practice Class API: create a session, take turns, end it for feedback.
 
 Session state lives in memory with a time limit and is never persisted. The full transcript
@@ -23,6 +24,7 @@ from ai import config
 from ai.client import BudgetExceeded, CallContext
 from ai.config import ai_mode
 from engine.model import ErrorCode
+from services.api.identity import user_of
 from services.api.ratelimit import RateLimiter
 from services.api.roles import judge_session, require
 from services.api.sprite_media import tray_items
@@ -110,13 +112,21 @@ def _sweep() -> None:
     now = time.time()
     for sid in [k for k, (_, at) in _SESSIONS.items() if now - at > SESSION_TTL_S]:
         del _SESSIONS[sid]
+        _OWNERS.pop(sid, None)
     while len(_SESSIONS) >= MAX_SESSIONS:
-        del _SESSIONS[min(_SESSIONS, key=lambda k: _SESSIONS[k][1])]
+        gone = min(_SESSIONS, key=lambda k: _SESSIONS[k][1])
+        del _SESSIONS[gone]
+        _OWNERS.pop(gone, None)
 
 
-def _get(session_id: str) -> PracticeSession:
+_OWNERS: dict[str, str] = {}  # session id -> the user who started it (transcripts are never stored)
+
+
+def _get(session_id: str, uid: str) -> PracticeSession:
     entry = _SESSIONS.get(session_id)
     if entry is None or time.time() - entry[1] > SESSION_TTL_S:
+        raise HTTPException(404, "This practice session has expired. Start a new one.")
+    if _OWNERS.get(session_id) != uid:  # another user's session looks like no session at all
         raise HTTPException(404, "This practice session has expired. Start a new one.")
     _SESSIONS[session_id] = (entry[0], time.time())
     return entry[0]
@@ -131,7 +141,7 @@ def _to_dict(obj: Any) -> dict[str, Any]:
 
 
 @router.post("/sessions", dependencies=[Depends(_LIMIT_SESSION)])
-def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[str, Any]:
+def create_session(body: CreateSession, uid: str = Depends(user_of), speech: SpeechService = SPEECH) -> dict[str, Any]:
     if body.language not in LANGS:
         raise HTTPException(422, f"language must be one of {', '.join(LANGS)}")
     try:
@@ -149,6 +159,7 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
         judge=body.judge and judge_session(),
     )
     _SESSIONS[session.id] = (session, time.time())
+    _OWNERS[session.id] = uid
     loaded = session.loaded
     return {
         "session_id": session.id,
@@ -172,8 +183,10 @@ def create_session(body: CreateSession, speech: SpeechService = SPEECH) -> dict[
 
 
 @router.post("/sessions/{session_id}/turns", dependencies=[Depends(_LIMIT_TURN)])
-def post_turn(session_id: str, body: TurnRequest, ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
-    session = _get(session_id)
+def post_turn(  # noqa: E501
+    session_id: str, body: TurnRequest, uid: str = Depends(user_of), ctx: CallContext = AI_CONTEXT
+) -> dict[str, Any]:
+    session = _get(session_id, uid)
     try:
         result = take_turn(
             session,
@@ -290,6 +303,7 @@ def _text_mode(why: str, voice_off: bool = False) -> HTTPException:
 def post_voice_turn(
     session_id: str,
     request: Request,
+    uid: str = Depends(user_of),
     audio: UploadFile = File(...),  # noqa: B008
     ctx: CallContext = AI_CONTEXT,
     speech: SpeechService = SPEECH,
@@ -297,7 +311,7 @@ def post_voice_turn(
     """Speech in, speech out. Order: speech-to-text, the text pipeline, then synthesis started
     in parallel with call 7 and released only if the line passes (check-then-release). On any
     speech failure the client gets 503 with `text_mode` and carries on by typing."""
-    session = _get(session_id)
+    session = _get(session_id, uid)
     if session.state.finished or session.ended:  # before any paid speech call
         raise HTTPException(409, "This rehearsal has finished. Ask for feedback.")
     if not speech.available:
@@ -413,8 +427,8 @@ def post_voice_turn(
 
 
 @router.post("/sessions/{session_id}/end")
-def post_end(session_id: str, ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
-    session = _get(session_id)
+def post_end(session_id: str, uid: str = Depends(user_of), ctx: CallContext = AI_CONTEXT) -> dict[str, Any]:
+    session = _get(session_id, uid)
     try:
         card, layers = end_session(session, context=ctx)
     except BudgetExceeded as exc:
@@ -488,9 +502,9 @@ def get_watch_meter() -> dict[str, Any]:
 
 
 @router.get("/sessions/{session_id}/hints")
-def get_hints(session_id: str) -> dict[str, Any]:
+def get_hints(session_id: str, uid: str = Depends(user_of)) -> dict[str, Any]:
     """Three replies for the next turn (judge mode only). The quality of each is not sent."""
     if not judge_session():
         raise HTTPException(403, "Hints are available in the demo only.")
-    session = _get(session_id)
+    session = _get(session_id, uid)
     return {"hints": hints(session)}

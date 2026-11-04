@@ -1,8 +1,8 @@
 // The assistant's API calls. The server decides the scope from the signed-in role; this only asks
 // and shows. "view_as" is sent only when the judge picks a role, and the server refuses it for
 // anyone else. Nothing here ever sends or approves anything on the teacher's behalf.
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
 
 export interface ScopeInfo {
   role: string;
@@ -67,7 +67,7 @@ function qs(c: Ctx, extra: Record<string, string> = {}): string {
 async function json<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}/api/assistant${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", "X-Device-Id": deviceId(), ...(init?.headers ?? {}) },
+    headers: { "Content-Type": "application/json", ...userHeader(), ...(init?.headers ?? {}) },
   });
   if (!res.ok) throw new Error(`assistant ${res.status}`);
   return (await res.json()) as T;

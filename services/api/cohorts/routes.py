@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Cohort space API. Every route names the permission it needs; the role comes from the same
 config as everywhere (services/api/roles/permissions.yaml).
 
@@ -13,7 +14,7 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -21,19 +22,20 @@ from sqlalchemy.orm import Session
 from services.api.cohorts import lifecycle, mentor_items, thread
 from services.api.db import CohortSpace, ThreadPost
 from services.api.flows.engine import FlowEngine
+from services.api.identity import optional_user, user_of
 from services.api.profiles import SESSION
-from services.api.roles import judge_session, require
+from services.api.roles import require
 
 router = APIRouter(prefix="/api/cohorts", tags=["cohorts"])
 PERSON = re.compile(r"^[a-z0-9][a-z0-9-]{2,29}$")
-DEVICE = re.compile(r"^[0-9a-f]{16}$")
 
 
 def person_id(role: str, x_person: str | None) -> str:
-    """Who is acting, as a pseudonymous id. Only the judge deployment lets a request name one."""
-    if x_person and judge_session() and PERSON.match(x_person):
-        return x_person
-    return f"{role}-demo"
+    """Who is acting in a staff role: the signed-in user's id (each role account is a user). `role_of` already
+    refuses a non-teacher role outside a judge session, so this never grants one."""
+    if not x_person:
+        raise HTTPException(401, {"code": "sign_in", "message": "Sign in with your nickname first."})
+    return x_person
 
 
 def _wrap(fn: Callable[[], Any]) -> Any:
@@ -53,10 +55,8 @@ def _wrap(fn: Callable[[], Any]) -> Any:
         raise HTTPException(422, str(exc)) from exc
 
 
-def _teacher(db: Session, device: str | None) -> Any:
-    if not device or not DEVICE.match(device):
-        raise HTTPException(422, "X-Device-Id must be the random id the app made for this phone.")
-    return FlowEngine(db).teacher_for("pwa", device)
+def _teacher(db: Session, uid: str) -> Any:
+    return FlowEngine(db).teacher_for("pwa", uid)
 
 
 # ---- officer: create, status, retention -------------------------------------------------------
@@ -73,7 +73,7 @@ class CreateIn(BaseModel):
 def officer_create(
     body: CreateIn,
     role: str = Depends(require("officer.approve_cohorts")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     cohort = lifecycle.create(
@@ -98,7 +98,7 @@ def officer_status(
     cohort_id: str,
     body: StatusIn,
     role: str = Depends(require("officer.approve_cohorts")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     cohort = _wrap(
@@ -135,7 +135,7 @@ def officer_list(
 @router.get("/coach/cohorts")
 def coach_list(
     role: str = Depends(require("coach.moderate")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     me = person_id(role, x_person)
@@ -147,7 +147,7 @@ def coach_list(
 def coach_thread(
     cohort_id: str,
     role: str = Depends(require("coach.moderate")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     cohort = _wrap(lambda: lifecycle.get(db, cohort_id))
@@ -165,7 +165,7 @@ def coach_decide_post(
     post_id: str,
     body: DecideIn,
     role: str = Depends(require("coach.moderate")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     me = person_id(role, x_person)
@@ -189,7 +189,7 @@ def coach_prompt(
     cohort_id: str,
     body: PostIn,
     role: str = Depends(require("coach.moderate")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     me = person_id(role, x_person)
@@ -203,7 +203,7 @@ def coach_prompt(
 def coach_closing(
     cohort_id: str,
     role: str = Depends(require("coach.moderate")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     me = person_id(role, x_person)
@@ -214,7 +214,7 @@ def coach_closing(
 @router.get("/coach/items")
 def coach_items(
     role: str = Depends(require("coach.approve_items")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     rows = mentor_items.awaiting_for_coach(db, person_id(role, x_person))
@@ -232,7 +232,7 @@ def coach_item_decide(
     item_id: str,
     body: ItemDecisionIn,
     role: str = Depends(require("coach.approve_items")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     item = _wrap(
@@ -254,7 +254,7 @@ def coach_item_decide(
 @router.get("/mentor/cohorts")
 def mentor_list(
     role: str = Depends(require("mentor.items_view")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     me = person_id(role, x_person)
@@ -273,7 +273,7 @@ class ItemIn(BaseModel):
 def mentor_create_item(
     body: ItemIn,
     role: str = Depends(require("mentor.items_view")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     me = person_id(role, x_person)
@@ -284,7 +284,7 @@ def mentor_create_item(
 def mentor_submit_item(
     item_id: str,
     role: str = Depends(require("mentor.items_view")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     return _item(_wrap(lambda: mentor_items.submit(db, item_id, person_id(role, x_person))))
@@ -293,7 +293,7 @@ def mentor_submit_item(
 @router.get("/mentor/items")
 def mentor_items_list(
     role: str = Depends(require("mentor.items_view")),
-    x_person: str | None = Header(default=None),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     return [_item(i) for i in mentor_items.list_for_mentor(db, person_id(role, x_person))]
@@ -317,12 +317,12 @@ def _item(i: Any) -> dict[str, Any]:
 @router.get("/open")
 def open_cohorts(
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
     """Cohorts a teacher can join or has joined: status and the error in words only; the figures
     follow the same under-5 rule as everywhere. Whether she is already in is hers to know."""
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     out = []
     for c in db.execute(
         select(CohortSpace).where(CohortSpace.status.in_(("proposed", "active")))
@@ -342,12 +342,12 @@ def join(
     cohort_id: str,
     body: JoinIn,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     if not body.consent:
         raise HTTPException(403, "Joining the cohort chat needs your own tap to agree.")
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     cohort = _wrap(lambda: lifecycle.get(db, cohort_id))
     if cohort.status not in ("active", "proposed"):
         raise HTTPException(409, "This cohort is not open to join.")
@@ -361,15 +361,15 @@ def join(
 def get_thread(
     cohort_id: str,
     role: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
-    x_person: str | None = Header(default=None),
+    uid: str = Depends(user_of),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     cohort = _wrap(lambda: lifecycle.get(db, cohort_id))
     if role == "mentor":
         _wrap(lambda: lifecycle.require_assigned(cohort, "mentor", person_id(role, x_person)))
     else:
-        teacher = _teacher(db, x_device_id)
+        teacher = _teacher(db, uid)
         if thread_member(db, cohort_id, teacher.teacher_id) is None:
             raise HTTPException(403, "Join the cohort first.")
     return {
@@ -389,8 +389,8 @@ def post(
     cohort_id: str,
     body: PostIn,
     role: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
-    x_person: str | None = Header(default=None),
+    uid: str = Depends(user_of),
+    x_person: str | None = Depends(optional_user),
     db: Session = SESSION,
 ) -> dict[str, Any]:
     if role == "mentor":
@@ -401,7 +401,7 @@ def post(
             lambda: thread.post_as_staff(db, cohort_id, "mentor", me, body.body, body.language)
         )
     else:
-        teacher = _teacher(db, x_device_id)
+        teacher = _teacher(db, uid)
         made = _wrap(
             lambda: thread.post_as_teacher(
                 db, cohort_id, teacher.teacher_id, body.body, body.language
@@ -414,10 +414,10 @@ def post(
 def report_post(
     post_id: str,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, str]:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     _wrap(lambda: thread.report(db, post_id, teacher.teacher_id))
     return {"status": "held for the coach"}
 
@@ -426,9 +426,9 @@ def report_post(
 def delete_post(
     post_id: str,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, str]:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     _wrap(lambda: thread.delete_own(db, post_id, teacher.teacher_id))
     return {"status": "deleted"}

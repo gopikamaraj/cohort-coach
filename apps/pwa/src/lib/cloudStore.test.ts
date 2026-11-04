@@ -1,11 +1,13 @@
 import "fake-indexeddb/auto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { clearCloud, flushQueue, hydrate, queued, storeKey, watchTables } from "./cloudStore";
+import { clearCloud, flushQueue, hydrate, queued, watchTables } from "./cloudStore";
 import { CohortDb } from "./db";
 
 // A phone with a fake server: documents by collection and id, plus a switch for "no connection".
 function setup() {
   const store = new Map<string, string>();
+  store.set("cc.user", JSON.stringify({ id: "priya", nickname: "Priya" })); // she is signed in
+  store.set("cc.cacheOwner", "priya");
   vi.stubGlobal("localStorage", { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, v), removeItem: (k: string) => void store.delete(k) });
   vi.stubGlobal("navigator", { onLine: true });
   vi.stubGlobal("window", { addEventListener: () => undefined });
@@ -127,13 +129,29 @@ describe("the cloud copy", () => {
   });
 });
 
-describe("the store key (a teacher is her nickname)", () => {
-  it("is 16 hex characters, the same for the same nickname in any case, different for another, none when empty", () => {
-    const priya = storeKey("Priya");
-    expect(priya).toMatch(/^[0-9a-f]{16}$/);
-    expect(storeKey("  priya ")).toBe(priya);
-    expect(storeKey("Ravi")).not.toBe(priya);
-    expect(storeKey("3A Math")).not.toBe(storeKey("3B Math"));
-    expect(storeKey("   ")).toBeNull();
+describe("the cache belongs to one user", () => {
+  it("does nothing until someone is signed in", async () => {
+    const { fetchFn, calls } = setup();
+    localStorage.removeItem("cc.user");
+    expect(await hydrate(fresh(), fetchFn)).toBe("offline");
+    expect(calls).toEqual([]);
+  });
+  it("starts a different user from an empty cache, so one person's classes are never uploaded under another's nickname", async () => {
+    const { cloud, fetchFn } = setup();
+    const db = fresh();
+    await db.classes.put(klass); // left on this browser by priya
+    localStorage.setItem("cc.user", JSON.stringify({ id: "ravi", nickname: "Ravi" }));
+    expect(await hydrate(db, fetchFn)).toBe("synced");
+    expect(await db.classes.count()).toBe(0);
+    expect(cloud.classes).toEqual({}); // nothing of priya's reached ravi's copy
+  });
+  it("keeps what the browser holds for the first user to sign in (it was made before nicknames were accounts)", async () => {
+    const { cloud, fetchFn } = setup();
+    localStorage.removeItem("cc.cacheOwner");
+    const db = fresh();
+    watchTables(db);
+    await db.classes.put(klass);
+    await hydrate(db, fetchFn);
+    expect(cloud.classes?.["c-1"]).toMatchObject({ name: "3A" });
   });
 });

@@ -19,7 +19,7 @@ async function mockTester(page: Page): Promise<Sent[]> {
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(async () => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     for (const d of (await indexedDB.databases?.()) ?? []) if (d.name) indexedDB.deleteDatabase(d.name);
   });
 });

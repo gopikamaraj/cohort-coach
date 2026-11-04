@@ -17,7 +17,7 @@ def _now() -> datetime:
 class TesterDevice(Base):
     __tablename__ = "tester_device"
 
-    device_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(32), primary_key=True)
     nickname: Mapped[str] = mapped_column(String(30))
     nickname_public: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
@@ -38,12 +38,12 @@ class TesterDevice(Base):
 class TesterEvent(Base):
     __tablename__ = "tester_event"
     __table_args__ = (
-        Index("ix_tester_event_device_ts", "device_hash", "ts"),
+        Index("ix_tester_event_device_ts", "user_id", "ts"),
         Index("ix_tester_event_ts", "ts"),
     )
 
     event_id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    device_hash: Mapped[str] = mapped_column(String(64), index=True)
+    user_id: Mapped[str] = mapped_column(String(32), index=True)
     session_id: Mapped[str] = mapped_column(String(64), index=True)
     ts: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     type: Mapped[str] = mapped_column(String(24))
@@ -58,10 +58,10 @@ class TesterEvent(Base):
 
 class TesterFeedback(Base):
     __tablename__ = "tester_feedback"
-    __table_args__ = (Index("ix_tester_feedback_device_ts", "device_hash", "ts"),)
+    __table_args__ = (Index("ix_tester_feedback_device_ts", "user_id", "ts"),)
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    device_hash: Mapped[str] = mapped_column(String(64), index=True)
+    user_id: Mapped[str] = mapped_column(String(32), index=True)
     ts: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     role: Mapped[str | None] = mapped_column(String(12), nullable=True)
     screen_id: Mapped[str | None] = mapped_column(String(48), nullable=True)
@@ -87,36 +87,36 @@ _OK = "d.consent_stats AND NOT d.is_judge AND NOT d.is_team"
 _DAY = "substr(CAST(e.ts AS TEXT), 1, 10)"
 VIEWS: dict[str, str] = {
     "v_tester_summary": f"""
-        SELECT d.device_hash,
+        SELECT d.user_id,
                COUNT(DISTINCT CASE WHEN e.type IN ('role_selected','view_as_role') THEN e.role END) AS roles_tried,
                SUM(CASE WHEN e.type = 'tour_completed' THEN 1 ELSE 0 END) AS tours_completed,
                COUNT(DISTINCT CASE WHEN e.type = 'screen_viewed' THEN e.screen_id END) AS screens_viewed,
                COUNT(DISTINCT CASE WHEN e.type = 'feature_used' THEN e.feature_id END) AS features_used,
                COUNT(DISTINCT e.session_id) AS sessions,
                MAX({_DAY}) AS last_seen_day
-        FROM tester_device d LEFT JOIN tester_event e ON e.device_hash = d.device_hash
-        WHERE {_OK} GROUP BY d.device_hash""",
+        FROM tester_device d LEFT JOIN tester_event e ON e.user_id = d.user_id
+        WHERE {_OK} GROUP BY d.user_id""",
     "v_role_funnel": f"""
-        SELECT 'selected' AS stage, COUNT(DISTINCT e.device_hash) AS devices FROM tester_event e
-          JOIN tester_device d ON d.device_hash = e.device_hash
+        SELECT 'selected' AS stage, COUNT(DISTINCT e.user_id) AS devices FROM tester_event e
+          JOIN tester_device d ON d.user_id = e.user_id
           WHERE {_OK} AND e.type IN ('role_selected','view_as_role')
         UNION ALL
-        SELECT 'screen', COUNT(DISTINCT e.device_hash) FROM tester_event e
-          JOIN tester_device d ON d.device_hash = e.device_hash
+        SELECT 'screen', COUNT(DISTINCT e.user_id) FROM tester_event e
+          JOIN tester_device d ON d.user_id = e.user_id
           WHERE {_OK} AND e.type = 'screen_viewed' AND e.screen_id NOT IN ('roles','judge')
         UNION ALL
-        SELECT 'feature', COUNT(DISTINCT e.device_hash) FROM tester_event e
-          JOIN tester_device d ON d.device_hash = e.device_hash
+        SELECT 'feature', COUNT(DISTINCT e.user_id) FROM tester_event e
+          JOIN tester_device d ON d.user_id = e.user_id
           WHERE {_OK} AND e.type = 'feature_used'""",
     "v_tour_funnel": f"""
-        SELECT e.type || ':' || COALESCE(e.step_id, '') AS stage, COUNT(DISTINCT e.device_hash) AS devices
-        FROM tester_event e JOIN tester_device d ON d.device_hash = e.device_hash
+        SELECT e.type || ':' || COALESCE(e.step_id, '') AS stage, COUNT(DISTINCT e.user_id) AS devices
+        FROM tester_event e JOIN tester_device d ON d.user_id = e.user_id
         WHERE {_OK} AND e.type IN ('tour_started','tour_step_viewed','tour_completed','tour_skipped')
         GROUP BY e.type, e.step_id""",
     "v_daily_activity": f"""
-        SELECT {_DAY} AS day, COUNT(DISTINCT e.device_hash) AS testers,
+        SELECT {_DAY} AS day, COUNT(DISTINCT e.user_id) AS testers,
                COUNT(DISTINCT e.session_id) AS sessions, COUNT(*) AS events
-        FROM tester_event e JOIN tester_device d ON d.device_hash = e.device_hash
+        FROM tester_event e JOIN tester_device d ON d.user_id = e.user_id
         WHERE {_OK} GROUP BY {_DAY}""",
 }
 

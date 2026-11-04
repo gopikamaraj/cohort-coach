@@ -49,7 +49,7 @@ from services.api.db import (
     SimObservation,
     ThreadPost,
 )
-from services.api.devicestore import DeviceDoc
+from services.api.devicestore import UserDoc
 from services.api.feedback import ADMIN
 from services.api.profiles import SESSION
 from services.cohort_chat.models import ChatTimeout, PostMeta
@@ -57,6 +57,8 @@ from services.cohort_run.models import CohortRun
 from services.demo.models import DemoAiRead, DemoSession
 from services.modules.models import (
     CheckinShare,
+    CohortPlan,
+    CohortPlanModule,
     ModuleEvent,
     ModuleFeedback,
     ModuleReview,
@@ -76,8 +78,8 @@ SCOPES: dict[str, tuple[Any, ...]] = {
     "testers": (TesterFeedback, TesterEvent, TesterDevice),
     "demo": (DemoAiRead, DemoSession),
     "papers": (PaperItemRow, PaperReview, PaperAssignment, PaperImport, PaperEvent, PaperRow),
-    "results": (DeviceDoc, ClassTermCount, KeptSheet, ProfileSync, ClassProfileRow, Cohort),
-    "modules": (CheckinShare, ModuleReview, ModuleFeedback, ModuleEvent, TrackModule, Track),
+    "results": (UserDoc, ClassTermCount, KeptSheet, ProfileSync, ClassProfileRow, Cohort),
+    "modules": (CheckinShare, ModuleReview, ModuleFeedback, ModuleEvent, TrackModule, Track, CohortPlanModule, CohortPlan),
     "cohorts": (ClassCohort, CohortRun),
     "cohort_chat": (
         PostMeta, ChatTimeout, ThreadPost, AiReplyDraft, ChatMessage, ChatThread, ChatConfig,
@@ -96,6 +98,7 @@ KEPT_TABLES = {
     "school": "schools and classes are set up, not test data",
     "classroom": "schools and classes are set up, not test data",
     "assignment": "schools and classes are set up, not test data",
+    "users": "the nicknames people signed up with (the user ids)",
     "teachers": "teacher identities and consent",
     "consents": "teacher identities and consent",
     "channel_links": "teacher identities and consent",

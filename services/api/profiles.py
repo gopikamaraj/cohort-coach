@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Counts-only class profiles and the simulated block summary.
 
 A profile is what the phone's diagnosis produced for the whole class: how many children showed
@@ -9,18 +10,18 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Iterator
-from functools import cache
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy import select
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 
 from engine.model import ErrorCode
-from services.api.db import Base, ProfileSync, make_engine
+from services.api.db import ProfileSync
+from services.api.dbsession import SESSION, _factory, get_session  # noqa: F401  (in dbsession so identity can use them)
+from services.api.identity import user_of
 from services.api.roles import require
 
 router = APIRouter(prefix="/api", tags=["profiles"])
@@ -69,37 +70,14 @@ class ProfileIn(BaseModel):
         return self
 
 
-@cache
-def _factory() -> sessionmaker[Session]:
-    engine = make_engine()
-    Base.metadata.create_all(engine)
-    from services.modules import migrate
-
-    migrate.widen_answer_column(engine)
-    migrate.widen_profile_form(engine)
-    factory = sessionmaker(engine, expire_on_commit=False)
-    with factory() as db:
-        migrate.tried_to_worked(db)  # rows made before "tried" became "worked"
-        from services.api.seed import fix_sequences
-
-        fix_sequences(db)  # Postgres: counters past any rows copied in with their own ids
-    return factory
-
-
-def get_session() -> Iterator[Session]:
-    with _factory()() as s:
-        yield s
-
-
-SESSION = Depends(get_session)
 
 
 @router.post("/classes/{class_id}/profile", dependencies=[Depends(require("profile.sync"))])
-def post_profile(class_id: str, body: ProfileIn, db: Session = SESSION) -> dict[str, Any]:
+def post_profile(class_id: str, body: ProfileIn, uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
     if not CLASS_ID.match(class_id):
         raise HTTPException(422, "The class id must be the random id the app made for this class.")
     row = db.execute(
-        select(ProfileSync).where(ProfileSync.class_id == class_id, ProfileSync.term == body.term)
+        select(ProfileSync).where(ProfileSync.owner == uid, ProfileSync.class_id == class_id, ProfileSync.term == body.term)
     ).scalar_one_or_none()
     values = {
         "form": body.form,
@@ -110,7 +88,7 @@ def post_profile(class_id: str, body: ProfileIn, db: Session = SESSION) -> dict[
         "simulated": body.simulated,
     }
     if row is None:
-        db.add(ProfileSync(class_id=class_id, term=body.term, **values))
+        db.add(ProfileSync(owner=uid, class_id=class_id, term=body.term, **values))
     else:
         for k, v in values.items():
             setattr(row, k, v)

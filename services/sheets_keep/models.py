@@ -21,11 +21,11 @@ def _now() -> datetime:
 
 class KeptSheet(Base):
     __tablename__ = "kept_sheet"
-    __table_args__ = (UniqueConstraint("class_id", "device", "check_id", "roll"),)
+    __table_args__ = (UniqueConstraint("class_id", "owner", "check_id", "roll"),)
 
     id: Mapped[str] = mapped_column(String(24), primary_key=True)
     class_id: Mapped[str] = mapped_column(String(40), index=True)
-    device: Mapped[str] = mapped_column(String(64))  # the phone's random id: no name
+    owner: Mapped[str] = mapped_column(String(32))  # the user id (the normalised nickname)
     check_id: Mapped[str] = mapped_column(String(60))  # "<class id>:<term>"
     roll: Mapped[int] = mapped_column(Integer)
     object_key: Mapped[str] = mapped_column(String(100))

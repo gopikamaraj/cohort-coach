@@ -6,12 +6,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from services.api.cohorts import lifecycle
 from services.api.cohorts.routes import _teacher, person_id
+from services.api.identity import user_of
 from services.api.profiles import SESSION
 from services.api.roles import role_of
 from services.cohort_chat import service
@@ -58,61 +59,61 @@ class TimeoutIn(BaseModel):
 
 
 @router.get("/mine")
-def mine(role: str = Depends(role_of), x_device_id: str | None = Header(default=None), db: Session = SESSION) -> list[dict[str, Any]]:
+def mine(role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> list[dict[str, Any]]:
     """The cohorts a teacher can chat in: made for her own class, joined, or open to join."""
-    actor = _actor(role, db, x_device_id, None)
+    actor = _actor(role, db, uid, uid)
     if actor.role != "teacher":
         raise HTTPException(403, "This list is for teachers.")
     return service.my_cohorts(db, actor.person)
 
 
 @router.get("/inbox")
-def inbox(role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, Any]:
-    actor = _actor(role, db, x_device_id, x_person)
+def inbox(role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    actor = _actor(role, db, uid, uid)
     return _run(lambda: service.inbox(db, actor))
 
 
 @router.get("/{cohort_id}")
-def thread_view(cohort_id: str, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, Any]:
-    actor = _actor(role, db, x_device_id, x_person)
+def thread_view(cohort_id: str, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    actor = _actor(role, db, uid, uid)
     return _run(lambda: service.thread_view(db, cohort_id, actor))
 
 
 @router.post("/{cohort_id}/messages")
-def post_message(cohort_id: str, body: MessageIn, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, Any]:
-    actor = _actor(role, db, x_device_id, x_person)
+def post_message(cohort_id: str, body: MessageIn, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    actor = _actor(role, db, uid, uid)
     return _run(lambda: service.post_message(db, cohort_id, actor, body.kind, body.text, body.language, reply_to=body.reply_to))
 
 
 @router.post("/{cohort_id}/messages/{post_id}/resolve")
-def resolve(cohort_id: str, post_id: str, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
-    actor = _actor(role, db, x_device_id, x_person)
+def resolve(cohort_id: str, post_id: str, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
+    actor = _actor(role, db, uid, uid)
     _run(lambda: service.resolve(db, cohort_id, actor, post_id))
     return {"ok": True}
 
 
 @router.post("/{cohort_id}/messages/{post_id}/correct")
-def correct(cohort_id: str, post_id: str, body: CorrectIn, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, Any]:
-    actor = _actor(role, db, x_device_id, x_person)
+def correct(cohort_id: str, post_id: str, body: CorrectIn, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    actor = _actor(role, db, uid, uid)
     return _run(lambda: service.correct_ai(db, cohort_id, actor, post_id, body.text, body.language))
 
 
 @router.post("/{cohort_id}/messages/{post_id}/moderate")
-def moderate(cohort_id: str, post_id: str, body: ModerateIn, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
-    actor = _actor(role, db, x_device_id, x_person)
+def moderate(cohort_id: str, post_id: str, body: ModerateIn, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
+    actor = _actor(role, db, uid, uid)
     _run(lambda: service.moderate(db, cohort_id, actor, post_id, body.action))
     return {"ok": True}
 
 
 @router.post("/{cohort_id}/messages/{post_id}/report")
-def report(cohort_id: str, post_id: str, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, bool]:
-    actor = _actor(role, db, x_device_id, x_person)
+def report(cohort_id: str, post_id: str, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, bool]:
+    actor = _actor(role, db, uid, uid)
     _run(lambda: service.report(db, cohort_id, actor, post_id))
     return {"ok": True}
 
 
 @router.put("/{cohort_id}/timeout")
-def set_timeout(cohort_id: str, body: TimeoutIn, role: str = Depends(role_of), x_device_id: str | None = Header(default=None), x_person: str | None = Header(default=None), db: Session = SESSION) -> dict[str, Any]:
-    actor = _actor(role, db, x_device_id, x_person)
+def set_timeout(cohort_id: str, body: TimeoutIn, role: str = Depends(role_of), uid: str = Depends(user_of), db: Session = SESSION) -> dict[str, Any]:
+    actor = _actor(role, db, uid, uid)
     seconds = _run(lambda: service.set_timeout(db, cohort_id, actor, body.seconds))
     return {"seconds": seconds}

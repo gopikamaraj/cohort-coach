@@ -14,14 +14,14 @@ from services.api.flows.links import sign, verify
 from .test_engine import DEVICE, onboard
 
 
-def test_the_same_external_id_is_the_same_teacher_and_ids_are_random(db: Session) -> None:
+def test_the_same_external_id_is_the_same_teacher_and_a_web_user_is_her_nickname_while_a_chat_id_is_random(db: Session) -> None:
     eng = FlowEngine(db)
     a = eng.teacher_for("pwa", DEVICE)
     assert eng.teacher_for("pwa", DEVICE).teacher_id == a.teacher_id
     b = eng.teacher_for("telegram", "777")
-    assert (
-        b.teacher_id != a.teacher_id and a.teacher_id.startswith("t-") and len(a.teacher_id) == 18
-    )
+    # a signed-in web user IS the teacher id (her normalised nickname); another channel's chat gets a random one
+    assert a.teacher_id == DEVICE
+    assert b.teacher_id != a.teacher_id and b.teacher_id.startswith("t-") and len(b.teacher_id) == 18
 
 
 def test_a_code_made_in_the_web_app_links_the_bot_to_the_same_teacher_and_state(

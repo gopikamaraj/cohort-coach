@@ -14,10 +14,11 @@ from __future__ import annotations
 import hashlib
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from ai.config import judge_mode
+from services.api.identity import optional_user
 from services.api.ratelimit import RateLimiter, client_ip
 from services.api.roles import require
 from services.assistant import answer, limits, retrieve
@@ -132,7 +133,7 @@ def ask(
     body: AskBody,
     request: Request,
     who: str = Depends(authenticated_role),
-    x_device_id: str | None = Header(default=None, max_length=64),
+    uid: str | None = Depends(optional_user),
 ) -> dict[str, Any]:
     scope = resolve(who, body.view_as, body.surface)
     a = answer.ask(
@@ -140,7 +141,7 @@ def ask(
         question_id=body.question_id,
         text=body.text,
         lang=lang_of(body.lang),
-        session=session_key(request, x_device_id),
+        session=session_key(request, uid),
         caps=limits.CAPS,
     )
     return a.to_dict()

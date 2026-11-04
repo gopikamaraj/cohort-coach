@@ -6,7 +6,7 @@ const ROUTES = ["home", "check", "cards", "practice", "programme", "history", "p
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", '{"core":true,"counts":true,"practice_ai":true,"share_rehearsal":false,"feedback":true,"v":1,"at":1}');
   });
 });

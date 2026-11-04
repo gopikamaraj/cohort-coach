@@ -25,7 +25,7 @@ from ai.validators.mask import mask_personal
 from ai.validators.prefilter import check_prefilter
 from services.api import strings
 from services.api.db import ClassCohort
-from services.modules import branch, library, states
+from services.modules import branch, library, plans, states
 from services.modules.branch import Done
 from services.modules.models import ModuleEvent, ModuleFeedback, Track, TrackModule
 
@@ -144,7 +144,7 @@ def _replan(
     keep = 0
     for i, (approach, smaller) in enumerate(wanted[: max(0, track.cap - n)]):
         existing = planned[i] if i < len(planned) else None
-        due = existing.due_date if existing else cursor + timedelta(days=library.gap_days())
+        due = existing.due_date if existing else (plans.due_for(db, track, n + 1 + i) or cursor + timedelta(days=library.gap_days()))
         if due > track.end_date:
             break
         row = existing or TrackModule(
@@ -188,15 +188,19 @@ def start_track(
         return existing
     start = calendar_day(now)
     length = library.planned_length(error)
+    # The plan is the cohort's: made once, from the library, by the first member who starts it. Every member's
+    # track then follows its templates and due dates, and keeps her own progress, feedback and branch.
+    plan = plans.ensure_plan(db, cohort, error, language, start, end_date, cohort.teacher_id)
     track = Track(
         id="trk-" + secrets.token_hex(6),
         class_cohort_id=cohort.id,
+        plan_id=plan.id,
         teacher_id=cohort.teacher_id,
         error=error,
         language=language if language in library.LANGS else "en",
-        start_date=start,
-        end_date=end_date or start + timedelta(days=library.gap_days() * length),
-        cap=library.cap(),
+        start_date=plan.start_date,
+        end_date=plan.end_date,
+        cap=plan.cap,
         note=None if library.has_plan(error) else "no plan for this error: one module",
     )
     try:
@@ -209,17 +213,16 @@ def start_track(
     _event(db, track, "track_started", "system", now, planned=length, plan=library.has_plan(error))
     if track.note:
         _event(db, track, "no_plan", "system", now, error=error)
-    plan = library.plan_for(error)
-    for i, t in enumerate(plan.templates[:length]):
+    for pm in plans.modules_of_plan(db, plan.id):
         db.add(
             TrackModule(
                 id="mod-" + secrets.token_hex(6),
                 track_id=track.id,
-                number=i + 1,
-                template_id=_template_id(error, t.approach, False),
-                approach_id=t.approach,
-                title=library.title(error, t.approach, track.language),
-                due_date=start + timedelta(days=library.gap_days() * i),
+                number=pm.number,
+                template_id=pm.template_id,
+                approach_id=pm.approach_id,
+                title=library.title(error, pm.approach_id or "", track.language),
+                due_date=pm.due_date,
                 status=states.PLANNED,
             )
         )
@@ -267,7 +270,8 @@ def generate_module(
     due = (
         row.due_date
         if row
-        else (prev.due_date if prev else track.start_date) + timedelta(days=library.gap_days())
+        else plans.due_for(db, track, number)  # the cohort's calendar
+        or (prev.due_date if prev else track.start_date) + timedelta(days=library.gap_days())
     )
     default = branch.next_module(plan, _history(rows), answer, track.cap)
     result = branch.next_module(plan, _history(rows), answer, track.cap, prefer=prefs.approaches)
@@ -713,7 +717,7 @@ def tracks_of(db: Session, teacher_id: str, cohort_id: str | None = None) -> lis
 def coach_counts(db: Session, cohort_id: str, now: datetime) -> dict[str, Any]:
     """Per module of a cohort's track: how many are at it, downloaded it, answered, and what is overdue
     or failed. Counts only: no teacher id and no name leave this function."""
-    tracks = list(db.execute(select(Track).where(Track.class_cohort_id == cohort_id)).scalars())
+    tracks = plans.tracks_in_group(db, cohort_id)
     today = job_day(now)
     per: dict[int, dict[str, Any]] = {}
 
@@ -826,7 +830,8 @@ def shift_dates(db: Session, cohort_id: str, days: int, reason: str, now: dateti
         raise ModulesError("bad_shift", "Shift by 1 to 60 days, earlier or later.")
     reason = _clean_reason(reason)
     moved = 0
-    for track in db.execute(select(Track).where(Track.class_cohort_id == cohort_id)).scalars():
+    plans.shift_plan(db, cohort_id, days)
+    for track in plans.tracks_in_group(db, cohort_id):
         if track.status != "active":
             continue
         rows = modules_of(db, track.id)

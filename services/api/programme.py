@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """My programme (where is my cohort, my mentor, my lessons) and the classroom-observation signal.
 
 Counts and choices only: nothing here names another class, teacher or child. A real class that has
@@ -17,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 
 from services.api.db import SimObservation
+from services.api.identity import user_of
 from services.api.profiles import BLOCK_PATH, CLASS_ID, SESSION
 from services.api.roles import require
 from services.practice.content import LANGS
@@ -41,9 +43,13 @@ def _block() -> dict[str, Any]:
 
 
 @router.get("/programme/{class_id}", dependencies=[Depends(require("programme.view_own"))])
-def programme(class_id: str, track: str | None = Query(None)) -> dict[str, Any]:
+def programme(class_id: str, track: str | None = Query(None), uid: str = Depends(user_of), db=SESSION) -> dict[str, Any]:  # type: ignore[no-untyped-def]
     if not CLASS_ID.match(class_id):
         raise HTTPException(422, "Unknown class id.")
+    from services.api.devicestore import UserDoc
+
+    if db.get(UserDoc, (uid, "classes", class_id)) is None:  # a class is its owner plus its code
+        raise HTTPException(403, "That class is not yours.")
     if track is not None and track not in TRACKS:
         raise HTTPException(422, "Unknown track.")
     simulated = class_id.startswith("sim-")

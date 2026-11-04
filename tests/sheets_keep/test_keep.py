@@ -33,6 +33,15 @@ class Env:
     def __init__(self, client: TestClient, store: LocalBlobStore, factory: sessionmaker[Session]):
         self.client, self.store, self.factory = client, store, factory
 
+    def own(self, device: str, cls: str) -> None:
+        """A class is its owner plus its code: give the user the class the request names."""
+        from services.api.devicestore import UserDoc
+
+        with self.factory() as db:
+            if db.get(UserDoc, (device, "classes", cls)) is None:
+                db.add(UserDoc(owner=device, collection="classes", doc_id=cls, data={"id": cls}))
+                db.commit()
+
     def put(
         self,
         roll: int = 3,
@@ -43,15 +52,17 @@ class Env:
         check: str = CHECK,
         data: bytes | None = None,
     ):  # type: ignore[no-untyped-def]
+        self.own(device, cls)
         return self.client.put(
             f"/api/sheet-keep/{check}/{roll}",
             files={"image": ("s.jpg", data or jpeg(), "image/jpeg")},
             data={"consent": consent},
-            headers={"X-Role": "teacher", "X-Class-Id": cls, "X-Device-Id": device},
+            headers={"X-Role": "teacher", "X-Class-Id": cls, "X-User": device},
         )
 
     def hdr(self, device: str = "device-aaaa1", cls: str = "c-own1") -> dict[str, str]:
-        return {"X-Role": "teacher", "X-Class-Id": cls, "X-Device-Id": device}
+        self.own(device, cls)
+        return {"X-Role": "teacher", "X-Class-Id": cls, "X-User": device}
 
 
 @pytest.fixture
@@ -144,7 +155,7 @@ def test_without_a_bucket_it_says_so_and_keeps_nothing(tmp_path: Path) -> None:
     app = create_app()
     app.dependency_overrides[keep.get_store] = lambda: None
     c = TestClient(app)
-    h = {"X-Role": "teacher", "X-Class-Id": "c-own1", "X-Device-Id": "device-aaaa1"}
+    h = {"X-Role": "teacher", "X-Class-Id": "c-own1", "X-User": "device-aaaa1"}
     assert c.get("/api/sheet-keep/status", headers=h).json() == {
         "enabled": False,
         "retention_days": 60,

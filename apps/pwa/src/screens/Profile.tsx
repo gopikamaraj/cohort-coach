@@ -16,8 +16,8 @@ import { sendFeedback, type FeedbackKind } from "../lib/feedback";
 import { LANG_NAMES, LANGS, isLang } from "../i18n";
 import { InstallEntry } from "../components/install";
 import { TesterSettings } from "../components/TesterUI";
-import { getPrefs, setNickname, subscribePrefs } from "../lib/tester";
 import { useApp } from "../state";
+import { SignInForm } from "../components/SignInForm";
 import { useConsent } from "../lib/useConsent";
 
 const mb = (n: number) => (n / 1_000_000).toFixed(1);
@@ -26,29 +26,10 @@ const bytes = (n: number) => (n < 1_000_000 ? `${(n / 1000).toFixed(n < 10_000 ?
 /** A nickname for this phone: shown after "Viewing as" in the title bar, so two teachers on two phones are told apart. */
 function NicknameField() {
   const { tr } = useApp();
-  const toast = useToast();
-  const saved = useSyncExternalStore(subscribePrefs, getPrefs, getPrefs).nickname;
-  const [name, setName] = useState(saved);
   return (
     <section className="panel" aria-labelledby="nick-title" data-testid="nickname-panel">
-      <h2 id="nick-title">{tr("profile.nickname_title")}</h2>
-      <label className="field">
-        <span>{tr("profile.nickname_label")}</span>
-        <input type="text" value={name} maxLength={30} onChange={(e) => setName(e.target.value)} autoComplete="off" data-testid="nickname-input" />
-      </label>
-      <p className="muted">{tr("profile.nickname_note")}</p>
-      <button
-        type="button"
-        className="btn btn-secondary"
-        disabled={name.trim() === saved}
-        onClick={() => {
-          setNickname(name);
-          toast(tr("profile.nickname_saved"));
-        }}
-        data-testid="nickname-save"
-      >
-        {tr("profile.nickname_save")}
-      </button>
+      <h2 id="nick-title">{tr("signin.title")}</h2>
+      <SignInForm testid="nickname-panel-form" />
     </section>
   );
 }

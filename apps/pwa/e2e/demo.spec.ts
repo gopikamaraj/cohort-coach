@@ -12,7 +12,7 @@ async function fresh(page: Page, lang = "en") {
   await page.goto("/");
   await page.evaluate(
     ([c, l]) => {
-      localStorage.clear();
+      (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
       localStorage.setItem("cc.consent", c);
       localStorage.setItem("cc.role", "judge");
       localStorage.setItem("cc.lang", l);

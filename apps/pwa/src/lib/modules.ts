@@ -2,8 +2,8 @@
 // which module comes next and holds every module and answer; this phone shows them. The last view read is kept
 // per track only so the module text and downloaded audio still open when the phone is offline; it is replaced
 // by the server's view whenever the phone is online, and it holds no child, no name and no roll number.
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
 
 export type ModuleStatus = "planned" | "ready" | "downloaded" | "feedback_given" | "completed" | "skipped" | "expired";
 export type Answer = "worked" | "partly" | "not_yet" | "not_tried";
@@ -63,8 +63,7 @@ export class ModuleError extends Error {
 
 async function call<T>(path: string, init: { method?: string; body?: unknown; role?: "teacher" | "coach" } = {}, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<T> {
   const role = init.role ?? "teacher";
-  const headers: Record<string, string> = { "Content-Type": "application/json", "X-Role": role };
-  if (role === "teacher") headers["X-Device-Id"] = deviceId();
+  const headers: Record<string, string> = { "Content-Type": "application/json", "X-Role": role, ...userHeader() };
   let res: Response;
   try {
     res = await fetchFn(`${API_BASE}/api/modules${path}`, { method: init.method ?? "GET", headers, body: init.body === undefined ? undefined : JSON.stringify(init.body) });
@@ -283,7 +282,7 @@ export async function shareCheckin(trackId: string, number: number, lang: string
   try {
     res = await (fetchFn ?? ((...a: Parameters<typeof fetch>) => fetch(...a)))(`${API_BASE}/api/modules/tracks/${trackId}/modules/${number}/checkin/share?lang=${lang}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Role": "teacher", "X-Device-Id": deviceId() },
+      headers: { "Content-Type": "application/json", "X-Role": "teacher", ...userHeader() },
       body: JSON.stringify(body),
     });
   } catch {

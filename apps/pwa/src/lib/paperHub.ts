@@ -1,7 +1,7 @@
 // The Papers page's API calls: import from a PDF, the scoped list and detail, assignments. The
 // server decides who may do what and computes every answer; this file sends and shows. Counts only.
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
+import { userHeader } from "./identity";
 
 export type HubRole = "teacher" | "mentor" | "coach";
 
@@ -26,9 +26,8 @@ export interface HubIdentity {
 }
 
 export async function hcall<T>(path: string, who: HubIdentity, init: { method?: string; body?: unknown; form?: FormData } = {}): Promise<T> {
-  const headers: Record<string, string> = { "X-Role": who.role };
+  const headers: Record<string, string> = { "X-Role": who.role, ...userHeader() };
   if (who.classId) headers["X-Class-Id"] = who.classId;
-  headers["X-Device-Id"] = deviceId();
   if (init.body !== undefined) headers["Content-Type"] = "application/json";
   let res: Response;
   try {
@@ -49,7 +48,7 @@ export async function hcall<T>(path: string, who: HubIdentity, init: { method?: 
 }
 
 export async function hblob(path: string, who: HubIdentity): Promise<Blob> {
-  const headers: Record<string, string> = { "X-Role": who.role, "X-Device-Id": deviceId() };
+  const headers: Record<string, string> = { "X-Role": who.role, ...userHeader() };
   if (who.classId) headers["X-Class-Id"] = who.classId;
   const res = await fetch(`${API_BASE}/api/paper-hub${path}`, { headers });
   if (!res.ok) throw new HubError(res.status);

@@ -1,7 +1,7 @@
 // The gated cohort chat client: types and calls. The server decides who may post, what is hidden, when the
 // AI answers and who may correct; nothing here decides any of that. No name or id comes back, only labels.
+import { userHeader } from "./identity";
 import { API_BASE } from "./api";
-import { deviceId } from "./consent";
 
 export type ChatRole = "teacher" | "mentor" | "coach";
 export type MessageKind = "question" | "reply" | "tip" | "ai_reply" | "correction" | "system";
@@ -63,8 +63,7 @@ export class ChatError extends Error {
 }
 
 async function call<T>(path: string, role: ChatRole, init: { method?: string; body?: unknown } = {}, fetchFn: typeof fetch = (...a) => fetch(...a)): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json", "X-Role": role };
-  if (role === "teacher") headers["X-Device-Id"] = deviceId();
+  const headers: Record<string, string> = { "Content-Type": "application/json", "X-Role": role, ...userHeader() };
   let res: Response;
   try {
     res = await fetchFn(`${API_BASE}/api/cohort-chat${path}`, { method: init.method ?? "GET", headers, body: init.body === undefined ? undefined : JSON.stringify(init.body) });

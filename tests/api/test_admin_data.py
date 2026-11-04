@@ -39,15 +39,15 @@ def api(
     with factory() as s:
         s.add(Feedback(kind="app", rating=4, text="ok", language="en", role="teacher"))
         s.add(SimObservation(scenario="SUB-SFL", language="en", likeness="like", differences=[]))
-        s.add(TesterDevice(device_hash="a" * 64, nickname="Asha"))
+        s.add(TesterDevice(user_id="asha", nickname="Asha"))
         s.add(
             TesterEvent(
-                event_id="e1", device_hash="a" * 64, session_id="s", ts=datetime.now(UTC), type="x"
+                event_id="e1", user_id="asha", session_id="s", ts=datetime.now(UTC), type="x"
             )
         )
         s.add(
             TesterFeedback(
-                device_hash="a" * 64, rating=5, tags=["clear"], comment="easy", role="teacher"
+                user_id="asha", rating=5, tags=["clear"], comment="easy", role="teacher"
             )
         )
         s.add(DemoSession(id="demo-1", scenario="SUB-SFL", seed=1, class_code="3A", state={}))
@@ -93,7 +93,7 @@ def test_testers_own_inputs_are_listed_without_a_device_id(api: Any) -> None:
     assert body["devices"] == 1 and body["events"] == 1
     fb = body["feedback"][0]
     assert (fb["rating"], fb["tags"], fb["comment"]) == (5, ["clear"], "easy")
-    assert "device_hash" not in fb and "nickname" not in str(body)
+    assert "user_id" not in fb and "nickname" not in str(body)
 
 
 def test_deleting_needs_the_word_and_a_known_scope(api: Any) -> None:

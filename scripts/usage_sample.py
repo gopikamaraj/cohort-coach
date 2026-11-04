@@ -35,7 +35,7 @@ from services.usage import store as usage_store  # noqa: E402
 from services.usage.meter import MeteredProvider  # noqa: E402
 from tests.speech.test_lessons import Scripted, Speech, Store  # noqa: E402
 
-HEAD = {"X-Role": "teacher", "X-Device-Id": f"{7:016x}"}
+HEAD = {"X-Role": "teacher", "X-User": "usage sample"}  # registered in main() before use
 OUT = ROOT / "docs" / "build" / "reports" / "USAGE-SAMPLE.md"
 
 
@@ -110,6 +110,7 @@ def main() -> None:
     app.dependency_overrides[get_speech] = lambda: speech
     app.dependency_overrides[get_audio_store] = lambda: audio_store
     client = TestClient(app)
+    client.post("/api/users/register", json={"nickname": "usage sample"})
 
     # 1. Download audio: one request, the server writes the spoken script and voices it chunk by chunk
     a1 = "aaaaaaaa-0000-4000-8000-000000000001"

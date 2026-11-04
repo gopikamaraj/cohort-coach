@@ -12,7 +12,7 @@ Home says how many children you checked this term and what your class's focus is
 
 ### Enter check
 
-You enter what each child wrote on the ten-question check. You can photograph the answer sheets in roll order, or type the answers. The phone shows which boxes it could not read and asks you to confirm them. A sheet photo is read once and not kept, and no child's name is ever entered.
+You enter what each child wrote on the ten-question check. You can photograph the answer sheets in roll order, or type the answers. The phone shows which boxes it could not read and asks you to confirm them. A sheet photo is held in memory only while it is read, unless you choose to keep your approved sheets for 60 days; no child's name is ever entered.
 
 ### My class
 

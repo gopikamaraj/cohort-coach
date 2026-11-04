@@ -30,8 +30,9 @@ NOW = {"t": datetime(2026, 11, 2, 10, 0, tzinfo=IST)}
 
 def h(role: str, device: str | None = None) -> dict[str, str]:
     out = {"X-Role": role}
-    if device:
-        out["X-Device-Id"] = device
+    who = device or (f"{role}-demo" if role != "teacher" else None)  # a staff account is a user too
+    if who:
+        out["X-User"] = who
     return out
 
 
@@ -57,6 +58,20 @@ def make_cohort(client: TestClient, device: str = DEV1) -> str:
     r = client.post("/api/cohorts/class-only", json=BODY, headers=h("teacher", device))
     assert r.status_code == 200, r.text
     return str(r.json()["id"])
+
+
+def coach_group(client: TestClient, cid: str, coach: str = "coach-demo") -> str:
+    """Put the teacher's cohort in a cohort a coach made, so that coach is assigned to it (a coach reaches only
+    the cohorts assigned to her). Returns the coach's cohort id."""
+    from services.api.db import ClassCohort
+
+    session = client.app.dependency_overrides[get_session]  # type: ignore[attr-defined]
+    with next(session()) as db:
+        db.add(ClassCohort(id="cc-grp-test", teacher_id="coach-cohorts", check_id="coach:ADD-NOCARRY", name="G", scope="coach", errors=["ADD-NOCARRY"], counts={"_coach": coach, "_members": {}}, children_checked=20))
+        row = db.get(ClassCohort, cid)
+        row.group_id = "cc-grp-test"  # type: ignore[union-attr]
+        db.commit()
+    return "cc-grp-test"
 
 
 def start(client: TestClient, cid: str, device: str = DEV1, language: str = "en") -> dict:
@@ -156,7 +171,7 @@ def test_the_coach_sees_counts_and_no_teacher(client: TestClient) -> None:
         json={"answer": "worked"},
         headers=h("teacher", DEV1),
     )
-    r = client.get(f"/api/modules/coach/cohorts/{cid}", headers=h("coach"))
+    r = client.get(f"/api/modules/coach/cohorts/{coach_group(client, cid)}", headers=h("coach", "coach-demo"))
     assert r.status_code == 200
     body = r.json()
     assert body["modules"][0]["feedback"]["worked"] == 1 and body["tracks"] == 1
@@ -182,6 +197,7 @@ def test_roles_are_enforced(client: TestClient) -> None:
 def test_a_coach_shifts_dates_and_the_teacher_sees_the_new_ones(client: TestClient) -> None:
     cid = make_cohort(client)
     view = start(client, cid)
+    cid = coach_group(client, cid)
     r = client.post(
         f"/api/modules/coach/cohorts/{cid}/shift",
         json={"days": 3, "reason": "holiday"},

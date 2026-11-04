@@ -15,7 +15,7 @@ import secrets
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -24,6 +24,7 @@ from ai.validators.thread import check_thread_post
 from engine.model import ErrorCode
 from services.api.cohorts.routes import _teacher
 from services.api.db import ClassCohort
+from services.api.identity import user_of
 from services.api.profiles import SESSION
 from services.api.roles import require
 
@@ -61,10 +62,10 @@ def view(row: ClassCohort) -> dict[str, Any]:
 def make(
     body: MakeIn,
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> dict[str, Any]:
-    teacher = _teacher(db, x_device_id)
+    teacher = _teacher(db, uid)
     if not CHECK_ID.match(body.check_id):
         raise HTTPException(422, "The check id is not valid.")
     if not set(body.errors) <= CODES or len(set(body.errors)) != len(body.errors):
@@ -116,16 +117,16 @@ COACH_OWNER = "coach-cohorts"
 
 @router.post("/coach")
 def make_for_coach(
-    body: CoachMakeIn, _: str = Depends(require("coach.moderate")), db: Session = SESSION
+    body: CoachMakeIn, _: str = Depends(require("coach.moderate")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
-    return _make_group(body, db)
+    return _make_group(body, db, coach=uid)
 
 
 @router.post("/officer")
 def make_for_officer(
-    body: CoachMakeIn, _: str = Depends(require("officer.approve_cohorts")), db: Session = SESSION
+    body: CoachMakeIn, _: str = Depends(require("officer.approve_cohorts")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> dict[str, Any]:
-    return _make_group(body, db)
+    return _make_group(body, db, coach=None)
 
 
 @router.get("/officer")
@@ -135,14 +136,16 @@ def for_officer(
     return [view(r) for r in db.execute(select(ClassCohort)).scalars()]
 
 
-def _group_for(db: Session, code: str) -> ClassCohort | None:
-    """The cohort already formed for a mistake. Ones formed before terms were removed are named `coach:CODE:1`."""
-    return db.execute(
-        select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id.like(f"coach:{code}%"))
-    ).scalars().first()
+def _group_for(db: Session, code: str, coach: str | None = None) -> ClassCohort | None:
+    """The cohort already formed for a mistake by this coach (or by the officer when `coach` is None). Ones
+    formed before terms were removed are named `coach:CODE:1`."""
+    for g in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.check_id.like(f"coach:{code}%"))).scalars():
+        if g.counts.get("_coach") == coach:
+            return g
+    return None
 
 
-def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
+def _make_group(body: CoachMakeIn, db: Session, coach: str | None = None) -> dict[str, Any]:
     """A coach or the officer forms a cohort from the entered classes that show one mistake (each class by its most recent check), counts added up.
     One per mistake; a second tap returns the same cohort."""
     from services.api.devicestore import entered_summary
@@ -156,7 +159,7 @@ def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
     if len(picked) < 2:
         raise HTTPException(422, "A cohort needs at least two classes that show this mistake.")
     check_id = f"coach:{body.error}"
-    have = _group_for(db, body.error)
+    have = _group_for(db, body.error, coach)
     if have is not None:
         return view(have)
     problems = check_thread_post(body.name, body.language)
@@ -169,7 +172,7 @@ def _make_group(body: CoachMakeIn, db: Session) -> dict[str, Any]:
         name=body.name.strip(),
         scope="coach",
         errors=[body.error],
-        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked), "_members": {c["_key"]: c["_check"] for c in picked if c.get("_check")}},
+        counts={body.error: sum(c["_counts"][body.error] for c in picked), "_classes": len(picked), "_members": {c["_owner"]: c["_check"] for c in picked if c.get("_check")}, **({"_coach": coach} if coach else {})},
         children_checked=sum(c["children_checked"] for c in picked),
         simulated=False,
     )
@@ -206,19 +209,18 @@ def form_cohorts(
         if n < 2:
             waiting.append(code)
             continue
-        if _group_for(db, code) is not None:
+        if _group_for(db, code, None) is not None:
             already += 1
             continue
         created.append(_make_group(CoachMakeIn(name=f"{_error_label(code)} cohort", error=code), db))
     return {"created": created, "already": already, "waiting": waiting}
 
 
-def _adopt_group_cohorts(db: Session, teacher_id: str, store_key: str | None) -> None:
-    """A cohort the officer formed lists the classes' store keys. When a teacher opens the app with one of those
-    keys she gets her own copy of it (owned by her, on her own check), so everything that works for her own
-    cohort works for it: its track, its chat space, the class page. Pooled counts only."""
-    if not store_key:
-        return
+def _adopt_group_cohorts(db: Session, teacher_id: str) -> None:
+    """A cohort a coach or the officer formed lists the user ids of the classes in it. When one of those users
+    opens the app she gets her own copy of it (owned by her, on her own check), so everything that works for her
+    own cohort works for it: its track, its chat space, the class page. Pooled counts only."""
+    store_key = teacher_id
     mine_checks = {r.check_id for r in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == teacher_id)).scalars()}
     groups = db.execute(select(ClassCohort).where(ClassCohort.teacher_id == COACH_OWNER, ClassCohort.scope == "coach")).scalars().all()
     changed = False
@@ -231,10 +233,11 @@ def _adopt_group_cohorts(db: Session, teacher_id: str, store_key: str | None) ->
                 id="cc-" + secrets.token_hex(6),
                 teacher_id=teacher_id,
                 check_id=check,
+                group_id=g.id,
                 name=g.name,
                 scope="member",
                 errors=g.errors,
-                counts={k: v for k, v in g.counts.items() if k != "_members"},
+                counts={k: v for k, v in g.counts.items() if k not in ("_members", "_coach")},
                 children_checked=g.children_checked,
                 simulated=g.simulated,
             )
@@ -248,12 +251,11 @@ def _adopt_group_cohorts(db: Session, teacher_id: str, store_key: str | None) ->
 @router.get("")
 def mine(
     _: str = Depends(require("cohort.chat")),
-    x_device_id: str | None = Header(default=None),
-    x_store_key: str | None = Header(default=None),
+    uid: str = Depends(user_of),
     db: Session = SESSION,
 ) -> list[dict[str, Any]]:
-    teacher = _teacher(db, x_device_id)
-    _adopt_group_cohorts(db, teacher.teacher_id, x_store_key if x_store_key and re.match(r"^[0-9a-f]{16}$", x_store_key) else None)
+    teacher = _teacher(db, uid)
+    _adopt_group_cohorts(db, teacher.teacher_id)
     rows = db.execute(
         select(ClassCohort).where(ClassCohort.teacher_id == teacher.teacher_id)
     ).scalars()
@@ -263,8 +265,7 @@ def mine(
 
 @router.get("/coach")
 def for_coach(
-    _: str = Depends(require("coach.moderate")), db: Session = SESSION
+    _: str = Depends(require("coach.moderate")), uid: str = Depends(user_of), db: Session = SESSION
 ) -> list[dict[str, Any]]:
-    """The coach's Cohorts view: every class-only cohort, in counts (a class of one is not a
-    figure about another teacher, and the teacher is never named)."""
-    return [view(r) for r in db.execute(select(ClassCohort)).scalars()]
+    """The coach's Cohorts view: the cohorts this coach made, in counts (the teachers are never named)."""
+    return [view(r) for r in db.execute(select(ClassCohort).where(ClassCohort.scope == "coach")).scalars() if r.counts.get("_coach") == uid]

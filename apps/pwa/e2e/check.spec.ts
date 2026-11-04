@@ -7,7 +7,7 @@ const RIGHT = ["346", "728", "85", "74", "82", "35", "38", "26", "43", "54"];
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await page.evaluate((c) => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", c);
   }, CONSENT);
   await startSample(page, { size: 3 });

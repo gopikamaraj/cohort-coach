@@ -21,10 +21,9 @@ DEVICES = [f"{i:016x}" for i in range(1, 7)]
 
 def h(role: str, person: str | None = None, device: str | None = None) -> dict[str, str]:
     out = {"X-Role": role}
-    if person:
-        out["X-Person"] = person
-    if device:
-        out["X-Device-Id"] = device
+    who = person or device or (f"{role}-demo" if role != "teacher" else None)  # a staff account is a user too
+    if who:
+        out["X-User"] = who
     return out
 
 

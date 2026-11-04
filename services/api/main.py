@@ -4,11 +4,12 @@ import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ai.config import load_env
 from engine.sim_switch import check_startup as check_child_model
+from services.api.access import enforce
 from services.api.admin_data import router as admin_data_router
 from services.api.assistant import router as assistant_router
 from services.api.channels.pwa import router as flow_router
@@ -17,6 +18,7 @@ from services.api.cohorts.class_only import router as class_only_router
 from services.api.cohorts.routes import router as cohorts_router
 from services.api.devicestore import router as devicestore_router
 from services.api.feedback import router as feedback_router
+from services.api.identity import router as identity_router
 from services.api.judge import router as judge_router
 from services.api.lesson_audio_api import router as lesson_audio_router
 from services.api.lessons import router as lessons_router
@@ -72,6 +74,7 @@ def create_app() -> FastAPI:
         title="Cohort Coach API",
         version=VERSION,
         lifespan=_tester_lifespan if tester_stats_enabled() else None,
+        dependencies=[Depends(enforce)],  # services/api/access.py
     )
     # Browsers may call the API only from the PWA's own origin (PWA_ORIGIN). No wildcard, and no
     # cookies or credentials.
@@ -83,9 +86,7 @@ def create_app() -> FastAPI:
             allow_headers=[
                 "Content-Type",
                 "X-Admin-Key",
-                "X-Device-Id",
-                "X-Store-Key",
-                "X-Device-Hash",
+                "X-User",
                 "X-Team-Token",
                 "X-Judge",
                 "X-Role",
@@ -107,6 +108,7 @@ def create_app() -> FastAPI:
     app.include_router(modules_router)
     app.include_router(cohort_chat_router)
     app.include_router(devicestore_router)
+    app.include_router(identity_router)
 
     if os.environ.get("SEED_ALL_FILE"):  # fresh deployment: every table copied in once
 

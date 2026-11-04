@@ -40,7 +40,7 @@ const MANIFEST = {
 async function fresh(page: Page) {
   await page.goto("/");
   await page.evaluate((c) => {
-    localStorage.clear();
+    (localStorage.clear(), localStorage.setItem("cc.user", "{\"id\":\"e2e tester\",\"nickname\":\"e2e tester\"}"), localStorage.setItem("cc.cacheOwner", "e2e tester"));
     localStorage.setItem("cc.consent", c);
     localStorage.setItem("cc.role", "teacher");
     localStorage.setItem("cc.lang", "en");

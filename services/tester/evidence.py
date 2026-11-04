@@ -59,14 +59,14 @@ def purge_older_than(db: Session, now: datetime, days: int = 90) -> dict[str, in
     return {"events": n_events, "feedback": n_feedback}
 
 
-def delete_device(db: Session, device_hash: str) -> dict[str, int]:
+def delete_device(db: Session, user_id: str) -> dict[str, int]:
     """Delete every row held for one device hash."""
     out = {
-        "events": db.query(TesterEvent).filter(TesterEvent.device_hash == device_hash).delete(),
+        "events": db.query(TesterEvent).filter(TesterEvent.user_id == user_id).delete(),
         "feedback": db.query(TesterFeedback)
-        .filter(TesterFeedback.device_hash == device_hash)
+        .filter(TesterFeedback.user_id == user_id)
         .delete(),
-        "devices": db.query(TesterDevice).filter(TesterDevice.device_hash == device_hash).delete(),
+        "devices": db.query(TesterDevice).filter(TesterDevice.user_id == user_id).delete(),
     }
     db.commit()
     return out
@@ -77,16 +77,16 @@ def evidence(db: Session, include_flagged: bool = False) -> dict[str, Any]:
     devices = list(db.scalars(select(TesterDevice).where(TesterDevice.consent_stats.is_(True))))
     flagged = [d for d in devices if d.is_judge or d.is_team]
     counted = devices if include_flagged else [d for d in devices if not (d.is_judge or d.is_team)]
-    keep = {d.device_hash for d in counted}
-    events = [e for e in db.scalars(select(TesterEvent)) if e.device_hash in keep]
-    feedback = [f for f in db.scalars(select(TesterFeedback)) if f.device_hash in keep]
+    keep = {d.user_id for d in counted}
+    events = [e for e in db.scalars(select(TesterEvent)) if e.user_id in keep]
+    feedback = [f for f in db.scalars(select(TesterFeedback)) if f.user_id in keep]
 
     by_dev: dict[str, list[TesterEvent]] = defaultdict(list)
     for e in events:
-        by_dev[e.device_hash].append(e)
+        by_dev[e.user_id].append(e)
 
     def devs_with(pred: Any) -> set[str]:
-        return {e.device_hash for e in events if pred(e)}
+        return {e.user_id for e in events if pred(e)}
 
     sessions = {e.session_id for e in events}
     returning = sum(1 for evs in by_dev.values() if len({_day(e.ts) for e in evs}) > 1)
@@ -114,7 +114,7 @@ def evidence(db: Session, include_flagged: bool = False) -> dict[str, Any]:
 
     day_sets: dict[str, set[str]] = defaultdict(set)
     for e in events:
-        day_sets[_day(e.ts)].add(e.device_hash)
+        day_sets[_day(e.ts)].add(e.user_id)
     funnel_role = [
         {"stage": "selected", "testers": len(devs_with(lambda e: e.type in ROLE_EVENTS))},
         {
@@ -150,20 +150,20 @@ def evidence(db: Session, include_flagged: bool = False) -> dict[str, Any]:
 
     ratings_by_dev: dict[str, list[int]] = defaultdict(list)
     for f in feedback:
-        ratings_by_dev[f.device_hash].append(f.rating)
+        ratings_by_dev[f.user_id].append(f.rating)
     table: list[dict[str, Any]] = []
     anon = 0
     for d in sorted(counted, key=lambda x: x.created_at):
-        evs = by_dev.get(d.device_hash, [])
+        evs = by_dev.get(d.user_id, [])
         listed = d.nickname_public
         if not listed:
             anon += 1
-        rs = ratings_by_dev.get(d.device_hash, [])
+        rs = ratings_by_dev.get(d.user_id, [])
         table.append(
             {
                 "name": d.nickname if listed else f"Anonymous tester {anon:02d}",
                 "listed": listed,
-                "hash6": d.device_hash[:6],
+                "hash6": f"#{len(table) + 1:02d}",  # a running number: a tester's id is never shown
                 "roles_tried": len({e.role for e in evs if e.type in ROLE_EVENTS and e.role}),
                 "tours_completed": sum(1 for e in evs if e.type == "tour_completed"),
                 "features_used": len(

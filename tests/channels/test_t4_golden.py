@@ -61,7 +61,7 @@ def world(
 
 
 def web(client: TestClient) -> list[list[tuple]]:  # type: ignore[type-arg]
-    h = {"X-Device-Id": DEVICE, "X-Judge": "1"}
+    h = {"X-User": DEVICE, "X-Judge": "1"}
     out = [client.get("/api/flow/current", headers=h).json()["messages"]]
     for step_id, value in JOURNEY:
         r = client.post("/api/flow/answer", headers=h, json={"step_id": step_id, "value": value})

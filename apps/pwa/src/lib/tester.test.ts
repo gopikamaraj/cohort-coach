@@ -2,7 +2,7 @@ import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CohortDb, db } from "./db";
 import {
-  browserFamily, captureInvite, connectionClass, declineSharing, deleteMyData, deviceClassOf, deviceUuid, durationBucket,
+  browserFamily, captureInvite, connectionClass, declineSharing, deleteMyData, deviceClassOf, durationBucket,
   flush, getPrefs, giveConsent, inviteFromLocation, osFamily, pauseSharing, queueFeedback, queuedCounts, resetForTests, sha256Hex, track,
 } from "./tester";
 
@@ -31,6 +31,7 @@ beforeEach(async () => {
   online = true;
   failEvents = false;
   const mem = new Map<string, string>();
+  mem.set("cc.user", JSON.stringify({ id: "asha", nickname: "Asha" })); // stats are for the signed-in user
   vi.stubGlobal("localStorage", { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) });
   vi.stubGlobal("navigator", { onLine: true, userAgent: "Mozilla/5.0 (Linux; Android 13) Chrome/120 Mobile Safari/537.36" });
   vi.stubGlobal("window", { innerWidth: 390, location: { search: "", hash: "" }, matchMedia: () => ({ matches: false }) });
@@ -95,26 +96,18 @@ describe("consent first", () => {
   });
 });
 
-describe("the device id", () => {
-  it("is a stable random id kept on the device and is not derived from anything about it", async () => {
-    const a = await deviceUuid(store);
-    expect(await deviceUuid(store)).toBe(a);
-    expect(a).toMatch(/^[0-9a-f-]{32,36}$/);
-  });
-  it("hashes with SHA-256 over the salt and the id", async () => {
+describe("who the stats belong to", () => {
+  it("hashes with SHA-256 (the sheet pictures still use it)", async () => {
     expect(await sha256Hex("abc")).toBe("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
   });
-  it("never puts the raw id in any request; only the 64-character salted hash", async () => {
-    const raw = await deviceUuid(store);
+  it("sends no device id or device hash in any request: the server names the row by the signed-in user", async () => {
     giveConsent("Asha", true);
     track("screen_viewed", { screen_id: "home" });
     queueFeedback({ rating: 4, tags: ["easy"], comment: "fine" });
     await flush(fakeFetch(), store);
     const sent = bodies();
     expect(sent.length).toBeGreaterThanOrEqual(3);
-    for (const s of sent) expect(s).not.toContain(raw);
-    const hash = await sha256Hex(SALT + raw);
-    expect(sent.some((s) => s.includes(hash))).toBe(true);
+    for (const s of sent) expect(s).not.toMatch(/device_hash|X-Device|[0-9a-f]{64}/);
     expect(sent.join("\n")).not.toMatch(/Mozilla|userAgent|Android 13/);
   });
 });
@@ -158,18 +151,16 @@ describe("queueing and batches", () => {
 });
 
 describe("Delete my data", () => {
-  it("asks the server to delete by hash, then clears the device and stops sharing", async () => {
-    const before = await deviceUuid(store);
+  it("asks the server to delete this user's rows, then clears the device and stops sharing", async () => {
     giveConsent("Asha", true);
     await flush(fakeFetch(), store);
     const out = await deleteMyData(fakeFetch(), store);
     expect(out).toBe("deleted");
     const del = calls.find((c) => c.init?.method === "DELETE");
     expect(del?.url).toContain("/api/tester/me");
-    expect((del?.init?.headers as Record<string, string>)["X-Device-Hash"]).toMatch(/^[0-9a-f]{64}$/);
+    expect((del?.init?.headers as Record<string, string>)["X-User"]).toBe("asha");
     expect(getPrefs()).toMatchObject({ consent: "no", nickname: "" });
     expect(queuedCounts()).toEqual({ events: 0, feedback: 0 });
-    expect(await deviceUuid(store)).not.toBe(before); // a new random id, if they ever opt in again
   });
   it("still clears the device when the server cannot be reached", async () => {
     giveConsent("Asha", true);
