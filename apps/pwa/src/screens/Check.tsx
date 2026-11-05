@@ -459,7 +459,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const approve = (i: number) => {
     const s = clone();
     if (dataState(setOf(), i) !== "entered") return;
-    if (!pics[i] && !window.confirm(tr("check.approve_nopic"))) return;
+    if (!pics[i] && !window.confirm(tr(keepOn && hasConsent("keep_sheets") ? "check.approve_nopic_keep" : "check.approve_nopic"))) return;
     s.approved.add(i);
     commit(s);
     void keepCopy(i);
@@ -484,13 +484,14 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   // Keep this roll's picture for 60 days after approval, if she agreed. The picture stays on the phone either way.
   const keepCopy = async (i: number) => {
     const p = pics[i];
-    if (!p || !keepOn || !klass || !hasConsent("keep_sheets")) return;
+    if (!p || !klass || !hasConsent("keep_sheets")) return;
     try {
+      if (!keepOn && !(await keepStatus(role, klass.id)).enabled) return; // keeping is not switched on here
       const k = await keepSheet(role, klass.id, checkKey, i + 1, p.blob, p.sha);
       setKept((cur) => ({ ...cur, [i]: k }));
       setKeepNote("");
-    } catch {
-      setKeepNote(tr("check.keep_failed", { n: i + 1 }));
+    } catch (e) {
+      setKeepNote(tr("check.keep_failed", { n: i + 1 }) + (e instanceof Error && /^\d+$/.test(e.message) ? ` (${e.message})` : ""));
     }
   };
 
@@ -704,6 +705,17 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
       ) : !pic ? (
         <p id="no-pic-reason" className="muted">
           {tr("check.no_picture")}
+        </p>
+      ) : null}
+      {keepOn && hasConsent("keep_sheets") && !isAbsent && state !== "not_entered" ? (
+        <p className="muted" role="status" data-testid="keep-state">
+          {kept[child]
+            ? tr("check.keep_state_kept", { date: new Date(kept[child].delete_after).toLocaleDateString(lang) })
+            : approvedNow
+              ? tr("check.keep_state_missed")
+              : pic
+                ? tr("check.keep_state_will")
+                : tr("check.keep_state_nopic")}
         </p>
       ) : null}
       <label className="check">
