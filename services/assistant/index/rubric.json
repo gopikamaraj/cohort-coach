@@ -879,7 +879,7 @@
  },
  {
   "bullet": "Technical depth and guardrails",
-  "claim": "No child name reaches a model, per-child answers stay on the phone, and sheet photos are deleted after reading.",
+  "claim": "No child name reaches a model, per-child answers are saved to the teacher's own account and read only by her user id, and sheet photos are deleted after reading.",
   "code": [
    "ai/validators/mask.py",
    "ai/validators/pii.py",

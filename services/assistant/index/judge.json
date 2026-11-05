@@ -5377,7 +5377,7 @@
 "path": "docs/RUBRIC_MAP.md",
 "section": null,
 "slide_no": null,
-"text": "| A2.4 | Technical depth and guardrails | No child name reaches a model, per-child answers stay on the phone, and sheet photos are deleted after reading. | Built | Privacy rules | `ai/validators/mask.py`, `ai/validators/pii.py`, `services/api/sheets.py`, `services/practice/session.py`, `docs/privacy.md` | `apps/pwa/e2e/stages.spec.ts`, `tests/practice/test_api.py`, `tests/practice/test_session.py` | Teacher · #/check, sample sheets, then watch the network | No sheet photo is stored anywhere; the pilot class's sheets stay in a git-ignored folder on one machine (`CLAUDE.md`, rule 2). | 6 | — |",
+"text": "| A2.4 | Technical depth and guardrails | No child name reaches a model, per-child answers are saved to the teacher's own account and read only by her user id, and sheet photos are deleted after reading. | Built | Privacy rules | `ai/validators/mask.py`, `ai/validators/pii.py`, `services/api/sheets.py`, `services/practice/session.py`, `docs/privacy.md` | `apps/pwa/e2e/stages.spec.ts`, `tests/practice/test_api.py`, `tests/practice/test_session.py` | Teacher · #/check, sample sheets, then watch the network | No sheet photo is stored anywhere; the pilot class's sheets stay in a git-ignored folder on one machine (`CLAUDE.md`, rule 2). | 6 | — |",
 "ts_end": null,
 "ts_start": null
 },
@@ -12449,7 +12449,7 @@
 "path": "docs/channels.md",
 "section": null,
 "slide_no": null,
-"text": "A teacher has one random id (`t-` plus 16 hex). A device id (web) or chat id (Telegram) is linked to it. To use the second channel she asks for an 8-character code (15 minutes, one use) and sends it to the bot (`/start CODE`) or types it in the web app.",
+"text": "A teacher has one id, her nickname (decided 2026-11-03). On the web the nickname is the sign-in; a chat id (Telegram, roadmap) is linked to it. To use the second channel she asks for an 8-character code (15 minutes, one use) and sends it to the bot (`/start CODE`) or types it in the web app.",
 "ts_end": null,
 "ts_start": null
 },
@@ -21315,7 +21315,7 @@
 "path": "docs/ux-gaps.md",
 "section": null,
 "slide_no": null,
-"text": "| 18 | The rehearsal session expired after two hours. Did I lose it? | Transcript stays on the phone; the server session is gone and she is told to start again | P06 follow-up | | 19 | Is the app available when my signal is weak, and what still works? | Documented in `docs/offline.md`; the Practice Class is the only live feature | P14 |",
+"text": "| 18 | The rehearsal session expired after two hours. Did I lose it? | Transcript is saved to her account (only she reads it); the server session is gone and she is told to start again | P06 follow-up | | 19 | Is the app available when my signal is weak, and what still works? | Documented in `docs/offline.md`; the Practice Class is the only live feature | P14 |",
 "ts_end": null,
 "ts_start": null
 },

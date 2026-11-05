@@ -8,11 +8,11 @@
     "product_help": 74,
     "teacher_kb": 0
   },
-  "content_hash": "18a2fcc5c37e14176f40ce93ee1efa0ffb36ddb683a94cfc6bbd5ecabf41b382",
+  "content_hash": "85f3e2f7a2f810307499c260212710c135915f3093b2417e09709af62620e04b",
   "extras": [
     "questions",
     "rubric",
     "submission"
   ],
-  "source_commit": "9e748ee9851f742e7595619a36f6c100dd11e097"
+  "source_commit": "b40490fd1f644b5a52414a6e20485a1ad5ba83ea"
 }

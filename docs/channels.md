@@ -33,7 +33,7 @@ flowchart LR
 
 ## Identity
 
-A teacher has one random id (`t-` plus 16 hex). A device id (web) or chat id (Telegram) is linked to
+A teacher has one id, her nickname (decided 2026-11-03). On the web the nickname is the sign-in; a chat id (Telegram, roadmap) is linked to
 it. To use the second channel she asks for an 8-character code (15 minutes, one use) and sends it to
 the bot (`/start CODE`) or types it in the web app. Her other record on that channel is erased on
 linking. `/stop` in Telegram, and "Delete my data" in either channel, ask once and then erase the

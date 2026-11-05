@@ -21,7 +21,7 @@ Each row is a "where do I find / how do I know" question, in the style of the fi
 | 15 | Which of my feedback changed the product? ("You said, we changed") | Doc only (`docs/feedback-log.md`); not shown in the app | P16 |
 | 16 | As a mentor: what do I record, by when, and what did my card change? | Screen says "later" | P11 |
 | 17 | As a reviewer or officer: what is waiting for me, and how old is it? | Screen says "later" | P09, P12 |
-| 18 | The rehearsal session expired after two hours. Did I lose it? | Transcript stays on the phone; the server session is gone and she is told to start again | P06 follow-up |
+| 18 | The rehearsal session expired after two hours. Did I lose it? | Transcript is saved to her account (only she reads it); the server session is gone and she is told to start again | P06 follow-up |
 | 19 | Is the app available when my signal is weak, and what still works? | Documented in `docs/offline.md`; the Practice Class is the only live feature | P14 |
 | 20 | Text size, read-aloud and low-literacy support | Not built beyond system fonts and 48 px targets | P14 |
 
