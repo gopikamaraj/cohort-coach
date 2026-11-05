@@ -14,7 +14,7 @@ const NEXT: Record<string, string[]> = {
   cancelled: [],
 };
 
-export default function OfficerCohorts() {
+export default function OfficerCohorts({ demo = false }: { demo?: boolean }) {
   const { tr } = useApp();
   const [rows, setRows] = useState<CohortSummary[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -61,7 +61,7 @@ export default function OfficerCohorts() {
             <li key={c.id} data-testid={`cohort-${c.id}`}>
               <strong>{c.error}</strong> · {tr(`officer.status_${c.status}` as Key)} · {tr("officer.cohort_members")}:{" "}
               {c.members ?? tr("officer.cohort_hidden")}
-              {c.simulated ? ` · ${tr("common.simulated")}` : ""}
+              {c.simulated || demo ? ` · ${tr("common.simulated")}` : ""} {/* in the demo no real data stands behind a cohort here */}
               <div>
                 {next.includes("active") ? (
                   <button type="button" className="btn btn-secondary" onClick={() => void move(c.id, "active")} data-testid={`activate-${c.id}`}>

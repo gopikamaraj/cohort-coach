@@ -2499,6 +2499,8 @@
   "coach.make.note": "समूह में वे कक्षाएँ आती हैं जिनमें वही गलती दिखती है। ऐसी गलती चुनें जो कम से कम दो कक्षाओं में दिखे।",
   "coach.make.pick": "गलती",
   "coach.make.pick_line": "{name}: {classes} कक्षाएँ ({who})",
+  "coach.make.pick_one": "{name}: 1 कक्षा",
+  "coach.make.pick_count": "{name}: {classes} कक्षाएँ",
   "coach.make.name": "समूह का नाम",
   "coach.make.create": "समूह बनाएँ",
   "coach.make.error": "समूह नहीं बन सका। नाम जाँचकर फिर कोशिश करें।",

@@ -3656,6 +3656,28 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   gap: var(--s2);
   min-height: 44px;
 }
+.cohort-name-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+.cohort-name-field input {
+  width: 100%;
+  max-width: 36rem;
+  min-height: 48px;
+  padding: 0 var(--s3);
+  font-size: 1.125rem;
+}
+.pick-line {
+  padding: 0 var(--s2);
+  border-radius: var(--s2);
+  color: var(--outline);
+}
+.pick-line.has-classes {
+  background: var(--pen-container);
+  color: var(--on-pen-container);
+  font-weight: 600;
+}
 @media print {
   .no-print,
   .navbar,

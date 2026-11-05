@@ -102,12 +102,17 @@ export function CohortMaker({ who }: { who: "coach" | "officer" }) {
       <ErrorRuleControl name={`rule-${who}-make`} />
       <fieldset className="stack">
         <legend>{tr("coach.make.pick")}</legend>
-        {ERRORS.map((e) => (
-          <label key={e} className="check-line">
-            <input type="radio" name={`${who}-err`} checked={code === e} onChange={() => pick(e)} data-testid={`coach-pick-${e}`} />{" "}
-            {tr("coach.make.pick_line", { name: tr(`err.${e}` as Key), classes: byError(e).length, who: who === "coach" ? byError(e).map((c) => c.class || "?").join(", ") || "-" : "-" })}
-          </label>
-        ))}
+        {ERRORS.map((e) => {
+          const n = byError(e).length;
+          const name = tr(`err.${e}` as Key);
+          const names = who === "coach" ? byError(e).map((c) => c.class || "?").join(", ") : ""; // the officer sees counts only
+          const line = n === 1 ? tr("coach.make.pick_one", { name }) : names ? tr("coach.make.pick_line", { name, classes: n, who: names }) : tr("coach.make.pick_count", { name, classes: n });
+          return (
+            <label key={e} className={`check-line pick-line${n > 0 ? " has-classes" : ""}`} data-has-classes={n > 0 ? "true" : "false"}>
+              <input type="radio" name={`${who}-err`} checked={code === e} onChange={() => pick(e)} data-testid={`coach-pick-${e}`} /> {line}
+            </label>
+          );
+        })}
       </fieldset>
       {code ? (
         <>
@@ -126,7 +131,7 @@ export function CohortMaker({ who }: { who: "coach" | "officer" }) {
               ))}
             </fieldset>
           ) : null}
-          <label>
+          <label className="cohort-name-field">
             {tr("coach.make.name")}
             <input type="text" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} data-testid="coach-cohort-name" />
           </label>

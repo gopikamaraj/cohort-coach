@@ -2499,6 +2499,8 @@
   "coach.make.note": "A cohort groups the classes that show the same mistake. Choose a mistake that at least two classes show.",
   "coach.make.pick": "Mistake",
   "coach.make.pick_line": "{name}: {classes} classes ({who})",
+  "coach.make.pick_one": "{name}: 1 class",
+  "coach.make.pick_count": "{name}: {classes} classes",
   "coach.make.name": "Cohort name",
   "coach.make.create": "Create cohort",
   "coach.make.error": "The cohort could not be created. Check the name and try again.",

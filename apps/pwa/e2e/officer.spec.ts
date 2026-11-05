@@ -77,7 +77,8 @@ test("the error map hides a cell under 5 classes, and the screen is labelled sim
   await expect(m).toContainText("35% (14/40)");
   await expect(m).toContainText("fewer than 5 classes");
   await expect(page.getByText(/simulated/i).first()).toBeVisible();
-  await expect(page.getByText("Aggregates only")).toBeVisible();
+  // 5 Nov: hidden in the demo, where every minimum group size is off (the note is for production, where the sizes apply)
+  await expect(page.getByText("Aggregates only")).toHaveCount(0);
 });
 
 test("the officer screen reads in Hindi and has no sideways scroll on a phone", async ({ page }) => {

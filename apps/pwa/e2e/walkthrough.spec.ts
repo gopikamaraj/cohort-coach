@@ -146,7 +146,7 @@ test("the walk-through: two teachers, a coach and an officer", async ({ browser 
     await officer.page.getByTestId("coach-cohort-create").click();
     await expect(officer.page.getByTestId("officer-made")).toContainText(/Cohort created from \d+ classes/);
     await expect(officer.page.getByTestId("coach-cohorts")).toContainText("Walk-through cohort");
-    await expect(officer.page.getByTestId("coach-cohorts").getByTestId("rule-line")).toContainText("one question"); // the cohort says which rule it was built with
+    await expect(officer.page.getByTestId("coach-cohorts").getByTestId("rule-line").first()).toContainText("one question"); // the cohort says which rule it was built with
 
     // both teachers see the cohort and its plan
     for (const t of [A, B]) {
