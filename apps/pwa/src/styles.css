@@ -3847,6 +3847,7 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   }
   body.print-pack .print-pack-only {
     display: block;
+    padding: 10mm 9mm; /* space round every page even when the print dialog's margins are set to None */
     color: var(--ink);
     font-size: 11pt;
     line-height: 1.5;
@@ -3972,7 +3973,7 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   }
   .pp-sheet {
     margin: 0 0 var(--s5);
-    padding: var(--s3);
+    padding: var(--s4) var(--s5);
     border: 1px solid var(--rule);
     border-radius: var(--r-card);
     break-inside: avoid;
