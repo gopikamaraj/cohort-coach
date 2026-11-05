@@ -37,7 +37,7 @@ export default defineConfig({
     ...devices["Pixel 5"], // a phone-sized viewport and touch
     serviceWorkers: "allow",
     permissions: ["microphone"],
-    launchOptions: { args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] },
+    launchOptions: { args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"], slowMo: Number(process.env["E2E_SLOWMO"] ?? 0) },
     trace: "off",
   },
   webServer: [
