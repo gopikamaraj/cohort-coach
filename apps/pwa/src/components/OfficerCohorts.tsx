@@ -45,7 +45,7 @@ export default function OfficerCohorts({ demo = false }: { demo?: boolean }) {
   return (
     <div className="panel" data-testid="officer-cohorts">
       <h2>{tr("officer.cohorts")}</h2>
-      <p className="muted">{tr("officer.cohorts_help")}</p>
+      <p className="muted">{tr(demo ? "officer.cohorts_help_demo" : "officer.cohorts_help")}</p>
       {/* A coach starts a cohort now (Coach screen); the officer moves existing ones through their lifecycle. */}
       {failed ? (
         <p role="alert" data-testid="cohort-failed">
