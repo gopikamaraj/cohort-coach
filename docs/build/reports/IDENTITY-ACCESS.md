@@ -47,14 +47,14 @@ python scripts/migrate_identity.py --list-unclaimed
 
 ## What `X-Role` lets a judge-mode user do (unchanged)
 
-In a judge deployment (`JUDGE_MODE=1`) `role_of` accepts `X-Role` coach, mentor or officer from **any signed-in user**; a production deployment accepts only teacher. The role's permissions (`services/api/roles/permissions.yaml`):
+In a judge deployment (`JUDGE_MODE=1`) `role_of` accepts `X-Role` coach, mentor or officer from **any signed-in user**; a production deployment accepts only teacher. The role's permissions (`services/api/roles/permissions.yaml`; `officer.advance_term` was removed in step D, since terms are off):
 
 | Role | Can |
 | --- | --- |
 | teacher | assistant.ask, practice.rehearse, check.read_sheets, profile.sync, programme.view_own, cohort.chat, judge.inspect, papers.generate, papers.rules_view |
 | mentor | assistant.ask, mentor.record, mentor.items_view, cohort.chat, content.mentor_approve, papers.generate, papers.rules_view |
 | coach | assistant.ask, coach.approve_items, coach.moderate, library.view, content.review_view, content.coach_approve, content.propose, papers.generate, papers.review, papers.rules, papers.rules_view |
-| officer | assistant.ask, officer.approve_cohorts, officer.results, officer.advance_term, officer.assign_roles, library.view, content.review_view, content.officer_activate, content.propose |
+| officer | assistant.ask, officer.approve_cohorts, officer.results, officer.assign_roles, library.view, content.review_view, content.officer_activate, content.propose |
 
 What the new gate adds on top: a staff user still reaches only the cohorts **assigned to her user id** (a coach: cohorts she made, or cohort spaces naming her; a mentor: spaces naming her), so choosing the coach role does not show another coach's cohorts. The demo role accounts are users like any other (`coach-demo`, `mentor-demo`, `officer-demo` are ordinary nicknames). In judge mode, the demo and judge routes (`/api/demo`, `/api/cohort-run`, `/api/judge`, `/api/pilot-data`) are open to any signed-in user and return 404 outside judge mode. Papers and paper rules are shared by design. `X-Demo-Person` (a or b, one browser acting as two coaches in the papers demo) is unchanged and judge-only.
 

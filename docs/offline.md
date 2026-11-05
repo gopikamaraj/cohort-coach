@@ -31,9 +31,9 @@ Rehearsing with simulated children is the most useful feature and the only one t
 
 A teacher's "this is wrong" tap on an error card is kept in the phone's queue for now (the card says so). The server has no endpoint that stores flags yet; it comes with the review queue (P09). The payload stays `{card, term}` with no free text.
 
-## What stays on the phone
+## What the phone keeps (a cache and an outbox)
 
-Per-child answers (`checks`), the class result (`profiles`), the send queue, Practice Class transcripts (P06) and queued photos (P08) live in IndexedDB on the phone (`apps/pwa/src/lib/db.ts`). The server receives class-level counts only; its schema rejects any other field (`services/api/profiles.py`, `tests/api/test_profiles.py`), and a Vitest contract test and a Playwright network assertion check the same from the client side.
+**Updated 4 Nov 2026 (cloud-first, `DECISIONS.md`).** The account on the server is the record: her classes, checks (per-child answers), results, settings and Practice Class sessions are saved there under her user id (the nickname) as soon as she is online, and read back on any device she signs in on. The phone keeps a cache of them in IndexedDB (`apps/pwa/src/lib/db.ts`) and an outbox for what she changes offline; when the signal returns a notice says how many changes are being saved, then the result (`apps/pwa/src/lib/cloudStore.ts`). Sheet pictures are held in memory only. The class-level counts the coach and officer see are worked out on the server from her entered data; they never include her answers.
 
 ## Data per use (targets and what is measured)
 

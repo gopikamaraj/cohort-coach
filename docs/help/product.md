@@ -8,7 +8,7 @@ Cohort Coach helps a Grade 3 teacher find the one mistake many of her pupils mak
 
 ### Home
 
-Home says how many children you checked this term and what your class's focus is. One button takes you to the next step. The other tiles open Practice, My programme, What I entered, Watch a rehearsal and My profile.
+Home says how many children you checked in your latest check and what your class's focus is. One button takes you to the next step. The other tiles open Practice, My programme, What I entered, Watch a rehearsal and My profile.
 
 ### Enter check
 
@@ -52,7 +52,7 @@ You can save the app on your phone's home screen like any other app. On the firs
 
 ## Your privacy
 
-No child's name, face or voice is collected. Per-child answers stay on your phone; only counts for your whole class are sent, and only if you agree. The assistant never sees a child's name, and it cannot see other teachers' data.
+No child's name, face or voice is collected. Per-child answers are saved to your account (your nickname) and only you can see them; other people see counts for whole classes, never a child's answers. Your Practice Class sessions are saved to your account the same way, and only you can read them. The assistant never sees a child's name, and it cannot see other teachers' data.
 
 ## What the assistant can and cannot do
 

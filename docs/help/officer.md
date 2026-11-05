@@ -6,7 +6,7 @@ A verdict compares the fall in children's mistake rate in the classes that follo
 
 ## Why can't I see names
 
-The programme view shows aggregates only. You cannot see a teacher's class or a child, and any figure covering fewer than five classes is hidden and says so. This protects teachers: the system is built so that nobody is judged by a number about her own class.
+The programme view shows aggregates only. You cannot see a teacher's class or a child, and any figure covering fewer than five classes is hidden and says so (in the demo every minimum group size is off and the page says "Demo: no minimum group sizes"; real use keeps them). This protects teachers: the system is built so that nobody is judged by a number about her own class.
 
 ## What does this chart not show
 
@@ -14,7 +14,7 @@ A chart of class counts does not show why a class changed, only that it did, com
 
 ## How were cohorts formed
 
-Teachers whose classes share a mistake are grouped across schools for the track on that mistake, not by geography. A class qualifies when at least a quarter of the children checked show the mistake and at least ten children were checked. Each class follows one track a term. Eligible teachers for a track are randomly split between this term and next, stratified by their starting rate, so next term's teachers form the comparison group. A cohort has fifteen to twenty teachers, at most two from one school, and one mentor.
+Teachers whose classes share a mistake are grouped across schools for the track on that mistake, not by geography. A class qualifies for a mistake when at least one child shows it and at least ten children were checked (the old one-quarter line was removed on 2 November). There is one cohort per mistake, and it holds every class that shows that mistake, so a class that shows two mistakes is in two cohorts. What each teacher gets next follows her own feedback after a lesson. Eligible teachers for a track are randomly split between this round and the next, stratified by their starting rate, so the next round's teachers form the comparison group. A cohort has fifteen to twenty teachers, at most two from one school, and one mentor.
 
 ## Is this real data
 
@@ -31,3 +31,11 @@ At pilot scale the method is different: the fall in the trained mistake is compa
 ## Approving cohorts and content
 
 You approve proposed cohorts and, with your key, switch approved content on after the coach has approved it. You cannot approve content yourself: the coach does that. The assistant cannot approve anything.
+
+## How do I count a mistake: one question or two
+
+An error is confirmed when it is seen in two or more questions, and possible when it is seen in one. One control, at the top of each page that shows counts, chooses which rule you read under. It is saved to your account (default: two or more) and follows you to another device. The page says which rule it is showing, and a cohort remembers the rule it was made with. The server does the counting; the page only shows it.
+
+## How do I create a cohort
+
+On the officer page tap Create a cohort. Choose the mistake and the rule. The page lists the classes that show it as Class A, Class B, each with how many children show it: no teacher name, nickname or child-level data. Select all or some, name the cohort and create it. The teachers whose classes are in it find the cohort, its improvement plan and its chat on their next visit, and an audit entry is written. The one-button "form cohorts" does the same for every mistake that enough classes show.

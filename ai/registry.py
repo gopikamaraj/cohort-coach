@@ -112,7 +112,7 @@ CALLS: tuple[CallSpec, ...] = (
         gates=("code validators", "pre-filter", "call 7"),
         eval_id="eval_feedback",
         eval_bar="30 transcripts, 100% valid quotes; usefulness median >= 4",
-        input="The rehearsal transcript (stays on her phone unless she shares it) and the rubric of moves.",
+        input="The rehearsal transcript (saved to her account, readable only by her unless she shares it) and the rubric of moves.",
         processing="Claude writes two strengths and one idea to try, each with a quote.",
         guardrails="Each quote must appear word for word in the transcript; points only from the rubric; no scores; pre-filter and call 7.",
         evaluation="30 transcripts: quotes 100% valid; usefulness rated by teachers (pending until rated).",
@@ -215,7 +215,7 @@ CALLS: tuple[CallSpec, ...] = (
         processing="A small vision model transcribes digits, or the number words in a box of words; a stronger model retries doubtful reads. Code turns words into a number.",
         guardrails="Reads outside the correct and error answers, or below the confidence bar, go to the teacher; a number worked out from words always goes to the teacher to confirm; Devanagari digits normalised; the photo is deleted right after.",
         evaluation="Hand-keyed set: at least 98% of auto-accepted reads correct, at most 15% sent to the teacher.",
-        output="Per-box digits for the engine to diagnose, on her phone.",
+        output="Per-box digits for the engine to diagnose, then saved to her account.",
         metadata_only=True,
     ),
     CallSpec(
