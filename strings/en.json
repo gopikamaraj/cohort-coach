@@ -1932,6 +1932,7 @@
   "check.drawer_alt": "The answer sheet for roll no {n}",
   "check.reread": "Re-read with AI",
   "check.reread_roll": "Read this sheet again (roll no {n})",
+  "check.read_roll_pick": "Choose a picture and read it (roll no {n})",
   "check.add_title": "Add the sheets",
   "check.folder": "Select a folder of pictures",
   "check.pictures": "Choose pictures",

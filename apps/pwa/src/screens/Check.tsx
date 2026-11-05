@@ -96,6 +96,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const [child, setChild] = useState(0);
   const [q, setQ] = useState(0);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const pickFor = useRef<HTMLInputElement>(null);
   const typing = useRef<number | null>(null); // the box she is editing: kept focused through the re-draws a save causes
   useEffect(() => {
     const away = (e: PointerEvent) => {
@@ -725,11 +726,25 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
             onApply={fillFromRead}
             busy={reading}
           />
-          {pic ? (
+          {formKey ? (
             <p>
-              <button type="button" className="btn btn-secondary" onClick={() => void reread()} disabled={!!blockedReason || reading} aria-describedby={blockedReason ? "reread-reason-boxes" : undefined} data-testid="reread-boxes">
-                {tr("check.reread_roll", { n: child + 1 })}
+              <button type="button" className="btn btn-secondary" onClick={() => (pic ? void reread() : pickFor.current?.click())} disabled={!!blockedReason || reading} aria-describedby={blockedReason ? "reread-reason-boxes" : undefined} data-testid="reread-boxes">
+                {tr(pic ? "check.reread_roll" : "check.read_roll_pick", { n: child + 1 })}
               </button>
+              <input
+                ref={pickFor}
+                type="file"
+                accept="image/*"
+                className="sr"
+                tabIndex={-1}
+                aria-hidden="true"
+                data-testid="reread-pick"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) void onCamera(f); // the picture chosen is read for the roll number on screen
+                }}
+              />
               {blockedReason ? (
                 <span className="muted" id="reread-reason-boxes">
                   {" "}

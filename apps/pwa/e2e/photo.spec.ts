@@ -199,3 +199,13 @@ test("a sheet that read empty can be read again from the boxes, for the roll num
   await expect(page.getByTestId("input-1")).toHaveValue("346");
   expect(calls).toBe(2);
 });
+
+test("with no picture held for the roll, the button chooses one and reads it for that roll", async ({ page }) => {
+  await page.route("**/api/sheets/read", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ form: "A", retried: false, cells: CELLS }) }));
+  await begin(page);
+  await expect(page.getByTestId("input-1")).toHaveValue("");
+  await expect(page.getByTestId("reread-boxes")).toContainText("Choose a picture and read it (roll no 1)");
+  await page.getByTestId("reread-pick").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: PNG });
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
+  await expect(page.getByTestId("reread-boxes")).toContainText("Read this sheet again (roll no 1)");
+});
