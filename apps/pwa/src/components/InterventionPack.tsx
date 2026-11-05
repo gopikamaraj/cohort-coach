@@ -2,7 +2,7 @@
 // the class's own results and approved content, text first: a bold title and plain text for each, all open,
 // and it prints. Nothing plays by itself: one "Download audio" button per error makes a single file, only
 // when pressed. Sections with no content are left out, never invented.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LANG_NAMES, type Key } from "../i18n";
 import type { ClassCohort } from "../lib/classCohort";
 import { buildPack } from "../lib/pack";
@@ -17,9 +17,22 @@ import { ModuleTrack } from "./ModuleTrack";
 import { PackSectionView } from "./PackSection";
 import { PrintPack } from "./PrintPack";
 import { loadSheets, type PrintSheet } from "../lib/printPack";
+import { db, type CheckRow } from "../lib/db";
 
 export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
-  const { tr, lang, check, role, klass } = useApp();
+  const { tr, lang, check: current, role, klass } = useApp();
+  // The cohort's own check, not whichever check is current: once another check is entered the current one is a different
+  // check, and the answer map and the printed sheets would be empty.
+  const [own, setOwn] = useState<CheckRow | null>(null);
+  useEffect(() => {
+    let live = true;
+    if (current && current.id === cohort.checkId) setOwn(null);
+    else void db.checks.get(cohort.checkId).then((c) => live && setOwn(c ?? null));
+    return () => {
+      live = false;
+    };
+  }, [cohort.checkId, current]);
+  const check = current && current.id === cohort.checkId ? current : own;
   const [active, setActive] = useState(cohort.errors[0] ?? "");
   const [printing, setPrinting] = useState(false);
   const [sheets, setSheets] = useState<PrintSheet[]>([]);

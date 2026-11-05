@@ -10,6 +10,8 @@ export interface PrintQuestion {
   n: number;
   question: string; // "703 − 468"
   wrote: string; // what the child wrote ("blank" and "unreadable" are words, not numbers)
+  expected: string; // the answer the paper's key expects
+  codes: string[]; // the diagnosis: every mistake this wrong answer counts for (named by the page, in her language)
 }
 
 export interface PrintSheet {
@@ -38,7 +40,7 @@ export function questionsWith(map: AnswerMap, roll: number, code: string): Print
     .filter((c) => c.codes.includes(code))
     .map((c) => {
       const item = map.items.find((i) => i.n === c.n);
-      return { n: c.n, question: item ? item.question : String(c.n), wrote: String(c.given) };
+      return { n: c.n, question: item ? item.question : String(c.n), wrote: String(c.given), expected: String(c.correct), codes: c.codes };
     });
 }
 

@@ -2301,7 +2301,7 @@
   "pack.print_rolls": "roll numbers {list}",
   "pack.print_none": "No roll number showed this mistake",
   "pack.print_roll": "Roll number {n}",
-  "pack.print_q": "Question {n}: {question}. The child wrote {wrote}.",
+  "pack.print_q": "Question {n}: {question}. Expected answer: {expected}. The child wrote: {wrote}. Diagnosis: {diagnosis}.",
   "pack.print_no_photo": "No photo is kept for this roll number. To keep sheets, agree to it in Profile before you approve a sheet.",
   "pack.print_no_boxes": "The boxes could not be placed on this photo, so the questions and answers are written above.",
   "pack.print_boxes_key": "Dashed box: the question (Q). Solid box: the answer (A).",

@@ -78,7 +78,7 @@ export function PrintPack({ pack, lang, draft, rolls, sheets, track }: { pack: P
               {sh.possible ? <span className="chip"> {tr("pack.print_possible_tag")}</span> : null}
               <ul>
                 {sh.questions.map((q) => (
-                  <li key={q.n}>{tr("pack.print_q", { n: q.n, question: q.question, wrote: q.wrote })}</li>
+                  <li key={q.n}>{tr("pack.print_q", { n: q.n, question: q.question, expected: q.expected, wrote: q.wrote, diagnosis: q.codes.map((c) => tr(`err.${c}` as Key)).join("; ") })}</li>
                 ))}
               </ul>
             </figcaption>
