@@ -21,7 +21,7 @@
 "path": "docs/help/product.md",
 "section": null,
 "slide_no": null,
-"text": "Home says how many children you checked this term and what your class's focus is. One button takes you to the next step. The other tiles open Practice, My programme, What I entered, Watch a rehearsal and My profile.",
+"text": "Home says how many children you checked in your latest check and what your class's focus is. One button takes you to the next step. The other tiles open Practice, My programme, What I entered, Watch a rehearsal and My profile.",
 "ts_end": null,
 "ts_start": null
 },
@@ -34,7 +34,7 @@
 "path": "docs/help/product.md",
 "section": null,
 "slide_no": null,
-"text": "You enter what each child wrote on the ten-question check. You can photograph the answer sheets in roll order, or type the answers. The phone shows which boxes it could not read and asks you to confirm them. A sheet photo is read once and not kept, and no child's name is ever entered.",
+"text": "You enter what each child wrote on the ten-question check. You can photograph the answer sheets in roll order, or type the answers. The phone shows which boxes it could not read and asks you to confirm them. A sheet photo is held in memory only while it is read, unless you choose to keep your approved sheets for 60 days; no child's name is ever entered.",
 "ts_end": null,
 "ts_start": null
 },
@@ -164,7 +164,7 @@
 "path": "docs/help/product.md",
 "section": null,
 "slide_no": null,
-"text": "No child's name, face or voice is collected. Per-child answers stay on your phone; only counts for your whole class are sent, and only if you agree. The assistant never sees a child's name, and it cannot see other teachers' data.",
+"text": "No child's name, face or voice is collected. Per-child answers are saved to your account (your nickname) and only you can see them; other people see counts for whole classes, never a child's answers. Your Practice Class sessions are saved to your account the same way, and only you can read them. The assistant never sees a child's name, and it cannot see other teachers' data.",
 "ts_end": null,
 "ts_start": null
 },
@@ -580,7 +580,7 @@
 "path": "docs/help/teacher.md",
 "section": null,
 "slide_no": null,
-"text": "Enter check works from a paper that already exists. Choose it (papers assigned to you come first), check the date, say how many papers there are, and tap Start the check. If there is no paper for your class yet, use Create a paper to go to Papers; Enter check never makes one. Then work one roll number at a time.",
+"text": "Enter check works from a paper that already exists. Choose it (every paper made by anyone is listed; papers are shared), check the date, say how many papers there are, and tap Start the check. If there is no paper for your class yet, use Create a paper to go to Papers; Enter check never makes one. Then work one roll number at a time.",
 "ts_end": null,
 "ts_start": null
 },
@@ -788,7 +788,7 @@
 "path": "docs/help/teacher.md",
 "section": null,
 "slide_no": null,
-"text": "If you do not answer, the next module still comes on its due date, and we do not count the silence as a result. You can answer late: the answer is saved with its module and only changes modules that are not made yet. Each module has Why this module? with the reason, the text you can read or hide, and Download audio. A track has at most six modules.",
+"text": "If you do not answer, the next module still comes on its due date, and we do not count the silence as a result. You can answer late: the answer is saved with its module and only changes modules that are not made yet.",
 "ts_end": null,
 "ts_start": null
 },
@@ -801,7 +801,20 @@
 "path": "docs/help/teacher.md",
 "section": null,
 "slide_no": null,
-"text": "If the plan runs out or the limit is reached, the app tells you to talk to your mentor or coach. When the track is finished it says it is time for the next check. Making a module needs a connection; modules you already have, and audio you downloaded, work offline.",
+"text": "Each module has Why this module? with the reason, the text you can read or hide, a player (Listen, then play and pause, a seek bar, the time and length, speeds 0.75, 1 and 1.25) and Download audio. Nothing plays until you press Listen. A track has at most six modules. If the plan runs out or the limit is reached, the app tells you to talk to your mentor or coach.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > Your improvement track: modules",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-your-improvement-track-modules:5",
+"kind": "file",
+"line": 83,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "When the track is finished it says it is time for the next check. Making a module needs a connection; modules you already have, and audio you have listened to once on this phone, work offline.",
 "ts_end": null,
 "ts_start": null
 },
@@ -906,6 +919,45 @@
 "section": null,
 "slide_no": null,
 "text": "A reply from another teacher does not stop the AI.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > Where your data is kept",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-where-your-data-is-kept:0",
+"kind": "file",
+"line": 101,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "Your classes, checks, answers, results, settings and Practice Class sessions are saved to your account, which is your nickname, and only you can see them. Other people see counts for whole classes, never a child's answers and never your Practice Class words. Sign in with the same nickname on another phone and everything is there.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > Where your data is kept",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-where-your-data-is-kept:1",
+"kind": "file",
+"line": 101,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "With no signal the app keeps your changes on the phone and, when the signal returns, says how many it is saving and whether all were saved. If another phone changed the same record, the older copy is kept in Changes that conflicted (My profile). A nickname with no password is a demo-grade identity.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Teacher help: today, when you are stuck, and what the audio is > Counting a mistake: one question or two",
+"id": "product_help:docs/help/teacher.md#teacher-help-today-when-you-are-stuck-and-what-the-audio-is-counting-a-mistake-one-question-or-two:0",
+"kind": "file",
+"line": 105,
+"ns": "product_help",
+"path": "docs/help/teacher.md",
+"section": null,
+"slide_no": null,
+"text": "At the top of My class, the coach page and the officer page there is the same control: count a mistake when it is seen in two or more questions (confirmed, the default) or in one (possible). Your choice is saved to your account and each page says which rule it shows.",
 "ts_end": null,
 "ts_start": null
 }

@@ -182,21 +182,21 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:0",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:0",
 "kind": "file",
 "line": 45,
 "ns": "coach_help",
 "path": "docs/help/coach.md",
 "section": null,
 "slide_no": null,
-"text": "On the Papers page you can create a paper from the rules or from a PDF or an answered sheet, assign any paper to a teacher, a class or a cohort in your programme, review imported papers and archive papers. Only the printed questions of an upload are read, handwriting and names are ignored and not kept, and the upload is deleted on confirmation or after 24 hours.",
+"text": "On the Papers page you can create a paper from the rules or from a PDF or an answered sheet, every paper is shared with every user, so there is nothing to assign (assigning is switched off); review imported papers and archive papers. Only the printed questions of an upload are read, handwriting and names are ignored and not kept, and the upload is deleted on confirmation or after 24 hours.",
 "ts_end": null,
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:1",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:1",
 "kind": "file",
 "line": 45,
 "ns": "coach_help",
@@ -208,8 +208,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:2",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:2",
 "kind": "file",
 "line": 45,
 "ns": "coach_help",
@@ -221,8 +221,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:3",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:3",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -234,8 +234,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:4",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:4",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -247,8 +247,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:5",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:5",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -260,8 +260,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:6",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:6",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -273,8 +273,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:7",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:7",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -286,8 +286,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:8",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:8",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -299,8 +299,8 @@
 "ts_start": null
 },
 {
-"heading": "Coach and reviewer help > Papers: create, import, assign, review and archive",
-"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-assign-review-and-archive:9",
+"heading": "Coach and reviewer help > Papers: create, import, review and archive",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-papers-create-import-review-and-archive:9",
 "kind": "file",
 "line": 47,
 "ns": "coach_help",
@@ -529,6 +529,19 @@
 "section": null,
 "slide_no": null,
 "text": "To show the AI path in a demo: Teacher A asks, nobody replies, after 5 seconds the AI answers with its sources, you correct it, Teacher B sees both; then Teacher B asks another question and the mentor replies in time, so the AI stays silent.",
+"ts_end": null,
+"ts_start": null
+},
+{
+"heading": "Coach and reviewer help > How do I count a mistake: one question or two",
+"id": "coach_help:docs/help/coach.md#coach-and-reviewer-help-how-do-i-count-a-mistake-one-question-or-two:0",
+"kind": "file",
+"line": 79,
+"ns": "coach_help",
+"path": "docs/help/coach.md",
+"section": null,
+"slide_no": null,
+"text": "The same control as on My class sits at the top of the coach page: confirmed (seen in two or more questions, the default) or possible (seen in one). It is saved to your account and the page says which rule it shows. A cohort you make remembers the rule it was made with.",
 "ts_end": null,
 "ts_start": null
 }

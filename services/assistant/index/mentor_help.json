@@ -104,21 +104,21 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:0",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:0",
 "kind": "file",
 "line": 33,
 "ns": "mentor_help",
 "path": "docs/help/mentor.md",
 "section": null,
 "slide_no": null,
-"text": "You can create a paper from the rules or import one from a PDF or an answered sheet, as a teacher does, and assign a paper to teachers inside the cohorts you mentor. Only the printed questions of an upload are read: handwriting and names are ignored and not kept, and the upload is deleted when you confirm or after 24 hours. Code computes every answer key; a person confirms every item.",
+"text": "You can create a paper from the rules or import one from a PDF or an answered sheet, as a teacher does. Every paper is shared with every user, so nothing needs assigning. Only the printed questions of an upload are read: handwriting and names are ignored and not kept, and the upload is deleted when you confirm or after 24 hours. Code computes every answer key; a person confirms every item.",
 "ts_end": null,
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:1",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:1",
 "kind": "file",
 "line": 33,
 "ns": "mentor_help",
@@ -130,8 +130,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:2",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:2",
 "kind": "file",
 "line": 33,
 "ns": "mentor_help",
@@ -143,8 +143,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:3",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:3",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
@@ -156,8 +156,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:4",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:4",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
@@ -169,8 +169,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:5",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:5",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
@@ -182,8 +182,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:6",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:6",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
@@ -195,8 +195,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:7",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:7",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
@@ -208,8 +208,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:8",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:8",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
@@ -221,8 +221,8 @@
 "ts_start": null
 },
 {
-"heading": "Mentor help > Papers: create, import and assign",
-"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-import-and-assign:9",
+"heading": "Mentor help > Papers: create and import",
+"id": "mentor_help:docs/help/mentor.md#mentor-help-papers-create-and-import:9",
 "kind": "file",
 "line": 35,
 "ns": "mentor_help",
