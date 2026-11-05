@@ -55,8 +55,8 @@ export async function ccall<T>(
       headers: headers(who),
       body: init.body === undefined ? undefined : JSON.stringify(init.body),
     });
-  } catch {
-    throw new CohortError(0);
+  } catch (e) {
+    throw new CohortError(0, [], e instanceof Error ? `${e.name}: ${e.message}` : "no reply from the server");
   }
   if (!res.ok) {
     let codes: string[] = [];
