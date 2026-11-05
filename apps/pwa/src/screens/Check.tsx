@@ -441,6 +441,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const reread = async () => {
     const pic = pics[child];
     if (!pic || !formKey) return;
+    if (hasAnswers(rowAt(snap.current, child)) && !window.confirm(tr("check.photo_replace"))) return;
     setReading(true);
     try {
       const { readSheetFull } = await import("../lib/sheets");
@@ -724,6 +725,19 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
             onApply={fillFromRead}
             busy={reading}
           />
+          {pic ? (
+            <p>
+              <button type="button" className="btn btn-secondary" onClick={() => void reread()} disabled={!!blockedReason || reading} aria-describedby={blockedReason ? "reread-reason-boxes" : undefined} data-testid="reread-boxes">
+                {tr("check.reread_roll", { n: child + 1 })}
+              </button>
+              {blockedReason ? (
+                <span className="muted" id="reread-reason-boxes">
+                  {" "}
+                  {blockedReason}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
           <div className="boxes" role="group" aria-label={tr("check.child", { n: child + 1 })}>
             {Array.from({ length: items }, (_, i) => {
               const cell = row[i] ?? "";
@@ -848,7 +862,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
           url={pic?.url ?? null}
           source={sourceText}
           canApprove={state === "entered" && !approvedNow}
-          showReread={photoKids.current.has(child) && !!pic}
+          showReread={!!pic}
           canReread={!!pic && !blockedReason && !reading}
           rereadReason={blockedReason ?? ""}
           onApprove={() => approve(child)}

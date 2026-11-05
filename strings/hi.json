@@ -1931,6 +1931,7 @@
   "check.drawer_fit": "चौड़ाई में बिठाएँ",
   "check.drawer_alt": "रोल नं. {n} की उत्तर शीट",
   "check.reread": "AI से फिर पढ़ें",
+  "check.reread_roll": "इस शीट को फिर पढ़ें (रोल नं. {n})",
   "check.add_title": "शीट जोड़ें",
   "check.folder": "तस्वीरों का फ़ोल्डर चुनें",
   "check.pictures": "तस्वीरें चुनें",

@@ -184,3 +184,18 @@ test("each roll keeps its own picture in memory, and nothing of the picture is s
   });
   expect(stored).toBe(false);
 });
+
+test("a sheet that read empty can be read again from the boxes, for the roll number on screen", async ({ page }) => {
+  let calls = 0;
+  await page.route("**/api/sheets/read", async (route) => {
+    calls += 1;
+    const cells = calls === 1 ? CELLS.map(() => ({ text: "", status: "blank" })) : CELLS;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ form: "A", retried: false, cells }) });
+  });
+  await begin(page);
+  await page.getByTestId("photo-input").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: PNG });
+  await expect(page.getByTestId("input-1")).toHaveAttribute("data-state", "blank");
+  await page.getByTestId("reread-boxes").click();
+  await expect(page.getByTestId("input-1")).toHaveValue("346");
+  expect(calls).toBe(2);
+});
