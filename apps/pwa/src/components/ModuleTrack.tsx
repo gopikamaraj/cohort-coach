@@ -4,7 +4,8 @@
 // Code on the server decides which module comes next; this only shows it. Nothing here names a child.
 import { useCallback, useEffect, useState } from "react";
 import type { Key } from "../i18n";
-import type { ClassCohort } from "../lib/classCohort";
+import { sendNow, type ClassCohort } from "../lib/classCohort";
+import { CohortError } from "../lib/cohort";
 import { endBanner, getNext, loadTrack, markDownloaded, markPlayed, ModuleError, QueuedForLater, generateAllModules, nextBlocked, refreshNarration, sendFeedback, startTrack, CHIPS, runReview, sendWhyNot, type Answer, type Chip, type ModuleStatus, type ModuleView, type TextPart, type TrackView } from "../lib/modules";
 import { useDevTesting } from "../lib/aiMode";
 import { exportStem } from "../lib/packAudio";
@@ -47,6 +48,17 @@ export function ModuleTrack({ cohort, code, onTrackChange }: { cohort: ClassCoho
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const onServer = !cohort.id.startsWith("local-");
+  const [unsentWhy, setUnsentWhy] = useState("");
+  /** A cohort that never reached the server has no modules: send it now and show why if it is refused. */
+  async function sendUnsent() {
+    setUnsentWhy("");
+    try {
+      await sendNow(cohort.id, lang);
+      window.location.reload();
+    } catch (e) {
+      setUnsentWhy(tr("module.local_failed") + (e instanceof CohortError ? ` (${e.status}${e.detail ? `: ${e.detail}` : ""})` : ""));
+    }
+  }
 
   useEffect(() => {
     let live = true;
@@ -97,10 +109,20 @@ export function ModuleTrack({ cohort, code, onTrackChange }: { cohort: ClassCoho
           <button type="button" className="btn btn-primary" disabled={busy === "start"} onClick={() => void run("start", () => startTrack(cohort.id, code, lang))} data-testid="module-start">
             {busy === "start" ? tr("module.starting") : tr("module.start")}
           </button>
-        ) : (
+        ) : onServer ? (
           <p className="muted" data-testid="module-offline">
             {tr("module.next_offline")}
           </p>
+        ) : (
+          <div className="stack" data-testid="module-unsent">
+            <p className="muted">{tr("module.local_unsent")}</p>
+            {online ? (
+              <button type="button" className="btn btn-secondary" disabled={busy === "start"} onClick={() => void sendUnsent()} data-testid="module-send-now">
+                {tr("module.local_retry")}
+              </button>
+            ) : null}
+            {unsentWhy ? <p role="alert">{unsentWhy}</p> : null}
+          </div>
         )}
         {failed ? <p role="alert">{tr("module.start_err")}</p> : null}
       </section>

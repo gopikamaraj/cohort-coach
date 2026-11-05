@@ -142,6 +142,14 @@ export async function create(input: Input, online: boolean, fetchFn?: typeof fet
   return row;
 }
 
+/** Try to send one phone-only cohort now and say why when the server refuses (the caller shows the status and reason). */
+export async function sendNow(id: string, language: string, fetchFn?: typeof fetch): Promise<void> {
+  const row = pending().find((r) => r.id === id);
+  if (!row) return;
+  await send(row, language, fetchFn); // throws CohortError with the server's reason
+  await syncPending(language, fetchFn); // sent: drop the phone copy and read the list again
+}
+
 /** Send the ones made offline (and drop their phone copy once sent), then read her list from the server.
  *  Quiet when it fails: a failed read changes nothing and it tries again next time. */
 export async function syncPending(language: string, fetchFn?: typeof fetch): Promise<void> {
