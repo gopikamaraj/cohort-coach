@@ -3,7 +3,7 @@
 // child absent), and Finish entering waits until every roll is approved or absent. Per-child answers are
 // saved on this phone only; only class counts are queued to send. Sheet pictures are held in memory and
 // dropped at Finish: never saved, never sent again.
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BLANK, enteredChildren, finishCheck, hasAnswers, UNREADABLE } from "../lib/check";
 import { activeClass, db, type CheckRow, type ProfileRow } from "../lib/db";
 import { formOf, keys } from "../lib/diagnosis";
@@ -96,6 +96,23 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
   const [child, setChild] = useState(0);
   const [q, setQ] = useState(0);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const typing = useRef<number | null>(null); // the box she is editing: kept focused through the re-draws a save causes
+  useEffect(() => {
+    const away = (e: PointerEvent) => {
+      if (!(e.target instanceof HTMLInputElement)) typing.current = null; // a tap anywhere else ends the editing
+    };
+    document.addEventListener("pointerdown", away, true);
+    return () => document.removeEventListener("pointerdown", away, true);
+  }, []);
+  useLayoutEffect(() => {
+    const i = typing.current;
+    const el = i === null ? null : inputs.current[i];
+    if (el && document.activeElement !== el) {
+      el.focus();
+      const end = el.value.length;
+      el.setSelectionRange(end, end);
+    }
+  });
   const [message, setMessage] = useState("");
   const [reading, setReading] = useState(false);
   const [photoNote, setPhotoNote] = useState("");
@@ -735,7 +752,13 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
                     data-state={special || undefined}
                     data-testid={`input-${i + 1}`}
                     onFocus={() => setQ(i)}
-                    onChange={(e) => setCell(i, digitsOnly(e.target.value))}
+                    onBlur={(e) => {
+                      if (e.relatedTarget) typing.current = null; // she moved to another control on purpose
+                    }}
+                    onChange={(e) => {
+                      typing.current = i;
+                      setCell(i, digitsOnly(e.target.value));
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
