@@ -113,7 +113,7 @@ function mark(table: SyncedTable, id: string | undefined): void {
 /** Queue a plain API write (a check-in, a module's feedback, a chat post) so it is not lost offline.
  *  Returns "sent" when the server took it now, "queued" when it waits for a connection. A refusal (4xx) is
  *  returned as "refused" with the reason and is not queued: the caller tells her. */
-export async function writeOrQueue(label: string, method: "POST" | "PUT" | "DELETE", path: string, body?: unknown, extra: Record<string, string> = {}, fetchFn: Fetch = (...a) => fetch(...a)): Promise<{ result: "sent" | "queued" | "refused"; reason?: string }> {
+export async function writeOrQueue(label: string, method: "POST" | "PUT" | "DELETE", path: string, body?: unknown, extra: Record<string, string> = {}, fetchFn: Fetch = (...a) => fetch(...a), replace = false): Promise<{ result: "sent" | "queued" | "refused"; reason?: string }> {
   const send = async (): Promise<{ result: "sent" | "queued" | "refused"; reason?: string }> => {
     try {
       const res = await fetchFn(`${API_BASE}${path}`, { method, headers: { ...headers(), ...extra }, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -126,7 +126,8 @@ export async function writeOrQueue(label: string, method: "POST" | "PUT" | "DELE
   };
   const out = isOnline() ? await send() : { result: "queued" as const };
   if (out.result === "queued") {
-    const q = readQueue();
+    // `replace`: a newer copy of the same document makes an older queued one pointless (a Practice Class session is sent whole at each turn)
+    const q = readQueue().filter((p) => !(replace && p.api && p.api.path === path));
     writeQueue([...q, { table: "api", id: `${method} ${path} ${Date.now()}`, status: "pending", at: Date.now(), offline: true, api: { method, path, body, label, headers: extra } }]);
   }
   return out;
@@ -145,6 +146,60 @@ async function reasonOf(res: Response): Promise<string> {
 }
 
 /** Watch the four tables: every create, change and delete is queued for the server. */
+// ---- Practice Class sessions (decided 4 Nov 2026) --------------------------------------------------------------
+// They are saved to her account like her checks and read only by her user id; the phone keeps a copy. A session's
+// document id is its session id, so the same session is one document on every device. Each change sends the whole
+// session (the newest copy replaces an older one still waiting in the outbox).
+const sessionKey = (row: { sessionId?: string; createdAt?: number }): string => row.sessionId ?? `t${row.createdAt ?? 0}`;
+const docPath = (key: string): string => `/api/store/transcripts/${encodeURIComponent(key)}`;
+
+async function pushTranscript(store: CohortDb, pk: number): Promise<void> {
+  const row = await store.transcripts.get(pk);
+  if (!row) return;
+  const { id: _id, ...data } = row;
+  await writeOrQueue("practice session", "PUT", docPath(sessionKey(row)), { data }, {}, undefined, true);
+}
+
+const pushTimers = new Map<number, ReturnType<typeof setTimeout>>();
+function schedulePush(store: CohortDb, pk: number): void {
+  if (suppress > 0) return;
+  const t = pushTimers.get(pk);
+  if (t) clearTimeout(t);
+  pushTimers.set(
+    pk,
+    setTimeout(() => {
+      pushTimers.delete(pk);
+      void pushTranscript(store, pk).catch(() => undefined);
+    }, 400), // after the write's transaction has finished
+  );
+}
+
+/** Bring her sessions from the account into this phone (one she made on another device), and send up any this phone
+ *  has that the account does not. Returns how many came in. */
+async function mergeTranscripts(store: CohortDb, cloud: Record<string, unknown> | undefined): Promise<number> {
+  const docs = cloud ?? {};
+  const local = await store.transcripts.toArray();
+  const byKey = new Map(local.map((r) => [sessionKey(r), r]));
+  let added = 0;
+  suppress += 1;
+  try {
+    for (const [key, doc] of Object.entries(docs)) {
+      const d = doc as { turns?: unknown[]; ended?: boolean };
+      const mine = byKey.get(key);
+      if (!mine) {
+        await store.transcripts.add({ ...(doc as object), sessionId: (doc as { sessionId?: string }).sessionId ?? key } as never);
+        added += 1;
+      } else if ((d.turns?.length ?? 0) > mine.turns.length || (d.ended && !mine.ended)) {
+        await store.transcripts.update(mine.id as number, doc as never); // the account has the further-along copy
+      }
+    }
+  } finally {
+    suppress -= 1;
+  }
+  for (const r of local) if (!(sessionKey(r) in docs) && r.id !== undefined) schedulePush(store, r.id); // first sync of what only this phone has
+  return added;
+}
+
 export function watchTables(store: CohortDb = db): void {
   if (watched.has(store)) return;
   watched.add(store);
@@ -161,6 +216,18 @@ export function watchTables(store: CohortDb = db): void {
       mark(name, String(pk));
     });
   }
+  const tr = store.transcripts;
+  tr.hook("creating", function (_pk, _obj) {
+    // the id is given by the database after the write: send once it is known
+    this.onsuccess = (pk: unknown) => schedulePush(store, pk as number);
+  });
+  tr.hook("updating", (_mods, pk) => {
+    schedulePush(store, pk as number);
+  });
+  tr.hook("deleting", (_pk, obj) => {
+    if (suppress > 0) return;
+    void writeOrQueue("practice session", "DELETE", docPath(sessionKey(obj)), undefined, {}, undefined, true);
+  });
   if (!listening) {
     listening = true;
     window.addEventListener("online", () => void flushQueue(db, undefined, true));
@@ -377,6 +444,7 @@ export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => f
     if (!res.ok) return "offline";
     const cloud = (await res.json()) as Everything;
     const cloudEmpty = SYNCED.every((t) => Object.keys(cloud[t] ?? {}).length === 0);
+    const cameIn = await mergeTranscripts(store, (cloud as unknown as { transcripts?: Record<string, unknown> }).transcripts);
     if (cloudEmpty) {
       for (const t of SYNCED) {
         for (const row of (await store.table(t).toArray()) as { id?: string; key?: string }[]) mark(t, t === "settings" ? row.key : row.id);
@@ -385,7 +453,7 @@ export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => f
       return "synced";
     }
     await readCloudVersions(fetchFn);
-    if (await sameAsCache(store, cloud)) return "same"; // nothing to refill: the screen is left as it is (she may be typing)
+    if (await sameAsCache(store, cloud)) return cameIn > 0 ? "synced" : "same"; // nothing to refill: the screen is left as it is (she may be typing)
     suppress += 1;
     try {
       await store.transaction("rw", SYNCED.map((t) => store.table(t)), async () => {

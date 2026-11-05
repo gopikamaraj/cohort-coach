@@ -49,6 +49,19 @@ export function anyCounts(formKey: string, rows: string[][]): Record<string, num
   return out;
 }
 
+/** A paper's own answer key is kept on each phone, so a phone she signs in on has her checks (from the cloud) but not the
+ *  keys of the papers they used, and the results and the answer map cannot be drawn. Fetch the missing keys. Returns
+ *  how many came in. */
+export async function fetchMissingPaperKeys(store: CohortDb = db): Promise<number> {
+  let n = 0;
+  for (const c of await store.checks.toArray()) {
+    if (!c.formKey.startsWith("P-") || formOf(c.formKey)) continue;
+    await fetchPaperKey(c.formKey, { role: "teacher", classId: c.classId }).catch(() => undefined);
+    if (formOf(c.formKey)) n += 1;
+  }
+  return n;
+}
+
 /** Results saved before `anyCounts` existed get it from the check's answers (the cloud copy follows). */
 export async function backfillAnyCounts(store: CohortDb = db): Promise<number> {
   let n = 0;

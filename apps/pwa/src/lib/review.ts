@@ -33,7 +33,7 @@ export async function deleteSession(id: number, store: CohortDb = db): Promise<v
 }
 
 export async function deleteAllSessions(store: CohortDb = db): Promise<void> {
-  await store.transcripts.clear();
+  await store.transcripts.toCollection().delete(); // (not clear(): this way each session is also removed from her account)
 }
 
 export function impactCounts(rows: { impact?: Impact }[]): Record<Impact | "untagged", number> {

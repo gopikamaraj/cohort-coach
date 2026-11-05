@@ -10,7 +10,7 @@ import { demoPair } from "./lib/demo";
 import { fetchPaperKey } from "./lib/paperKeys";
 import { samplePaper } from "./lib/papers";
 import { keys } from "./lib/diagnosis";
-import { backfillAnyCounts, finishCheck } from "./lib/check";
+import { backfillAnyCounts, fetchMissingPaperKeys, finishCheck } from "./lib/check";
 import { pendingCount } from "./lib/sync";
 import { flushAllowed } from "./lib/sendnow";
 import { requestPersistence } from "./lib/storage";
@@ -96,7 +96,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (online) void reconcileWithServer(); // the server is the truth: drop pointers to records it no longer has
     void requestPersistence(); // ask the browser to keep this phone's data; harmless if it declines
     watchTables(); // every change to the classes, checks and results is written to the cloud copy
-    void reload().then(() => hydrate()).then(async (got) => { const filled = await backfillAnyCounts().catch(() => 0); if (got !== "same" || filled) await reload(); }).then(async () => { // the cloud copy is the record: read it back first
+    void reload().then(() => hydrate()).then(async (got) => { const filled = await backfillAnyCounts().catch(() => 0); const keyed = await fetchMissingPaperKeys().catch(() => 0); if (got !== "same" || filled || keyed) await reload(); }).then(async () => { // the cloud copy is the record: read it back first
       await flushAllowed(isOnline());
       setPending(await pendingCount());
     });
@@ -106,7 +106,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const again = () => {
       forgetQueue();
-      void hydrate().then((got) => (got === "same" ? undefined : reload()));
+      void hydrate().then(async (got) => {
+        const keyed = await fetchMissingPaperKeys().catch(() => 0); // her checks' papers: the answer keys this device lacks
+        if (got !== "same" || keyed) await reload();
+      });
     };
     window.addEventListener("cc:identity", again);
     return () => window.removeEventListener("cc:identity", again);

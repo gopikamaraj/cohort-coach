@@ -61,8 +61,25 @@ def test_a_write_replaces_and_a_delete_removes(client: TestClient) -> None:
     assert client.get("/api/store", headers=h(A)).json()["classes"] == {}
 
 
+def test_practice_class_transcripts_sync_to_her_account_and_only_her_user_id_reads_them(client: TestClient) -> None:
+    # Decided 4 Nov 2026: Practice Class transcripts are saved to her account like her checks, readable only by her.
+    session = {"classId": "c-1", "sessionId": "p-abc", "turns": [{"turn": 1, "teacher": "Show it with bundles.", "child": "403", "speaker": "Asha"}], "ended": False}
+    assert client.put("/api/store/transcripts/p-abc", json={"data": session}, headers=h(A)).status_code == 200
+    assert client.get("/api/store", headers=h(A)).json()["transcripts"] == {"p-abc": session}  # she reads it back, on any device
+    assert client.get("/api/store", headers=h(B)).json()["transcripts"] == {}  # another teacher sees nothing
+    # no staff route lists them: not the coach, the mentor or the officer, and not as counts either
+    for role in ("coach", "mentor", "officer"):
+        assert client.get("/api/store/all/transcripts", headers=h("cora", role)).status_code in (403, 404)
+    assert "Show it with bundles" not in str(client.get("/api/store/coach-summary", headers=h("cora", "coach")).json())
+    assert "Show it with bundles" not in str(client.get("/api/store/coach-summary", headers=h("olga", "officer")).json())
+    client.delete("/api/store/transcripts/p-abc", headers=h(A))  # she can delete one session
+    assert client.get("/api/store", headers=h(A)).json()["transcripts"] == {}
+
+
 def test_bad_collection_and_size_are_refused(client: TestClient) -> None:
-    assert client.put("/api/store/transcripts/1", json={"data": {}}, headers=h(A)).status_code == 404  # rehearsals never go
+    # was "transcripts": rehearsals never go. Decided 4 Nov 2026: they are synced to her account (see the test below), so
+    # an unknown collection name stands in here
+    assert client.put("/api/store/recordings/1", json={"data": {}}, headers=h(A)).status_code == 404
     assert client.put("/api/store/checks/ok", json={"data": "x" * 300_000}, headers=h(A)).status_code == 413
     assert client.put("/api/store/checks/bad id", json={"data": {}}, headers=h(A)).status_code in (404, 422)
 

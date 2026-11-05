@@ -27,7 +27,9 @@ from services.api.roles import role_of
 
 router = APIRouter(prefix="/api/store", tags=["store"])
 
-COLLECTIONS = ("classes", "checks", "profiles", "settings")
+# "transcripts": Practice Class sessions (her own words and the simulated children's lines). Decided 4 Nov 2026: they are
+# synced to her account like the rest, readable only by her user id. No coach, mentor or officer route lists them.
+COLLECTIONS = ("classes", "checks", "profiles", "settings", "transcripts")
 DOC_ID = re.compile(r"^[A-Za-z0-9:_.\-]{1,80}$")
 MAX_DOC_BYTES = 200_000
 

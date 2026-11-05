@@ -145,4 +145,44 @@ describe("the outbox", () => {
     expect(await db.classes.get("c-1")).toBeDefined(); // not deleted while it is unsynced
     expect(await db.settings.get("x")).toBeDefined();
   });
+
+  // Practice Class sessions (decided 4 Nov 2026): saved to her account, whole at each change, read only by her user id.
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  it("sends a Practice Class session to her account whole, the newest copy replacing an older one still waiting", async () => {
+    const { sent, fetchFn } = setup(() => ({ status: 200, json: { ok: true, version: 1 } }));
+    vi.stubGlobal("fetch", fetchFn);
+    const db = fresh();
+    watchTables(db);
+    vi.stubGlobal("navigator", { onLine: false }); // no signal while she rehearses
+    const id = await db.transcripts.add({ classId: "c-1", createdAt: 1, turns: [], sessionId: "p-abc", scenario: "SUB-SFL", ended: false });
+    await wait(600);
+    await db.transcripts.update(id, { turns: [{ turn: 1, teacher: "Show it with bundles.", child: "403", speaker: "Asha" }] });
+    await wait(600);
+    expect(queued()).toBe(1); // one waiting copy, not one per change
+    vi.stubGlobal("navigator", { onLine: true });
+    await flushQueue(db, fetchFn);
+    const put = sent.filter((x) => x.method === "PUT" && x.path === "/api/store/transcripts/p-abc");
+    expect(put).toHaveLength(1);
+    expect((put[0]?.body as { data: { turns: unknown[]; sessionId: string } }).data.turns).toHaveLength(1);
+    expect((put[0]?.body as { data: Record<string, unknown> }).data).not.toHaveProperty("id"); // the phone's own row number stays here
+  });
+
+  it("removes a deleted session from her account too, and brings one made on another device onto this phone", async () => {
+    const { sent, fetchFn } = setup((s) =>
+      s.method === "GET"
+        ? { status: 200, json: { classes: {}, checks: {}, profiles: {}, settings: {}, transcripts: { "p-other": { classId: "c-9", createdAt: 5, turns: [{ turn: 1, teacher: "Ask her to explain.", child: "34", speaker: "Ravi" }], sessionId: "p-other", ended: true } } } }
+        : { status: 200, json: { ok: true, version: 1 } },
+    );
+    vi.stubGlobal("fetch", fetchFn);
+    const db = fresh();
+    watchTables(db);
+    await hydrate(db, fetchFn);
+    const row = (await db.transcripts.toArray()).find((r) => r.sessionId === "p-other");
+    expect(row?.turns).toHaveLength(1); // a session made on the other device is here
+    expect(sent.filter((x) => x.method === "PUT" && x.path.includes("transcripts/p-other"))).toHaveLength(0); // and was not sent back
+    await db.transcripts.delete(row?.id as number);
+    await wait(100);
+    expect(sent.some((x) => x.method === "DELETE" && x.path === "/api/store/transcripts/p-other")).toBe(true);
+  });
 });
