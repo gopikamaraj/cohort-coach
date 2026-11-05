@@ -1,8 +1,12 @@
 """Cohort formation for a handful of classes, with the reason each class is in or out.
 
-Pure code over class counts. Each class gets one track by the engine's rule (PV-HEARD first, else
-its highest share, at 1 in 4 or more with at least 10 children checked). Classes with the same
-track, grade and medium form a cohort once there are `min_classes` of them; until then they wait.
+Pure code over class counts. There is one cohort per mistake (decided 4 Nov 2026, DECISIONS.md): a class
+joins the cohort of every tracked mistake it shows by the engine's rule (at least 1 child showing it and at
+least 10 children checked; the 25% share line was removed on 2 Nov), so one cohort holds every class that
+shows that mistake, and a class that shows two mistakes is in two cohorts. What each teacher gets next in a
+cohort still follows her own feedback (`next_lesson`). Classes with the same mistake, grade and medium form
+a cohort once there are `min_classes` of them; until then they wait. A class's own focus (PV-HEARD first,
+else the highest count) is still reported, for her results card; it no longer decides her cohort.
 At pilot scale (fewer classes than the engine's cohort size) there is no waitlist split: the pilot
 compares the trained error with the untrained ones instead (CLAUDE.md section 5, pilot verdict).
 
@@ -33,12 +37,19 @@ def used_counts(c: ClassCounts, settings: CohortSettings) -> dict[str, int]:
 
 
 def _track(c: ClassCounts, settings: CohortSettings) -> tuple[ErrorCode | None, str | None, Any]:
+    """The class's own focus (for her results card) and the engine's profile, whose `eligible` mistakes are
+    the cohorts the class joins."""
     used = used_counts(c, settings)
     profile = profile_from_counts(c.children_checked, {ErrorCode(k): v for k, v in used.items()})
     if profile.track is None:
         return None, None, profile
     reason = "pv_heard_first" if profile.track is ErrorCode.PV_HEARD else "highest_p"
     return profile.track, reason, profile
+
+
+def _joins(profile: Any) -> list[ErrorCode]:
+    """The cohorts a class joins: every tracked mistake it is eligible for, one cohort each."""
+    return [code for code in profile.eligible if code in TRACKED]
 
 
 def _class_reason(
@@ -61,16 +72,8 @@ def _class_reason(
     }
     if code not in TRACKED:
         return {"in": False, "code": "no_track_yet", **facts}
-    if track is code:
-        return {"in": True, "code": "in", "track_reason": track_reason, **facts}
-    if code in profile.eligible:
-        return {
-            "in": False,
-            "code": "other_track",
-            "track": track.value if track else None,
-            "track_reason": track_reason,
-            **facts,
-        }
+    if code in _joins(profile):  # one cohort per mistake: she is in this one whatever her class's focus is
+        return {"in": True, "code": "in", "focus": code is track, **facts}
     if c.children_checked < MIN_CHILDREN_CHECKED:
         return {
             "in": False,
@@ -125,9 +128,8 @@ def form(classes: list[ClassCounts], settings: CohortSettings) -> dict[str, Any]
     }
     groups: dict[tuple[str, int, str], list[ClassCounts]] = defaultdict(list)
     for c in classes:
-        t = tracks[c.code][0]
-        if t is not None:
-            groups[(t.value, c.grade, c.medium)].append(c)
+        for code in _joins(tracks[c.code][2]):  # one cohort per mistake, with every class that shows it
+            groups[(code.value, c.grade, c.medium)].append(c)
     cohorts: list[dict[str, Any]] = []
     waiting: list[dict[str, Any]] = []
     for (code, grade, medium), members in sorted(groups.items()):
@@ -179,6 +181,7 @@ def form(classes: list[ClassCounts], settings: CohortSettings) -> dict[str, Any]
                 "track": t.value if t else None,
                 "track_reason": why,
                 "cohort": next((k["id"] for k in cohorts if c.code in k["classes"]), None),
+                "cohorts": [k["id"] for k in cohorts if c.code in k["classes"]],
                 "waiting": any(c.code in w["classes"] for w in waiting),
                 "errors": {
                     k: _class_reason(c, ErrorCode(k), settings, t, why, profile) for k in shown

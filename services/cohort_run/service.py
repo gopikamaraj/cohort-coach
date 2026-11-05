@@ -184,14 +184,17 @@ def form_now(db: Session, run: CohortRun, ctx: CallContext, speech: Any, by: str
     s = settings_of(run)
     result = formation.form(classes, s)
     st["formation"] = result
-    formed_now = result["cohorts"] and not st.get("cohort")
+    # One cohort per mistake: the run follows the formed cohort whose mistake has approved lesson content
+    # (TRACKS); a cohort formed for a mistake with no approved track yet is listed in the formation only.
+    runnable = next((k for k in result["cohorts"] if k["error"] in TRACKS), None)
+    formed_now = runnable is not None and not st.get("cohort")
     if result["status"] == "waiting_for_classes":
         w = result["waiting"][0]
         _event(st, "waiting", None, have=w["have"], need=w["min_classes"], error=w["error"], by=by)
     elif result["status"] == "no_cohort":
         _event(st, "no_cohort", None, classes=len(classes), by=by)
     if formed_now:
-        c = result["cohorts"][0]
+        c = runnable
         _event(
             st,
             "cohort_formed",
@@ -203,8 +206,8 @@ def form_now(db: Session, run: CohortRun, ctx: CallContext, speech: Any, by: str
             mentor=c["mentor"]["suggested"],
         )
     _save(db, run, st)
-    if formed_now:
-        _materialize(db, run, result["cohorts"][0], ctx, speech)
+    if formed_now and runnable is not None:
+        _materialize(db, run, runnable, ctx, speech)
     return result
 
 

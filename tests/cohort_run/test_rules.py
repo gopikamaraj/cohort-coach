@@ -55,11 +55,16 @@ def classes() -> list[scenario.ClassCounts]:
     return [scenario.synthetic_class(SC, "3A"), scenario.synthetic_class(SC, "3B")]
 
 
-def test_production_rules_form_nothing_and_say_why() -> None:
+# Updated 4 Nov 2026 to the current rules (DECISIONS.md): the 25% share line was removed on 2 Nov (an error is eligible
+# when 1 child shows it and 10 were checked), and there is one cohort per mistake, holding every class that shows it
+# (decided 4 Nov). The old tests expected no cohort, or one SUB-SFL cohort chosen through each class's single track.
+def test_production_rules_make_the_two_classes_wait_for_fifteen_and_say_why() -> None:
     out = formation.form(classes(), PROD)
-    assert out["status"] == "no_cohort"
+    assert out["status"] == "waiting_for_classes"  # was no_cohort under the 25% line
+    (w,) = out["waiting"]
+    assert (w["error"], w["classes"], w["have"], w["min_classes"]) == ("SUB-NODEC", ["3A", "3B"], 2, 15)
     reasons = {c["code"]: c["errors"]["SUB-SFL"] for c in out["classes"]}
-    assert reasons["3A"]["code"] == "under_line" and reasons["3A"]["showing"] == 0
+    assert reasons["3A"]["code"] == "under_line" and reasons["3A"]["showing"] == 0  # nobody shows SUB-SFL on two questions
     assert reasons["3A"]["ignored_single"] == 4  # seen on one question only, not counted
 
 
@@ -67,26 +72,34 @@ def test_single_question_probes_alone_still_wait_for_fifteen_classes() -> None:
     s = settings.CohortSettings(COHORT_MIN, True, "production")
     out = formation.form(classes(), s)
     assert out["status"] == "waiting_for_classes"
-    assert out["waiting"][0]["have"] == 2 and out["waiting"][0]["min_classes"] == 15
+    have = {w["error"]: w["have"] for w in out["waiting"]}  # one waiting cohort per mistake
+    assert have == {"ADD-NOCARRY": 2, "PV-HEARD": 1, "SUB-NODEC": 2, "SUB-SFL": 2}
+    assert all(w["min_classes"] == 15 for w in out["waiting"])
 
 
-def test_two_classes_without_single_question_probes_form_nothing() -> None:
-    assert formation.form(classes(), PILOT_TWO_ITEM)["status"] == "no_cohort"
-
-
-def test_pilot_settings_form_one_labelled_cohort() -> None:
-    out = formation.form(classes(), PILOT)
+def test_two_classes_without_single_question_probes_form_a_sub_nodec_cohort() -> None:
+    out = formation.form(classes(), PILOT_TWO_ITEM)  # was no_cohort under the 25% line
     assert out["status"] == "formed"
     (c,) = out["cohorts"]
-    assert c["error"] == "SUB-SFL" and c["classes"] == ["3A", "3B"]
+    assert c["error"] == "SUB-NODEC" and c["classes"] == ["3A", "3B"] and (c["showing"], c["checked"]) == (3, 34)
+
+
+def test_pilot_settings_form_one_labelled_cohort_per_mistake() -> None:
+    out = formation.form(classes(), PILOT)
+    assert out["status"] == "formed"
+    assert [c["error"] for c in out["cohorts"]] == ["ADD-NOCARRY", "SUB-NODEC", "SUB-SFL"]  # both classes in each
+    assert all(c["classes"] == ["3A", "3B"] for c in out["cohorts"])
+    c = next(k for k in out["cohorts"] if k["error"] == "SUB-SFL")
     assert c["labels"] == [settings.PILOT_COHORT_LABEL, settings.SINGLE_ITEM_LABEL]
     assert (c["showing"], c["checked"]) == (9, 34)
     assert c["waitlist"] == "none_at_pilot_scale"
     assert c["mentor"] == {"suggested": False, "reason": "no_other_class", "classes_compared": 0}
+    assert [(w["error"], w["classes"]) for w in out["waiting"]] == [("PV-HEARD", ["3A"])]  # only 3A shows it
     by = {k["code"]: k for k in out["classes"]}
     assert by["3A"]["errors"]["SUB-SFL"]["code"] == "in"
-    assert by["3A"]["errors"]["ADD-NOCARRY"]["code"] == "under_line"  # 3 of 16
-    assert by["3B"]["errors"]["ADD-NOCARRY"]["showing"] == 4  # 4 of 18, under 1 in 4
+    assert by["3A"]["errors"]["ADD-NOCARRY"]["code"] == "in"  # was under_line (3 of 16, under 1 in 4)
+    assert by["3B"]["errors"]["ADD-NOCARRY"]["showing"] == 4
+    assert by["3A"]["cohorts"] == ["ADD-NOCARRY-g3-hindi", "SUB-NODEC-g3-hindi", "SUB-SFL-g3-hindi"]
 
 
 def test_the_first_class_alone_waits() -> None:
@@ -110,8 +123,8 @@ def test_a_better_class_is_suggested_as_mentor() -> None:
     a, b = classes()
     good = scenario.ClassCounts("3C", "T3", "en", 3, "hindi", 20, {}, {})
     out = formation.form([a, b, good], PILOT)
-    m = out["cohorts"][0]["mentor"]
-    assert m["suggested"] is False and m["reason"] == "none_did_better"  # block under 1 in 4
+    m = next(k for k in out["cohorts"] if k["error"] == "SUB-SFL")["mentor"]
+    assert m["suggested"] is False and m["reason"] == "none_did_better"  # block under 1 in 4 (the mentor bar, unchanged)
     strong = [
         scenario.ClassCounts("3A", "T1", "en", 3, "hindi", 16, {"SUB-SFL": 8}, {}),
         scenario.ClassCounts("3B", "T2", "hi", 3, "hindi", 18, {"SUB-SFL": 9}, {}),

@@ -144,7 +144,8 @@ def test_the_second_class_forms_the_cohort_automatically(env: Env) -> None:
     assert c["labels"] == ["Pilot cohort, two classes", "Based on one question per child"]
     assert c["mentor"]["suggested"] is False and c["mentor"]["reason"] == "no_other_class"
     assert v["class"]["errors"]["SUB-SFL"]["code"] == "in"
-    assert v["class"]["errors"]["ADD-NOCARRY"]["code"] == "under_line"
+    # was under_line (4 of 18, under the 25% line removed on 2 Nov); one cohort per mistake puts her in ADD-NOCARRY too
+    assert v["class"]["errors"]["ADD-NOCARRY"]["code"] == "in"
     coach = ok(env.c.get(API, params={"as": "C1"}))
     kinds = [e["kind"] for e in coach["timeline"]]
     assert kinds[:4] == ["check_submitted", "waiting", "check_submitted", "cohort_formed"]
