@@ -124,6 +124,8 @@ def build_maps(conn: Connection) -> tuple[dict[str, str], dict[str, str], dict[s
 def rekey(conn: Connection, plan: Plan, table: str, col: str, old: str, new: str) -> None:
     if not has(conn, table) or col not in cols(conn, table):
         return
+    if old.startswith(UNCLAIMED) and new == UNCLAIMED + old:
+        return  # already parked under `unclaimed:` by an earlier run: a second prefix would be wrong (and too long for varchar(32))
     n = conn.execute(text(f'UPDATE "{table}" SET "{col}" = :new WHERE "{col}" = :old'), {"new": new, "old": old}).rowcount or 0
     plan.moved(table, col, old, new, n)
 
