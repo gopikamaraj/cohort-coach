@@ -145,10 +145,14 @@ def test_a_bad_request_is_refused(world: World) -> None:
     assert 'filename="audio.mp3"' in bad.headers["content-disposition"]
 
 
-def test_it_needs_the_device_id(world: World) -> None:
+def test_it_no_longer_needs_a_device_id(world: World) -> None:
+    # Replaces test_it_needs_the_device_id. The nickname is the user id (DECISIONS 2026-11-03), so the audio is for
+    # whoever is signed in and no device id is sent or asked for. (The suite signs every request in as a default user;
+    # that a request with no user at all is refused is tested in tests/api/test_identity_and_access.py.)
     r = world.client.post(
         "/api/audio/pack",
         json={"text": "Hello there.", "language": "en"},
         headers={"X-Role": "teacher"},
     )
-    assert r.status_code == 422
+    assert r.status_code == 200, r.text
+    assert r.headers["content-type"] == "audio/mpeg"

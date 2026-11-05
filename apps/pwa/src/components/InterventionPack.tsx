@@ -29,7 +29,7 @@ export function InterventionPack({ cohort }: { cohort: ClassCohort }) {
   const code = cohort.errors.includes(active) ? active : (cohort.errors[0] ?? "");
   const pack = useMemo(
     () =>
-      buildPack({ code, lang, children: cohort.counts[code] ?? 0, total: cohort.childrenChecked, here: map ? inThisClass(map, code) : null, rolls: map ? rollsFor(map, code) : null }, (id, c) => {
+      buildPack({ code, lang, children: cohort.counts[code] ?? 0, total: cohort.childrenChecked, here: map ? inThisClass(map, code) : null, rolls: map ? rollsFor(map, code) : null, rule: cohort.rule }, (id, c) => {
         console.info(`pack: no content for section "${id}" of ${c}; left out`);
       }),
     [code, lang, cohort, map],

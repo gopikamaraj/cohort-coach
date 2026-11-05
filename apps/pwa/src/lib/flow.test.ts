@@ -45,10 +45,12 @@ describe("the simulated class", () => {
     }
   });
 
-  it("chooses SUB-SFL as the focus in term 1", () => {
+  it("chooses PV-HEARD as the focus of the first check (the 25% share rule was removed, DECISIONS 2026-11-02)", () => {
+    // Was "chooses SUB-SFL": under the 25% line only SUB-SFL (11 of 28) was eligible. An error is eligible now when 1 child
+    // shows it and 10 were checked, and PV-HEARD (2 of 28) always comes first.
     const profile = classProfile(diagnoseAll("A", demoChildren(1)));
-    expect(profile.track).toBe("SUB-SFL");
-    expect(profile.eligible).toEqual(["SUB-SFL"]);
+    expect(profile.track).toBe("PV-HEARD");
+    expect(profile.eligible).toEqual(["PV-HEARD", "ADD-NOCARRY", "SUB-SFL", "SUB-NODEC"]);
   });
 });
 
@@ -58,10 +60,10 @@ describe("error cards", () => {
 
   it("lists the errors by count with the focus marked, as counts", () => {
     expect(view.cards.map((c) => [c.code, c.count, c.total, c.isFocus])).toEqual([
-      ["SUB-SFL", 11, 28, true],
+      ["SUB-SFL", 11, 28, false], // the focus moved to PV-HEARD with the 25% rule gone
       ["ADD-NOCARRY", 5, 28, false],
       ["SUB-NODEC", 3, 28, false],
-      ["PV-HEARD", 2, 28, false],
+      ["PV-HEARD", 2, 28, true],
     ]);
     expect(view.untracked).toBe(2);
     expect(view.anchorWrong).toBe(1);

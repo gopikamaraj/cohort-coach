@@ -119,10 +119,13 @@ def test_p_is_a_fraction_and_not_rounded() -> None:
     assert profile.children_checked == 3
 
 
-def test_eligibility_boundary_exactly_25_percent_with_enough_children() -> None:
-    assert SFL in class_profile(make_class({SFL: 3}, 12)).eligible  # 3/12 = 0.25
-    assert SFL in class_profile(make_class({SFL: 4}, 16)).eligible
-    assert SFL not in class_profile(make_class({SFL: 3}, 13)).eligible  # 0.2308
+def test_eligibility_is_one_child_showing_it_with_ten_children_checked() -> None:
+    # Replaces test_eligibility_boundary_exactly_25_percent_with_enough_children: the 25% share rule was removed on
+    # 2 Nov 2026 (DECISIONS.md). An error is eligible when at least 1 child shows it and at least 10 were checked.
+    assert SFL in class_profile(make_class({SFL: 3}, 12)).eligible
+    assert SFL in class_profile(make_class({SFL: 3}, 13)).eligible  # 0.2308 was below the old line: eligible now
+    assert SFL in class_profile(make_class({SFL: 1}, 40)).eligible  # one child is enough
+    assert SFL not in class_profile(make_class({SFL: 0}, 20)).eligible  # nobody shows it
 
 
 def test_eligibility_needs_ten_children_checked() -> None:
@@ -132,8 +135,9 @@ def test_eligibility_needs_ten_children_checked() -> None:
 
 
 def test_track_is_the_highest_p_eligible_error() -> None:
+    # Replaces the old expectation (N, SFL): with the 25% line gone NODEC (2 of 20) is eligible as well.
     profile = class_profile(make_class({SFL: 5, N: 7, NODEC: 2}, 20))
-    assert profile.eligible == (N, SFL)
+    assert profile.eligible == (N, SFL, NODEC)
     assert profile.track == N
 
 

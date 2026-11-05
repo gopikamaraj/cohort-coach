@@ -35,7 +35,7 @@ export function PackSummary({ pack, lang, draft }: { pack: Pack; lang: Lang; dra
       {part("results.explain.first", ex?.first)}
       <section>
         <h2>{tr("pack.sec.working")}</h2>
-        <p>{tr("pack.summary_working", { n: keys.rules.min_hits })}</p>
+        <p>{tr("pack.summary_working", { n: pack.sections.find((x) => x.id === "working")?.numbers?.n ?? keys.rules.min_hits })}</p>
       </section>
       {fallback ? <p>{tr("pack.lang_missing", { language: lang })}</p> : null}
     </div>

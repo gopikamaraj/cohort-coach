@@ -48,13 +48,13 @@ def rec(
 
 def test_eligibility_boundaries() -> None:
     records = [
-        rec("a", {SFL: 3}, checked=12),  # 0.25 exactly: eligible
-        rec("b", {SFL: 3}, checked=13),  # 0.2308: not
-        rec("c", {SFL: 4}, checked=9),  # too few checked
-        rec("d", {SFL: 3}, checked=10),  # 0.30 with 10 checked: eligible
+        rec("a", {SFL: 3}, checked=12),  # eligible
+        rec("b", {SFL: 3}, checked=13),  # 0.2308: was out under the removed 25% line (DECISIONS 2026-11-02), eligible now
+        rec("c", {SFL: 4}, checked=9),  # too few checked: still out
+        rec("d", {SFL: 3}, checked=10),  # eligible
     ]
     assigned = {a.class_id for a in assign_tracks(records)}
-    assert assigned == {"a", "d"}
+    assert assigned == {"a", "b", "d"}
 
 
 def test_one_track_per_class_pv_heard_first_else_highest_p() -> None:

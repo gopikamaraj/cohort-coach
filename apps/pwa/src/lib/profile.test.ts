@@ -125,10 +125,13 @@ describe("data used", () => {
 });
 
 describe("consent (DPDP)", () => {
-  it("records what she agreed to, with a version and a time, and nothing is on by default", () => {
+  it("records what she agreed to, with a version and a time; only sharing class counts is on by default (the demo default)", () => {
+    // Updated 4 Nov: "nothing is on by default" was the rule before the demo default of 2 Nov (DECISIONS 2026-11-02,
+    // VITE_DEFAULT_SHARE_COUNTS): until she chooses, class counts are shared and every other scope is off.
     const kv = memory();
     expect(getConsent(kv)).toBeNull();
-    expect(hasConsent("counts", kv)).toBe(false);
+    expect(hasConsent("counts", kv)).toBe(true);
+    for (const scope of ["practice_ai", "share_rehearsal", "feedback", "keep_sheets"] as const) expect(hasConsent(scope, kv)).toBe(false);
     setConsent({ core: true, counts: true, practice_ai: false, share_rehearsal: false, feedback: true }, kv);
     expect(hasConsent("counts", kv)).toBe(true);
     expect(hasConsent("practice_ai", kv)).toBe(false);

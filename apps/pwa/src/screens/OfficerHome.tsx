@@ -7,6 +7,7 @@ import { ruleQuery, useErrorRule } from "../lib/errorRule";
 import { useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import OfficerCohorts from "../components/OfficerCohorts";
+import { CohortMaker } from "../components/CohortMaker";
 import { API_BASE } from "../lib/api";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
@@ -141,6 +142,8 @@ export default function OfficerHome() {
       ) : null}
 
       <EnteredOfficer />
+
+      <CohortMaker who="officer" />
 
       <FormCohorts />
 

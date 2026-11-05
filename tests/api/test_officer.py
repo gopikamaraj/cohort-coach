@@ -23,6 +23,9 @@ def world(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> Iterator[tuple[TestClient, sessionmaker[Session]]]:
     monkeypatch.setenv("JUDGE_MODE", "1")
+    # judge mode gives the test its officer role; the demo also switches the caps off, so these tests that check the
+    # production minimum (a figure over fewer than 5 classes is hidden) put the production values back
+    monkeypatch.setattr("services.api.caps.caps_off", lambda: False)
     engine = make_engine(f"sqlite:///{tmp_path / 'o.sqlite'}")
     Base.metadata.create_all(engine)
     factory = sessionmaker(engine, expire_on_commit=False)

@@ -38,6 +38,7 @@ export interface PackInput {
   total: number; // children checked
   here: InThisClass | null; // this class's own example, when the answers are on this phone
   rolls?: { confirmed: number[]; possible: number[] } | null; // the roll numbers, when the answers are on this phone
+  rule?: number; // the one error rule the cohort's counts were made under (2 confirmed, 1 possible); the engine's default when not given
 }
 
 /** Build the pack. Anything with no text is left out of `sections` and named in `omitted`. */
@@ -71,7 +72,7 @@ export function buildPack(input: PackInput, onOmit: (id: SectionId, code: string
   add(listSection("mistakes", pack?.teaching_mistakes), "mistakes");
   // How to know it is working comes from the rules the engine uses, not from text: the same count,
   // read again at the next check.
-  add({ id: "working", numbers: { now: input.children, total: input.total, n: keys.rules.min_hits }, source: "The check's own rule", draft: false, fallback: false }, "working");
+  add({ id: "working", numbers: { now: input.children, total: input.total, n: input.rule ?? keys.rules.min_hits }, source: "The cohort's own rule", draft: false, fallback: false }, "working");
   add(listSection("home", pack?.at_home), "home");
   return { code, sections, omitted };
 }

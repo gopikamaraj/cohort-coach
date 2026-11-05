@@ -21,7 +21,7 @@ def test_keys_carry_the_scoring_rules() -> None:
     rules = build_answer_keys(PILOT_FORMS)["rules"]
     assert rules["min_hits"] == MIN_HITS
     assert rules["min_children_checked"] == MIN_CHILDREN_CHECKED
-    assert rules["min_prevalence"] == {"numerator": 1, "denominator": 4}
+    assert rules["min_children_with_error"] == 1  # replaces min_prevalence 1/4: the 25% share rule was removed (DECISIONS 2026-11-02)
     assert "PV-REVERSE" not in rules["tracked"]
 
 
