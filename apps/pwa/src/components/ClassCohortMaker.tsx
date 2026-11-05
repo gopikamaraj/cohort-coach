@@ -114,7 +114,7 @@ export function ClassCohortMaker({ onlyConfirmed }: { onlyConfirmed: boolean }) 
           </label>
         ))}
       </fieldset>
-      <label>
+      <label className="cohort-name-field">
         {tr("cohort.mine.name")}
         <input type="text" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} data-testid="class-cohort-name" />
       </label>
