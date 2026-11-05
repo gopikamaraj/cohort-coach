@@ -119,10 +119,8 @@ export default function OfficerHome() {
   const { tr } = useApp();
   const [waiting, setWaiting] = useState<ReviewWaiting | null>(null);
   const [failed, setFailed] = useState(false);
-  const [demo, setDemo] = useState<boolean | null>(null); // the server says demo mode: every minimum group size is off
 
   useEffect(() => {
-    get<{ caps?: { off: boolean } }>("entered").then((e) => setDemo(Boolean(e.caps?.off)), () => setDemo(null));
     get<{ review_waiting?: ReviewWaiting }>("funnel").then(
       (f) => setWaiting(f.review_waiting ?? null),
       () => setFailed(true),
@@ -134,11 +132,6 @@ export default function OfficerHome() {
       <h1 id="of-title">
         <Icon name="programme" /> {tr("role.officer")}
       </h1>
-      {demo !== false ? null : (  /* shown only once the server has said production */
-        <p className="note">
-          <Icon name="shield" size={18} /> {tr("officer.rule")}
-        </p>
-      )}
       {failed ? (
         <p role="alert" className="banner">
           {tr("officer.error")}
@@ -151,7 +144,7 @@ export default function OfficerHome() {
 
       <FormCohorts />
 
-      <OfficerCohorts demo={demo === true} />
+      <OfficerCohorts />
 
       {waiting ? (
         <div className="panel" data-testid="funnel">

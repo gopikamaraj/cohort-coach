@@ -14,7 +14,7 @@ const NEXT: Record<string, string[]> = {
   cancelled: [],
 };
 
-export default function OfficerCohorts({ demo = false }: { demo?: boolean }) {
+export default function OfficerCohorts() {
   const { tr } = useApp();
   const [rows, setRows] = useState<CohortSummary[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -45,7 +45,7 @@ export default function OfficerCohorts({ demo = false }: { demo?: boolean }) {
   return (
     <div className="panel" data-testid="officer-cohorts">
       <h2>{tr("officer.cohorts")}</h2>
-      <p className="muted">{tr(demo ? "officer.cohorts_help_demo" : "officer.cohorts_help")}</p>
+      <p className="muted">{tr("officer.cohorts_help_demo")}</p>
       {/* A coach starts a cohort now (Coach screen); the officer moves existing ones through their lifecycle. */}
       {failed ? (
         <p role="alert" data-testid="cohort-failed">
@@ -61,7 +61,7 @@ export default function OfficerCohorts({ demo = false }: { demo?: boolean }) {
             <li key={c.id} data-testid={`cohort-${c.id}`}>
               <strong>{c.error}</strong> · {tr(`officer.status_${c.status}` as Key)} · {tr("officer.cohort_members")}:{" "}
               {c.members ?? tr("officer.cohort_hidden")}
-              {c.simulated || demo ? ` · ${tr("common.simulated")}` : ""} {/* in the demo no real data stands behind a cohort here */}
+              {` · ${tr("common.simulated")}`} {/* in the demo no real data stands behind a cohort here */}
               <div>
                 {next.includes("active") ? (
                   <button type="button" className="btn btn-secondary" onClick={() => void move(c.id, "active")} data-testid={`activate-${c.id}`}>
