@@ -6,7 +6,7 @@ import { ruleQuery, useErrorRule } from "../lib/errorRule";
 import { useEffect, useState } from "react";
 import type { Key } from "../i18n";
 import { API_BASE } from "../lib/api";
-import { ccall } from "../lib/cohort";
+import { ccall, CohortError } from "../lib/cohort";
 import { useApp } from "../state";
 
 const ERRORS = ["PV-HEARD", "PV-REVERSE", "ADD-NOCARRY", "SUB-SFL", "SUB-NODEC"] as const;
@@ -89,8 +89,8 @@ export function CohortMaker({ who }: { who: "coach" | "officer" }) {
       if (who === "officer") setDone(made);
       setCode("");
       load();
-    } catch {
-      setMsg(tr("coach.make.error"));
+    } catch (e) {
+      setMsg(tr("coach.make.error") + (e instanceof CohortError ? ` (${e.status}${e.detail ? `: ${e.detail}` : ""})` : ""));
     } finally {
       setBusy(false);
     }

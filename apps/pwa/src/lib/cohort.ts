@@ -32,6 +32,7 @@ export class CohortError extends Error {
   constructor(
     public status: number,
     public codes: string[] = [],
+    public detail: string = "", // the server's own words for why (English), shown small beside the screen's message
   ) {
     super(`cohort ${status}`);
   }
@@ -59,13 +60,18 @@ export async function ccall<T>(
   }
   if (!res.ok) {
     let codes: string[] = [];
+    let detail = "";
     try {
-      const d = ((await res.json()) as { detail?: { codes?: string[] } }).detail;
-      codes = d?.codes ?? [];
+      const d = ((await res.json()) as { detail?: string | { codes?: string[]; message?: string } }).detail;
+      if (typeof d === "string") detail = d;
+      else {
+        codes = d?.codes ?? [];
+        detail = d?.message ?? "";
+      }
     } catch {
       /* no body */
     }
-    throw new CohortError(res.status, codes);
+    throw new CohortError(res.status, codes, detail);
   }
   return (await res.json()) as T;
 }
