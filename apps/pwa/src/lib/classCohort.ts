@@ -59,13 +59,21 @@ function writePending(rows: ClassCohort[]): void {
 /** What is known now: the server's list (once read) and any waiting to be sent. */
 export function readAll(): ClassCohort[] {
   const list = served ?? readCache();
-  const wait = pending().filter((p) => !list.some((s) => s.checkId === p.checkId));
+  const wait = pending().filter((p) => !list.some((s) => keyOf(s) === keyOf(p)));
   return [...list, ...wait];
 }
 
-/** The cohort made from this check, if there is one. */
+/** One cohort per mistake: a cohort is known by its check and the mistakes it works on. */
+const keyOf = (c: { checkId: string; errors: string[] }): string => `${c.checkId}|${[...c.errors].sort().join(",")}`;
+
+/** The first cohort made from this check, if there is one. */
 export function forCheck(checkId: string): ClassCohort | null {
   return readAll().find((c) => c.checkId === checkId) ?? null;
+}
+
+/** Every cohort made from this check: one for each mistake she has made one for. */
+export function allForCheck(checkId: string): ClassCohort[] {
+  return readAll().filter((c) => c.checkId === checkId);
 }
 
 export interface Input {
@@ -116,7 +124,7 @@ function fromServer(g: Served): ClassCohort {
 /** Make it: sent now when online, and then it lives on the server only. A refused name is thrown (so she can
  *  change it); a network failure keeps it on this phone to send later. */
 export async function create(input: Input, online: boolean, fetchFn?: typeof fetch): Promise<ClassCohort> {
-  const have = forCheck(input.checkId);
+  const have = allForCheck(input.checkId).find((c) => keyOf(c) === keyOf(input));
   if (have) return have;
   const row: ClassCohort = {
     id: localId(),
@@ -132,7 +140,7 @@ export async function create(input: Input, online: boolean, fetchFn?: typeof fet
     try {
       const got = await send(row, input.language, fetchFn);
       const made = { ...row, id: got.id, synced: true };
-      served = [...(served ?? readCache()).filter((s) => s.checkId !== made.checkId), made];
+      served = [...(served ?? readCache()).filter((s) => keyOf(s) !== keyOf(made)), made];
       return made;
     } catch (e) {
       if (e instanceof CohortError && e.status > 0) throw e; // refused: she can change the name

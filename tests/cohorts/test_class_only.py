@@ -110,3 +110,15 @@ def test_it_does_not_change_the_production_minimum_of_classes(
     monkeypatch.delenv("COHORT_MIN_CLASSES", raising=False)
     client.post("/api/cohorts/class-only", json=BODY, headers=h("teacher", DEV1))
     assert settings.production().min_classes == 15  # a class of one never lowers it
+
+
+def test_one_cohort_per_mistake_the_same_check_may_have_one_for_each_mistake(client: TestClient) -> None:
+    first = {**BODY, "name": "3A: smaller digit", "errors": ["SUB-SFL"], "counts": {"SUB-SFL": 5}}
+    second = {**BODY, "name": "3A: heard", "errors": ["PV-HEARD"], "counts": {"PV-HEARD": 2}}
+    a = client.post("/api/cohorts/class-only", json=first, headers=h("teacher", DEV1))
+    b = client.post("/api/cohorts/class-only", json=second, headers=h("teacher", DEV1))
+    assert a.status_code == 200 and b.status_code == 200, (a.text, b.text)
+    assert a.json()["id"] != b.json()["id"]  # a second mistake of the same check gets its own cohort
+    again = client.post("/api/cohorts/class-only", json=second, headers=h("teacher", DEV1))
+    assert again.json()["id"] == b.json()["id"]  # a second tap for the same mistake returns the same one
+    assert len(client.get("/api/cohorts/class-only", headers=h("teacher", DEV1)).json()) == 2

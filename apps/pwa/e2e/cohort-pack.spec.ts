@@ -39,16 +39,31 @@ test("create a cohort for my class: the most common error is chosen, only counts
   await expect(form).toContainText("5 of 16 children");
   await expect(page.getByTestId("class-cohort-name")).toHaveValue(/Takes the smaller digit from the larger/);
   await page.getByTestId("pick-PV-HEARD").check();
-  const sent = page.waitForRequest((r) => r.url().includes("/api/cohorts/class-only") && r.method() === "POST");
+  const sent: Record<string, unknown>[] = [];
+  page.on("request", (r) => {
+    if (r.url().includes("/api/cohorts/class-only") && r.method() === "POST") sent.push(r.postDataJSON() as Record<string, unknown>);
+  });
   await page.getByTestId("class-cohort-create").click();
-  const body = (await sent).postDataJSON() as Record<string, unknown>;
-  // counts of the chosen errors only: no child, no answer, no roll number
-  expect(Object.keys(body).sort()).toEqual(["check_id", "children_checked", "counts", "errors", "language", "name", "simulated"]);
-  expect(body["counts"]).toEqual({ "PV-HEARD": fx.class.counts["PV-HEARD"], "SUB-SFL": fx.class.counts["SUB-SFL"] });
-  await expect(page.getByTestId("class-cohort-made")).toContainText("Just my class: no other teachers yet");
+  await expect(page.getByTestId("class-cohort-made")).toHaveCount(2); // 4 Nov: one cohort per mistake, so two mistakes picked make two cohorts
+  await expect(page.getByTestId("class-cohort-made").first()).toContainText("Just my class: no other teachers yet");
+  // counts of the one chosen error only, in each request: no child, no answer, no roll number
+  expect(sent).toHaveLength(2);
+  for (const body of sent) expect(Object.keys(body).sort()).toEqual(["check_id", "children_checked", "counts", "errors", "language", "name", "simulated"]);
+  expect(sent.map((b) => b["counts"])).toEqual(expect.arrayContaining([{ "SUB-SFL": fx.class.counts["SUB-SFL"] }, { "PV-HEARD": fx.class.counts["PV-HEARD"] }]));
   await page.reload();
-  await expect(page.getByTestId("class-cohort-made")).toBeVisible(); // still there after a reload
-  await expect(page.getByTestId("class-cohort-open")).toHaveCount(0); // one per check
+  await expect(page.getByTestId("class-cohort-made")).toHaveCount(2); // still there after a reload
+});
+
+test("a class with two mistakes makes the second cohort after the first: the button comes back until every mistake has one", async ({ page }) => {
+  await enter16(page);
+  await makeCohort(page); // the most common mistake only
+  await expect(page.getByTestId("class-cohort-made")).toHaveCount(1);
+  await expect(page.getByTestId("class-cohort-open")).toBeVisible(); // another mistake has no cohort yet
+  await page.getByTestId("class-cohort-open").click();
+  await expect(page.getByTestId("pick-SUB-SFL")).toHaveCount(0); // that one has its cohort
+  await expect(page.getByTestId("pick-PV-HEARD")).toBeChecked();
+  await page.getByTestId("class-cohort-create").click();
+  await expect(page.getByTestId("class-cohort-made")).toHaveCount(2);
 });
 
 test("the cohort page shows the pack, text first, from the class's own results", async ({ page }) => {

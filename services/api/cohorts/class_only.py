@@ -20,7 +20,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from ai.validators.thread import check_thread_post
@@ -45,6 +45,11 @@ class MakeIn(BaseModel):
     children_checked: int = Field(ge=0, le=200)
     simulated: bool = False
     language: str = "en"
+
+
+def _plain(check_id: str) -> str:
+    """The check a cohort came from, without the `#<mistake>` that keeps a second cohort of the same check apart."""
+    return check_id.split("#", 1)[0]
 
 
 def view(row: ClassCohort) -> dict[str, Any]:
@@ -81,13 +86,27 @@ def make(
             raise HTTPException(422, "Each chosen error needs its count of children.")
     if set(body.counts) - CODES:
         raise HTTPException(422, "Unknown error in the counts.")
-    mine = db.execute(
-        select(ClassCohort).where(
-            ClassCohort.teacher_id == teacher.teacher_id, ClassCohort.check_id == body.check_id
-        )
-    ).scalar_one_or_none()
-    if mine is not None:  # one per check: a second tap, or a retry after a lost reply
-        return view(mine)
+    # one cohort per mistake (decided 2026-11-04): the same check may have a cohort for each mistake it shows, but a
+    # second tap, or a retry after a lost reply, for the same mistake returns the one already made. The table allows one
+    # row per (teacher, check id), so the first cohort of a check keeps the plain check id and each further mistake is
+    # stored under `<check id>#<mistake>`; the check id handed back is always the plain one (`_plain`).
+    made = list(
+        db.execute(
+            select(ClassCohort).where(
+                ClassCohort.teacher_id == teacher.teacher_id,
+                or_(ClassCohort.check_id == body.check_id, ClassCohort.check_id.like(body.check_id + "#%")),
+            )
+        ).scalars()
+    )
+    for mine in made:
+        if set(mine.errors) == set(body.errors):
+            return view(mine)
+    stored_id = body.check_id
+    if made:
+        suffix = "-".join(sorted(body.errors))
+        stored_id = f"{body.check_id}#{suffix}"
+        if len(stored_id) > 80:
+            stored_id = f"{body.check_id}#{hashlib.sha1(suffix.encode()).hexdigest()[:8]}"  # noqa: S324 (a label, not security)
     try:
         problems = check_thread_post(body.name, body.language)
     except Exception as exc:  # the check could not run: hold, never pass
@@ -99,7 +118,7 @@ def make(
     row = ClassCohort(
         id="cc-" + secrets.token_hex(6),
         teacher_id=teacher.teacher_id,
-        check_id=body.check_id,
+        check_id=stored_id,
         name=body.name.strip(),
         errors=body.errors,
         counts={c: body.counts[c] for c in body.errors},
@@ -323,7 +342,7 @@ def mine(
         select(ClassCohort).where(ClassCohort.teacher_id == teacher.teacher_id)
     ).scalars()
     # her own list: it also says which check each came from
-    return [{**view(r), "check_id": r.check_id} for r in rows]
+    return [{**view(r), "check_id": _plain(r.check_id)} for r in rows]
 
 
 @router.get("/coach")
