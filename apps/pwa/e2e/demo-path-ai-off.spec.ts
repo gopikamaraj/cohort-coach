@@ -23,7 +23,7 @@ test("with the AI off, every AI widget says so and the demo still runs on its no
   await page.getByTestId("papers-create").click();
   await page.getByTestId("route-rules").click();
   await page.getByTestId("paper-make").click();
-  await expect(page.getByTestId("paper-code")).toHaveText("PRE · 3A · T1", { timeout: 60_000 });
+  await expect(page.getByTestId("paper-code")).toHaveText("PRE · 3A", { timeout: 60_000 }); // terms are off: the code has no term (was "PRE · 3A · T1")
   await page.reload(); // Create a paper is still open from the first paper: start the page afresh
   await page.getByTestId("papers-create").click();
   await page.getByTestId("route-pdf").click();

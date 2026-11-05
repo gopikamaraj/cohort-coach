@@ -26,6 +26,7 @@ import { formatCheckLabel, shownClassName, suggestKind, today, trackToEvaluate }
 import { pcall } from "../lib/papers";
 import { afterApprove, conceptQuestions, countRolls, dataState, finishGate, formatQuestions, isApproved, listRolls, nextNotEntered, nextToApprove, optionKey, type RollSet } from "../lib/rolls";
 import { useApp } from "../state";
+import { shownCode } from "../lib/paperCode";
 
 const MAX_DIGITS = 9;
 
@@ -618,7 +619,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
         </button>
         {meta?.paperCode ? (
           <p className="muted" data-testid="check-paper-code">
-            {tr("papers.attached", { code: meta.paperCode })}
+            {tr("papers.attached", { code: shownCode(meta.paperCode) })}
           </p>
         ) : null}
       </div>

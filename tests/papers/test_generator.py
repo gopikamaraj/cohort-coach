@@ -173,8 +173,8 @@ def test_the_pilot_forms_import_as_an_explicit_paper_and_its_twin() -> None:
 
 
 def test_the_check_code_matches_the_check_record() -> None:
-    assert paper().check_code == "PRE · 3A · T1"
-    assert g.make_twin(paper(), RULES, POST, 1).check_code == "POST · 3A · T2"
+    assert paper().check_code == "PRE · 3A" # terms are off (correction 9, DECISIONS 2026-11-03): the code no longer ends in a term (was "PRE · 3A · T1")
+    assert g.make_twin(paper(), RULES, POST, 1).check_code == "POST · 3A"  # was "POST · 3A · T2"
 
 
 def test_the_profile_holds_class_counts_only() -> None:

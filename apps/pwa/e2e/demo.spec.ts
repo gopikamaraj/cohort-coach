@@ -50,7 +50,7 @@ test("a judge runs all 12 demo steps, and every made-up thing is labelled", asyn
   await page.getByTestId("papers-create").click();
   await page.getByTestId("route-rules").click();
   await page.getByTestId("paper-make").click();
-  await expect(page.getByTestId("paper-code")).toHaveText("PRE · 3A · T1", { timeout: 60_000 });
+  await expect(page.getByTestId("paper-code")).toHaveText("PRE · 3A", { timeout: 60_000 }); // terms are off: the code has no term (was "PRE · 3A · T1")
 
   // 3. Generate 20 filled demo sheets, named by class and roll number
   await next(page, 3);

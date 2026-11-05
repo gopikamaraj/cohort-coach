@@ -6,6 +6,7 @@ import { userHeader } from "./identity";
 export type HubRole = "teacher" | "mentor" | "coach";
 
 import type { WhyLine } from "../components/WhyLines";
+import { withoutTerms } from "./paperCode";
 
 export class HubError extends Error {
   constructor(
@@ -44,7 +45,7 @@ export async function hcall<T>(path: string, who: HubIdentity, init: { method?: 
     }
     throw new HubError(res.status, detail);
   }
-  return (await res.json()) as T;
+  return withoutTerms((await res.json()) as T); // an old paper's code is shown without its term
 }
 
 export async function hblob(path: string, who: HubIdentity): Promise<Blob> {

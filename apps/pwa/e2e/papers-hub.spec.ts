@@ -196,16 +196,17 @@ test("a generated paper is edited in the same paper, with no copy, and goes back
   await expect(page.getByTestId("paper-detail")).toHaveCount(0);
 });
 
-test("an assigned paper cannot be deleted, and says why", async ({ page }) => {
+test("papers are shared and the assignment interface is off: no Assign button and no Assigned to you panel", async ({ page }) => {
+  // Replaces "an assigned paper cannot be deleted, and says why" (DECISIONS 2026-11-04, correction 2): assignment is
+  // hidden behind a flag that is off (VITE_ASSIGNMENT_ENABLED), so this screen cannot assign. The rule that an
+  // assigned paper cannot be deleted stays in tests/papers_hub/test_api.py, which runs with the flag on.
   test.setTimeout(120_000);
   await as(page, "teacher");
   await makeGenerated(page);
-  await page.getByTestId("paper-assign-A").first().click();
-  await page.getByTestId("assign-go").click();
-  await expect(page.getByTestId("assign-msg")).toContainText("Assigned to 1 class");
-  await page.getByTestId("paper-delete-A").first().click();
-  await expect(page.getByTestId("delete-why")).toContainText("assigned to a class");
-  await expect(page.getByTestId("delete-confirm")).toHaveCount(0);
+  await expect(page.getByTestId("paper-row-A").first()).toBeVisible(); // the paper is listed for everyone
+  await expect(page.locator("[data-testid^=paper-assign-]")).toHaveCount(0);
+  await expect(page.getByTestId("assign-go")).toHaveCount(0);
+  await expect(page.getByText("Assigned to you")).toHaveCount(0);
   const scan = (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze()).violations;
   expect(scan.map((v) => v.id)).toEqual([]);
 });

@@ -39,7 +39,7 @@ def test_a_sheet_carries_the_demo_flag_roll_and_check_code_in_its_metadata(tmp_p
     flag = sheets.demo_flag(data)
     assert flag is not None
     assert flag["demo-roll"] == "6" and flag["demo-class"] == "3A"
-    assert flag["demo-check-code"] == "PRE · 3A · T1"
+    assert flag["demo-check-code"] == "PRE · 3A" # terms are off (correction 9, DECISIONS 2026-11-03): the code no longer ends in a term (was "PRE · 3A · T1")
     assert "Not a real child" in flag["Comment"]
 
 

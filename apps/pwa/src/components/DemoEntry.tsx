@@ -16,6 +16,7 @@ import { useApp } from "../state";
 import { isAiOff, useAiMode } from "../lib/aiMode";
 import { Busy } from "./Busy";
 import { AiOffNote, RecordedChip } from "./parts";
+import { shownCode } from "../lib/paperCode";
 
 interface Read {
   cells: ReadCell[];
@@ -158,7 +159,7 @@ export function DemoEntry({ strength: synthStrength, classCode: synthCode, onFin
       setMsg({ text: tr("demo.entry.no_roll", { name }), bad: true });
       return null;
     }
-    put(roll, { cells: out.cells, source: "ai", name, url: URL.createObjectURL(file), codeMismatch: !!(out.check_code && openCode && out.check_code !== openCode) });
+    put(roll, { cells: out.cells, source: "ai", name, url: URL.createObjectURL(file), codeMismatch: !!(out.check_code && openCode && shownCode(out.check_code) !== shownCode(openCode)) });
     return roll;
   }
 

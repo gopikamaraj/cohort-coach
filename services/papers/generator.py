@@ -378,7 +378,10 @@ def _coverage(rules: RuleSet, items: Iterable[PaperItem]) -> dict[str, list[int]
 
 
 def check_code(check: CheckRef) -> str:
-    return f"{KIND_CODE[check.kind]} · {check.class_label} · T{check.term}"
+    """The code printed on a paper: its kind and class. Terms are off (correction 9, DECISIONS 2026-11-03), so it no
+    longer ends in " · T1"; papers made before keep their stored code, and the app leaves the old suffix out when it
+    shows one."""
+    return f"{KIND_CODE[check.kind]} · {check.class_label}"
 
 
 def _finish(

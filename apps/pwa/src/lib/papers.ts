@@ -3,6 +3,7 @@
 // class-level counts only, never a child.
 import { API_BASE } from "./api";
 import type { ProfileRow } from "./db";
+import { withoutTerms } from "./paperCode";
 
 export type PaperRole = "teacher" | "coach";
 export type Lang = "en" | "hi" | "ta";
@@ -143,7 +144,7 @@ export async function pcall<T>(path: string, role: PaperRole, init: { method?: s
     }
     throw new PaperError(res.status, detail);
   }
-  return (await res.json()) as T;
+  return withoutTerms((await res.json()) as T); // an old paper's code is shown without its term
 }
 
 /** The class profile to send: the latest check's class counts if it checked enough children, else what she told

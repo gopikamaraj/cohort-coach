@@ -1,7 +1,7 @@
-"""Device-based tester profiles and privacy-safe usage stats (TESTER_STATS=1, public demo only).
+"""Tester profiles and privacy-safe usage stats (TESTER_STATS=1, public demo only).
 
-Opt-in, coarse data only; the raw device id never reaches the server (only a salted hash made on the
-device). See docs/build/reports/TESTER-STATS.md.
+Opt-in, coarse data only. A row belongs to the signed-in user (the normalised nickname is the user id, decided
+2026-11-03); there is no device id or device hash. See docs/build/reports/TESTER-STATS.md.
 """
 
 from __future__ import annotations

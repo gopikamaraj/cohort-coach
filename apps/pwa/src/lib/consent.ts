@@ -1,8 +1,8 @@
 // Consent (India's DPDP Act): free, specific and withdrawable. Nothing is on by default, with one exception
 // for the demo build: until she makes a choice, sharing class counts is ON (counts only, never a child), so a
 // demo's results reach the server. VITE_DEFAULT_SHARE_COUNTS=0 turns that off; any saved choice wins. What she agreed to is
-// kept on the phone with a version and a time, and each change is also sent to the server as a record under a
-// random device id (no name). Using the check, the cards and the history on this phone needs no consent
+// kept on the phone with a version and a time, and each change is also sent to the server as a record under her
+// user id (her nickname; no device id exists). Using the check, the cards and the history on this phone needs no consent
 // beyond reading the notice ("core"); sending class counts, using the AI Practice Class, and sharing
 // rehearsals each have their own switch.
 import { userHeader } from "./identity";

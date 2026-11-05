@@ -54,17 +54,18 @@ test("agreeing sends only the salted hash, the nickname choice and coarse fields
   await expect.poll(() => sent.some((s) => s.url.endsWith("/events")), { timeout: 10_000 }).toBe(true);
   const profile = sent.find((s) => s.url.endsWith("/profile"));
   const p = JSON.parse(profile!.body);
-  expect(p.device_hash).toMatch(/^[0-9a-f]{64}$/);
+  // Updated 4 Nov: the nickname is the user id (DECISIONS 2026-11-03), so the profile carries no device hash and the
+  // phone keeps no device id; the server names the row by the signed-in user.
+  expect(p).not.toHaveProperty("device_hash");
   expect(p).toMatchObject({ consent_stats: true, nickname: "Asha", nickname_public: false, invite_source: "edu-mentor", is_judge: false });
   expect(Object.keys(p).sort()).toEqual(
-    ["app_version", "browser_family", "consent_stats", "device_class", "device_hash", "installed_pwa", "invite_source", "is_judge", "language", "nickname", "nickname_public", "os_family"].sort(),
+    ["app_version", "browser_family", "consent_stats", "device_class", "installed_pwa", "invite_source", "is_judge", "language", "nickname", "nickname_public", "os_family"].sort(),
   );
   const raw = await page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((res) => { const r = indexedDB.open("cohort-coach"); r.onsuccess = () => res(r.result); });
     return new Promise<string>((res) => { const r = db.transaction("settings").objectStore("settings").get("tester.deviceId"); r.onsuccess = () => res((r.result?.value as string) ?? ""); });
   });
-  expect(raw.length).toBeGreaterThan(10);
-  for (const s of sent) expect(JSON.stringify(s)).not.toContain(raw);
+  expect(raw).toBe(""); // no device id is made or kept
   const events = JSON.parse(sent.find((s) => s.url.endsWith("/events"))!.body).events as { type: string }[];
   expect(events.map((e) => e.type)).toContain("session_start");
 });
@@ -85,13 +86,15 @@ test("the feedback sheet sends a rating, tags and a comment, and says thank you"
   expect(JSON.parse(sent.find((s) => s.url.endsWith("/feedback"))!.body)).toMatchObject({ rating: 4, tags: ["easy", "useful"], comment: "Clear screens", screen_id: "roles" });
 });
 
-test("Delete my data in My profile calls the server by hash and stops sharing", async ({ page }) => {
+test("Delete my data in My profile calls the server and stops sharing", async ({ page }) => {
+  // Replaces "... calls the server by hash": the nickname is the user id (DECISIONS 2026-11-03), so there is no device
+  // code to show and the delete goes by the signed-in user. The server side is tested in tests/tester.
   const sent = await mockTester(page);
   await page.goto("/#/roles");
   await page.getByTestId("tester-name").fill("Asha");
   await page.getByTestId("tester-save").click();
   await page.goto("/#/profile");
-  await expect(page.getByTestId("tester-device")).toHaveText(/^[0-9a-f]{6}$/);
+  await expect(page.getByTestId("tester-device")).toHaveCount(0); // no device code is shown or kept
   await page.getByTestId("tester-delete").click();
   await page.getByTestId("tester-delete").click();
   await expect.poll(() => sent.some((s) => s.method === "DELETE"), { timeout: 10_000 }).toBe(true);

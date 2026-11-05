@@ -132,7 +132,7 @@ def test_a_pre_test_makes_its_post_test_twin_frozen_at_once(db: Session) -> None
     twin = store.twin_of(db, p.id)
     assert twin is not None and twin.form == "B" and twin.kind == "post"
     assert twin.frozen_at is not None and twin.twin_of == p.id
-    assert twin.check_code.startswith("POST · 3A · T")
+    assert twin.check_code == "POST · 3A" # terms are off (correction 9, DECISIONS 2026-11-03): the code no longer ends in a term (was "POST · 3A · T…")
 
 
 def test_a_paper_in_words_nobody_has_reviewed_waits_in_the_queue(db: Session) -> None:

@@ -58,7 +58,7 @@ for (const [vp, size] of [["phone", PHONE], ["desktop", DESKTOP]] as const) {
       await expect(page.getByTestId("paper-maker")).toBeVisible();
       await screen(page, vp, "03-papers-create");
       await page.getByTestId("paper-make").click();
-      await expect(page.getByTestId("paper-code")).toHaveText("PRE · 3A · T1", { timeout: 60_000 });
+      await expect(page.getByTestId("paper-code")).toHaveText("PRE · 3A", { timeout: 60_000 }); // terms are off: the code has no term (was "PRE · 3A · T1")
       await expect(page.getByTestId("paper-twin-note")).toBeVisible();
       await screen(page, vp, "03-paper-made");
 

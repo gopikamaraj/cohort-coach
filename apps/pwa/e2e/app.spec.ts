@@ -192,14 +192,25 @@ test("no screen has a term control or a term label (terms are off; checks are li
   await page.goto("/#/judge");
   await page.getByTestId("load-demo").click();
   await expect(page.getByTestId("demo-loaded")).toBeVisible({ timeout: 30_000 });
-  for (const route of ["/#/judge", "/#/home", "/#/cards", "/#/check", "/#/history", "/#/papers", "/#/programme", "/#/profile", "/#/roles"]) {
-    await page.goto(route);
+  // Tightened 4 Nov: the tour, the demo studio and the two-class run are visited too, and a paper code may not end in
+  // a term (" · T1"). The first version passed while those screens still said "Advance to Term 2" and "PRE · 3A · T1".
+  const routes = ["/#/judge", "/#/home", "/#/cards", "/#/check", "/#/history", "/#/papers", "/#/programme", "/#/profile", "/#/roles", "/#/tour", "/#/demo", "/#/two-classes"];
+  const look = async (route: string) => {
     await page.waitForLoadState("networkidle");
     const text = await page.locator("body").innerText();
     expect(text, `${route} shows the word term`).not.toMatch(/\bterms?\b/i);
     expect(text, `${route} shows a term number`).not.toMatch(/\bterm\s*\d\b/i);
+    expect(text, `${route} shows a paper code with a term`).not.toMatch(/ · T\d+\b/);
     await expect(page.getByTestId("term-select"), `${route} has a term selector`).toHaveCount(0);
+  };
+  for (const route of routes) {
+    await page.goto(route);
+    await look(route);
   }
+  // a check started on a paper shows the paper's code in Enter check: kind and class, no term
+  await startSample(page, { size: 1 });
+  await expect(page.getByTestId("check-paper-code")).toBeVisible();
+  await look("/#/check with a paper");
 });
 
 test("each role has its own home, and role switching works", async ({ page }) => {

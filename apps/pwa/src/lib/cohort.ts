@@ -1,5 +1,5 @@
 // The cohort chat's API calls. The server does every check; this only sends and shows. A teacher is
-// identified by her phone's random device id, staff by the role they act as (and a pseudonymous
+// identified by her user id (her nickname, sent as X-User), staff by the role they act as (and a pseudonymous
 // person id in the judge deployment). Nothing here ever holds a handle or a phone number.
 import { userHeader } from "./identity";
 import { API_BASE } from "./api";

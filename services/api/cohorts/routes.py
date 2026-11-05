@@ -4,7 +4,7 @@ config as everywhere (services/api/roles/permissions.yaml).
 
 A coach acts only on cohorts assigned to her and a mentor sees only cohorts she mentors; both are
 identified by a pseudonymous id (`X-Person`, in the judge deployment; otherwise "<role>-demo" until
-P12 brings real role assignment). A teacher is identified by her device id. Responses carry display
+P12 brings real role assignment). A teacher is identified by her user id (her nickname). Responses carry display
 names, never a teacher id, a handle or a phone number.
 """
 

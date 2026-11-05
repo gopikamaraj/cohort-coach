@@ -321,7 +321,7 @@ function Privacy() {
             await clearCloud();
             await clearPhone();
             resetUsage();
-            for (const k of Object.keys(localStorage)) if (k.startsWith("cc.")) localStorage.removeItem(k); // settings, consent, device id
+            for (const k of Object.keys(localStorage)) if (k.startsWith("cc.")) localStorage.removeItem(k); // settings, consent
             sessionStorage.clear();
             await reset();
             toast(tr("profile.erased"), "ok");

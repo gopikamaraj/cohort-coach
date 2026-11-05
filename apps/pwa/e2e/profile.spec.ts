@@ -24,15 +24,18 @@ test("nothing is on by default, the notice is readable, and choices are recorded
   await expect(page.getByTestId("privacy-notice")).toContainText("Digital Personal Data Protection Act");
   await expect(page.getByTestId("grievance")).toBeVisible();
   await page.getByTestId("notice-to-profile").click();
-  for (const s of ["counts", "practice_ai", "share_rehearsal", "feedback"]) await expect(page.getByTestId(`consent-${s}`)).not.toBeChecked();
-  await page.getByTestId("consent-counts").check();
+  // Updated 4 Nov: the demo default is "share class counts" ON (DECISIONS 2026-11-02, VITE_DEFAULT_SHARE_COUNTS); the
+  // other three are off. A consent record has no device id any more (DECISIONS 2026-11-03: the nickname is the user id).
+  for (const s of ["practice_ai", "share_rehearsal", "feedback"]) await expect(page.getByTestId(`consent-${s}`)).not.toBeChecked();
+  await expect(page.getByTestId("consent-counts")).toBeChecked();
+  await page.getByTestId("consent-practice_ai").check();
   await expect(page.getByText("notice version 1")).toBeVisible();
   await expect.poll(() => records.length).toBeGreaterThan(0);
   const first = JSON.parse(records[0]!) as Record<string, unknown>;
-  expect(Object.keys(first).sort()).toEqual(["device_id", "granted", "scope", "version"]);
-  expect(String(first["device_id"])).toMatch(/^[0-9a-f]{16}$/);
+  expect(Object.keys(first).sort()).toEqual(["granted", "scope", "version"]); // no device id
+  expect(first["scope"]).toBe("practice_ai");
   await page.getByTestId("consent-withdraw").click();
-  await expect(page.getByTestId("consent-counts")).not.toBeChecked();
+  await expect(page.getByTestId("consent-practice_ai")).not.toBeChecked();
   await page.goto("/#/home");
   await expect(page.getByTestId("privacy-prompt")).toBeHidden(); // she has chosen (to withdraw): not asked again
 });

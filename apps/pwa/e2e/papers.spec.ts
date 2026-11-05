@@ -34,7 +34,7 @@ test("a new paper shows its anchor and adaptive items, the coverage grid, the ke
   test.setTimeout(90_000);
   await as(page, "teacher");
   await makeNewPaper(page);
-  await expect(page.getByTestId("paper-code")).toContainText(/^PRE · .+ · T1$/);
+  await expect(page.getByTestId("paper-code")).toContainText(/^PRE · [^·]+$/); // terms are off: kind and class only, no " · T1"
   await expect(page.getByTestId("paper-status")).toHaveText("Approved by the rules");
   await expect(page.getByTestId("paper-anchors").locator("li")).toHaveCount(10);
   await expect(page.getByTestId("paper-adaptive").locator("li")).toHaveCount(5);
