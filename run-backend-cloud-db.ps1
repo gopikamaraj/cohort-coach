@@ -45,6 +45,7 @@ try {
   }
   # the same local settings run-backend.bat uses
   $env:ADMIN_OPEN = "1"; $env:OFFICER_MIN_CLASSES = "2"; $env:JUDGE_MODE = "1"; $env:MEDIA_LOCAL_STORE = "1"
+  $env:TESTER_STATS = "1"; if (-not $env:TESTER_TEAM_TOKEN) { $env:TESTER_TEAM_TOKEN = "local-team" }   # Testing evidence and the Feedback button, as run-backend.bat does
   $env:PWA_ORIGIN = "http://localhost:5173"
   Write-Host "Back end: http://localhost:8000  ->  CLOUD database '$database' (shared with the live site)"
   & ".venv\Scripts\python.exe" -m uvicorn services.api.main:app --reload --port 8000
