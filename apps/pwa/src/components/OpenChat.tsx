@@ -17,7 +17,7 @@ function readSeen(trackId: string): string | undefined {
   }
 }
 
-export function OpenChat({ trackId, testId = "open-chat", hideWhenNone = false }: { trackId: string; testId?: string; hideWhenNone?: boolean }) {
+export function OpenChat({ trackId, testId = "open-chat" }: { trackId: string; testId?: string; hideWhenNone?: boolean }) { // hideWhenNone is ignored: the button never vanishes
   const { tr, online } = useApp();
   const [state, setState] = useState<ChatState | null>(null);
   useEffect(() => {
@@ -33,11 +33,18 @@ export function OpenChat({ trackId, testId = "open-chat", hideWhenNone = false }
   }, [trackId, online]);
 
   if (state && !state.available) {
-    if (hideWhenNone) return null;
+    // A cohort of one class has no chat. The button stays on the page (greyed out, with the reason) instead of vanishing
+    // a moment after it loads.
     return (
-      <p className="muted" data-testid={`${testId}-none`}>
-        {tr("module.share.no_peers")}
-      </p>
+      <div className="open-chat">
+        <span className="btn btn-secondary is-disabled" aria-disabled="true" data-testid={`${testId}-disabled`}>
+          {tr("module.chat.open")}
+        </span>
+        <span className="muted" data-testid={`${testId}-none`}>
+          {" "}
+          {tr("module.share.no_peers")}
+        </span>
+      </div>
     );
   }
   const opened = () => {
