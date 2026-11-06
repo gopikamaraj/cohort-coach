@@ -93,11 +93,12 @@ export default function Landing() {
         <h2 id="howto-title">{tr("landing.howto_title")}</h2>
         <ul>
           <li>
-            {tr("landing.howto_pilot_pre")} <strong>3A Math</strong> / <strong>3B Math</strong> {tr("landing.howto_pilot_post")} <strong>{tr("role.teacher")}</strong>{tr("landing.howto_pilot_end")} {tr("landing.howto_pilot_note")}
+            {tr("landing.howto_pilot_pre")} <strong>3A Math</strong> / <strong>3B Math</strong> {tr("landing.howto_pilot_post")} <strong>{tr("role.teacher")}</strong>{tr("landing.howto_pilot_end")}
           </li>
           <li>
             {tr("landing.howto_officer_pre")} <strong>Block Officer</strong> {tr("landing.howto_officer_post")}
           </li>
+          <li>{tr("landing.howto_pilot_note")}</li>
         </ul>
         <div className="role-cards">
             <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
