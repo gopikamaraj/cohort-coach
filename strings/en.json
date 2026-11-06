@@ -551,7 +551,7 @@
   "roles.cannot.officer_no_approval": "Approve content: the coach does that",
   "roles.soon": "Arrives soon",
   "landing.title": "Who are you today?",
-  "landing.intro": "Pick a role to see what it can and cannot do. The demo class and the 24 other classes are simulated. The nicknames 3A Math and 3B Math show pilot class data.",
+  "landing.intro": "Pick a role to see what it can and cannot do.",
   "landing.tour": "Guided tour (5 min)",
   "landing.tour_hint": "A 5-minute walk-through with notes on what to look at. Start here.",
   "landing.howto_title": "How to use",

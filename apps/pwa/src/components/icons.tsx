@@ -3,6 +3,12 @@
 import type { ReactNode } from "react";
 
 const PATHS: Record<string, ReactNode> = {
+  tour: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M15.5 8.5l-2 5-5 2 2-5z" />
+    </>
+  ),
   more: <path d="M5 12h.01M12 12h.01M19 12h.01" strokeWidth="3" />,
   home: <path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />,
   check: (

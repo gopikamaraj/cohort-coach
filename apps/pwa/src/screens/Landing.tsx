@@ -102,7 +102,7 @@ export default function Landing() {
         <div className="role-cards">
             <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
               <span className="m-iconwell m-iconwell-on" aria-hidden="true">
-                <Icon name="judge" size={28} />
+                <Icon name="tour" size={28} />
               </span>
               <span className="l-card-text">
                 <strong className="role-name">{tr("landing.tour")}</strong>
