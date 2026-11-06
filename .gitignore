@@ -57,3 +57,6 @@ evals/speech-eval/
 data/speech-eval/
 .env.local
 deploy_seed/all.json
+
+# database backups and migration logs: teacher data, never commit
+backups/
