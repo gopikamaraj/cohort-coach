@@ -1086,3 +1086,4 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Alternatives:** seeding approved demo tracks (paid Opus drafting, skips coach review): not chosen.
 - **Test added:** `tests/chat/test_draft.py` (flag off by default, on offers drafts).
 - **Confirmed by:** Gopi ("yes").
+- **Update, same day:** for the demo, `content/chat/sample_lessons.v1.yaml` holds a sample lesson per tracked error (PV-HEARD, ADD-NOCARRY, SUB-SFL, SUB-NODEC). It is NOT reviewed (written by the developer as a stand-in; TODO-HUMAN(Seema) to replace it), is offered only with `CHAT_DEMO_STRATEGIES=1`, and every answer that quotes it shows "Source: Sample lesson, not reviewed". Where an error has a sample lesson, the unreviewed strategy drafts are not offered. Test: `test_sample_lessons_are_offered_only_in_the_demo_and_say_not_reviewed`; the earlier demo-flag test now checks PV-REVERSE because SUB-NODEC has a sample lesson. Confirmed by Gopi.
