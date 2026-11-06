@@ -1,0 +1,28 @@
+# SAMPLE lessons for the cohort chat's demo. NOT REVIEWED: written by the developer as stand-ins, not by Seema, not approved
+# by a coach. The chat offers them only when CHAT_DEMO_STRATEGIES=1 (the judge demo), and every answer that quotes one shows
+# the title "Sample lesson, not reviewed" in its source line. Never offered in production.
+# TODO-HUMAN(Seema): replace with the approved track lessons once reviewed. No item here is from Form A or Form B.
+version: 1
+title: Sample lesson, not reviewed
+lessons:
+  PV-HEARD:
+    en: >
+      Say a number aloud, such as sixty-two, and ask the child to build it before she writes it. Build sixty-two with six bundles of ten sticks and two loose sticks.
+      Then ask her to write what she built. She writes the six first, then the two, so she sees that 62 is six tens and two ones.
+      If a child writes 602, ask her how many sticks that would need, and let her count the answer herself.
+  ADD-NOCARRY:
+    en: >
+      Use bundles of ten sticks to add 38 and 27. Show three bundles and eight sticks, then two bundles and seven sticks.
+      Eight and seven make fifteen loose sticks, which is more than a bundle. Tie ten of them into a new bundle and write the carried ten above the tens column.
+      Ask the child to explain where the new bundle came from before she writes the answer.
+  SUB-SFL:
+    en: >
+      Build 52 with five bundles and two loose sticks. Ask the child to take away 29.
+      There are not enough loose sticks to take away nine, so she opens one bundle and has twelve loose sticks.
+      Ask her what happened to the tens column, and let her say that one bundle is gone. Then have her write the answer, and check by adding back.
+  SUB-NODEC:
+    en: >
+      Build 52 with five bundles and two loose sticks, and ask the child to take away 29.
+      There are not enough loose sticks to take away nine, so open one bundle and add ten loose sticks to the two.
+      Say it together: one bundle fewer, ten more loose sticks. The tens digit goes down because a bundle was opened.
+      Afterwards ask the child how she got her answer and listen before saying whether it is right.

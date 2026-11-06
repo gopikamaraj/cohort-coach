@@ -20,13 +20,14 @@ import os
 import re
 from dataclasses import dataclass
 
+import yaml
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ai.validators._data import tokens
 from ai.validators.arithmetic import normalise_child_tags, strip_child_tags
 from services.api.db import ContentVersion, ReviewItem
-from services.content.track import load_strategies
+from services.content.track import CONTENT, load_strategies
 
 MAX_SOURCES = 8
 MIN_WORDS, MAX_WORDS = 3, 40
@@ -89,10 +90,10 @@ def _strategy_statuses() -> tuple[str, ...]:
     return ("approved", "active")
 
 
-def _strategy_sources(error: str, language: str) -> list[Source]:
+def _strategy_sources(error: str, language: str, statuses: tuple[str, ...] | None = None) -> list[Source]:
     out: list[Source] = []
     for sid, s in load_strategies().items():
-        if s.status not in _strategy_statuses() or error not in s.fits:
+        if s.status not in (statuses or _strategy_statuses()) or error not in s.fits:
             continue
         lang = language if language in s.description else "en"
         texts = [s.description[lang], *s.worked_examples]
@@ -103,7 +104,23 @@ def _strategy_sources(error: str, language: str) -> list[Source]:
     return out
 
 
+def _sample_sources(error: str, language: str) -> list[Source]:
+    """The demo's sample lessons (content/chat/sample_lessons.v1.yaml), only with CHAT_DEMO_STRATEGIES=1. Titled
+    "Sample lesson, not reviewed" so every answer that quotes one says so."""
+    if os.environ.get("CHAT_DEMO_STRATEGIES", "0") != "1":
+        return []
+    raw = yaml.safe_load((CONTENT / "chat" / "sample_lessons.v1.yaml").read_text(encoding="utf-8"))
+    by_lang = (raw.get("lessons") or {}).get(error) or {}
+    lang = language if language in by_lang else "en"
+    if lang not in by_lang:
+        return []
+    return [Source(f"X.{error}.{n}", "sample_lesson", str(raw["title"]), s, lang) for n, s in enumerate(_sentences(str(by_lang[lang])), start=1)]
+
+
 def approved_sources(db: Session, error: str, language: str) -> list[Source]:
+    sample = _sample_sources(error, language)
+    if sample:  # the demo's sample lesson is the material for this error; the strategy drafts are offered only where there is none
+        return _lesson_sources(db, error, language) + _strategy_sources(error, language, ("approved", "active")) + sample
     return _lesson_sources(db, error, language) + _strategy_sources(error, language)
 
 

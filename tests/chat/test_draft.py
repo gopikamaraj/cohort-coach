@@ -282,9 +282,26 @@ def test_the_hindi_question_is_answered_from_hindi_sources(
 def test_demo_flag_offers_unreviewed_strategies_and_is_off_by_default(
     world: World, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    lib = {"s": Strategy("s", "draft", ("SUB-NODEC",), {"en": "Bundles"}, {"en": "Show the number with bundles of ten sticks."}, ())}
+    lib = {"s": Strategy("s", "draft", ("PV-REVERSE",), {"en": "Bundles"}, {"en": "Show the number with bundles of ten sticks."}, ())}
     monkeypatch.setattr(retrieve, "load_strategies", lambda: lib)
+    monkeypatch.delenv("CHAT_DEMO_STRATEGIES", raising=False)
+    strategies = lambda: [s.id for s in retrieve.approved_sources(world.db, "PV-REVERSE", "en") if s.kind == "strategy"]  # noqa: E731
+    assert strategies() == []
+    monkeypatch.setenv("CHAT_DEMO_STRATEGIES", "1")
+    assert strategies() == ["S.s.1"]
+
+def test_sample_lessons_are_offered_only_in_the_demo_and_say_not_reviewed(world: World, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(retrieve, "load_strategies", lambda: {})
     monkeypatch.delenv("CHAT_DEMO_STRATEGIES", raising=False)
     assert retrieve.approved_sources(world.db, "SUB-NODEC", "en") == []
     monkeypatch.setenv("CHAT_DEMO_STRATEGIES", "1")
-    assert [s.id for s in retrieve.approved_sources(world.db, "SUB-NODEC", "en")] == ["S.s.1"]
+    got = retrieve.approved_sources(world.db, "SUB-NODEC", "en")
+    assert got and {s.title for s in got} == {"Sample lesson, not reviewed"}
+    assert all(s.kind == "sample_lesson" for s in got)
+
+
+def test_in_the_demo_the_sample_lesson_replaces_unreviewed_strategies_for_its_error(world: World, monkeypatch: pytest.MonkeyPatch) -> None:
+    lib = {"s": Strategy("s", "draft", ("SUB-NODEC",), {"en": "Bundles"}, {"en": "Show the number with bundles of ten sticks."}, ())}
+    monkeypatch.setattr(retrieve, "load_strategies", lambda: lib)
+    monkeypatch.setenv("CHAT_DEMO_STRATEGIES", "1")
+    assert {s.kind for s in retrieve.approved_sources(world.db, "SUB-NODEC", "en")} == {"sample_lesson"}
