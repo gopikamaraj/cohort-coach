@@ -135,3 +135,12 @@ def test_a_cohort_of_one_class_has_its_own_chat_space_that_no_other_teacher_can_
     joined = client.post(f"/api/cohorts/{own[0]['id']}/join", json={"consent": True}, headers=h("teacher", DEV1))
     assert joined.status_code == 200
     assert client.post(f"/api/cohorts/{own[0]['id']}/join", json={"consent": True}, headers=h("teacher", "someone else")).status_code in (403, 404)
+
+def test_the_chat_list_shows_her_class_chat_and_never_an_own_class_space(client: TestClient) -> None:
+    client.post("/api/cohorts/class-only", json={**BODY, "errors": ["SUB-SFL"], "counts": {"SUB-SFL": 5}}, headers=h("teacher", DEV1))
+    client.get("/api/cohorts/open", headers=h("teacher", DEV1))  # creates her own-class space
+    for who in (DEV1, "someone else"):
+        rows = client.get("/api/cohort-chat/mine", headers=h("teacher", who)).json()
+        assert [r["id"] for r in rows if r["id"].startswith("so-")] == []
+    mine = client.get("/api/cohort-chat/mine", headers=h("teacher", DEV1)).json()
+    assert [r["kind"] for r in mine] == ["class"]

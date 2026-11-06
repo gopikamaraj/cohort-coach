@@ -2,7 +2,7 @@
 // appears as a label ("Teacher 3"). Every post is checked by the server for names and details; a
 // failed check asks her to rewrite. A coach sees held posts and can hide, restore, pin or erase the
 // text, post a prompt, and start closing her cohort. The chat polls every 30 seconds while open.
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Icon } from "../components/icons";
 import type { Key } from "../i18n";
 import { ccall, CohortError, type CohortSummary, type Who } from "../lib/cohort";
@@ -95,12 +95,14 @@ function TeacherView({ tr }: { tr: Tr }) {
             <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} data-testid="join-consent" />
             <span>{tr("cohort.join_consent")}</span>
           </label>
+          {[{ title: tr("cohort.group_mine"), rows: cohorts.filter((c) => c.kind === "class") }, { title: tr("cohort.group_open"), rows: cohorts.filter((c) => c.kind !== "class") }].map((g) => g.rows.length === 0 ? null : (
+          <Fragment key={g.title}>
+          <h3>{g.title}</h3>
           <ul className="plain">
-            {cohorts.map((c) => (
+            {g.rows.map((c) => (
               <li key={c.id} className="class-row" data-testid={`cohort-${c.id}`}>
                 <span className="class-name">
-                  {c.name ? `${c.name} · ` : ""}
-                  {tr(`err.${c.error}` as Key)} · {tr(`cohort.st.${c.status}` as Key)} · {c.members === null ? tr("cohort.members_hidden") : tr("cohort.members", { n: c.members })}
+                  {c.name ?? tr(`err.${c.error}` as Key)} · {tr(`cohort.st.${c.status}` as Key)} · {c.members === null ? tr("cohort.members_hidden") : tr("cohort.members", { n: c.members })}
                 </span>
                 {c.joined ? (
                   <button type="button" className="btn btn-secondary" onClick={() => setCurrent(c)} data-testid="open-cohort">
@@ -114,6 +116,8 @@ function TeacherView({ tr }: { tr: Tr }) {
               </li>
             ))}
           </ul>
+          </Fragment>
+          ))}
         </div>
       ) : (
         <GatedChat cohortId={current.id} role="teacher" />

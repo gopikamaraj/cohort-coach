@@ -456,7 +456,7 @@ def my_cohorts(db: Session, teacher_id: str) -> list[dict[str, Any]]:
     for c in db.execute(mine).scalars():
         add(c, None, "cohort")
     for c in db.execute(select(CohortSpace).where(CohortSpace.status.in_(("proposed", "active")))).scalars():
-        if not c.id.startswith((CLASS_SPACE + "cc-", "co-run-")):  # another teacher's class chat, or a run's own
+        if not c.id.startswith((CLASS_SPACE + "cc-", "co-run-", "so-")):  # another teacher's class chat, a run's own, or an own-class chat (hers is her class's row above; never list someone else's)
             add(c, None, "cohort")
     return out
 

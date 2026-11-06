@@ -830,6 +830,8 @@
   "cohort.intro": "A small space for teachers working on the same mistake. You appear as a label, never a name.",
   "cohort.notice": "Do not write a child's name or any detail that could identify a child. Posts are checked, but the check is not perfect.",
   "cohort.list": "Cohorts you can join",
+  "cohort.group_mine": "Your classes",
+  "cohort.group_open": "Open to join",
   "cohort.none": "No cohort is open yet.",
   "cohort.st.proposed": "Proposed",
   "cohort.st.active": "Active",
