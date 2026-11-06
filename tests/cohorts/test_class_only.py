@@ -139,6 +139,8 @@ def test_a_cohort_of_one_class_has_its_own_chat_space_that_no_other_teacher_can_
 def test_the_chat_list_shows_her_class_chat_and_never_an_own_class_space(client: TestClient) -> None:
     client.post("/api/cohorts/class-only", json={**BODY, "errors": ["SUB-SFL"], "counts": {"SUB-SFL": 5}}, headers=h("teacher", DEV1))
     client.get("/api/cohorts/open", headers=h("teacher", DEV1))  # creates her own-class space
+    sid = [c["id"] for c in client.get("/api/cohorts/open", headers=h("teacher", DEV1)).json() if c["id"].startswith("so-")][0]
+    client.post(f"/api/cohorts/{sid}/join", json={"consent": True}, headers=h("teacher", DEV1))  # even joined, it is not a second row
     for who in (DEV1, "someone else"):
         rows = client.get("/api/cohort-chat/mine", headers=h("teacher", who)).json()
         assert [r["id"] for r in rows if r["id"].startswith("so-")] == []
