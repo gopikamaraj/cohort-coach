@@ -315,3 +315,7 @@ Details: [docs/architecture.md](docs/architecture.md).
 | `content/` | Scenarios, rubrics, move lists, personas, tracks (data, owned by Seema) |
 | `evals/` | Eval sets, runners, generated `results.md` |
 | `docs/` | Build log, design, evidence, guardrails, privacy, offline, roadmap, submission |
+
+## License
+
+Open source under the [MIT License](LICENSE). Copyright (c) 2026 Team A-Z 0-9.
