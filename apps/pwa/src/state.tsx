@@ -42,7 +42,7 @@ interface AppState {
   startAnother: () => Promise<void>;
   /** Judge mode and the tour: add the simulated later check (the post-test) to the demo class. */
   addLaterDemo: () => Promise<void>;
-  reset: () => Promise<void>;
+  reset: (alsoServer?: boolean) => Promise<void>; // alsoServer false: clear this phone only, the account on the server stays
   tr: (key: Key, params?: Record<string, string | number>) => string;
 }
 
@@ -195,8 +195,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await reload();
   }, [reload, klass]);
 
-  const reset = useCallback(async () => {
-    await clearCloud();
+  const reset = useCallback(async (alsoServer = true) => {
+    await clearCloud(undefined, alsoServer);
     await clearPhone();
     await reload();
   }, [reload]);

@@ -477,11 +477,13 @@ export async function hydrate(store: CohortDb = db, fetchFn: Fetch = (...a) => f
   }
 }
 
-/** Delete everything the server holds for this phone (the "clear this phone" action). */
-export async function clearCloud(fetchFn: Fetch = (...a) => fetch(...a)): Promise<void> {
+/** Forget the waiting queue and versions on this phone and, unless `alsoServer` is false, delete everything the server holds
+ *  for this user. Erase-everything in Profile deletes on the server too; the Judge page's Clear this phone never does (it
+ *  would wipe a signed-in pilot user's classes, checks and transcripts). */
+export async function clearCloud(fetchFn: Fetch = (...a) => fetch(...a), alsoServer = true): Promise<void> {
   writeQueue([]);
   writeVersions({});
-  if (!isOnline()) return;
+  if (!alsoServer || !isOnline()) return;
   try {
     await fetchFn(`${API_BASE}/api/store`, { method: "DELETE", headers: headers() });
   } catch {

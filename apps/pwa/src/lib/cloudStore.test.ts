@@ -115,6 +115,14 @@ describe("the cloud copy", () => {
     expect(await db.classes.count()).toBe(1);
   });
 
+  it("clearing the phone only (the Judge page) leaves the account on the server alone", async () => {
+    const { cloud, calls, fetchFn } = setup();
+    cloud.classes = { "c-1": klass };
+    await clearCloud(fetchFn, false);
+    expect(cloud.classes).toEqual({ "c-1": klass });
+    expect(calls.filter((c) => c.startsWith("DELETE"))).toEqual([]);
+  });
+
   it("deletes the server copy on clear, and never stores rehearsals or photos", async () => {
     const { cloud, calls, fetchFn } = setup();
     cloud.classes = { "c-1": klass };

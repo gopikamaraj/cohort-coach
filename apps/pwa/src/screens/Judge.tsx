@@ -1,5 +1,6 @@
 // J1: judge mode. No login. A five-minute test script with deep links, the demo controls, and
 // links to the raw AI map and audit trail (pretty versions arrive with the Practice Class).
+import { isPilotUser } from "../lib/pilot";
 import { href, type Route } from "../lib/router";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
@@ -7,6 +8,7 @@ import { SimulatedBanner } from "../components/parts";
 
 export default function Judge() {
   const { tr, klass, checkCount, forcedOffline, setOffline, loadDemo, addLaterDemo, reset } = useApp();
+  const pilot = isPilotUser(); // pilot classes are real data: no simulated class is loaded into their account
   const steps: { key: Key; to: Route | null }[] = [
     { key: "judge.step1", to: null },
     { key: "judge.step2", to: "/home" },
@@ -42,21 +44,25 @@ export default function Judge() {
       </ol>
 
       <div className="stack">
-        <button type="button" className="btn btn-primary" onClick={() => void loadDemo()} data-testid="load-demo">
-          {tr("judge.load_demo")}
-        </button>
+        {pilot ? null : (
+          <button type="button" className="btn btn-primary" onClick={() => void loadDemo()} data-testid="load-demo">
+            {tr("judge.load_demo")}
+          </button>
+        )}
         {klass?.simulated ? (
           <p role="status" data-testid="demo-loaded">
             {tr("judge.demo_loaded")}
           </p>
         ) : null}
-        <button type="button" className="btn btn-secondary" onClick={() => void addLaterDemo()} disabled={checkCount >= 2} data-testid="advance">
-          {tr("judge.advance")}
-        </button>
+        {pilot ? null : (
+          <button type="button" className="btn btn-secondary" onClick={() => void addLaterDemo()} disabled={checkCount >= 2} data-testid="advance">
+            {tr("judge.advance")}
+          </button>
+        )}
         <button type="button" className="btn btn-secondary" onClick={() => setOffline(!forcedOffline)} aria-pressed={forcedOffline} data-testid="offline-toggle">
           {forcedOffline ? tr("judge.offline_off") : tr("judge.offline_on")}
         </button>
-        <button type="button" className="btn btn-secondary" onClick={() => void reset()} data-testid="reset">
+        <button type="button" className="btn btn-secondary" onClick={() => void reset(false)} data-testid="reset">
           {tr("judge.reset")}
         </button>
       </div>
