@@ -278,3 +278,13 @@ def test_the_hindi_question_is_answered_from_hindi_sources(
     out = make(world, c, "जवाब कैसे पूछें?", lang="hi")
     assert out.status == "drafted" and out.sources[0]["id"] == "L1.1"
     assert LESSON_1 not in str(out.sources)
+
+def test_demo_flag_offers_unreviewed_strategies_and_is_off_by_default(
+    world: World, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    lib = {"s": Strategy("s", "draft", ("SUB-NODEC",), {"en": "Bundles"}, {"en": "Show the number with bundles of ten sticks."}, ())}
+    monkeypatch.setattr(retrieve, "load_strategies", lambda: lib)
+    monkeypatch.delenv("CHAT_DEMO_STRATEGIES", raising=False)
+    assert retrieve.approved_sources(world.db, "SUB-NODEC", "en") == []
+    monkeypatch.setenv("CHAT_DEMO_STRATEGIES", "1")
+    assert [s.id for s in retrieve.approved_sources(world.db, "SUB-NODEC", "en")] == ["S.s.1"]

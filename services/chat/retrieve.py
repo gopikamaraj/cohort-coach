@@ -16,6 +16,7 @@ sentences still go to the model, which must then answer "no answer" unless a sou
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass
 
@@ -79,10 +80,19 @@ def _lesson_sources(db: Session, error: str, language: str) -> list[Source]:
     return out
 
 
+def _strategy_statuses() -> tuple[str, ...]:
+    """Approved or active. In a deployment that sets CHAT_DEMO_STRATEGIES=1 (the judge demo, off by default) the library's
+    draft and in-review entries are offered too, so the chat's AI answer can be shown before a coach has approved them
+    (decided 2026-11-06). Their text is Seema's, not AI-written; the answer still needs verbatim quotes and the checker."""
+    if os.environ.get("CHAT_DEMO_STRATEGIES", "0") == "1":
+        return ("approved", "active", "in_review", "draft")
+    return ("approved", "active")
+
+
 def _strategy_sources(error: str, language: str) -> list[Source]:
     out: list[Source] = []
     for sid, s in load_strategies().items():
-        if s.status not in ("approved", "active") or error not in s.fits:
+        if s.status not in _strategy_statuses() or error not in s.fits:
             continue
         lang = language if language in s.description else "en"
         texts = [s.description[lang], *s.worked_examples]

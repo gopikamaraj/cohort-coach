@@ -1077,3 +1077,12 @@ only approved ones (rejected: unapproved reads are suggestions); keeping nothing
 - **Found by the Phase 3 walk-through (`apps/pwa/e2e/walkthrough.spec.ts`: two teachers, a coach and an officer, one browser context each) and fixed.** (1) The officer page had no Create a cohort picker: an earlier change (68c5087) had replaced it with one button and step G never put it back, so the anonymous class list, the select all or some and the naming were not reachable; `CohortMaker who="officer"` is mounted again beside the one-button flow. Step G's summary and the first code review said this was met; that was wrong. (2) A second device that signed in with a nickname got her checks from the account but not the answer keys of the papers they used (kept per phone), so My class showed no answer map; `fetchMissingPaperKeys` fetches them after the account is read and on sign-in (`lib/check.ts`, `state.tsx`).
 - **Confirmed by:** Gopi (4 Nov 2026, in chat: transcripts synced and private to the user id; keep the 60-day retention; one cohort per mistake with content differing by the teacher's feedback).
 
+
+
+## 2026-11-06 - The chat's AI answer can be shown before a coach approves content (demo only)
+
+- **Decision:** `CHAT_DEMO_STRATEGIES=1` lets the cohort chat quote the strategy library's draft and in-review entries (Seema's text, not AI-written). Off by default; production still quotes approved or active content only. The answer still needs verbatim quotes, the checker and the labels.
+- **Why:** the cloud database holds no approved lessons or strategies, so the guide always said "I could not find an approved source". Tested in a visible browser as 3A Math: with the flag on, the guide answered after the timer with its sources named.
+- **Alternatives:** seeding approved demo tracks (paid Opus drafting, skips coach review): not chosen.
+- **Test added:** `tests/chat/test_draft.py` (flag off by default, on offers drafts).
+- **Confirmed by:** Gopi ("yes").
