@@ -30,7 +30,7 @@ Open the landing page (`#/roles`), read **How to use**, and press **Guided tour 
 
 | Screen | Link | What to try |
 | --- | --- | --- |
-| AI map and audit trail | `#/aimap`, `#/audit` | Ten calls in five layers; prepared bad lines stopped, with the reason |
+| AI map and audit trail | `#/aimap`, `#/audit` | Every call in five layers, each marked implemented (green) or roadmap (amber); prepared bad lines stopped, with the reason |
 | Watch a rehearsal | `#/watch` | An experienced and a struggling run, side by side, and the machinery panel |
 | Demo flow | `#/demo` | The 12-step demo on a simulated class; step 13, two classes, is optional |
 | Review queue | `#/review` | Two keys: a coach, then an officer; neither alone publishes |

@@ -37,6 +37,9 @@ export default function AiMap() {
       <h1 id="map-title">{tr("aimap.title")}</h1>
       <p>{tr("aimap.intro")}</p>
       <p className="muted">{tr("layers.judge_only")}</p>
+      <p className="aimap-legend" data-testid="aimap-legend">
+        <span className="chip chip-good">{tr("aimap.implemented")}</span> <span className="chip chip-roadmap">{tr("aimap.roadmap")}</span> {tr("aimap.legend")}
+      </p>
       {!online || failed ? <p role="alert">{tr("aimap.offline")}</p> : null}
       {online && !data && !failed ? <p>{tr("aimap.loading")}</p> : null}
       {data ? (
@@ -54,17 +57,19 @@ export default function AiMap() {
             </thead>
             <tbody>
               {data.calls.map((c) => (
-                <tr key={c.id}>
+                <tr key={c.id} className={c.built === false ? "aimap-row aimap-roadmap" : "aimap-row aimap-built"} data-status={c.built === false ? "roadmap" : "implemented"}>
                   <th scope="row">
                     {c.id}. {c.name}
+                    <br />
                     {c.built === false ? (
-                      <>
-                        <br />
-                        <span className="chip" data-testid={`aimap-planned-${c.id}`}>
-                          {tr("aimap.planned")}
-                        </span>
-                      </>
-                    ) : null}
+                      <span className="chip chip-roadmap" data-testid={`aimap-planned-${c.id}`}>
+                        {tr("aimap.roadmap")}
+                      </span>
+                    ) : (
+                      <span className="chip chip-good" data-testid={`aimap-built-${c.id}`}>
+                        {tr("aimap.implemented")}
+                      </span>
+                    )}
                     <br />
                     <span className="muted">
                       {c.model} · v{c.prompt_version}

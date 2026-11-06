@@ -4349,3 +4349,25 @@ h4 .obs { margin-inline-start: var(--s2); vertical-align: middle; }
   width: 100%;
   margin: var(--s2) 0;
 }
+
+/* the AI map: what is implemented (green) and what is on the roadmap (amber), by chip and by the row's left edge */
+.chip-good {
+  background: var(--good-container);
+  color: var(--on-good-container);
+}
+.chip-roadmap {
+  background: var(--warn-container);
+  color: var(--on-warn-container);
+}
+.aimap-built > th {
+  border-left: 4px solid var(--good);
+}
+.aimap-roadmap > th {
+  border-left: 4px solid var(--warn);
+}
+.aimap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
