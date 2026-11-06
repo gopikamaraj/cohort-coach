@@ -37,7 +37,7 @@ export default function Tour() {
       <h1 id="tour-title">{tr("tour.title")}</h1>
       {klass?.simulated ? <SimulatedBanner /> : null}
       <PilotClassBanner />
-      <progress max={TOUR.length} value={n} aria-label={tr("tour.step", { n, total: TOUR.length })} data-testid="tour-progress" />
+      <progress className="tour-progress" max={TOUR.length} value={n} aria-label={tr("tour.step", { n, total: TOUR.length })} data-testid="tour-progress" />
       <p className="muted" data-testid="tour-step">
         {tr("tour.step", { n, total: TOUR.length })} · {tr("tour.time", { s: step.seconds, total: Math.round(TOUR_SECONDS / 60) })}
       </p>

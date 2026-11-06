@@ -93,12 +93,24 @@ export default function Landing() {
         <h2 id="howto-title">{tr("landing.howto_title")}</h2>
         <ul>
           <li>
-            {tr("landing.howto_pilot_pre")} <strong>3A Math</strong> / <strong>3B Math</strong> {tr("landing.howto_pilot_post")} <strong>{tr("role.teacher")}</strong>{tr("landing.howto_pilot_end")}
+            {tr("landing.howto_pilot_pre")} <strong>3A Math</strong> / <strong>3B Math</strong> {tr("landing.howto_pilot_post")} <strong>{tr("role.teacher")}</strong>{tr("landing.howto_pilot_end")} {tr("landing.howto_pilot_note")}
           </li>
           <li>
             {tr("landing.howto_officer_pre")} <strong>Block Officer</strong> {tr("landing.howto_officer_post")}
           </li>
         </ul>
+        <div className="role-cards">
+            <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
+              <span className="m-iconwell m-iconwell-on" aria-hidden="true">
+                <Icon name="judge" size={28} />
+              </span>
+              <span className="l-card-text">
+                <strong className="role-name">{tr("landing.tour")}</strong>
+                <span className="role-line">{tr("landing.tour_hint")}</span>
+              </span>
+              <Icon name="chevron" size={24} className="l-go" />
+            </a>
+        </div>
       </section>
       {failed ? (
         <div className="m-note m-note-error" role="alert" data-testid="landing-error">
@@ -114,16 +126,6 @@ export default function Landing() {
         <>
           <h2 className="l-group">{tr("landing.judges_title")}</h2>
           <div className="role-cards" data-testid="judge-cards">
-            <a className="tile tile-start" href="#/tour/1" data-testid="card-tour">
-              <span className="m-iconwell m-iconwell-on" aria-hidden="true">
-                <Icon name="judge" size={28} />
-              </span>
-              <span className="l-card-text">
-                <strong className="role-name">{tr("landing.tour")}</strong>
-                <span className="role-line">{tr("landing.tour_hint")}</span>
-              </span>
-              <Icon name="chevron" size={24} className="l-go" />
-            </a>
             <button type="button" className="tile tile-start" onClick={() => {
                 setRole("judge");
                 go("/judge");
