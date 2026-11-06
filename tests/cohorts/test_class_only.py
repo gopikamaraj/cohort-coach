@@ -122,3 +122,16 @@ def test_one_cohort_per_mistake_the_same_check_may_have_one_for_each_mistake(cli
     again = client.post("/api/cohorts/class-only", json=second, headers=h("teacher", DEV1))
     assert again.json()["id"] == b.json()["id"]  # a second tap for the same mistake returns the same one
     assert len(client.get("/api/cohorts/class-only", headers=h("teacher", DEV1)).json()) == 2
+
+
+def test_a_cohort_of_one_class_has_its_own_chat_space_that_no_other_teacher_can_see(client: TestClient) -> None:
+    """Decided 2026-11-06: no other teachers, but the guide, coach and mentor are there; the space is hers alone."""
+    client.post("/api/cohorts/class-only", json={**BODY, "errors": ["SUB-SFL"], "counts": {"SUB-SFL": 5}}, headers=h("teacher", DEV1))
+    mine = client.get("/api/cohorts/open", headers=h("teacher", DEV1)).json()
+    own = [c for c in mine if c["id"].startswith("so-")]
+    assert len(own) == 1 and own[0]["error"] == "SUB-SFL" and own[0]["joined"] is False  # joining stays her own tap
+    other = client.get("/api/cohorts/open", headers=h("teacher", "someone else")).json()
+    assert [c for c in other if c["id"].startswith("so-")] == []
+    joined = client.post(f"/api/cohorts/{own[0]['id']}/join", json={"consent": True}, headers=h("teacher", DEV1))
+    assert joined.status_code == 200
+    assert client.post(f"/api/cohorts/{own[0]['id']}/join", json={"consent": True}, headers=h("teacher", "someone else")).status_code in (403, 404)

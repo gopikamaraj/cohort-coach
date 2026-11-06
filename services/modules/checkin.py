@@ -11,6 +11,7 @@ the next module is made. Coaches and mentors see counts of answers, never her no
 
 from __future__ import annotations
 
+import hashlib
 import re
 from datetime import UTC, datetime
 from typing import Any
@@ -44,8 +45,26 @@ _ROLL_WORD = re.compile(r"\broll\b|\bरोल\b|ரோல்", re.IGNORECASE)
 # ---- where it can be shared ----------------------------------------------------------------------
 
 
+SOLO = "so-"  # the id prefix of a chat space that belongs to one teacher's own class cohort
+
+
+def solo_space(db: Session, teacher_id: str, error: str) -> CohortSpace:
+    """The chat of a cohort of one class (decided 2026-11-06). There are no other teachers in it, but the guide (the AI,
+    answering a question nobody replied to), the coach and the mentor are, once the officer assigns them. It belongs to
+    this teacher alone: `officer_id` holds her id, and the open list shows it to nobody else. She still joins with her own tap."""
+    sid = SOLO + hashlib.sha1(f"{teacher_id}|{error}".encode()).hexdigest()[:12]  # noqa: S324 (a label, not security)
+    space = db.get(CohortSpace, sid)
+    if space is None:
+        space = CohortSpace(id=sid, error=error, status="active", coach_id=None, officer_id=teacher_id, mentor_ids=[], school_count=1, simulated=False)
+        db.add(space)
+        lifecycle.audit(db, sid, "system", "solo", "created", error=error)
+        db.commit()
+    return space
+
+
 def chat_space(db: Session, teacher_id: str, track: Track) -> CohortSpace | None:
-    """The cohort chat she belongs to for this error, if any. A cohort of one class has none."""
+    """The cohort chat she belongs to for this error. For a cohort of one class it is her own space with the guide, the
+    coach and the mentor and no other teacher; None only when she has no cohort for this error."""
     rows = db.execute(
         select(CohortSpace)
         .join(CohortMember, CohortMember.cohort_id == CohortSpace.id)
@@ -56,7 +75,13 @@ def chat_space(db: Session, teacher_id: str, track: Track) -> CohortSpace | None
         )
         .order_by(CohortSpace.created_at)
     ).scalars()
-    return next(iter(rows), None)
+    found = next(iter(rows), None)
+    if found is not None:
+        return found
+    own = db.execute(select(ClassCohort).where(ClassCohort.teacher_id == teacher_id)).scalars()
+    if any(track.error in (c.errors or []) for c in own):
+        return solo_space(db, teacher_id, track.error)
+    return None
 
 
 def chat_state(

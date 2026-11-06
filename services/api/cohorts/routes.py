@@ -322,11 +322,19 @@ def open_cohorts(
 ) -> list[dict[str, Any]]:
     """Cohorts a teacher can join or has joined: status and the error in words only; the figures
     follow the same under-5 rule as everywhere. Whether she is already in is hers to know."""
+    from services.api.db import ClassCohort
+    from services.modules.checkin import SOLO, solo_space
+
     teacher = _teacher(db, uid)
+    for own in db.execute(select(ClassCohort).where(ClassCohort.teacher_id == teacher.teacher_id)).scalars():
+        for error in own.errors or []:
+            solo_space(db, teacher.teacher_id, error)  # a cohort of one class has its own chat: the guide, coach and mentor, no other teacher
     out = []
     for c in db.execute(
         select(CohortSpace).where(CohortSpace.status.in_(("proposed", "active")))
     ).scalars():
+        if c.id.startswith(SOLO) and c.officer_id != teacher.teacher_id:
+            continue  # someone else's own-class chat
         row = lifecycle.summary(db, c)
         row["joined"] = thread_member(db, c.id, teacher.teacher_id) is not None
         out.append(row)
@@ -351,6 +359,8 @@ def join(
     cohort = _wrap(lambda: lifecycle.get(db, cohort_id))
     if cohort.status not in ("active", "proposed"):
         raise HTTPException(409, "This cohort is not open to join.")
+    if cohort.id.startswith("so-") and cohort.officer_id != teacher.teacher_id:
+        raise HTTPException(403, "That chat belongs to one class.")  # an own-class chat is hers alone
     teacher.consent = {**(teacher.consent or {}), "cohort": True}
     db.merge(teacher)
     member = thread.join(db, cohort_id, teacher.teacher_id)

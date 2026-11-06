@@ -461,7 +461,8 @@ def test_the_chat_button_state_for_a_member_and_for_a_cohort_with_no_chat(
         ).json()["unread"]
         == 1
     )
-    # a teacher in no chat sees "No peers yet"
+    # a teacher whose cohort is of one class has her own chat (decided 2026-11-06): no other teacher, but the guide, the coach and the
+    # mentor. This test said "No peers yet" and a refused share; that rule is replaced, not weakened: the chat is hers, and only hers.
     other = h("teacher", DEVICES[5])
     cid = world.c.post(
         "/api/cohorts/class-only", json={**BODY, "check_id": "c-other:1"}, headers=other
@@ -470,7 +471,7 @@ def test_the_chat_button_state_for_a_member_and_for_a_cohort_with_no_chat(
         "/api/modules/tracks", json={"cohort_id": cid, "error": "SUB-SFL"}, headers=other
     ).json()["id"]
     r = world.c.get(f"/api/modules/tracks/{tid}/chat", headers=other).json()
-    assert r["available"] is False and r["reason"] == "no_peers"
+    assert r["available"] is True and r["cohort_id"].startswith("so-") and r["cohort_id"] != world.cohort
     assert (
         world.c.post(
             f"/api/modules/tracks/{tid}/modules/1/feedback",
