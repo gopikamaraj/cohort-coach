@@ -94,6 +94,7 @@ function EnteredOfficer() {
     <div className="panel" data-testid="officer-entered">
       <h2>{tr("officer.real.title")}</h2>
       <p className="muted">{tr("officer.real.note", { classes: d.error_map?.classes ?? 0 })}</p>
+      <p className="note" data-testid="officer-pilot-note">{tr("officer.pilot_note")}</p>
       <ErrorRuleControl name="rule-officer" />
       <RuleLine minHits={d.rule?.min_hits} />
       {d.caps?.off ? <p className="note" data-testid="demo-caps">{tr("officer.caps.demo")}</p> : null}

@@ -89,6 +89,17 @@ export default function Landing() {
         <h1 id="landing-title">{tr("landing.title")}</h1>
         <p className="l-lead">{tr("landing.intro")}</p>
       </div>
+      <section className="panel stack" aria-labelledby="howto-title" data-testid="how-to-use">
+        <h2 id="howto-title">{tr("landing.howto_title")}</h2>
+        <ul>
+          <li>
+            {tr("landing.howto_pilot_pre")} <strong>3A Math</strong> / <strong>3B Math</strong> {tr("landing.howto_pilot_post")} <strong>{tr("role.teacher")}</strong>{tr("landing.howto_pilot_end")}
+          </li>
+          <li>
+            {tr("landing.howto_officer_pre")} <strong>Block Officer</strong> {tr("landing.howto_officer_post")}
+          </li>
+        </ul>
+      </section>
       {failed ? (
         <div className="m-note m-note-error" role="alert" data-testid="landing-error">
           <p>{tr("flow.error")}</p>

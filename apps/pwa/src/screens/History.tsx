@@ -7,7 +7,7 @@ import { db } from "../lib/db";
 import { href } from "../lib/router";
 import { BLANK, UNREADABLE } from "../lib/check";
 import { useApp } from "../state";
-import { SimulatedBanner } from "../components/parts";
+import { PilotClassBanner, SimulatedBanner } from "../components/parts";
 import { shownCode } from "../lib/paperCode";
 
 export default function History() {
@@ -35,6 +35,7 @@ export default function History() {
     <section aria-labelledby="hi-title" data-testid="history">
       <h1 id="hi-title">{tr("history.title")}</h1>
       {klass?.simulated ? <SimulatedBanner /> : null}
+      <PilotClassBanner />
       <p className="muted">{tr("history.private")}</p>
 
       <h2>{tr("history.checks")}</h2>

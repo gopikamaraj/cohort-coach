@@ -7,6 +7,7 @@ import { countsOn } from "../lib/consent";
 import { href } from "../lib/router";
 import { isAiOff, isRecorded, useAiMode } from "../lib/aiMode";
 import { Icon } from "./icons";
+import { isPilotUser } from "../lib/pilot";
 
 /** In the header when the server's AI is not live: "AI: recorded answers" or "AI: off". */
 export function AiModeBadge() {
@@ -50,6 +51,17 @@ export function SimulatedBanner() {
   return (
     <p className="banner" role="note">
       {tr("banner.simulated")}
+    </p>
+  );
+}
+
+/** Shown on a pilot class's pages (nickname 3A Math or 3B Math) unless the class itself is simulated. */
+export function PilotClassBanner() {
+  const { tr, klass } = useApp();
+  if (!isPilotUser() || klass?.simulated) return null;
+  return (
+    <p className="chip chip-negative" role="note" data-testid="pilot-class-banner">
+      {tr("banner.pilot")}
     </p>
   );
 }

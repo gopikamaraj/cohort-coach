@@ -2,7 +2,7 @@
 import { track } from "../lib/tester";
 import { href } from "../lib/router";
 import { useApp } from "../state";
-import { SimulatedBanner } from "../components/parts";
+import { PilotClassBanner, SimulatedBanner } from "../components/parts";
 import type { Key } from "../i18n";
 import { Icon } from "../components/icons";
 import { useConsent } from "../lib/useConsent";
@@ -20,6 +20,7 @@ export default function Home() {
     <section aria-labelledby="home-title">
       <h1 id="home-title">{tr("home.title")}</h1>
       {klass?.simulated ? <SimulatedBanner /> : null}
+      <PilotClassBanner />
       {!consent ? (
         <div className="panel notice-card" data-testid="privacy-prompt">
           <h2>

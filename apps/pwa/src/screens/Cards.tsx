@@ -10,7 +10,7 @@ import { IconButton } from "../components/icons";
 import { useToast } from "../components/toast";
 import { sendFeedback } from "../lib/feedback";
 import { useConsent } from "../lib/useConsent";
-import { Sticks, SimulatedBanner } from "../components/parts";
+import { Sticks, PilotClassBanner, SimulatedBanner } from "../components/parts";
 import { href } from "../lib/router";
 import type { Key } from "../i18n";
 import { useApp } from "../state";
@@ -136,6 +136,7 @@ export default function Cards() {
     <section aria-labelledby="cards-title">
       <h1 id="cards-title">{tr("cards.title")}</h1>
       {klass?.simulated || profile.simulated ? <SimulatedBanner /> : null}
+      <PilotClassBanner />
       {check?.kind ? (
         <p data-testid="cards-check-label">
           <strong>{formatCheckLabel(tr, check, shownClassName(tr, klass), lang)}</strong>

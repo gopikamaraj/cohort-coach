@@ -12,7 +12,7 @@ import { getConsent, hasConsent, recordOnServer, setConsent, type Choices, count
 import { deleteKept, fetchKept, keepSheet, keepStatus, listKept, type Kept } from "../lib/keptSheets";
 import { isOnline, useOnline } from "../lib/net";
 import { go } from "../lib/router";
-import { RecordedChip, SimulatedBanner } from "../components/parts";
+import { RecordedChip, PilotClassBanner, SimulatedBanner } from "../components/parts";
 import { isAiOff, isRecorded, useAiMode, useDevTesting } from "../lib/aiMode";
 import { Icon } from "../components/icons";
 import { applyReads, SheetError } from "../lib/sheets";
@@ -624,6 +624,7 @@ export default function Check({ onDone }: { onDone?: () => void } = {}) {
     <section aria-labelledby="check-title" className={drawer ? "has-drawer" : undefined}>
       <h1 id="check-title">{tr("check.title")}</h1>
       {klass?.simulated ? <SimulatedBanner /> : null}
+      <PilotClassBanner />
       <div className="check-header" data-testid="check-header">
         <p className="check-label" data-testid="check-label">
           <strong>{label}</strong>
